@@ -2,7 +2,7 @@ name: notoryx_pro
 description: "NOTORYX PRO: one app for MeshCore and Meshtastic LoRa radios"
 publish_to: 'none'
 
-version: 0.1.0+5
+version: 0.2.0+6
 
 environment:
   sdk: ^3.9.0
