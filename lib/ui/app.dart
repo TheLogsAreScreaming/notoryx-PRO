@@ -4,6 +4,8 @@ import '../app/app_controller.dart';
 import '../l10n/app_localizations.dart';
 import 'common.dart';
 import 'inbox_screen.dart';
+import 'map_screen.dart';
+import 'map_tiles.dart';
 import 'nodes_screen.dart';
 import 'radios_screen.dart';
 
@@ -12,9 +14,12 @@ const notoryxBlue = Color(0xFF2AA7E0);
 
 /// The app: localisation, theme and the three tabs.
 class NotoryxProApp extends StatelessWidget {
-  const NotoryxProApp({super.key, required this.app});
+  const NotoryxProApp({super.key, required this.app, this.tiles});
 
   final AppController app;
+
+  /// Map tiles; null leaves the map without a background (tests).
+  final MapTiles? tiles;
 
   @override
   Widget build(BuildContext context) {
@@ -30,16 +35,17 @@ class NotoryxProApp extends StatelessWidget {
         colorSchemeSeed: notoryxBlue,
         brightness: Brightness.dark,
       ),
-      home: HomeShell(app: app),
+      home: HomeShell(app: app, tiles: tiles),
     );
   }
 }
 
 /// Inbox, nodes and radios, with a bottom navigation bar.
 class HomeShell extends StatefulWidget {
-  const HomeShell({super.key, required this.app});
+  const HomeShell({super.key, required this.app, this.tiles});
 
   final AppController app;
+  final MapTiles? tiles;
 
   @override
   State<HomeShell> createState() => _HomeShellState();
@@ -57,6 +63,7 @@ class _HomeShellState extends State<HomeShell> {
       body: switch (_tab) {
         0 => InboxScreen(app: app),
         1 => NodesScreen(app: app),
+        2 => MapScreen(app: app, tiles: widget.tiles),
         _ => RadiosScreen(app: app),
       },
       bottomNavigationBar: NavigationBar(
@@ -72,6 +79,11 @@ class _HomeShellState extends State<HomeShell> {
             icon: const Icon(Icons.hub_outlined),
             selectedIcon: const Icon(Icons.hub),
             label: l.tabNodes,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.map_outlined),
+            selectedIcon: const Icon(Icons.map),
+            label: l.tabMap,
           ),
           NavigationDestination(
             icon: const Icon(Icons.settings_input_antenna),

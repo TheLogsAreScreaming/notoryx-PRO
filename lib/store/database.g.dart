@@ -820,6 +820,17 @@ class $NodesTable extends Nodes with TableInfo<$NodesTable, NodeRow> {
     ),
     defaultValue: const Constant(true),
   );
+  static const VerificationMeta _routeHexMeta = const VerificationMeta(
+    'routeHex',
+  );
+  @override
+  late final GeneratedColumn<String> routeHex = GeneratedColumn<String>(
+    'route_hex',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     radioId,
@@ -839,6 +850,7 @@ class $NodesTable extends Nodes with TableInfo<$NodesTable, NodeRow> {
     favorite,
     battery,
     canMessage,
+    routeHex,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -948,6 +960,12 @@ class $NodesTable extends Nodes with TableInfo<$NodesTable, NodeRow> {
         canMessage.isAcceptableOrUnknown(data['can_message']!, _canMessageMeta),
       );
     }
+    if (data.containsKey('route_hex')) {
+      context.handle(
+        _routeHexMeta,
+        routeHex.isAcceptableOrUnknown(data['route_hex']!, _routeHexMeta),
+      );
+    }
     return context;
   }
 
@@ -1029,6 +1047,10 @@ class $NodesTable extends Nodes with TableInfo<$NodesTable, NodeRow> {
         DriftSqlType.bool,
         data['${effectivePrefix}can_message'],
       )!,
+      routeHex: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}route_hex'],
+      ),
     );
   }
 
@@ -1063,6 +1085,9 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
   final bool favorite;
   final int? battery;
   final bool canMessage;
+
+  /// MeshCore out-path as hex (repeater hash prefixes, in order). Schema v3.
+  final String? routeHex;
   const NodeRow({
     required this.radioId,
     required this.nodeKey,
@@ -1081,6 +1106,7 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
     required this.favorite,
     this.battery,
     required this.canMessage,
+    this.routeHex,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1122,6 +1148,9 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
       map['battery'] = Variable<int>(battery);
     }
     map['can_message'] = Variable<bool>(canMessage);
+    if (!nullToAbsent || routeHex != null) {
+      map['route_hex'] = Variable<String>(routeHex);
+    }
     return map;
   }
 
@@ -1154,6 +1183,9 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
           ? const Value.absent()
           : Value(battery),
       canMessage: Value(canMessage),
+      routeHex: routeHex == null && nullToAbsent
+          ? const Value.absent()
+          : Value(routeHex),
     );
   }
 
@@ -1184,6 +1216,7 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
       favorite: serializer.fromJson<bool>(json['favorite']),
       battery: serializer.fromJson<int?>(json['battery']),
       canMessage: serializer.fromJson<bool>(json['canMessage']),
+      routeHex: serializer.fromJson<String?>(json['routeHex']),
     );
   }
   @override
@@ -1211,6 +1244,7 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
       'favorite': serializer.toJson<bool>(favorite),
       'battery': serializer.toJson<int?>(battery),
       'canMessage': serializer.toJson<bool>(canMessage),
+      'routeHex': serializer.toJson<String?>(routeHex),
     };
   }
 
@@ -1232,6 +1266,7 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
     bool? favorite,
     Value<int?> battery = const Value.absent(),
     bool? canMessage,
+    Value<String?> routeHex = const Value.absent(),
   }) => NodeRow(
     radioId: radioId ?? this.radioId,
     nodeKey: nodeKey ?? this.nodeKey,
@@ -1250,6 +1285,7 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
     favorite: favorite ?? this.favorite,
     battery: battery.present ? battery.value : this.battery,
     canMessage: canMessage ?? this.canMessage,
+    routeHex: routeHex.present ? routeHex.value : this.routeHex,
   );
   NodeRow copyWithCompanion(NodesCompanion data) {
     return NodeRow(
@@ -1272,6 +1308,7 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
       canMessage: data.canMessage.present
           ? data.canMessage.value
           : this.canMessage,
+      routeHex: data.routeHex.present ? data.routeHex.value : this.routeHex,
     );
   }
 
@@ -1294,7 +1331,8 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
           ..write('viaMqtt: $viaMqtt, ')
           ..write('favorite: $favorite, ')
           ..write('battery: $battery, ')
-          ..write('canMessage: $canMessage')
+          ..write('canMessage: $canMessage, ')
+          ..write('routeHex: $routeHex')
           ..write(')'))
         .toString();
   }
@@ -1318,6 +1356,7 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
     favorite,
     battery,
     canMessage,
+    routeHex,
   );
   @override
   bool operator ==(Object other) =>
@@ -1339,7 +1378,8 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
           other.viaMqtt == this.viaMqtt &&
           other.favorite == this.favorite &&
           other.battery == this.battery &&
-          other.canMessage == this.canMessage);
+          other.canMessage == this.canMessage &&
+          other.routeHex == this.routeHex);
 }
 
 class NodesCompanion extends UpdateCompanion<NodeRow> {
@@ -1360,6 +1400,7 @@ class NodesCompanion extends UpdateCompanion<NodeRow> {
   final Value<bool> favorite;
   final Value<int?> battery;
   final Value<bool> canMessage;
+  final Value<String?> routeHex;
   final Value<int> rowid;
   const NodesCompanion({
     this.radioId = const Value.absent(),
@@ -1379,6 +1420,7 @@ class NodesCompanion extends UpdateCompanion<NodeRow> {
     this.favorite = const Value.absent(),
     this.battery = const Value.absent(),
     this.canMessage = const Value.absent(),
+    this.routeHex = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   NodesCompanion.insert({
@@ -1399,6 +1441,7 @@ class NodesCompanion extends UpdateCompanion<NodeRow> {
     this.favorite = const Value.absent(),
     this.battery = const Value.absent(),
     this.canMessage = const Value.absent(),
+    this.routeHex = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : radioId = Value(radioId),
        nodeKey = Value(nodeKey),
@@ -1423,6 +1466,7 @@ class NodesCompanion extends UpdateCompanion<NodeRow> {
     Expression<bool>? favorite,
     Expression<int>? battery,
     Expression<bool>? canMessage,
+    Expression<String>? routeHex,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1443,6 +1487,7 @@ class NodesCompanion extends UpdateCompanion<NodeRow> {
       if (favorite != null) 'favorite': favorite,
       if (battery != null) 'battery': battery,
       if (canMessage != null) 'can_message': canMessage,
+      if (routeHex != null) 'route_hex': routeHex,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1465,6 +1510,7 @@ class NodesCompanion extends UpdateCompanion<NodeRow> {
     Value<bool>? favorite,
     Value<int?>? battery,
     Value<bool>? canMessage,
+    Value<String?>? routeHex,
     Value<int>? rowid,
   }) {
     return NodesCompanion(
@@ -1485,6 +1531,7 @@ class NodesCompanion extends UpdateCompanion<NodeRow> {
       favorite: favorite ?? this.favorite,
       battery: battery ?? this.battery,
       canMessage: canMessage ?? this.canMessage,
+      routeHex: routeHex ?? this.routeHex,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1547,6 +1594,9 @@ class NodesCompanion extends UpdateCompanion<NodeRow> {
     if (canMessage.present) {
       map['can_message'] = Variable<bool>(canMessage.value);
     }
+    if (routeHex.present) {
+      map['route_hex'] = Variable<String>(routeHex.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1573,6 +1623,7 @@ class NodesCompanion extends UpdateCompanion<NodeRow> {
           ..write('favorite: $favorite, ')
           ..write('battery: $battery, ')
           ..write('canMessage: $canMessage, ')
+          ..write('routeHex: $routeHex, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -3499,6 +3550,7 @@ typedef $$NodesTableCreateCompanionBuilder =
       Value<bool> favorite,
       Value<int?> battery,
       Value<bool> canMessage,
+      Value<String?> routeHex,
       Value<int> rowid,
     });
 typedef $$NodesTableUpdateCompanionBuilder =
@@ -3520,6 +3572,7 @@ typedef $$NodesTableUpdateCompanionBuilder =
       Value<bool> favorite,
       Value<int?> battery,
       Value<bool> canMessage,
+      Value<String?> routeHex,
       Value<int> rowid,
     });
 
@@ -3617,6 +3670,11 @@ class $$NodesTableFilterComposer extends Composer<_$MeshDatabase, $NodesTable> {
     column: $table.canMessage,
     builder: (column) => ColumnFilters(column),
   );
+
+  ColumnFilters<String> get routeHex => $composableBuilder(
+    column: $table.routeHex,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$NodesTableOrderingComposer
@@ -3712,6 +3770,11 @@ class $$NodesTableOrderingComposer
     column: $table.canMessage,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get routeHex => $composableBuilder(
+    column: $table.routeHex,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$NodesTableAnnotationComposer
@@ -3775,6 +3838,9 @@ class $$NodesTableAnnotationComposer
     column: $table.canMessage,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get routeHex =>
+      $composableBuilder(column: $table.routeHex, builder: (column) => column);
 }
 
 class $$NodesTableTableManager
@@ -3822,6 +3888,7 @@ class $$NodesTableTableManager
                 Value<bool> favorite = const Value.absent(),
                 Value<int?> battery = const Value.absent(),
                 Value<bool> canMessage = const Value.absent(),
+                Value<String?> routeHex = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => NodesCompanion(
                 radioId: radioId,
@@ -3841,6 +3908,7 @@ class $$NodesTableTableManager
                 favorite: favorite,
                 battery: battery,
                 canMessage: canMessage,
+                routeHex: routeHex,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -3862,6 +3930,7 @@ class $$NodesTableTableManager
                 Value<bool> favorite = const Value.absent(),
                 Value<int?> battery = const Value.absent(),
                 Value<bool> canMessage = const Value.absent(),
+                Value<String?> routeHex = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => NodesCompanion.insert(
                 radioId: radioId,
@@ -3881,6 +3950,7 @@ class $$NodesTableTableManager
                 favorite: favorite,
                 battery: battery,
                 canMessage: canMessage,
+                routeHex: routeHex,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

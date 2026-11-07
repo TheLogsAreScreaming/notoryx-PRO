@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:notoryx_pro/app/app_controller.dart';
 import 'package:notoryx_pro/app/radio_target.dart';
@@ -218,6 +219,61 @@ void main() {
       find.textContaining('Person · Heard 5 min ago · 2 hops'),
       findsOneWidget,
     );
+    await tearDownApp(tester, app);
+  });
+
+  testWidgets('map without positions explains why it is empty', (tester) async {
+    final app = AppController(store: MeshStore.memory());
+    await tester.pumpWidget(NotoryxProApp(app: app));
+    await tester.tap(find.text('Map'));
+    await settle(tester);
+    expect(find.textContaining('No positions yet'), findsOneWidget);
+    await tearDownApp(tester, app);
+  });
+
+  testWidgets('map shows nodes from both meshes and a MeshCore route', (
+    tester,
+  ) async {
+    final app = AppController(store: MeshStore.memory());
+    final relay = Node(
+      key: NodeKey.meshcore('a1${'0' * 62}'),
+      radioId: mc,
+      name: 'Peak Repeater',
+      kind: NodeKind.relay,
+      position: const GeoPoint(46.0, -121.0),
+    );
+    final friend = Node(
+      key: NodeKey.meshcore('ee${'0' * 62}'),
+      radioId: mc,
+      name: 'Sam',
+      kind: NodeKind.person,
+      position: const GeoPoint(46.1, -121.1),
+      path: const PathFacts(hops: 1, snr: -3, route: RouteKind.direct),
+      route: const [0xa1],
+    );
+    final ranger = Node(
+      key: NodeKey.meshtastic(0x0badcafe),
+      radioId: mt,
+      name: 'Ranger',
+      kind: NodeKind.person,
+      position: const GeoPoint(45.9, -121.2),
+    );
+    await tester.runAsync(() => app.store.upsertNodes([relay, friend, ranger]));
+    await tester.pumpWidget(NotoryxProApp(app: app));
+    await tester.tap(find.text('Map'));
+    await settle(tester);
+    expect(find.bySemanticsLabel('Sam, MeshCore'), findsOneWidget);
+    expect(find.bySemanticsLabel('Ranger, Meshtastic'), findsOneWidget);
+    expect(find.bySemanticsLabel('Peak Repeater, MeshCore'), findsOneWidget);
+
+    await tester.tap(find.bySemanticsLabel('Sam, MeshCore'));
+    await tester.pumpAndSettle();
+    expect(find.text('Signal 2 of 4'), findsOneWidget);
+    expect(find.text('Signal is from the last repeater'), findsOneWidget);
+    expect(find.text('• Peak Repeater'), findsOneWidget);
+    await tester.tap(find.text('Show route on map'));
+    await tester.pumpAndSettle();
+    expect(find.byType(PolylineLayer), findsOneWidget);
     await tearDownApp(tester, app);
   });
 

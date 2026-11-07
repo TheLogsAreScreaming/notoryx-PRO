@@ -421,7 +421,18 @@ class MeshStore {
     favorite: Value(n.isFavorite),
     battery: Value(n.batteryPercent),
     canMessage: Value(n.canMessage),
+    routeHex: Value(n.route.isEmpty ? null : _hex(n.route)),
   );
+
+  static String _hex(List<int> b) =>
+      b.map((x) => x.toRadixString(16).padLeft(2, '0')).join();
+
+  static List<int> _unhex(String? h) => h == null || h.length.isOdd
+      ? const []
+      : [
+          for (var i = 0; i < h.length; i += 2)
+            int.parse(h.substring(i, i + 2), radix: 16),
+        ];
 
   Node? _node(NodeRow r) {
     final radio = RadioId.tryParse(r.radioId);
@@ -447,6 +458,7 @@ class MeshStore {
       isFavorite: r.favorite,
       batteryPercent: r.battery,
       canMessage: r.canMessage,
+      route: _unhex(r.routeHex),
     );
   }
 

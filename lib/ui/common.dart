@@ -121,3 +121,54 @@ class EmptyState extends StatelessWidget {
     ),
   );
 }
+
+/// 0–4 signal bars with a spoken label; shows a dash when unknown.
+class SignalBars extends StatelessWidget {
+  const SignalBars(this.bars, {super.key, this.size = 16});
+
+  /// 0–4, or null when the signal isn't known.
+  final int? bars;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final label = bars == null
+        ? context.l10n.signalUnknown
+        : context.l10n.signalBars(bars!);
+    return Semantics(
+      label: label,
+      child: ExcludeSemantics(
+        child: Tooltip(
+          message: label,
+          child: SizedBox(
+            width: size,
+            height: size,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                for (var i = 0; i < 4; i++)
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 0.75),
+                      child: FractionallySizedBox(
+                        heightFactor: (i + 1) / 4,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: bars != null && i < bars!
+                                ? scheme.primary
+                                : scheme.outlineVariant,
+                            borderRadius: BorderRadius.circular(1),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
