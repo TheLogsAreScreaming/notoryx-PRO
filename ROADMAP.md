@@ -6,11 +6,11 @@ One pull request per step. Each step lands with tests and a green CI before the 
 
 1. **Project setup** (done): starter app, CI, independence check, docs.
 2. **Platform folders** (done): commit Android, iPhone and Mac folders with Bluetooth, USB, network and notification permissions; blue NOTORYX PRO icon.
-3. **Radio link layer** shared by both protocols: one `RadioLink` interface with Bluetooth, USB serial and TCP links, a scanner that tells MeshCore and Meshtastic radios apart, and a redacted connection log.
+3. **Radio link layer** (done) shared by both protocols: one `RadioLink` interface with Bluetooth, USB serial and TCP links, a scanner that tells MeshCore and Meshtastic radios apart, and a redacted connection log.
 
 ## Phase 2: two protocols
 
-4. **MeshCore codec and session** from the MeshCore companion protocol docs: frames, command queue (one command at a time), pushes.
+4. **MeshCore codec and session** (done) from the MeshCore companion protocol docs: frames, command queue (one command at a time), pushes.
 5. **Meshtastic codec and session** from the Meshtastic protobufs: `ToRadio`/`FromRadio`, `want_config` handshake, heartbeat, BLE characteristics and the `0x94 0xC3` serial/TCP framing.
 6. **Common mesh model**: `MeshNetwork`, `Node`, `Channel`, `Message`, `DeliveryState` and a protocol tag on each, so screens never branch on protocol internals.
 7. **Data store** (drift/SQLite): radios, nodes, channels, messages per radio; schema migrations tested from day one.
