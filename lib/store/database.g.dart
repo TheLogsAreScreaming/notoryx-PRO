@@ -2167,6 +2167,18 @@ class $MessagesTable extends Messages
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _attemptsMeta = const VerificationMeta(
+    'attempts',
+  );
+  @override
+  late final GeneratedColumn<int> attempts = GeneratedColumn<int>(
+    'attempts',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _dedupeKeyMeta = const VerificationMeta(
     'dedupeKey',
   );
@@ -2201,6 +2213,7 @@ class $MessagesTable extends Messages
     nativeId,
     replyTo,
     isReaction,
+    attempts,
     dedupeKey,
   ];
   @override
@@ -2349,6 +2362,12 @@ class $MessagesTable extends Messages
         isReaction.isAcceptableOrUnknown(data['is_reaction']!, _isReactionMeta),
       );
     }
+    if (data.containsKey('attempts')) {
+      context.handle(
+        _attemptsMeta,
+        attempts.isAcceptableOrUnknown(data['attempts']!, _attemptsMeta),
+      );
+    }
     if (data.containsKey('dedupe_key')) {
       context.handle(
         _dedupeKeyMeta,
@@ -2446,6 +2465,10 @@ class $MessagesTable extends Messages
         DriftSqlType.bool,
         data['${effectivePrefix}is_reaction'],
       )!,
+      attempts: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}attempts'],
+      )!,
       dedupeKey: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}dedupe_key'],
@@ -2488,6 +2511,9 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
   final int? replyTo;
   final bool isReaction;
 
+  /// Times this outgoing message was sent (retries included). Schema v2.
+  final int attempts;
+
   /// Identifies a received message so a repeat isn't stored twice.
   final String? dedupeKey;
   const MessageRow({
@@ -2511,6 +2537,7 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
     this.nativeId,
     this.replyTo,
     required this.isReaction,
+    required this.attempts,
     this.dedupeKey,
   });
   @override
@@ -2558,6 +2585,7 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
       map['reply_to'] = Variable<int>(replyTo);
     }
     map['is_reaction'] = Variable<bool>(isReaction);
+    map['attempts'] = Variable<int>(attempts);
     if (!nullToAbsent || dedupeKey != null) {
       map['dedupe_key'] = Variable<String>(dedupeKey);
     }
@@ -2598,6 +2626,7 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
           ? const Value.absent()
           : Value(replyTo),
       isReaction: Value(isReaction),
+      attempts: Value(attempts),
       dedupeKey: dedupeKey == null && nullToAbsent
           ? const Value.absent()
           : Value(dedupeKey),
@@ -2632,6 +2661,7 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
       nativeId: serializer.fromJson<int?>(json['nativeId']),
       replyTo: serializer.fromJson<int?>(json['replyTo']),
       isReaction: serializer.fromJson<bool>(json['isReaction']),
+      attempts: serializer.fromJson<int>(json['attempts']),
       dedupeKey: serializer.fromJson<String?>(json['dedupeKey']),
     );
   }
@@ -2661,6 +2691,7 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
       'nativeId': serializer.toJson<int?>(nativeId),
       'replyTo': serializer.toJson<int?>(replyTo),
       'isReaction': serializer.toJson<bool>(isReaction),
+      'attempts': serializer.toJson<int>(attempts),
       'dedupeKey': serializer.toJson<String?>(dedupeKey),
     };
   }
@@ -2686,6 +2717,7 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
     Value<int?> nativeId = const Value.absent(),
     Value<int?> replyTo = const Value.absent(),
     bool? isReaction,
+    int? attempts,
     Value<String?> dedupeKey = const Value.absent(),
   }) => MessageRow(
     id: id ?? this.id,
@@ -2710,6 +2742,7 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
     nativeId: nativeId.present ? nativeId.value : this.nativeId,
     replyTo: replyTo.present ? replyTo.value : this.replyTo,
     isReaction: isReaction ?? this.isReaction,
+    attempts: attempts ?? this.attempts,
     dedupeKey: dedupeKey.present ? dedupeKey.value : this.dedupeKey,
   );
   MessageRow copyWithCompanion(MessagesCompanion data) {
@@ -2746,6 +2779,7 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
       isReaction: data.isReaction.present
           ? data.isReaction.value
           : this.isReaction,
+      attempts: data.attempts.present ? data.attempts.value : this.attempts,
       dedupeKey: data.dedupeKey.present ? data.dedupeKey.value : this.dedupeKey,
     );
   }
@@ -2773,6 +2807,7 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
           ..write('nativeId: $nativeId, ')
           ..write('replyTo: $replyTo, ')
           ..write('isReaction: $isReaction, ')
+          ..write('attempts: $attempts, ')
           ..write('dedupeKey: $dedupeKey')
           ..write(')'))
         .toString();
@@ -2800,6 +2835,7 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
     nativeId,
     replyTo,
     isReaction,
+    attempts,
     dedupeKey,
   ]);
   @override
@@ -2826,6 +2862,7 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
           other.nativeId == this.nativeId &&
           other.replyTo == this.replyTo &&
           other.isReaction == this.isReaction &&
+          other.attempts == this.attempts &&
           other.dedupeKey == this.dedupeKey);
 }
 
@@ -2850,6 +2887,7 @@ class MessagesCompanion extends UpdateCompanion<MessageRow> {
   final Value<int?> nativeId;
   final Value<int?> replyTo;
   final Value<bool> isReaction;
+  final Value<int> attempts;
   final Value<String?> dedupeKey;
   const MessagesCompanion({
     this.id = const Value.absent(),
@@ -2872,6 +2910,7 @@ class MessagesCompanion extends UpdateCompanion<MessageRow> {
     this.nativeId = const Value.absent(),
     this.replyTo = const Value.absent(),
     this.isReaction = const Value.absent(),
+    this.attempts = const Value.absent(),
     this.dedupeKey = const Value.absent(),
   });
   MessagesCompanion.insert({
@@ -2895,6 +2934,7 @@ class MessagesCompanion extends UpdateCompanion<MessageRow> {
     this.nativeId = const Value.absent(),
     this.replyTo = const Value.absent(),
     this.isReaction = const Value.absent(),
+    this.attempts = const Value.absent(),
     this.dedupeKey = const Value.absent(),
   }) : radioId = Value(radioId),
        conversation = Value(conversation),
@@ -2925,6 +2965,7 @@ class MessagesCompanion extends UpdateCompanion<MessageRow> {
     Expression<int>? nativeId,
     Expression<int>? replyTo,
     Expression<bool>? isReaction,
+    Expression<int>? attempts,
     Expression<String>? dedupeKey,
   }) {
     return RawValuesInsertable({
@@ -2948,6 +2989,7 @@ class MessagesCompanion extends UpdateCompanion<MessageRow> {
       if (nativeId != null) 'native_id': nativeId,
       if (replyTo != null) 'reply_to': replyTo,
       if (isReaction != null) 'is_reaction': isReaction,
+      if (attempts != null) 'attempts': attempts,
       if (dedupeKey != null) 'dedupe_key': dedupeKey,
     });
   }
@@ -2973,6 +3015,7 @@ class MessagesCompanion extends UpdateCompanion<MessageRow> {
     Value<int?>? nativeId,
     Value<int?>? replyTo,
     Value<bool>? isReaction,
+    Value<int>? attempts,
     Value<String?>? dedupeKey,
   }) {
     return MessagesCompanion(
@@ -2996,6 +3039,7 @@ class MessagesCompanion extends UpdateCompanion<MessageRow> {
       nativeId: nativeId ?? this.nativeId,
       replyTo: replyTo ?? this.replyTo,
       isReaction: isReaction ?? this.isReaction,
+      attempts: attempts ?? this.attempts,
       dedupeKey: dedupeKey ?? this.dedupeKey,
     );
   }
@@ -3065,6 +3109,9 @@ class MessagesCompanion extends UpdateCompanion<MessageRow> {
     if (isReaction.present) {
       map['is_reaction'] = Variable<bool>(isReaction.value);
     }
+    if (attempts.present) {
+      map['attempts'] = Variable<int>(attempts.value);
+    }
     if (dedupeKey.present) {
       map['dedupe_key'] = Variable<String>(dedupeKey.value);
     }
@@ -3094,6 +3141,7 @@ class MessagesCompanion extends UpdateCompanion<MessageRow> {
           ..write('nativeId: $nativeId, ')
           ..write('replyTo: $replyTo, ')
           ..write('isReaction: $isReaction, ')
+          ..write('attempts: $attempts, ')
           ..write('dedupeKey: $dedupeKey')
           ..write(')'))
         .toString();
@@ -4095,6 +4143,7 @@ typedef $$MessagesTableCreateCompanionBuilder =
       Value<int?> nativeId,
       Value<int?> replyTo,
       Value<bool> isReaction,
+      Value<int> attempts,
       Value<String?> dedupeKey,
     });
 typedef $$MessagesTableUpdateCompanionBuilder =
@@ -4119,6 +4168,7 @@ typedef $$MessagesTableUpdateCompanionBuilder =
       Value<int?> nativeId,
       Value<int?> replyTo,
       Value<bool> isReaction,
+      Value<int> attempts,
       Value<String?> dedupeKey,
     });
 
@@ -4229,6 +4279,11 @@ class $$MessagesTableFilterComposer
 
   ColumnFilters<bool> get isReaction => $composableBuilder(
     column: $table.isReaction,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get attempts => $composableBuilder(
+    column: $table.attempts,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4347,6 +4402,11 @@ class $$MessagesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get attempts => $composableBuilder(
+    column: $table.attempts,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get dedupeKey => $composableBuilder(
     column: $table.dedupeKey,
     builder: (column) => ColumnOrderings(column),
@@ -4434,6 +4494,9 @@ class $$MessagesTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<int> get attempts =>
+      $composableBuilder(column: $table.attempts, builder: (column) => column);
+
   GeneratedColumn<String> get dedupeKey =>
       $composableBuilder(column: $table.dedupeKey, builder: (column) => column);
 }
@@ -4489,6 +4552,7 @@ class $$MessagesTableTableManager
                 Value<int?> nativeId = const Value.absent(),
                 Value<int?> replyTo = const Value.absent(),
                 Value<bool> isReaction = const Value.absent(),
+                Value<int> attempts = const Value.absent(),
                 Value<String?> dedupeKey = const Value.absent(),
               }) => MessagesCompanion(
                 id: id,
@@ -4511,6 +4575,7 @@ class $$MessagesTableTableManager
                 nativeId: nativeId,
                 replyTo: replyTo,
                 isReaction: isReaction,
+                attempts: attempts,
                 dedupeKey: dedupeKey,
               ),
           createCompanionCallback:
@@ -4535,6 +4600,7 @@ class $$MessagesTableTableManager
                 Value<int?> nativeId = const Value.absent(),
                 Value<int?> replyTo = const Value.absent(),
                 Value<bool> isReaction = const Value.absent(),
+                Value<int> attempts = const Value.absent(),
                 Value<String?> dedupeKey = const Value.absent(),
               }) => MessagesCompanion.insert(
                 id: id,
@@ -4557,6 +4623,7 @@ class $$MessagesTableTableManager
                 nativeId: nativeId,
                 replyTo: replyTo,
                 isReaction: isReaction,
+                attempts: attempts,
                 dedupeKey: dedupeKey,
               ),
           withReferenceMapper: (p0) => p0

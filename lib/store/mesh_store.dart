@@ -234,6 +234,7 @@ class MeshStore {
             nativeId: Value(message.nativeId),
             replyTo: Value(message.replyTo),
             isReaction: Value(message.isReaction),
+            attempts: Value(message.attempts),
             dedupeKey: Value(dedupe),
           ),
         );
@@ -277,6 +278,20 @@ class MeshStore {
       (db.update(db.messages)..where((m) => m.id.equals(id))).write(
         MessagesCompanion(nativeId: Value(nativeId)),
       );
+
+  /// Records how many times an outgoing message has been sent.
+  Future<void> setAttempts(int id, int attempts) =>
+      (db.update(db.messages)..where((m) => m.id.equals(id))).write(
+        MessagesCompanion(attempts: Value(attempts)),
+      );
+
+  /// One stored message, if it exists.
+  Future<StoredMessage?> message(int id) async {
+    final row = await (db.select(
+      db.messages,
+    )..where((m) => m.id.equals(id))).getSingleOrNull();
+    return row == null ? null : _message(row);
+  }
 
   /// Messages in [conversation], oldest first; the newest [limit] of them.
   Future<List<StoredMessage>> messages(
@@ -459,6 +474,7 @@ class MeshStore {
         nativeId: r.nativeId,
         replyTo: r.replyTo,
         isReaction: r.isReaction,
+        attempts: r.attempts,
       ),
     );
   }

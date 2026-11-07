@@ -172,6 +172,37 @@ void main() {
     await tearDownApp(tester, app);
   });
 
+  testWidgets('tapping a message opens how it travelled', (tester) async {
+    final app = AppController(store: MeshStore.memory());
+    await tester.runAsync(() => seed(app.store));
+    await tester.pumpWidget(NotoryxProApp(app: app));
+    await settle(tester);
+    await tester.tap(find.text('Public'));
+    await tester.pumpAndSettle();
+    await settle(tester);
+    await tester.tap(find.text('hello trail'));
+    await tester.pumpAndSettle();
+    expect(find.text('How this message travelled'), findsOneWidget);
+    expect(find.text('Flooded through the mesh'), findsOneWidget);
+    expect(find.text('3 hops'), findsOneWidget);
+    expect(find.text('SNR -2.5 dB'), findsOneWidget);
+    expect(find.text('Ann'), findsWidgets);
+    await tearDownApp(tester, app);
+  });
+
+  testWidgets('no Send again while the radio is offline', (tester) async {
+    final app = AppController(store: MeshStore.memory());
+    await tester.runAsync(() => seed(app.store));
+    await tester.pumpWidget(NotoryxProApp(app: app));
+    await settle(tester);
+    await tester.tap(find.text('Ridge Relay'));
+    await tester.pumpAndSettle();
+    await settle(tester);
+    expect(find.text('Not delivered: No route to the node'), findsOneWidget);
+    expect(find.text('Send again'), findsNothing);
+    await tearDownApp(tester, app);
+  });
+
   testWidgets('nodes tab shows kind, mesh and how it was heard', (
     tester,
   ) async {

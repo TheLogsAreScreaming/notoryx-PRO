@@ -4,7 +4,7 @@
 //
 import 'package:drift/drift.dart';
 
-class Radios extends Table with TableInfo {
+class Radios extends Table with TableInfo<Radios, RadiosData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -112,8 +112,50 @@ class Radios extends Table with TableInfo {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Never map(Map<String, dynamic> data, {String? tablePrefix}) {
-    throw UnsupportedError('TableInfo.map in schema verification code');
+  RadiosData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RadiosData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      protocol: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}protocol'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      selfKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}self_key'],
+      )!,
+      firmware: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}firmware'],
+      )!,
+      model: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}model'],
+      )!,
+      maxChannels: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_channels'],
+      ),
+      latitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}latitude'],
+      ),
+      longitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}longitude'],
+      ),
+      lastConnected: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}last_connected'],
+      ),
+    );
   }
 
   @override
@@ -127,7 +169,357 @@ class Radios extends Table with TableInfo {
   bool get dontWriteConstraints => true;
 }
 
-class Nodes extends Table with TableInfo {
+class RadiosData extends DataClass implements Insertable<RadiosData> {
+  final String id;
+  final String protocol;
+  final String name;
+  final String selfKey;
+  final String firmware;
+  final String model;
+  final int? maxChannels;
+  final double? latitude;
+  final double? longitude;
+  final int? lastConnected;
+  const RadiosData({
+    required this.id,
+    required this.protocol,
+    required this.name,
+    required this.selfKey,
+    required this.firmware,
+    required this.model,
+    this.maxChannels,
+    this.latitude,
+    this.longitude,
+    this.lastConnected,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['protocol'] = Variable<String>(protocol);
+    map['name'] = Variable<String>(name);
+    map['self_key'] = Variable<String>(selfKey);
+    map['firmware'] = Variable<String>(firmware);
+    map['model'] = Variable<String>(model);
+    if (!nullToAbsent || maxChannels != null) {
+      map['max_channels'] = Variable<int>(maxChannels);
+    }
+    if (!nullToAbsent || latitude != null) {
+      map['latitude'] = Variable<double>(latitude);
+    }
+    if (!nullToAbsent || longitude != null) {
+      map['longitude'] = Variable<double>(longitude);
+    }
+    if (!nullToAbsent || lastConnected != null) {
+      map['last_connected'] = Variable<int>(lastConnected);
+    }
+    return map;
+  }
+
+  RadiosCompanion toCompanion(bool nullToAbsent) {
+    return RadiosCompanion(
+      id: Value(id),
+      protocol: Value(protocol),
+      name: Value(name),
+      selfKey: Value(selfKey),
+      firmware: Value(firmware),
+      model: Value(model),
+      maxChannels: maxChannels == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxChannels),
+      latitude: latitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(latitude),
+      longitude: longitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(longitude),
+      lastConnected: lastConnected == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastConnected),
+    );
+  }
+
+  factory RadiosData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RadiosData(
+      id: serializer.fromJson<String>(json['id']),
+      protocol: serializer.fromJson<String>(json['protocol']),
+      name: serializer.fromJson<String>(json['name']),
+      selfKey: serializer.fromJson<String>(json['selfKey']),
+      firmware: serializer.fromJson<String>(json['firmware']),
+      model: serializer.fromJson<String>(json['model']),
+      maxChannels: serializer.fromJson<int?>(json['maxChannels']),
+      latitude: serializer.fromJson<double?>(json['latitude']),
+      longitude: serializer.fromJson<double?>(json['longitude']),
+      lastConnected: serializer.fromJson<int?>(json['lastConnected']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'protocol': serializer.toJson<String>(protocol),
+      'name': serializer.toJson<String>(name),
+      'selfKey': serializer.toJson<String>(selfKey),
+      'firmware': serializer.toJson<String>(firmware),
+      'model': serializer.toJson<String>(model),
+      'maxChannels': serializer.toJson<int?>(maxChannels),
+      'latitude': serializer.toJson<double?>(latitude),
+      'longitude': serializer.toJson<double?>(longitude),
+      'lastConnected': serializer.toJson<int?>(lastConnected),
+    };
+  }
+
+  RadiosData copyWith({
+    String? id,
+    String? protocol,
+    String? name,
+    String? selfKey,
+    String? firmware,
+    String? model,
+    Value<int?> maxChannels = const Value.absent(),
+    Value<double?> latitude = const Value.absent(),
+    Value<double?> longitude = const Value.absent(),
+    Value<int?> lastConnected = const Value.absent(),
+  }) => RadiosData(
+    id: id ?? this.id,
+    protocol: protocol ?? this.protocol,
+    name: name ?? this.name,
+    selfKey: selfKey ?? this.selfKey,
+    firmware: firmware ?? this.firmware,
+    model: model ?? this.model,
+    maxChannels: maxChannels.present ? maxChannels.value : this.maxChannels,
+    latitude: latitude.present ? latitude.value : this.latitude,
+    longitude: longitude.present ? longitude.value : this.longitude,
+    lastConnected: lastConnected.present
+        ? lastConnected.value
+        : this.lastConnected,
+  );
+  RadiosData copyWithCompanion(RadiosCompanion data) {
+    return RadiosData(
+      id: data.id.present ? data.id.value : this.id,
+      protocol: data.protocol.present ? data.protocol.value : this.protocol,
+      name: data.name.present ? data.name.value : this.name,
+      selfKey: data.selfKey.present ? data.selfKey.value : this.selfKey,
+      firmware: data.firmware.present ? data.firmware.value : this.firmware,
+      model: data.model.present ? data.model.value : this.model,
+      maxChannels: data.maxChannels.present
+          ? data.maxChannels.value
+          : this.maxChannels,
+      latitude: data.latitude.present ? data.latitude.value : this.latitude,
+      longitude: data.longitude.present ? data.longitude.value : this.longitude,
+      lastConnected: data.lastConnected.present
+          ? data.lastConnected.value
+          : this.lastConnected,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RadiosData(')
+          ..write('id: $id, ')
+          ..write('protocol: $protocol, ')
+          ..write('name: $name, ')
+          ..write('selfKey: $selfKey, ')
+          ..write('firmware: $firmware, ')
+          ..write('model: $model, ')
+          ..write('maxChannels: $maxChannels, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('lastConnected: $lastConnected')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    protocol,
+    name,
+    selfKey,
+    firmware,
+    model,
+    maxChannels,
+    latitude,
+    longitude,
+    lastConnected,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RadiosData &&
+          other.id == this.id &&
+          other.protocol == this.protocol &&
+          other.name == this.name &&
+          other.selfKey == this.selfKey &&
+          other.firmware == this.firmware &&
+          other.model == this.model &&
+          other.maxChannels == this.maxChannels &&
+          other.latitude == this.latitude &&
+          other.longitude == this.longitude &&
+          other.lastConnected == this.lastConnected);
+}
+
+class RadiosCompanion extends UpdateCompanion<RadiosData> {
+  final Value<String> id;
+  final Value<String> protocol;
+  final Value<String> name;
+  final Value<String> selfKey;
+  final Value<String> firmware;
+  final Value<String> model;
+  final Value<int?> maxChannels;
+  final Value<double?> latitude;
+  final Value<double?> longitude;
+  final Value<int?> lastConnected;
+  final Value<int> rowid;
+  const RadiosCompanion({
+    this.id = const Value.absent(),
+    this.protocol = const Value.absent(),
+    this.name = const Value.absent(),
+    this.selfKey = const Value.absent(),
+    this.firmware = const Value.absent(),
+    this.model = const Value.absent(),
+    this.maxChannels = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.lastConnected = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  RadiosCompanion.insert({
+    required String id,
+    required String protocol,
+    required String name,
+    required String selfKey,
+    this.firmware = const Value.absent(),
+    this.model = const Value.absent(),
+    this.maxChannels = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.lastConnected = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       protocol = Value(protocol),
+       name = Value(name),
+       selfKey = Value(selfKey);
+  static Insertable<RadiosData> custom({
+    Expression<String>? id,
+    Expression<String>? protocol,
+    Expression<String>? name,
+    Expression<String>? selfKey,
+    Expression<String>? firmware,
+    Expression<String>? model,
+    Expression<int>? maxChannels,
+    Expression<double>? latitude,
+    Expression<double>? longitude,
+    Expression<int>? lastConnected,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (protocol != null) 'protocol': protocol,
+      if (name != null) 'name': name,
+      if (selfKey != null) 'self_key': selfKey,
+      if (firmware != null) 'firmware': firmware,
+      if (model != null) 'model': model,
+      if (maxChannels != null) 'max_channels': maxChannels,
+      if (latitude != null) 'latitude': latitude,
+      if (longitude != null) 'longitude': longitude,
+      if (lastConnected != null) 'last_connected': lastConnected,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  RadiosCompanion copyWith({
+    Value<String>? id,
+    Value<String>? protocol,
+    Value<String>? name,
+    Value<String>? selfKey,
+    Value<String>? firmware,
+    Value<String>? model,
+    Value<int?>? maxChannels,
+    Value<double?>? latitude,
+    Value<double?>? longitude,
+    Value<int?>? lastConnected,
+    Value<int>? rowid,
+  }) {
+    return RadiosCompanion(
+      id: id ?? this.id,
+      protocol: protocol ?? this.protocol,
+      name: name ?? this.name,
+      selfKey: selfKey ?? this.selfKey,
+      firmware: firmware ?? this.firmware,
+      model: model ?? this.model,
+      maxChannels: maxChannels ?? this.maxChannels,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      lastConnected: lastConnected ?? this.lastConnected,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (protocol.present) {
+      map['protocol'] = Variable<String>(protocol.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (selfKey.present) {
+      map['self_key'] = Variable<String>(selfKey.value);
+    }
+    if (firmware.present) {
+      map['firmware'] = Variable<String>(firmware.value);
+    }
+    if (model.present) {
+      map['model'] = Variable<String>(model.value);
+    }
+    if (maxChannels.present) {
+      map['max_channels'] = Variable<int>(maxChannels.value);
+    }
+    if (latitude.present) {
+      map['latitude'] = Variable<double>(latitude.value);
+    }
+    if (longitude.present) {
+      map['longitude'] = Variable<double>(longitude.value);
+    }
+    if (lastConnected.present) {
+      map['last_connected'] = Variable<int>(lastConnected.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RadiosCompanion(')
+          ..write('id: $id, ')
+          ..write('protocol: $protocol, ')
+          ..write('name: $name, ')
+          ..write('selfKey: $selfKey, ')
+          ..write('firmware: $firmware, ')
+          ..write('model: $model, ')
+          ..write('maxChannels: $maxChannels, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('lastConnected: $lastConnected, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class Nodes extends Table with TableInfo<Nodes, NodesData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -300,8 +692,78 @@ class Nodes extends Table with TableInfo {
   @override
   Set<GeneratedColumn> get $primaryKey => {radioId, nodeKey};
   @override
-  Never map(Map<String, dynamic> data, {String? tablePrefix}) {
-    throw UnsupportedError('TableInfo.map in schema verification code');
+  NodesData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return NodesData(
+      radioId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}radio_id'],
+      )!,
+      nodeKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}node_key'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      shortName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}short_name'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      latitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}latitude'],
+      ),
+      longitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}longitude'],
+      ),
+      altitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}altitude'],
+      ),
+      lastHeard: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}last_heard'],
+      ),
+      hops: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}hops'],
+      ),
+      snr: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}snr'],
+      ),
+      rssi: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rssi'],
+      ),
+      route: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}route'],
+      )!,
+      viaMqtt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}via_mqtt'],
+      )!,
+      favorite: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}favorite'],
+      )!,
+      battery: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}battery'],
+      ),
+      canMessage: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}can_message'],
+      )!,
+    );
   }
 
   @override
@@ -317,7 +779,525 @@ class Nodes extends Table with TableInfo {
   bool get dontWriteConstraints => true;
 }
 
-class Channels extends Table with TableInfo {
+class NodesData extends DataClass implements Insertable<NodesData> {
+  final String radioId;
+  final String nodeKey;
+  final String name;
+  final String shortName;
+  final String kind;
+  final double? latitude;
+  final double? longitude;
+  final int? altitude;
+  final int? lastHeard;
+  final int? hops;
+  final double? snr;
+  final int? rssi;
+  final String route;
+  final int viaMqtt;
+  final int favorite;
+  final int? battery;
+  final int canMessage;
+  const NodesData({
+    required this.radioId,
+    required this.nodeKey,
+    required this.name,
+    required this.shortName,
+    required this.kind,
+    this.latitude,
+    this.longitude,
+    this.altitude,
+    this.lastHeard,
+    this.hops,
+    this.snr,
+    this.rssi,
+    required this.route,
+    required this.viaMqtt,
+    required this.favorite,
+    this.battery,
+    required this.canMessage,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['radio_id'] = Variable<String>(radioId);
+    map['node_key'] = Variable<String>(nodeKey);
+    map['name'] = Variable<String>(name);
+    map['short_name'] = Variable<String>(shortName);
+    map['kind'] = Variable<String>(kind);
+    if (!nullToAbsent || latitude != null) {
+      map['latitude'] = Variable<double>(latitude);
+    }
+    if (!nullToAbsent || longitude != null) {
+      map['longitude'] = Variable<double>(longitude);
+    }
+    if (!nullToAbsent || altitude != null) {
+      map['altitude'] = Variable<int>(altitude);
+    }
+    if (!nullToAbsent || lastHeard != null) {
+      map['last_heard'] = Variable<int>(lastHeard);
+    }
+    if (!nullToAbsent || hops != null) {
+      map['hops'] = Variable<int>(hops);
+    }
+    if (!nullToAbsent || snr != null) {
+      map['snr'] = Variable<double>(snr);
+    }
+    if (!nullToAbsent || rssi != null) {
+      map['rssi'] = Variable<int>(rssi);
+    }
+    map['route'] = Variable<String>(route);
+    map['via_mqtt'] = Variable<int>(viaMqtt);
+    map['favorite'] = Variable<int>(favorite);
+    if (!nullToAbsent || battery != null) {
+      map['battery'] = Variable<int>(battery);
+    }
+    map['can_message'] = Variable<int>(canMessage);
+    return map;
+  }
+
+  NodesCompanion toCompanion(bool nullToAbsent) {
+    return NodesCompanion(
+      radioId: Value(radioId),
+      nodeKey: Value(nodeKey),
+      name: Value(name),
+      shortName: Value(shortName),
+      kind: Value(kind),
+      latitude: latitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(latitude),
+      longitude: longitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(longitude),
+      altitude: altitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(altitude),
+      lastHeard: lastHeard == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastHeard),
+      hops: hops == null && nullToAbsent ? const Value.absent() : Value(hops),
+      snr: snr == null && nullToAbsent ? const Value.absent() : Value(snr),
+      rssi: rssi == null && nullToAbsent ? const Value.absent() : Value(rssi),
+      route: Value(route),
+      viaMqtt: Value(viaMqtt),
+      favorite: Value(favorite),
+      battery: battery == null && nullToAbsent
+          ? const Value.absent()
+          : Value(battery),
+      canMessage: Value(canMessage),
+    );
+  }
+
+  factory NodesData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return NodesData(
+      radioId: serializer.fromJson<String>(json['radioId']),
+      nodeKey: serializer.fromJson<String>(json['nodeKey']),
+      name: serializer.fromJson<String>(json['name']),
+      shortName: serializer.fromJson<String>(json['shortName']),
+      kind: serializer.fromJson<String>(json['kind']),
+      latitude: serializer.fromJson<double?>(json['latitude']),
+      longitude: serializer.fromJson<double?>(json['longitude']),
+      altitude: serializer.fromJson<int?>(json['altitude']),
+      lastHeard: serializer.fromJson<int?>(json['lastHeard']),
+      hops: serializer.fromJson<int?>(json['hops']),
+      snr: serializer.fromJson<double?>(json['snr']),
+      rssi: serializer.fromJson<int?>(json['rssi']),
+      route: serializer.fromJson<String>(json['route']),
+      viaMqtt: serializer.fromJson<int>(json['viaMqtt']),
+      favorite: serializer.fromJson<int>(json['favorite']),
+      battery: serializer.fromJson<int?>(json['battery']),
+      canMessage: serializer.fromJson<int>(json['canMessage']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'radioId': serializer.toJson<String>(radioId),
+      'nodeKey': serializer.toJson<String>(nodeKey),
+      'name': serializer.toJson<String>(name),
+      'shortName': serializer.toJson<String>(shortName),
+      'kind': serializer.toJson<String>(kind),
+      'latitude': serializer.toJson<double?>(latitude),
+      'longitude': serializer.toJson<double?>(longitude),
+      'altitude': serializer.toJson<int?>(altitude),
+      'lastHeard': serializer.toJson<int?>(lastHeard),
+      'hops': serializer.toJson<int?>(hops),
+      'snr': serializer.toJson<double?>(snr),
+      'rssi': serializer.toJson<int?>(rssi),
+      'route': serializer.toJson<String>(route),
+      'viaMqtt': serializer.toJson<int>(viaMqtt),
+      'favorite': serializer.toJson<int>(favorite),
+      'battery': serializer.toJson<int?>(battery),
+      'canMessage': serializer.toJson<int>(canMessage),
+    };
+  }
+
+  NodesData copyWith({
+    String? radioId,
+    String? nodeKey,
+    String? name,
+    String? shortName,
+    String? kind,
+    Value<double?> latitude = const Value.absent(),
+    Value<double?> longitude = const Value.absent(),
+    Value<int?> altitude = const Value.absent(),
+    Value<int?> lastHeard = const Value.absent(),
+    Value<int?> hops = const Value.absent(),
+    Value<double?> snr = const Value.absent(),
+    Value<int?> rssi = const Value.absent(),
+    String? route,
+    int? viaMqtt,
+    int? favorite,
+    Value<int?> battery = const Value.absent(),
+    int? canMessage,
+  }) => NodesData(
+    radioId: radioId ?? this.radioId,
+    nodeKey: nodeKey ?? this.nodeKey,
+    name: name ?? this.name,
+    shortName: shortName ?? this.shortName,
+    kind: kind ?? this.kind,
+    latitude: latitude.present ? latitude.value : this.latitude,
+    longitude: longitude.present ? longitude.value : this.longitude,
+    altitude: altitude.present ? altitude.value : this.altitude,
+    lastHeard: lastHeard.present ? lastHeard.value : this.lastHeard,
+    hops: hops.present ? hops.value : this.hops,
+    snr: snr.present ? snr.value : this.snr,
+    rssi: rssi.present ? rssi.value : this.rssi,
+    route: route ?? this.route,
+    viaMqtt: viaMqtt ?? this.viaMqtt,
+    favorite: favorite ?? this.favorite,
+    battery: battery.present ? battery.value : this.battery,
+    canMessage: canMessage ?? this.canMessage,
+  );
+  NodesData copyWithCompanion(NodesCompanion data) {
+    return NodesData(
+      radioId: data.radioId.present ? data.radioId.value : this.radioId,
+      nodeKey: data.nodeKey.present ? data.nodeKey.value : this.nodeKey,
+      name: data.name.present ? data.name.value : this.name,
+      shortName: data.shortName.present ? data.shortName.value : this.shortName,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      latitude: data.latitude.present ? data.latitude.value : this.latitude,
+      longitude: data.longitude.present ? data.longitude.value : this.longitude,
+      altitude: data.altitude.present ? data.altitude.value : this.altitude,
+      lastHeard: data.lastHeard.present ? data.lastHeard.value : this.lastHeard,
+      hops: data.hops.present ? data.hops.value : this.hops,
+      snr: data.snr.present ? data.snr.value : this.snr,
+      rssi: data.rssi.present ? data.rssi.value : this.rssi,
+      route: data.route.present ? data.route.value : this.route,
+      viaMqtt: data.viaMqtt.present ? data.viaMqtt.value : this.viaMqtt,
+      favorite: data.favorite.present ? data.favorite.value : this.favorite,
+      battery: data.battery.present ? data.battery.value : this.battery,
+      canMessage: data.canMessage.present
+          ? data.canMessage.value
+          : this.canMessage,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NodesData(')
+          ..write('radioId: $radioId, ')
+          ..write('nodeKey: $nodeKey, ')
+          ..write('name: $name, ')
+          ..write('shortName: $shortName, ')
+          ..write('kind: $kind, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('altitude: $altitude, ')
+          ..write('lastHeard: $lastHeard, ')
+          ..write('hops: $hops, ')
+          ..write('snr: $snr, ')
+          ..write('rssi: $rssi, ')
+          ..write('route: $route, ')
+          ..write('viaMqtt: $viaMqtt, ')
+          ..write('favorite: $favorite, ')
+          ..write('battery: $battery, ')
+          ..write('canMessage: $canMessage')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    radioId,
+    nodeKey,
+    name,
+    shortName,
+    kind,
+    latitude,
+    longitude,
+    altitude,
+    lastHeard,
+    hops,
+    snr,
+    rssi,
+    route,
+    viaMqtt,
+    favorite,
+    battery,
+    canMessage,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is NodesData &&
+          other.radioId == this.radioId &&
+          other.nodeKey == this.nodeKey &&
+          other.name == this.name &&
+          other.shortName == this.shortName &&
+          other.kind == this.kind &&
+          other.latitude == this.latitude &&
+          other.longitude == this.longitude &&
+          other.altitude == this.altitude &&
+          other.lastHeard == this.lastHeard &&
+          other.hops == this.hops &&
+          other.snr == this.snr &&
+          other.rssi == this.rssi &&
+          other.route == this.route &&
+          other.viaMqtt == this.viaMqtt &&
+          other.favorite == this.favorite &&
+          other.battery == this.battery &&
+          other.canMessage == this.canMessage);
+}
+
+class NodesCompanion extends UpdateCompanion<NodesData> {
+  final Value<String> radioId;
+  final Value<String> nodeKey;
+  final Value<String> name;
+  final Value<String> shortName;
+  final Value<String> kind;
+  final Value<double?> latitude;
+  final Value<double?> longitude;
+  final Value<int?> altitude;
+  final Value<int?> lastHeard;
+  final Value<int?> hops;
+  final Value<double?> snr;
+  final Value<int?> rssi;
+  final Value<String> route;
+  final Value<int> viaMqtt;
+  final Value<int> favorite;
+  final Value<int?> battery;
+  final Value<int> canMessage;
+  final Value<int> rowid;
+  const NodesCompanion({
+    this.radioId = const Value.absent(),
+    this.nodeKey = const Value.absent(),
+    this.name = const Value.absent(),
+    this.shortName = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.altitude = const Value.absent(),
+    this.lastHeard = const Value.absent(),
+    this.hops = const Value.absent(),
+    this.snr = const Value.absent(),
+    this.rssi = const Value.absent(),
+    this.route = const Value.absent(),
+    this.viaMqtt = const Value.absent(),
+    this.favorite = const Value.absent(),
+    this.battery = const Value.absent(),
+    this.canMessage = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  NodesCompanion.insert({
+    required String radioId,
+    required String nodeKey,
+    required String name,
+    this.shortName = const Value.absent(),
+    required String kind,
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.altitude = const Value.absent(),
+    this.lastHeard = const Value.absent(),
+    this.hops = const Value.absent(),
+    this.snr = const Value.absent(),
+    this.rssi = const Value.absent(),
+    required String route,
+    this.viaMqtt = const Value.absent(),
+    this.favorite = const Value.absent(),
+    this.battery = const Value.absent(),
+    this.canMessage = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : radioId = Value(radioId),
+       nodeKey = Value(nodeKey),
+       name = Value(name),
+       kind = Value(kind),
+       route = Value(route);
+  static Insertable<NodesData> custom({
+    Expression<String>? radioId,
+    Expression<String>? nodeKey,
+    Expression<String>? name,
+    Expression<String>? shortName,
+    Expression<String>? kind,
+    Expression<double>? latitude,
+    Expression<double>? longitude,
+    Expression<int>? altitude,
+    Expression<int>? lastHeard,
+    Expression<int>? hops,
+    Expression<double>? snr,
+    Expression<int>? rssi,
+    Expression<String>? route,
+    Expression<int>? viaMqtt,
+    Expression<int>? favorite,
+    Expression<int>? battery,
+    Expression<int>? canMessage,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (radioId != null) 'radio_id': radioId,
+      if (nodeKey != null) 'node_key': nodeKey,
+      if (name != null) 'name': name,
+      if (shortName != null) 'short_name': shortName,
+      if (kind != null) 'kind': kind,
+      if (latitude != null) 'latitude': latitude,
+      if (longitude != null) 'longitude': longitude,
+      if (altitude != null) 'altitude': altitude,
+      if (lastHeard != null) 'last_heard': lastHeard,
+      if (hops != null) 'hops': hops,
+      if (snr != null) 'snr': snr,
+      if (rssi != null) 'rssi': rssi,
+      if (route != null) 'route': route,
+      if (viaMqtt != null) 'via_mqtt': viaMqtt,
+      if (favorite != null) 'favorite': favorite,
+      if (battery != null) 'battery': battery,
+      if (canMessage != null) 'can_message': canMessage,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  NodesCompanion copyWith({
+    Value<String>? radioId,
+    Value<String>? nodeKey,
+    Value<String>? name,
+    Value<String>? shortName,
+    Value<String>? kind,
+    Value<double?>? latitude,
+    Value<double?>? longitude,
+    Value<int?>? altitude,
+    Value<int?>? lastHeard,
+    Value<int?>? hops,
+    Value<double?>? snr,
+    Value<int?>? rssi,
+    Value<String>? route,
+    Value<int>? viaMqtt,
+    Value<int>? favorite,
+    Value<int?>? battery,
+    Value<int>? canMessage,
+    Value<int>? rowid,
+  }) {
+    return NodesCompanion(
+      radioId: radioId ?? this.radioId,
+      nodeKey: nodeKey ?? this.nodeKey,
+      name: name ?? this.name,
+      shortName: shortName ?? this.shortName,
+      kind: kind ?? this.kind,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      altitude: altitude ?? this.altitude,
+      lastHeard: lastHeard ?? this.lastHeard,
+      hops: hops ?? this.hops,
+      snr: snr ?? this.snr,
+      rssi: rssi ?? this.rssi,
+      route: route ?? this.route,
+      viaMqtt: viaMqtt ?? this.viaMqtt,
+      favorite: favorite ?? this.favorite,
+      battery: battery ?? this.battery,
+      canMessage: canMessage ?? this.canMessage,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (radioId.present) {
+      map['radio_id'] = Variable<String>(radioId.value);
+    }
+    if (nodeKey.present) {
+      map['node_key'] = Variable<String>(nodeKey.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (shortName.present) {
+      map['short_name'] = Variable<String>(shortName.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (latitude.present) {
+      map['latitude'] = Variable<double>(latitude.value);
+    }
+    if (longitude.present) {
+      map['longitude'] = Variable<double>(longitude.value);
+    }
+    if (altitude.present) {
+      map['altitude'] = Variable<int>(altitude.value);
+    }
+    if (lastHeard.present) {
+      map['last_heard'] = Variable<int>(lastHeard.value);
+    }
+    if (hops.present) {
+      map['hops'] = Variable<int>(hops.value);
+    }
+    if (snr.present) {
+      map['snr'] = Variable<double>(snr.value);
+    }
+    if (rssi.present) {
+      map['rssi'] = Variable<int>(rssi.value);
+    }
+    if (route.present) {
+      map['route'] = Variable<String>(route.value);
+    }
+    if (viaMqtt.present) {
+      map['via_mqtt'] = Variable<int>(viaMqtt.value);
+    }
+    if (favorite.present) {
+      map['favorite'] = Variable<int>(favorite.value);
+    }
+    if (battery.present) {
+      map['battery'] = Variable<int>(battery.value);
+    }
+    if (canMessage.present) {
+      map['can_message'] = Variable<int>(canMessage.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NodesCompanion(')
+          ..write('radioId: $radioId, ')
+          ..write('nodeKey: $nodeKey, ')
+          ..write('name: $name, ')
+          ..write('shortName: $shortName, ')
+          ..write('kind: $kind, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('altitude: $altitude, ')
+          ..write('lastHeard: $lastHeard, ')
+          ..write('hops: $hops, ')
+          ..write('snr: $snr, ')
+          ..write('rssi: $rssi, ')
+          ..write('route: $route, ')
+          ..write('viaMqtt: $viaMqtt, ')
+          ..write('favorite: $favorite, ')
+          ..write('battery: $battery, ')
+          ..write('canMessage: $canMessage, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class Channels extends Table with TableInfo<Channels, ChannelsData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -373,8 +1353,30 @@ class Channels extends Table with TableInfo {
   @override
   Set<GeneratedColumn> get $primaryKey => {radioId, slot};
   @override
-  Never map(Map<String, dynamic> data, {String? tablePrefix}) {
-    throw UnsupportedError('TableInfo.map in schema verification code');
+  ChannelsData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ChannelsData(
+      radioId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}radio_id'],
+      )!,
+      slot: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}slot'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      isPrimary: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}is_primary'],
+      )!,
+    );
   }
 
   @override
@@ -388,7 +1390,214 @@ class Channels extends Table with TableInfo {
   bool get dontWriteConstraints => true;
 }
 
-class Messages extends Table with TableInfo {
+class ChannelsData extends DataClass implements Insertable<ChannelsData> {
+  final String radioId;
+  final int slot;
+  final String name;
+  final String kind;
+  final int isPrimary;
+  const ChannelsData({
+    required this.radioId,
+    required this.slot,
+    required this.name,
+    required this.kind,
+    required this.isPrimary,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['radio_id'] = Variable<String>(radioId);
+    map['slot'] = Variable<int>(slot);
+    map['name'] = Variable<String>(name);
+    map['kind'] = Variable<String>(kind);
+    map['is_primary'] = Variable<int>(isPrimary);
+    return map;
+  }
+
+  ChannelsCompanion toCompanion(bool nullToAbsent) {
+    return ChannelsCompanion(
+      radioId: Value(radioId),
+      slot: Value(slot),
+      name: Value(name),
+      kind: Value(kind),
+      isPrimary: Value(isPrimary),
+    );
+  }
+
+  factory ChannelsData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ChannelsData(
+      radioId: serializer.fromJson<String>(json['radioId']),
+      slot: serializer.fromJson<int>(json['slot']),
+      name: serializer.fromJson<String>(json['name']),
+      kind: serializer.fromJson<String>(json['kind']),
+      isPrimary: serializer.fromJson<int>(json['isPrimary']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'radioId': serializer.toJson<String>(radioId),
+      'slot': serializer.toJson<int>(slot),
+      'name': serializer.toJson<String>(name),
+      'kind': serializer.toJson<String>(kind),
+      'isPrimary': serializer.toJson<int>(isPrimary),
+    };
+  }
+
+  ChannelsData copyWith({
+    String? radioId,
+    int? slot,
+    String? name,
+    String? kind,
+    int? isPrimary,
+  }) => ChannelsData(
+    radioId: radioId ?? this.radioId,
+    slot: slot ?? this.slot,
+    name: name ?? this.name,
+    kind: kind ?? this.kind,
+    isPrimary: isPrimary ?? this.isPrimary,
+  );
+  ChannelsData copyWithCompanion(ChannelsCompanion data) {
+    return ChannelsData(
+      radioId: data.radioId.present ? data.radioId.value : this.radioId,
+      slot: data.slot.present ? data.slot.value : this.slot,
+      name: data.name.present ? data.name.value : this.name,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      isPrimary: data.isPrimary.present ? data.isPrimary.value : this.isPrimary,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ChannelsData(')
+          ..write('radioId: $radioId, ')
+          ..write('slot: $slot, ')
+          ..write('name: $name, ')
+          ..write('kind: $kind, ')
+          ..write('isPrimary: $isPrimary')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(radioId, slot, name, kind, isPrimary);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ChannelsData &&
+          other.radioId == this.radioId &&
+          other.slot == this.slot &&
+          other.name == this.name &&
+          other.kind == this.kind &&
+          other.isPrimary == this.isPrimary);
+}
+
+class ChannelsCompanion extends UpdateCompanion<ChannelsData> {
+  final Value<String> radioId;
+  final Value<int> slot;
+  final Value<String> name;
+  final Value<String> kind;
+  final Value<int> isPrimary;
+  final Value<int> rowid;
+  const ChannelsCompanion({
+    this.radioId = const Value.absent(),
+    this.slot = const Value.absent(),
+    this.name = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.isPrimary = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ChannelsCompanion.insert({
+    required String radioId,
+    required int slot,
+    required String name,
+    required String kind,
+    this.isPrimary = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : radioId = Value(radioId),
+       slot = Value(slot),
+       name = Value(name),
+       kind = Value(kind);
+  static Insertable<ChannelsData> custom({
+    Expression<String>? radioId,
+    Expression<int>? slot,
+    Expression<String>? name,
+    Expression<String>? kind,
+    Expression<int>? isPrimary,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (radioId != null) 'radio_id': radioId,
+      if (slot != null) 'slot': slot,
+      if (name != null) 'name': name,
+      if (kind != null) 'kind': kind,
+      if (isPrimary != null) 'is_primary': isPrimary,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ChannelsCompanion copyWith({
+    Value<String>? radioId,
+    Value<int>? slot,
+    Value<String>? name,
+    Value<String>? kind,
+    Value<int>? isPrimary,
+    Value<int>? rowid,
+  }) {
+    return ChannelsCompanion(
+      radioId: radioId ?? this.radioId,
+      slot: slot ?? this.slot,
+      name: name ?? this.name,
+      kind: kind ?? this.kind,
+      isPrimary: isPrimary ?? this.isPrimary,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (radioId.present) {
+      map['radio_id'] = Variable<String>(radioId.value);
+    }
+    if (slot.present) {
+      map['slot'] = Variable<int>(slot.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (isPrimary.present) {
+      map['is_primary'] = Variable<int>(isPrimary.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ChannelsCompanion(')
+          ..write('radioId: $radioId, ')
+          ..write('slot: $slot, ')
+          ..write('name: $name, ')
+          ..write('kind: $kind, ')
+          ..write('isPrimary: $isPrimary, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class Messages extends Table with TableInfo<Messages, MessagesData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -596,8 +1805,94 @@ class Messages extends Table with TableInfo {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Never map(Map<String, dynamic> data, {String? tablePrefix}) {
-    throw UnsupportedError('TableInfo.map in schema verification code');
+  MessagesData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MessagesData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      radioId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}radio_id'],
+      )!,
+      conversation: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}conversation'],
+      )!,
+      outgoing: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}outgoing'],
+      )!,
+      body: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}body'],
+      )!,
+      sentAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sent_at'],
+      )!,
+      receivedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}received_at'],
+      )!,
+      delivery: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}delivery'],
+      )!,
+      deliveryReason: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}delivery_reason'],
+      ),
+      roundTripMs: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}round_trip_ms'],
+      ),
+      fromKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}from_key'],
+      ),
+      senderName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sender_name'],
+      ),
+      hops: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}hops'],
+      ),
+      snr: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}snr'],
+      ),
+      rssi: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rssi'],
+      ),
+      route: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}route'],
+      )!,
+      viaMqtt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}via_mqtt'],
+      )!,
+      nativeId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}native_id'],
+      ),
+      replyTo: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}reply_to'],
+      ),
+      isReaction: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}is_reaction'],
+      )!,
+      dedupeKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dedupe_key'],
+      ),
+    );
   }
 
   @override
@@ -607,6 +1902,628 @@ class Messages extends Table with TableInfo {
 
   @override
   bool get dontWriteConstraints => true;
+}
+
+class MessagesData extends DataClass implements Insertable<MessagesData> {
+  final int id;
+  final String radioId;
+  final String conversation;
+  final int outgoing;
+  final String body;
+  final int sentAt;
+  final int receivedAt;
+  final String delivery;
+  final String? deliveryReason;
+  final int? roundTripMs;
+  final String? fromKey;
+  final String? senderName;
+  final int? hops;
+  final double? snr;
+  final int? rssi;
+  final String route;
+  final int viaMqtt;
+  final int? nativeId;
+  final int? replyTo;
+  final int isReaction;
+  final String? dedupeKey;
+  const MessagesData({
+    required this.id,
+    required this.radioId,
+    required this.conversation,
+    required this.outgoing,
+    required this.body,
+    required this.sentAt,
+    required this.receivedAt,
+    required this.delivery,
+    this.deliveryReason,
+    this.roundTripMs,
+    this.fromKey,
+    this.senderName,
+    this.hops,
+    this.snr,
+    this.rssi,
+    required this.route,
+    required this.viaMqtt,
+    this.nativeId,
+    this.replyTo,
+    required this.isReaction,
+    this.dedupeKey,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['radio_id'] = Variable<String>(radioId);
+    map['conversation'] = Variable<String>(conversation);
+    map['outgoing'] = Variable<int>(outgoing);
+    map['body'] = Variable<String>(body);
+    map['sent_at'] = Variable<int>(sentAt);
+    map['received_at'] = Variable<int>(receivedAt);
+    map['delivery'] = Variable<String>(delivery);
+    if (!nullToAbsent || deliveryReason != null) {
+      map['delivery_reason'] = Variable<String>(deliveryReason);
+    }
+    if (!nullToAbsent || roundTripMs != null) {
+      map['round_trip_ms'] = Variable<int>(roundTripMs);
+    }
+    if (!nullToAbsent || fromKey != null) {
+      map['from_key'] = Variable<String>(fromKey);
+    }
+    if (!nullToAbsent || senderName != null) {
+      map['sender_name'] = Variable<String>(senderName);
+    }
+    if (!nullToAbsent || hops != null) {
+      map['hops'] = Variable<int>(hops);
+    }
+    if (!nullToAbsent || snr != null) {
+      map['snr'] = Variable<double>(snr);
+    }
+    if (!nullToAbsent || rssi != null) {
+      map['rssi'] = Variable<int>(rssi);
+    }
+    map['route'] = Variable<String>(route);
+    map['via_mqtt'] = Variable<int>(viaMqtt);
+    if (!nullToAbsent || nativeId != null) {
+      map['native_id'] = Variable<int>(nativeId);
+    }
+    if (!nullToAbsent || replyTo != null) {
+      map['reply_to'] = Variable<int>(replyTo);
+    }
+    map['is_reaction'] = Variable<int>(isReaction);
+    if (!nullToAbsent || dedupeKey != null) {
+      map['dedupe_key'] = Variable<String>(dedupeKey);
+    }
+    return map;
+  }
+
+  MessagesCompanion toCompanion(bool nullToAbsent) {
+    return MessagesCompanion(
+      id: Value(id),
+      radioId: Value(radioId),
+      conversation: Value(conversation),
+      outgoing: Value(outgoing),
+      body: Value(body),
+      sentAt: Value(sentAt),
+      receivedAt: Value(receivedAt),
+      delivery: Value(delivery),
+      deliveryReason: deliveryReason == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deliveryReason),
+      roundTripMs: roundTripMs == null && nullToAbsent
+          ? const Value.absent()
+          : Value(roundTripMs),
+      fromKey: fromKey == null && nullToAbsent
+          ? const Value.absent()
+          : Value(fromKey),
+      senderName: senderName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(senderName),
+      hops: hops == null && nullToAbsent ? const Value.absent() : Value(hops),
+      snr: snr == null && nullToAbsent ? const Value.absent() : Value(snr),
+      rssi: rssi == null && nullToAbsent ? const Value.absent() : Value(rssi),
+      route: Value(route),
+      viaMqtt: Value(viaMqtt),
+      nativeId: nativeId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(nativeId),
+      replyTo: replyTo == null && nullToAbsent
+          ? const Value.absent()
+          : Value(replyTo),
+      isReaction: Value(isReaction),
+      dedupeKey: dedupeKey == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dedupeKey),
+    );
+  }
+
+  factory MessagesData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MessagesData(
+      id: serializer.fromJson<int>(json['id']),
+      radioId: serializer.fromJson<String>(json['radioId']),
+      conversation: serializer.fromJson<String>(json['conversation']),
+      outgoing: serializer.fromJson<int>(json['outgoing']),
+      body: serializer.fromJson<String>(json['body']),
+      sentAt: serializer.fromJson<int>(json['sentAt']),
+      receivedAt: serializer.fromJson<int>(json['receivedAt']),
+      delivery: serializer.fromJson<String>(json['delivery']),
+      deliveryReason: serializer.fromJson<String?>(json['deliveryReason']),
+      roundTripMs: serializer.fromJson<int?>(json['roundTripMs']),
+      fromKey: serializer.fromJson<String?>(json['fromKey']),
+      senderName: serializer.fromJson<String?>(json['senderName']),
+      hops: serializer.fromJson<int?>(json['hops']),
+      snr: serializer.fromJson<double?>(json['snr']),
+      rssi: serializer.fromJson<int?>(json['rssi']),
+      route: serializer.fromJson<String>(json['route']),
+      viaMqtt: serializer.fromJson<int>(json['viaMqtt']),
+      nativeId: serializer.fromJson<int?>(json['nativeId']),
+      replyTo: serializer.fromJson<int?>(json['replyTo']),
+      isReaction: serializer.fromJson<int>(json['isReaction']),
+      dedupeKey: serializer.fromJson<String?>(json['dedupeKey']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'radioId': serializer.toJson<String>(radioId),
+      'conversation': serializer.toJson<String>(conversation),
+      'outgoing': serializer.toJson<int>(outgoing),
+      'body': serializer.toJson<String>(body),
+      'sentAt': serializer.toJson<int>(sentAt),
+      'receivedAt': serializer.toJson<int>(receivedAt),
+      'delivery': serializer.toJson<String>(delivery),
+      'deliveryReason': serializer.toJson<String?>(deliveryReason),
+      'roundTripMs': serializer.toJson<int?>(roundTripMs),
+      'fromKey': serializer.toJson<String?>(fromKey),
+      'senderName': serializer.toJson<String?>(senderName),
+      'hops': serializer.toJson<int?>(hops),
+      'snr': serializer.toJson<double?>(snr),
+      'rssi': serializer.toJson<int?>(rssi),
+      'route': serializer.toJson<String>(route),
+      'viaMqtt': serializer.toJson<int>(viaMqtt),
+      'nativeId': serializer.toJson<int?>(nativeId),
+      'replyTo': serializer.toJson<int?>(replyTo),
+      'isReaction': serializer.toJson<int>(isReaction),
+      'dedupeKey': serializer.toJson<String?>(dedupeKey),
+    };
+  }
+
+  MessagesData copyWith({
+    int? id,
+    String? radioId,
+    String? conversation,
+    int? outgoing,
+    String? body,
+    int? sentAt,
+    int? receivedAt,
+    String? delivery,
+    Value<String?> deliveryReason = const Value.absent(),
+    Value<int?> roundTripMs = const Value.absent(),
+    Value<String?> fromKey = const Value.absent(),
+    Value<String?> senderName = const Value.absent(),
+    Value<int?> hops = const Value.absent(),
+    Value<double?> snr = const Value.absent(),
+    Value<int?> rssi = const Value.absent(),
+    String? route,
+    int? viaMqtt,
+    Value<int?> nativeId = const Value.absent(),
+    Value<int?> replyTo = const Value.absent(),
+    int? isReaction,
+    Value<String?> dedupeKey = const Value.absent(),
+  }) => MessagesData(
+    id: id ?? this.id,
+    radioId: radioId ?? this.radioId,
+    conversation: conversation ?? this.conversation,
+    outgoing: outgoing ?? this.outgoing,
+    body: body ?? this.body,
+    sentAt: sentAt ?? this.sentAt,
+    receivedAt: receivedAt ?? this.receivedAt,
+    delivery: delivery ?? this.delivery,
+    deliveryReason: deliveryReason.present
+        ? deliveryReason.value
+        : this.deliveryReason,
+    roundTripMs: roundTripMs.present ? roundTripMs.value : this.roundTripMs,
+    fromKey: fromKey.present ? fromKey.value : this.fromKey,
+    senderName: senderName.present ? senderName.value : this.senderName,
+    hops: hops.present ? hops.value : this.hops,
+    snr: snr.present ? snr.value : this.snr,
+    rssi: rssi.present ? rssi.value : this.rssi,
+    route: route ?? this.route,
+    viaMqtt: viaMqtt ?? this.viaMqtt,
+    nativeId: nativeId.present ? nativeId.value : this.nativeId,
+    replyTo: replyTo.present ? replyTo.value : this.replyTo,
+    isReaction: isReaction ?? this.isReaction,
+    dedupeKey: dedupeKey.present ? dedupeKey.value : this.dedupeKey,
+  );
+  MessagesData copyWithCompanion(MessagesCompanion data) {
+    return MessagesData(
+      id: data.id.present ? data.id.value : this.id,
+      radioId: data.radioId.present ? data.radioId.value : this.radioId,
+      conversation: data.conversation.present
+          ? data.conversation.value
+          : this.conversation,
+      outgoing: data.outgoing.present ? data.outgoing.value : this.outgoing,
+      body: data.body.present ? data.body.value : this.body,
+      sentAt: data.sentAt.present ? data.sentAt.value : this.sentAt,
+      receivedAt: data.receivedAt.present
+          ? data.receivedAt.value
+          : this.receivedAt,
+      delivery: data.delivery.present ? data.delivery.value : this.delivery,
+      deliveryReason: data.deliveryReason.present
+          ? data.deliveryReason.value
+          : this.deliveryReason,
+      roundTripMs: data.roundTripMs.present
+          ? data.roundTripMs.value
+          : this.roundTripMs,
+      fromKey: data.fromKey.present ? data.fromKey.value : this.fromKey,
+      senderName: data.senderName.present
+          ? data.senderName.value
+          : this.senderName,
+      hops: data.hops.present ? data.hops.value : this.hops,
+      snr: data.snr.present ? data.snr.value : this.snr,
+      rssi: data.rssi.present ? data.rssi.value : this.rssi,
+      route: data.route.present ? data.route.value : this.route,
+      viaMqtt: data.viaMqtt.present ? data.viaMqtt.value : this.viaMqtt,
+      nativeId: data.nativeId.present ? data.nativeId.value : this.nativeId,
+      replyTo: data.replyTo.present ? data.replyTo.value : this.replyTo,
+      isReaction: data.isReaction.present
+          ? data.isReaction.value
+          : this.isReaction,
+      dedupeKey: data.dedupeKey.present ? data.dedupeKey.value : this.dedupeKey,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MessagesData(')
+          ..write('id: $id, ')
+          ..write('radioId: $radioId, ')
+          ..write('conversation: $conversation, ')
+          ..write('outgoing: $outgoing, ')
+          ..write('body: $body, ')
+          ..write('sentAt: $sentAt, ')
+          ..write('receivedAt: $receivedAt, ')
+          ..write('delivery: $delivery, ')
+          ..write('deliveryReason: $deliveryReason, ')
+          ..write('roundTripMs: $roundTripMs, ')
+          ..write('fromKey: $fromKey, ')
+          ..write('senderName: $senderName, ')
+          ..write('hops: $hops, ')
+          ..write('snr: $snr, ')
+          ..write('rssi: $rssi, ')
+          ..write('route: $route, ')
+          ..write('viaMqtt: $viaMqtt, ')
+          ..write('nativeId: $nativeId, ')
+          ..write('replyTo: $replyTo, ')
+          ..write('isReaction: $isReaction, ')
+          ..write('dedupeKey: $dedupeKey')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    id,
+    radioId,
+    conversation,
+    outgoing,
+    body,
+    sentAt,
+    receivedAt,
+    delivery,
+    deliveryReason,
+    roundTripMs,
+    fromKey,
+    senderName,
+    hops,
+    snr,
+    rssi,
+    route,
+    viaMqtt,
+    nativeId,
+    replyTo,
+    isReaction,
+    dedupeKey,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MessagesData &&
+          other.id == this.id &&
+          other.radioId == this.radioId &&
+          other.conversation == this.conversation &&
+          other.outgoing == this.outgoing &&
+          other.body == this.body &&
+          other.sentAt == this.sentAt &&
+          other.receivedAt == this.receivedAt &&
+          other.delivery == this.delivery &&
+          other.deliveryReason == this.deliveryReason &&
+          other.roundTripMs == this.roundTripMs &&
+          other.fromKey == this.fromKey &&
+          other.senderName == this.senderName &&
+          other.hops == this.hops &&
+          other.snr == this.snr &&
+          other.rssi == this.rssi &&
+          other.route == this.route &&
+          other.viaMqtt == this.viaMqtt &&
+          other.nativeId == this.nativeId &&
+          other.replyTo == this.replyTo &&
+          other.isReaction == this.isReaction &&
+          other.dedupeKey == this.dedupeKey);
+}
+
+class MessagesCompanion extends UpdateCompanion<MessagesData> {
+  final Value<int> id;
+  final Value<String> radioId;
+  final Value<String> conversation;
+  final Value<int> outgoing;
+  final Value<String> body;
+  final Value<int> sentAt;
+  final Value<int> receivedAt;
+  final Value<String> delivery;
+  final Value<String?> deliveryReason;
+  final Value<int?> roundTripMs;
+  final Value<String?> fromKey;
+  final Value<String?> senderName;
+  final Value<int?> hops;
+  final Value<double?> snr;
+  final Value<int?> rssi;
+  final Value<String> route;
+  final Value<int> viaMqtt;
+  final Value<int?> nativeId;
+  final Value<int?> replyTo;
+  final Value<int> isReaction;
+  final Value<String?> dedupeKey;
+  const MessagesCompanion({
+    this.id = const Value.absent(),
+    this.radioId = const Value.absent(),
+    this.conversation = const Value.absent(),
+    this.outgoing = const Value.absent(),
+    this.body = const Value.absent(),
+    this.sentAt = const Value.absent(),
+    this.receivedAt = const Value.absent(),
+    this.delivery = const Value.absent(),
+    this.deliveryReason = const Value.absent(),
+    this.roundTripMs = const Value.absent(),
+    this.fromKey = const Value.absent(),
+    this.senderName = const Value.absent(),
+    this.hops = const Value.absent(),
+    this.snr = const Value.absent(),
+    this.rssi = const Value.absent(),
+    this.route = const Value.absent(),
+    this.viaMqtt = const Value.absent(),
+    this.nativeId = const Value.absent(),
+    this.replyTo = const Value.absent(),
+    this.isReaction = const Value.absent(),
+    this.dedupeKey = const Value.absent(),
+  });
+  MessagesCompanion.insert({
+    this.id = const Value.absent(),
+    required String radioId,
+    required String conversation,
+    required int outgoing,
+    required String body,
+    required int sentAt,
+    required int receivedAt,
+    required String delivery,
+    this.deliveryReason = const Value.absent(),
+    this.roundTripMs = const Value.absent(),
+    this.fromKey = const Value.absent(),
+    this.senderName = const Value.absent(),
+    this.hops = const Value.absent(),
+    this.snr = const Value.absent(),
+    this.rssi = const Value.absent(),
+    required String route,
+    this.viaMqtt = const Value.absent(),
+    this.nativeId = const Value.absent(),
+    this.replyTo = const Value.absent(),
+    this.isReaction = const Value.absent(),
+    this.dedupeKey = const Value.absent(),
+  }) : radioId = Value(radioId),
+       conversation = Value(conversation),
+       outgoing = Value(outgoing),
+       body = Value(body),
+       sentAt = Value(sentAt),
+       receivedAt = Value(receivedAt),
+       delivery = Value(delivery),
+       route = Value(route);
+  static Insertable<MessagesData> custom({
+    Expression<int>? id,
+    Expression<String>? radioId,
+    Expression<String>? conversation,
+    Expression<int>? outgoing,
+    Expression<String>? body,
+    Expression<int>? sentAt,
+    Expression<int>? receivedAt,
+    Expression<String>? delivery,
+    Expression<String>? deliveryReason,
+    Expression<int>? roundTripMs,
+    Expression<String>? fromKey,
+    Expression<String>? senderName,
+    Expression<int>? hops,
+    Expression<double>? snr,
+    Expression<int>? rssi,
+    Expression<String>? route,
+    Expression<int>? viaMqtt,
+    Expression<int>? nativeId,
+    Expression<int>? replyTo,
+    Expression<int>? isReaction,
+    Expression<String>? dedupeKey,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (radioId != null) 'radio_id': radioId,
+      if (conversation != null) 'conversation': conversation,
+      if (outgoing != null) 'outgoing': outgoing,
+      if (body != null) 'body': body,
+      if (sentAt != null) 'sent_at': sentAt,
+      if (receivedAt != null) 'received_at': receivedAt,
+      if (delivery != null) 'delivery': delivery,
+      if (deliveryReason != null) 'delivery_reason': deliveryReason,
+      if (roundTripMs != null) 'round_trip_ms': roundTripMs,
+      if (fromKey != null) 'from_key': fromKey,
+      if (senderName != null) 'sender_name': senderName,
+      if (hops != null) 'hops': hops,
+      if (snr != null) 'snr': snr,
+      if (rssi != null) 'rssi': rssi,
+      if (route != null) 'route': route,
+      if (viaMqtt != null) 'via_mqtt': viaMqtt,
+      if (nativeId != null) 'native_id': nativeId,
+      if (replyTo != null) 'reply_to': replyTo,
+      if (isReaction != null) 'is_reaction': isReaction,
+      if (dedupeKey != null) 'dedupe_key': dedupeKey,
+    });
+  }
+
+  MessagesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? radioId,
+    Value<String>? conversation,
+    Value<int>? outgoing,
+    Value<String>? body,
+    Value<int>? sentAt,
+    Value<int>? receivedAt,
+    Value<String>? delivery,
+    Value<String?>? deliveryReason,
+    Value<int?>? roundTripMs,
+    Value<String?>? fromKey,
+    Value<String?>? senderName,
+    Value<int?>? hops,
+    Value<double?>? snr,
+    Value<int?>? rssi,
+    Value<String>? route,
+    Value<int>? viaMqtt,
+    Value<int?>? nativeId,
+    Value<int?>? replyTo,
+    Value<int>? isReaction,
+    Value<String?>? dedupeKey,
+  }) {
+    return MessagesCompanion(
+      id: id ?? this.id,
+      radioId: radioId ?? this.radioId,
+      conversation: conversation ?? this.conversation,
+      outgoing: outgoing ?? this.outgoing,
+      body: body ?? this.body,
+      sentAt: sentAt ?? this.sentAt,
+      receivedAt: receivedAt ?? this.receivedAt,
+      delivery: delivery ?? this.delivery,
+      deliveryReason: deliveryReason ?? this.deliveryReason,
+      roundTripMs: roundTripMs ?? this.roundTripMs,
+      fromKey: fromKey ?? this.fromKey,
+      senderName: senderName ?? this.senderName,
+      hops: hops ?? this.hops,
+      snr: snr ?? this.snr,
+      rssi: rssi ?? this.rssi,
+      route: route ?? this.route,
+      viaMqtt: viaMqtt ?? this.viaMqtt,
+      nativeId: nativeId ?? this.nativeId,
+      replyTo: replyTo ?? this.replyTo,
+      isReaction: isReaction ?? this.isReaction,
+      dedupeKey: dedupeKey ?? this.dedupeKey,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (radioId.present) {
+      map['radio_id'] = Variable<String>(radioId.value);
+    }
+    if (conversation.present) {
+      map['conversation'] = Variable<String>(conversation.value);
+    }
+    if (outgoing.present) {
+      map['outgoing'] = Variable<int>(outgoing.value);
+    }
+    if (body.present) {
+      map['body'] = Variable<String>(body.value);
+    }
+    if (sentAt.present) {
+      map['sent_at'] = Variable<int>(sentAt.value);
+    }
+    if (receivedAt.present) {
+      map['received_at'] = Variable<int>(receivedAt.value);
+    }
+    if (delivery.present) {
+      map['delivery'] = Variable<String>(delivery.value);
+    }
+    if (deliveryReason.present) {
+      map['delivery_reason'] = Variable<String>(deliveryReason.value);
+    }
+    if (roundTripMs.present) {
+      map['round_trip_ms'] = Variable<int>(roundTripMs.value);
+    }
+    if (fromKey.present) {
+      map['from_key'] = Variable<String>(fromKey.value);
+    }
+    if (senderName.present) {
+      map['sender_name'] = Variable<String>(senderName.value);
+    }
+    if (hops.present) {
+      map['hops'] = Variable<int>(hops.value);
+    }
+    if (snr.present) {
+      map['snr'] = Variable<double>(snr.value);
+    }
+    if (rssi.present) {
+      map['rssi'] = Variable<int>(rssi.value);
+    }
+    if (route.present) {
+      map['route'] = Variable<String>(route.value);
+    }
+    if (viaMqtt.present) {
+      map['via_mqtt'] = Variable<int>(viaMqtt.value);
+    }
+    if (nativeId.present) {
+      map['native_id'] = Variable<int>(nativeId.value);
+    }
+    if (replyTo.present) {
+      map['reply_to'] = Variable<int>(replyTo.value);
+    }
+    if (isReaction.present) {
+      map['is_reaction'] = Variable<int>(isReaction.value);
+    }
+    if (dedupeKey.present) {
+      map['dedupe_key'] = Variable<String>(dedupeKey.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MessagesCompanion(')
+          ..write('id: $id, ')
+          ..write('radioId: $radioId, ')
+          ..write('conversation: $conversation, ')
+          ..write('outgoing: $outgoing, ')
+          ..write('body: $body, ')
+          ..write('sentAt: $sentAt, ')
+          ..write('receivedAt: $receivedAt, ')
+          ..write('delivery: $delivery, ')
+          ..write('deliveryReason: $deliveryReason, ')
+          ..write('roundTripMs: $roundTripMs, ')
+          ..write('fromKey: $fromKey, ')
+          ..write('senderName: $senderName, ')
+          ..write('hops: $hops, ')
+          ..write('snr: $snr, ')
+          ..write('rssi: $rssi, ')
+          ..write('route: $route, ')
+          ..write('viaMqtt: $viaMqtt, ')
+          ..write('nativeId: $nativeId, ')
+          ..write('replyTo: $replyTo, ')
+          ..write('isReaction: $isReaction, ')
+          ..write('dedupeKey: $dedupeKey')
+          ..write(')'))
+        .toString();
+  }
 }
 
 class DatabaseAtV1 extends GeneratedDatabase {

@@ -8,9 +8,10 @@ import '../mesh/model.dart';
 import '../radio/radio.dart';
 import '../store/mesh_store.dart';
 import 'common.dart';
+import 'message_path_card.dart';
 
 /// One conversation: messages with how each arrived, and a composer.
-class ConversationScreen extends StatelessWidget {
+class ConversationScreen extends StatefulWidget {
   const ConversationScreen({
     super.key,
     required this.app,
@@ -21,6 +22,29 @@ class ConversationScreen extends StatelessWidget {
   final AppController app;
   final Conversation conversation;
   final String title;
+
+  @override
+  State<ConversationScreen> createState() => _ConversationScreenState();
+}
+
+class _ConversationScreenState extends State<ConversationScreen> {
+  late final Stream<List<StoredMessage>> _messages = app.store.watchMessages(
+    conversation,
+  );
+
+  AppController get app => widget.app;
+  Conversation get conversation => widget.conversation;
+  String get title => widget.title;
+
+  /// The connected radio for this conversation, if any.
+  RadioConnection? _ready() {
+    final c = app.connectionFor(conversation.radioId.protocol);
+    final ready =
+        c != null &&
+        c.radio?.id == conversation.radioId &&
+        c.status.phase == SupervisorPhase.connected;
+    return ready ? c : null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +62,7 @@ class ConversationScreen extends StatelessWidget {
         children: [
           Expanded(
             child: StreamBuilder<List<StoredMessage>>(
-              stream: app.store.watchMessages(conversation),
+              stream: _messages,
               builder: (context, snap) {
                 final messages = snap.data ?? const <StoredMessage>[];
                 if (messages.isEmpty) {
@@ -51,9 +75,21 @@ class ConversationScreen extends StatelessWidget {
                   reverse: true,
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   itemCount: messages.length,
-                  itemBuilder: (context, i) => MessageBubble(
-                    message: messages[messages.length - 1 - i].message,
-                  ),
+                  itemBuilder: (context, i) {
+                    final stored = messages[messages.length - 1 - i];
+                    return ListenableBuilder(
+                      listenable: app,
+                      builder: (context, _) {
+                        final c = _ready();
+                        return MessageBubble(
+                          message: stored.message,
+                          onResend: c == null
+                              ? null
+                              : () => c.resend(stored.id),
+                        );
+                      },
+                    );
+                  },
                 );
               },
             ),
@@ -61,15 +97,7 @@ class ConversationScreen extends StatelessWidget {
           ListenableBuilder(
             listenable: app,
             builder: (context, _) {
-              final c = app.connectionFor(conversation.radioId.protocol);
-              final ready =
-                  c != null &&
-                  c.radio?.id == conversation.radioId &&
-                  c.status.phase == SupervisorPhase.connected;
-              return Composer(
-                connection: ready ? c : null,
-                conversation: conversation,
-              );
+              return Composer(connection: _ready(), conversation: conversation);
             },
           ),
         ],
@@ -80,9 +108,12 @@ class ConversationScreen extends StatelessWidget {
 
 /// One message, with sender, time, delivery and path facts.
 class MessageBubble extends StatelessWidget {
-  const MessageBubble({super.key, required this.message});
+  const MessageBubble({super.key, required this.message, this.onResend});
 
   final Message message;
+
+  /// Sends a failed message again; null when its radio isn't connected.
+  final VoidCallback? onResend;
 
   @override
   Widget build(BuildContext context) {
@@ -98,52 +129,62 @@ class MessageBubble extends StatelessWidget {
     ].join(' · ');
     return Align(
       alignment: m.outgoing ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 520),
-        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-        padding: const EdgeInsets.fromLTRB(12, 8, 12, 6),
-        decoration: BoxDecoration(
-          color: m.outgoing
-              ? scheme.primaryContainer
-              : scheme.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SelectableText(m.text),
-            const SizedBox(height: 4),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Flexible(
-                  child: Text(
-                    meta,
-                    style: text.labelSmall?.copyWith(color: scheme.outline),
-                  ),
-                ),
-                if (m.outgoing) ...[
-                  const SizedBox(width: 6),
-                  Tooltip(
-                    message: label,
-                    child: Icon(
-                      icon,
-                      size: 14,
-                      semanticLabel: label,
-                      color: m.delivery is Failed
-                          ? scheme.error
-                          : scheme.outline,
+      child: GestureDetector(
+        onTap: () => MessagePathCard.show(context, m),
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 520),
+          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          padding: const EdgeInsets.fromLTRB(12, 8, 12, 6),
+          decoration: BoxDecoration(
+            color: m.outgoing
+                ? scheme.primaryContainer
+                : scheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(m.text),
+              const SizedBox(height: 4),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    child: Text(
+                      meta,
+                      style: text.labelSmall?.copyWith(color: scheme.outline),
                     ),
                   ),
+                  if (m.outgoing) ...[
+                    const SizedBox(width: 6),
+                    Tooltip(
+                      message: label,
+                      child: Icon(
+                        icon,
+                        size: 14,
+                        semanticLabel: label,
+                        color: m.delivery is Failed
+                            ? scheme.error
+                            : scheme.outline,
+                      ),
+                    ),
+                  ],
                 ],
-              ],
-            ),
-            if (m.delivery case Failed(:final reason))
-              Text(
-                context.l10n.deliveryFailed(reason),
-                style: text.labelSmall?.copyWith(color: scheme.error),
               ),
-          ],
+              if (m.delivery case Failed(:final reason)) ...[
+                Text(
+                  context.l10n.deliveryFailed(reason),
+                  style: text.labelSmall?.copyWith(color: scheme.error),
+                ),
+                if (onResend != null)
+                  TextButton.icon(
+                    onPressed: onResend,
+                    icon: const Icon(Icons.refresh, size: 16),
+                    label: Text(context.l10n.sendAgain),
+                  ),
+              ],
+            ],
+          ),
         ),
       ),
     );
