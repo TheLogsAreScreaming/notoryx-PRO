@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 
+import '../mesh/identity.dart';
 import '../mesh/model.dart';
 import 'database.dart';
 
@@ -235,6 +236,7 @@ class MeshStore {
             replyTo: Value(message.replyTo),
             isReaction: Value(message.isReaction),
             attempts: Value(message.attempts),
+            authenticated: Value(message.authenticated),
             dedupeKey: Value(dedupe),
           ),
         );
@@ -330,6 +332,55 @@ class MeshStore {
     return '${m.conversation.key}|$who|$secs|${m.text.hashCode}';
   }
 
+  // Verified keys
+
+  /// Records that [node]'s [publicKey] was confirmed.
+  Future<void> verify(
+    NodeKey node,
+    List<int> publicKey,
+    VerificationMethod method, {
+    DateTime? at,
+  }) => db
+      .into(db.verifiedKeys)
+      .insertOnConflictUpdate(
+        VerifiedKeysCompanion.insert(
+          nodeKey: node.toString(),
+          publicKeyHex: _hex(publicKey),
+          verifiedAt: at ?? DateTime.now(),
+          method: method.name,
+        ),
+      );
+
+  /// Forgets a confirmation.
+  Future<void> unverify(NodeKey node) => (db.delete(
+    db.verifiedKeys,
+  )..where((v) => v.nodeKey.equals(node.toString()))).go();
+
+  /// All confirmations, by node.
+  Stream<Map<NodeKey, Verification>> watchVerifications() =>
+      db.select(db.verifiedKeys).watch().map(_verifications);
+
+  /// One-off version of [watchVerifications].
+  Future<Map<NodeKey, Verification>> verifications() async =>
+      _verifications(await db.select(db.verifiedKeys).get());
+
+  Map<NodeKey, Verification> _verifications(List<VerifiedKeyRow> rows) => {
+    for (final r in rows)
+      // The key is also used in the value, so `?key:` doesn't fit here.
+      // ignore: use_null_aware_elements
+      if (NodeKey.tryParse(r.nodeKey) case final key?)
+        key: Verification(
+          node: key,
+          publicKey: Uint8List.fromList(_unhex(r.publicKeyHex)),
+          at: r.verifiedAt,
+          method:
+              VerificationMethod.values
+                  .where((m) => m.name == r.method)
+                  .firstOrNull ??
+              VerificationMethod.compared,
+        ),
+  };
+
   // Internals
 
   Selectable<Node> _nodesQuery(RadioId radio) =>
@@ -422,6 +473,10 @@ class MeshStore {
     battery: Value(n.batteryPercent),
     canMessage: Value(n.canMessage),
     routeHex: Value(n.route.isEmpty ? null : _hex(n.route)),
+    // Don't wipe a known key with an empty one from a partial update.
+    publicKeyHex: n.publicKey.isEmpty
+        ? const Value.absent()
+        : Value(_hex(n.publicKey)),
   );
 
   static String _hex(List<int> b) =>
@@ -459,6 +514,7 @@ class MeshStore {
       batteryPercent: r.battery,
       canMessage: r.canMessage,
       route: _unhex(r.routeHex),
+      publicKey: _unhex(r.publicKeyHex),
     );
   }
 
@@ -487,6 +543,7 @@ class MeshStore {
         replyTo: r.replyTo,
         isReaction: r.isReaction,
         attempts: r.attempts,
+        authenticated: r.authenticated,
       ),
     );
   }

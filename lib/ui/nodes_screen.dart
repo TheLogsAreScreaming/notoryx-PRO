@@ -4,6 +4,7 @@ import '../app/app_controller.dart';
 import '../mesh/mesh.dart';
 import 'common.dart';
 import 'conversation_screen.dart';
+import 'verify_screen.dart';
 
 /// Every node both radios have heard, most recent first.
 class NodesScreen extends StatelessWidget {
@@ -13,28 +14,45 @@ class NodesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<Node>>(
-      stream: app.store.watchAllNodes(),
-      builder: (context, snap) {
-        final nodes = snap.data ?? const <Node>[];
-        if (nodes.isEmpty) {
-          return EmptyState(context.l10n.nodesEmpty, icon: Icons.hub_outlined);
-        }
-        return ListView.builder(
-          itemCount: nodes.length,
-          itemBuilder: (context, i) => NodeTile(app: app, node: nodes[i]),
-        );
-      },
+    return StreamBuilder<Map<NodeKey, Verification>>(
+      stream: app.store.watchVerifications(),
+      builder: (context, vSnap) => StreamBuilder<List<Node>>(
+        stream: app.store.watchAllNodes(),
+        builder: (context, snap) {
+          final nodes = snap.data ?? const <Node>[];
+          if (nodes.isEmpty) {
+            return EmptyState(
+              context.l10n.nodesEmpty,
+              icon: Icons.hub_outlined,
+            );
+          }
+          final verified = vSnap.data ?? const {};
+          return ListView.builder(
+            itemCount: nodes.length,
+            itemBuilder: (context, i) => NodeTile(
+              app: app,
+              node: nodes[i],
+              trust: trustOf(nodes[i], verified[nodes[i].key]),
+            ),
+          );
+        },
+      ),
     );
   }
 }
 
 /// One node: kind, mesh, how it was last heard.
 class NodeTile extends StatelessWidget {
-  const NodeTile({super.key, required this.app, required this.node});
+  const NodeTile({
+    super.key,
+    required this.app,
+    required this.node,
+    this.trust = TrustStatus.unverified,
+  });
 
   final AppController app;
   final Node node;
+  final TrustStatus trust;
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +78,8 @@ class NodeTile extends StatelessWidget {
           ],
           const SizedBox(width: 8),
           ProtocolBadge(n.protocol),
+          const SizedBox(width: 4),
+          TrustBadge(trust),
           if (n.isFavorite) const Icon(Icons.star, size: 16),
           const SizedBox(width: 8),
           SignalBars(signalBars(n.path)),

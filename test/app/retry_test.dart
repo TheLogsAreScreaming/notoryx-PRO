@@ -120,7 +120,7 @@ void main() {
         texts.map((t) => t.sublist(3, 7).toString()).toSet(),
         hasLength(1),
       );
-      app.dispose();
+      await app.shutdown();
     });
 
     test("an earlier attempt's ack still counts as delivered", () async {
@@ -131,7 +131,7 @@ void main() {
       link.push(RadioFrames.sendConfirmed(0x100)); // ack of attempt 1
       final m = await waitForMessage(store, id, (m) => m.delivery is Delivered);
       expect(m.message.attempts, 2);
-      app.dispose();
+      await app.shutdown();
     });
 
     test('a contact with no route floods from the start', () async {
@@ -141,7 +141,7 @@ void main() {
       final m = await waitForMessage(store, id, (m) => m.delivery is Failed);
       expect(m.message.attempts, 2);
       expect(link.commands.where((cmd) => cmd.first == Cmd.resetPath), isEmpty);
-      app.dispose();
+      await app.shutdown();
     });
 
     test('a failed message can be sent again by hand', () async {
@@ -157,7 +157,7 @@ void main() {
         (await store.messages(DirectConversation(c.radio!.id, peer))),
         hasLength(1),
       );
-      app.dispose();
+      await app.shutdown();
     });
   });
 
@@ -185,7 +185,7 @@ void main() {
       final m = await waitForMessage(store, id, (m) => m.delivery is Delivered);
       expect(m.message.attempts, 2);
       expect(tries, 2);
-      app.dispose();
+      await app.shutdown();
     });
 
     test('a refusal is not retried', () async {
@@ -210,7 +210,7 @@ void main() {
         "The node's key is unknown",
       );
       expect(m.message.attempts, 1);
-      app.dispose();
+      await app.shutdown();
     });
 
     test('no news at all ends as not acknowledged', () async {
@@ -223,7 +223,7 @@ void main() {
       final id = await c.sendText(dm, 'anyone?');
       final m = await waitForMessage(store, id, (m) => m.delivery is Failed);
       expect((m.message.delivery as Failed).reason, 'No acknowledgement');
-      app.dispose();
+      await app.shutdown();
     });
   });
 }

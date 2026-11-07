@@ -8,6 +8,7 @@ import '../meshtastic/firmware.dart';
 import '../radio/radio.dart';
 import 'common.dart';
 import 'diagnostics_screen.dart';
+import 'verify_screen.dart';
 
 /// Connected radios, and ways to connect more: Bluetooth, Wi-Fi and USB.
 class RadiosScreen extends StatelessWidget {
@@ -125,6 +126,12 @@ class _ConnectionCard extends StatelessWidget {
             Wrap(
               spacing: 8,
               children: [
+                if (c.ownCard case final card?)
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.qr_code),
+                    label: Text(l.myCode),
+                    onPressed: () => showMyCode(context, card),
+                  ),
                 if (radio != null)
                   OutlinedButton.icon(
                     icon: const Icon(Icons.monitor_heart_outlined),

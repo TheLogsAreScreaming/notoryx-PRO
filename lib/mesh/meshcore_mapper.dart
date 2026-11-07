@@ -52,6 +52,7 @@ class MeshCoreMapper {
     ),
     isFavorite: c.flags & 1 != 0,
     route: c.path,
+    publicKey: c.publicKey,
   );
 
   /// A channel slot; null for an unused one.
@@ -89,6 +90,9 @@ class MeshCoreMapper {
           delivery: const Received(),
           from: from,
           path: _path(frame.pathLength, frame.snr),
+          // Only the holder of the sender's key could have encrypted it,
+          // once the full key is known (not just the 6-byte prefix).
+          authenticated: from.native.length == 64,
         );
       case ChannelMessageFrame():
         return Message(

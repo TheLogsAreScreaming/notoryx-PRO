@@ -93,6 +93,9 @@ abstract class RadioConnection extends ChangeNotifier {
   /// The radio's frequency, when known (MeshCore reports it).
   double? frequencyMHz;
 
+  /// This radio's own contact card, for "show my code"; set on connect.
+  ContactCard? ownCard;
+
   /// Takes one reading of the radio's noise and activity, if the protocol
   /// can be asked; null otherwise.
   Future<RadioSample?> sampleRadio();
@@ -206,8 +209,13 @@ abstract class RadioConnection extends ChangeNotifier {
     _ => 'Could not send',
   };
 
+  /// Set once [close] starts; late events are ignored after that.
+  @protected
+  bool closed = false;
+
   @mustCallSuper
   Future<void> close() async {
+    closed = true;
     await supervisor.dispose();
     await _statusSub.cancel();
   }
@@ -239,6 +247,11 @@ class MeshCoreConnection extends RadioConnection {
   Future<void> setUp() async {
     final h = await session.handshake();
     frequencyMHz = h.self.frequencyMHz;
+    ownCard = ContactCard(
+      protocol: RadioProtocol.meshcore,
+      name: h.self.name,
+      publicKey: h.self.publicKey,
+    );
     final radio = MeshCoreMapper.radio(h);
     final mapper = _mapper = MeshCoreMapper(radio.id);
     await setRadio(radio);
@@ -521,6 +534,14 @@ class MeshtasticConnection extends RadioConnection {
   @override
   Future<void> setUp() async {
     final config = await session.handshake();
+    final me = config.self?.user;
+    ownCard = ContactCard(
+      protocol: RadioProtocol.meshtastic,
+      name: me?.longName ?? '',
+      shortName: me?.shortName ?? '',
+      publicKey: me?.publicKey ?? Uint8List(0),
+      nodeNum: config.myInfo.nodeNum,
+    );
     final radio = MeshtasticMapper.radio(config);
     final mapper = _mapper = MeshtasticMapper(radio.id);
     await setRadio(radio);
@@ -547,8 +568,10 @@ class MeshtasticConnection extends RadioConnection {
     if (await _maybeResend(d)) return;
     final state = MeshtasticMapper.delivery(d);
     // The node can answer before the packet ID is saved; try once more.
+    if (closed) return;
     if (!await store.setDeliveryByNativeId(radio.id, d.packetId, state)) {
       await Future<void>.delayed(const Duration(milliseconds: 300));
+      if (closed) return;
       await store.setDeliveryByNativeId(radio.id, d.packetId, state);
     }
   }

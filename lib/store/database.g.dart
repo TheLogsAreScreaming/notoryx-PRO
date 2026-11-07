@@ -831,6 +831,17 @@ class $NodesTable extends Nodes with TableInfo<$NodesTable, NodeRow> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _publicKeyHexMeta = const VerificationMeta(
+    'publicKeyHex',
+  );
+  @override
+  late final GeneratedColumn<String> publicKeyHex = GeneratedColumn<String>(
+    'public_key_hex',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     radioId,
@@ -851,6 +862,7 @@ class $NodesTable extends Nodes with TableInfo<$NodesTable, NodeRow> {
     battery,
     canMessage,
     routeHex,
+    publicKeyHex,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -966,6 +978,15 @@ class $NodesTable extends Nodes with TableInfo<$NodesTable, NodeRow> {
         routeHex.isAcceptableOrUnknown(data['route_hex']!, _routeHexMeta),
       );
     }
+    if (data.containsKey('public_key_hex')) {
+      context.handle(
+        _publicKeyHexMeta,
+        publicKeyHex.isAcceptableOrUnknown(
+          data['public_key_hex']!,
+          _publicKeyHexMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -1051,6 +1072,10 @@ class $NodesTable extends Nodes with TableInfo<$NodesTable, NodeRow> {
         DriftSqlType.string,
         data['${effectivePrefix}route_hex'],
       ),
+      publicKeyHex: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}public_key_hex'],
+      ),
     );
   }
 
@@ -1088,6 +1113,10 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
 
   /// MeshCore out-path as hex (repeater hash prefixes, in order). Schema v3.
   final String? routeHex;
+
+  /// The node's public key as hex (MeshCore: its identity; Meshtastic: the
+  /// key it advertises for encrypted direct messages). Schema v4.
+  final String? publicKeyHex;
   const NodeRow({
     required this.radioId,
     required this.nodeKey,
@@ -1107,6 +1136,7 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
     this.battery,
     required this.canMessage,
     this.routeHex,
+    this.publicKeyHex,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1151,6 +1181,9 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
     if (!nullToAbsent || routeHex != null) {
       map['route_hex'] = Variable<String>(routeHex);
     }
+    if (!nullToAbsent || publicKeyHex != null) {
+      map['public_key_hex'] = Variable<String>(publicKeyHex);
+    }
     return map;
   }
 
@@ -1186,6 +1219,9 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
       routeHex: routeHex == null && nullToAbsent
           ? const Value.absent()
           : Value(routeHex),
+      publicKeyHex: publicKeyHex == null && nullToAbsent
+          ? const Value.absent()
+          : Value(publicKeyHex),
     );
   }
 
@@ -1217,6 +1253,7 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
       battery: serializer.fromJson<int?>(json['battery']),
       canMessage: serializer.fromJson<bool>(json['canMessage']),
       routeHex: serializer.fromJson<String?>(json['routeHex']),
+      publicKeyHex: serializer.fromJson<String?>(json['publicKeyHex']),
     );
   }
   @override
@@ -1245,6 +1282,7 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
       'battery': serializer.toJson<int?>(battery),
       'canMessage': serializer.toJson<bool>(canMessage),
       'routeHex': serializer.toJson<String?>(routeHex),
+      'publicKeyHex': serializer.toJson<String?>(publicKeyHex),
     };
   }
 
@@ -1267,6 +1305,7 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
     Value<int?> battery = const Value.absent(),
     bool? canMessage,
     Value<String?> routeHex = const Value.absent(),
+    Value<String?> publicKeyHex = const Value.absent(),
   }) => NodeRow(
     radioId: radioId ?? this.radioId,
     nodeKey: nodeKey ?? this.nodeKey,
@@ -1286,6 +1325,7 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
     battery: battery.present ? battery.value : this.battery,
     canMessage: canMessage ?? this.canMessage,
     routeHex: routeHex.present ? routeHex.value : this.routeHex,
+    publicKeyHex: publicKeyHex.present ? publicKeyHex.value : this.publicKeyHex,
   );
   NodeRow copyWithCompanion(NodesCompanion data) {
     return NodeRow(
@@ -1309,6 +1349,9 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
           ? data.canMessage.value
           : this.canMessage,
       routeHex: data.routeHex.present ? data.routeHex.value : this.routeHex,
+      publicKeyHex: data.publicKeyHex.present
+          ? data.publicKeyHex.value
+          : this.publicKeyHex,
     );
   }
 
@@ -1332,7 +1375,8 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
           ..write('favorite: $favorite, ')
           ..write('battery: $battery, ')
           ..write('canMessage: $canMessage, ')
-          ..write('routeHex: $routeHex')
+          ..write('routeHex: $routeHex, ')
+          ..write('publicKeyHex: $publicKeyHex')
           ..write(')'))
         .toString();
   }
@@ -1357,6 +1401,7 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
     battery,
     canMessage,
     routeHex,
+    publicKeyHex,
   );
   @override
   bool operator ==(Object other) =>
@@ -1379,7 +1424,8 @@ class NodeRow extends DataClass implements Insertable<NodeRow> {
           other.favorite == this.favorite &&
           other.battery == this.battery &&
           other.canMessage == this.canMessage &&
-          other.routeHex == this.routeHex);
+          other.routeHex == this.routeHex &&
+          other.publicKeyHex == this.publicKeyHex);
 }
 
 class NodesCompanion extends UpdateCompanion<NodeRow> {
@@ -1401,6 +1447,7 @@ class NodesCompanion extends UpdateCompanion<NodeRow> {
   final Value<int?> battery;
   final Value<bool> canMessage;
   final Value<String?> routeHex;
+  final Value<String?> publicKeyHex;
   final Value<int> rowid;
   const NodesCompanion({
     this.radioId = const Value.absent(),
@@ -1421,6 +1468,7 @@ class NodesCompanion extends UpdateCompanion<NodeRow> {
     this.battery = const Value.absent(),
     this.canMessage = const Value.absent(),
     this.routeHex = const Value.absent(),
+    this.publicKeyHex = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   NodesCompanion.insert({
@@ -1442,6 +1490,7 @@ class NodesCompanion extends UpdateCompanion<NodeRow> {
     this.battery = const Value.absent(),
     this.canMessage = const Value.absent(),
     this.routeHex = const Value.absent(),
+    this.publicKeyHex = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : radioId = Value(radioId),
        nodeKey = Value(nodeKey),
@@ -1467,6 +1516,7 @@ class NodesCompanion extends UpdateCompanion<NodeRow> {
     Expression<int>? battery,
     Expression<bool>? canMessage,
     Expression<String>? routeHex,
+    Expression<String>? publicKeyHex,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1488,6 +1538,7 @@ class NodesCompanion extends UpdateCompanion<NodeRow> {
       if (battery != null) 'battery': battery,
       if (canMessage != null) 'can_message': canMessage,
       if (routeHex != null) 'route_hex': routeHex,
+      if (publicKeyHex != null) 'public_key_hex': publicKeyHex,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1511,6 +1562,7 @@ class NodesCompanion extends UpdateCompanion<NodeRow> {
     Value<int?>? battery,
     Value<bool>? canMessage,
     Value<String?>? routeHex,
+    Value<String?>? publicKeyHex,
     Value<int>? rowid,
   }) {
     return NodesCompanion(
@@ -1532,6 +1584,7 @@ class NodesCompanion extends UpdateCompanion<NodeRow> {
       battery: battery ?? this.battery,
       canMessage: canMessage ?? this.canMessage,
       routeHex: routeHex ?? this.routeHex,
+      publicKeyHex: publicKeyHex ?? this.publicKeyHex,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1597,6 +1650,9 @@ class NodesCompanion extends UpdateCompanion<NodeRow> {
     if (routeHex.present) {
       map['route_hex'] = Variable<String>(routeHex.value);
     }
+    if (publicKeyHex.present) {
+      map['public_key_hex'] = Variable<String>(publicKeyHex.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1624,6 +1680,7 @@ class NodesCompanion extends UpdateCompanion<NodeRow> {
           ..write('battery: $battery, ')
           ..write('canMessage: $canMessage, ')
           ..write('routeHex: $routeHex, ')
+          ..write('publicKeyHex: $publicKeyHex, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2230,6 +2287,21 @@ class $MessagesTable extends Messages
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _authenticatedMeta = const VerificationMeta(
+    'authenticated',
+  );
+  @override
+  late final GeneratedColumn<bool> authenticated = GeneratedColumn<bool>(
+    'authenticated',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("authenticated" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   static const VerificationMeta _dedupeKeyMeta = const VerificationMeta(
     'dedupeKey',
   );
@@ -2265,6 +2337,7 @@ class $MessagesTable extends Messages
     replyTo,
     isReaction,
     attempts,
+    authenticated,
     dedupeKey,
   ];
   @override
@@ -2419,6 +2492,15 @@ class $MessagesTable extends Messages
         attempts.isAcceptableOrUnknown(data['attempts']!, _attemptsMeta),
       );
     }
+    if (data.containsKey('authenticated')) {
+      context.handle(
+        _authenticatedMeta,
+        authenticated.isAcceptableOrUnknown(
+          data['authenticated']!,
+          _authenticatedMeta,
+        ),
+      );
+    }
     if (data.containsKey('dedupe_key')) {
       context.handle(
         _dedupeKeyMeta,
@@ -2520,6 +2602,10 @@ class $MessagesTable extends Messages
         DriftSqlType.int,
         data['${effectivePrefix}attempts'],
       )!,
+      authenticated: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}authenticated'],
+      )!,
       dedupeKey: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}dedupe_key'],
@@ -2565,6 +2651,10 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
   /// Times this outgoing message was sent (retries included). Schema v2.
   final int attempts;
 
+  /// The sender is proven by encryption (MeshCore direct messages,
+  /// Meshtastic public-key direct messages). Schema v4.
+  final bool authenticated;
+
   /// Identifies a received message so a repeat isn't stored twice.
   final String? dedupeKey;
   const MessageRow({
@@ -2589,6 +2679,7 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
     this.replyTo,
     required this.isReaction,
     required this.attempts,
+    required this.authenticated,
     this.dedupeKey,
   });
   @override
@@ -2637,6 +2728,7 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
     }
     map['is_reaction'] = Variable<bool>(isReaction);
     map['attempts'] = Variable<int>(attempts);
+    map['authenticated'] = Variable<bool>(authenticated);
     if (!nullToAbsent || dedupeKey != null) {
       map['dedupe_key'] = Variable<String>(dedupeKey);
     }
@@ -2678,6 +2770,7 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
           : Value(replyTo),
       isReaction: Value(isReaction),
       attempts: Value(attempts),
+      authenticated: Value(authenticated),
       dedupeKey: dedupeKey == null && nullToAbsent
           ? const Value.absent()
           : Value(dedupeKey),
@@ -2713,6 +2806,7 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
       replyTo: serializer.fromJson<int?>(json['replyTo']),
       isReaction: serializer.fromJson<bool>(json['isReaction']),
       attempts: serializer.fromJson<int>(json['attempts']),
+      authenticated: serializer.fromJson<bool>(json['authenticated']),
       dedupeKey: serializer.fromJson<String?>(json['dedupeKey']),
     );
   }
@@ -2743,6 +2837,7 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
       'replyTo': serializer.toJson<int?>(replyTo),
       'isReaction': serializer.toJson<bool>(isReaction),
       'attempts': serializer.toJson<int>(attempts),
+      'authenticated': serializer.toJson<bool>(authenticated),
       'dedupeKey': serializer.toJson<String?>(dedupeKey),
     };
   }
@@ -2769,6 +2864,7 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
     Value<int?> replyTo = const Value.absent(),
     bool? isReaction,
     int? attempts,
+    bool? authenticated,
     Value<String?> dedupeKey = const Value.absent(),
   }) => MessageRow(
     id: id ?? this.id,
@@ -2794,6 +2890,7 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
     replyTo: replyTo.present ? replyTo.value : this.replyTo,
     isReaction: isReaction ?? this.isReaction,
     attempts: attempts ?? this.attempts,
+    authenticated: authenticated ?? this.authenticated,
     dedupeKey: dedupeKey.present ? dedupeKey.value : this.dedupeKey,
   );
   MessageRow copyWithCompanion(MessagesCompanion data) {
@@ -2831,6 +2928,9 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
           ? data.isReaction.value
           : this.isReaction,
       attempts: data.attempts.present ? data.attempts.value : this.attempts,
+      authenticated: data.authenticated.present
+          ? data.authenticated.value
+          : this.authenticated,
       dedupeKey: data.dedupeKey.present ? data.dedupeKey.value : this.dedupeKey,
     );
   }
@@ -2859,6 +2959,7 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
           ..write('replyTo: $replyTo, ')
           ..write('isReaction: $isReaction, ')
           ..write('attempts: $attempts, ')
+          ..write('authenticated: $authenticated, ')
           ..write('dedupeKey: $dedupeKey')
           ..write(')'))
         .toString();
@@ -2887,6 +2988,7 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
     replyTo,
     isReaction,
     attempts,
+    authenticated,
     dedupeKey,
   ]);
   @override
@@ -2914,6 +3016,7 @@ class MessageRow extends DataClass implements Insertable<MessageRow> {
           other.replyTo == this.replyTo &&
           other.isReaction == this.isReaction &&
           other.attempts == this.attempts &&
+          other.authenticated == this.authenticated &&
           other.dedupeKey == this.dedupeKey);
 }
 
@@ -2939,6 +3042,7 @@ class MessagesCompanion extends UpdateCompanion<MessageRow> {
   final Value<int?> replyTo;
   final Value<bool> isReaction;
   final Value<int> attempts;
+  final Value<bool> authenticated;
   final Value<String?> dedupeKey;
   const MessagesCompanion({
     this.id = const Value.absent(),
@@ -2962,6 +3066,7 @@ class MessagesCompanion extends UpdateCompanion<MessageRow> {
     this.replyTo = const Value.absent(),
     this.isReaction = const Value.absent(),
     this.attempts = const Value.absent(),
+    this.authenticated = const Value.absent(),
     this.dedupeKey = const Value.absent(),
   });
   MessagesCompanion.insert({
@@ -2986,6 +3091,7 @@ class MessagesCompanion extends UpdateCompanion<MessageRow> {
     this.replyTo = const Value.absent(),
     this.isReaction = const Value.absent(),
     this.attempts = const Value.absent(),
+    this.authenticated = const Value.absent(),
     this.dedupeKey = const Value.absent(),
   }) : radioId = Value(radioId),
        conversation = Value(conversation),
@@ -3017,6 +3123,7 @@ class MessagesCompanion extends UpdateCompanion<MessageRow> {
     Expression<int>? replyTo,
     Expression<bool>? isReaction,
     Expression<int>? attempts,
+    Expression<bool>? authenticated,
     Expression<String>? dedupeKey,
   }) {
     return RawValuesInsertable({
@@ -3041,6 +3148,7 @@ class MessagesCompanion extends UpdateCompanion<MessageRow> {
       if (replyTo != null) 'reply_to': replyTo,
       if (isReaction != null) 'is_reaction': isReaction,
       if (attempts != null) 'attempts': attempts,
+      if (authenticated != null) 'authenticated': authenticated,
       if (dedupeKey != null) 'dedupe_key': dedupeKey,
     });
   }
@@ -3067,6 +3175,7 @@ class MessagesCompanion extends UpdateCompanion<MessageRow> {
     Value<int?>? replyTo,
     Value<bool>? isReaction,
     Value<int>? attempts,
+    Value<bool>? authenticated,
     Value<String?>? dedupeKey,
   }) {
     return MessagesCompanion(
@@ -3091,6 +3200,7 @@ class MessagesCompanion extends UpdateCompanion<MessageRow> {
       replyTo: replyTo ?? this.replyTo,
       isReaction: isReaction ?? this.isReaction,
       attempts: attempts ?? this.attempts,
+      authenticated: authenticated ?? this.authenticated,
       dedupeKey: dedupeKey ?? this.dedupeKey,
     );
   }
@@ -3163,6 +3273,9 @@ class MessagesCompanion extends UpdateCompanion<MessageRow> {
     if (attempts.present) {
       map['attempts'] = Variable<int>(attempts.value);
     }
+    if (authenticated.present) {
+      map['authenticated'] = Variable<bool>(authenticated.value);
+    }
     if (dedupeKey.present) {
       map['dedupe_key'] = Variable<String>(dedupeKey.value);
     }
@@ -3193,7 +3306,339 @@ class MessagesCompanion extends UpdateCompanion<MessageRow> {
           ..write('replyTo: $replyTo, ')
           ..write('isReaction: $isReaction, ')
           ..write('attempts: $attempts, ')
+          ..write('authenticated: $authenticated, ')
           ..write('dedupeKey: $dedupeKey')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $VerifiedKeysTable extends VerifiedKeys
+    with TableInfo<$VerifiedKeysTable, VerifiedKeyRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VerifiedKeysTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _nodeKeyMeta = const VerificationMeta(
+    'nodeKey',
+  );
+  @override
+  late final GeneratedColumn<String> nodeKey = GeneratedColumn<String>(
+    'node_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _publicKeyHexMeta = const VerificationMeta(
+    'publicKeyHex',
+  );
+  @override
+  late final GeneratedColumn<String> publicKeyHex = GeneratedColumn<String>(
+    'public_key_hex',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _verifiedAtMeta = const VerificationMeta(
+    'verifiedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> verifiedAt = GeneratedColumn<DateTime>(
+    'verified_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _methodMeta = const VerificationMeta('method');
+  @override
+  late final GeneratedColumn<String> method = GeneratedColumn<String>(
+    'method',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    nodeKey,
+    publicKeyHex,
+    verifiedAt,
+    method,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'verified_keys';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<VerifiedKeyRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('node_key')) {
+      context.handle(
+        _nodeKeyMeta,
+        nodeKey.isAcceptableOrUnknown(data['node_key']!, _nodeKeyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nodeKeyMeta);
+    }
+    if (data.containsKey('public_key_hex')) {
+      context.handle(
+        _publicKeyHexMeta,
+        publicKeyHex.isAcceptableOrUnknown(
+          data['public_key_hex']!,
+          _publicKeyHexMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_publicKeyHexMeta);
+    }
+    if (data.containsKey('verified_at')) {
+      context.handle(
+        _verifiedAtMeta,
+        verifiedAt.isAcceptableOrUnknown(data['verified_at']!, _verifiedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_verifiedAtMeta);
+    }
+    if (data.containsKey('method')) {
+      context.handle(
+        _methodMeta,
+        method.isAcceptableOrUnknown(data['method']!, _methodMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_methodMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {nodeKey};
+  @override
+  VerifiedKeyRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VerifiedKeyRow(
+      nodeKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}node_key'],
+      )!,
+      publicKeyHex: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}public_key_hex'],
+      )!,
+      verifiedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}verified_at'],
+      )!,
+      method: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}method'],
+      )!,
+    );
+  }
+
+  @override
+  $VerifiedKeysTable createAlias(String alias) {
+    return $VerifiedKeysTable(attachedDatabase, alias);
+  }
+}
+
+class VerifiedKeyRow extends DataClass implements Insertable<VerifiedKeyRow> {
+  /// `NodeKey.toString()`.
+  final String nodeKey;
+
+  /// The public key that was confirmed; a different key later means the
+  /// node changed (re-flashed, or someone else) and needs checking again.
+  final String publicKeyHex;
+  final DateTime verifiedAt;
+
+  /// How: `qr` (scanned their code) or `compared` (fingerprints compared).
+  final String method;
+  const VerifiedKeyRow({
+    required this.nodeKey,
+    required this.publicKeyHex,
+    required this.verifiedAt,
+    required this.method,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['node_key'] = Variable<String>(nodeKey);
+    map['public_key_hex'] = Variable<String>(publicKeyHex);
+    map['verified_at'] = Variable<DateTime>(verifiedAt);
+    map['method'] = Variable<String>(method);
+    return map;
+  }
+
+  VerifiedKeysCompanion toCompanion(bool nullToAbsent) {
+    return VerifiedKeysCompanion(
+      nodeKey: Value(nodeKey),
+      publicKeyHex: Value(publicKeyHex),
+      verifiedAt: Value(verifiedAt),
+      method: Value(method),
+    );
+  }
+
+  factory VerifiedKeyRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VerifiedKeyRow(
+      nodeKey: serializer.fromJson<String>(json['nodeKey']),
+      publicKeyHex: serializer.fromJson<String>(json['publicKeyHex']),
+      verifiedAt: serializer.fromJson<DateTime>(json['verifiedAt']),
+      method: serializer.fromJson<String>(json['method']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'nodeKey': serializer.toJson<String>(nodeKey),
+      'publicKeyHex': serializer.toJson<String>(publicKeyHex),
+      'verifiedAt': serializer.toJson<DateTime>(verifiedAt),
+      'method': serializer.toJson<String>(method),
+    };
+  }
+
+  VerifiedKeyRow copyWith({
+    String? nodeKey,
+    String? publicKeyHex,
+    DateTime? verifiedAt,
+    String? method,
+  }) => VerifiedKeyRow(
+    nodeKey: nodeKey ?? this.nodeKey,
+    publicKeyHex: publicKeyHex ?? this.publicKeyHex,
+    verifiedAt: verifiedAt ?? this.verifiedAt,
+    method: method ?? this.method,
+  );
+  VerifiedKeyRow copyWithCompanion(VerifiedKeysCompanion data) {
+    return VerifiedKeyRow(
+      nodeKey: data.nodeKey.present ? data.nodeKey.value : this.nodeKey,
+      publicKeyHex: data.publicKeyHex.present
+          ? data.publicKeyHex.value
+          : this.publicKeyHex,
+      verifiedAt: data.verifiedAt.present
+          ? data.verifiedAt.value
+          : this.verifiedAt,
+      method: data.method.present ? data.method.value : this.method,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VerifiedKeyRow(')
+          ..write('nodeKey: $nodeKey, ')
+          ..write('publicKeyHex: $publicKeyHex, ')
+          ..write('verifiedAt: $verifiedAt, ')
+          ..write('method: $method')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(nodeKey, publicKeyHex, verifiedAt, method);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VerifiedKeyRow &&
+          other.nodeKey == this.nodeKey &&
+          other.publicKeyHex == this.publicKeyHex &&
+          other.verifiedAt == this.verifiedAt &&
+          other.method == this.method);
+}
+
+class VerifiedKeysCompanion extends UpdateCompanion<VerifiedKeyRow> {
+  final Value<String> nodeKey;
+  final Value<String> publicKeyHex;
+  final Value<DateTime> verifiedAt;
+  final Value<String> method;
+  final Value<int> rowid;
+  const VerifiedKeysCompanion({
+    this.nodeKey = const Value.absent(),
+    this.publicKeyHex = const Value.absent(),
+    this.verifiedAt = const Value.absent(),
+    this.method = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  VerifiedKeysCompanion.insert({
+    required String nodeKey,
+    required String publicKeyHex,
+    required DateTime verifiedAt,
+    required String method,
+    this.rowid = const Value.absent(),
+  }) : nodeKey = Value(nodeKey),
+       publicKeyHex = Value(publicKeyHex),
+       verifiedAt = Value(verifiedAt),
+       method = Value(method);
+  static Insertable<VerifiedKeyRow> custom({
+    Expression<String>? nodeKey,
+    Expression<String>? publicKeyHex,
+    Expression<DateTime>? verifiedAt,
+    Expression<String>? method,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (nodeKey != null) 'node_key': nodeKey,
+      if (publicKeyHex != null) 'public_key_hex': publicKeyHex,
+      if (verifiedAt != null) 'verified_at': verifiedAt,
+      if (method != null) 'method': method,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  VerifiedKeysCompanion copyWith({
+    Value<String>? nodeKey,
+    Value<String>? publicKeyHex,
+    Value<DateTime>? verifiedAt,
+    Value<String>? method,
+    Value<int>? rowid,
+  }) {
+    return VerifiedKeysCompanion(
+      nodeKey: nodeKey ?? this.nodeKey,
+      publicKeyHex: publicKeyHex ?? this.publicKeyHex,
+      verifiedAt: verifiedAt ?? this.verifiedAt,
+      method: method ?? this.method,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (nodeKey.present) {
+      map['node_key'] = Variable<String>(nodeKey.value);
+    }
+    if (publicKeyHex.present) {
+      map['public_key_hex'] = Variable<String>(publicKeyHex.value);
+    }
+    if (verifiedAt.present) {
+      map['verified_at'] = Variable<DateTime>(verifiedAt.value);
+    }
+    if (method.present) {
+      map['method'] = Variable<String>(method.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VerifiedKeysCompanion(')
+          ..write('nodeKey: $nodeKey, ')
+          ..write('publicKeyHex: $publicKeyHex, ')
+          ..write('verifiedAt: $verifiedAt, ')
+          ..write('method: $method, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
@@ -3206,6 +3651,7 @@ abstract class _$MeshDatabase extends GeneratedDatabase {
   late final $NodesTable nodes = $NodesTable(this);
   late final $ChannelsTable channels = $ChannelsTable(this);
   late final $MessagesTable messages = $MessagesTable(this);
+  late final $VerifiedKeysTable verifiedKeys = $VerifiedKeysTable(this);
   late final Index messagesByConversation = Index(
     'messages_by_conversation',
     'CREATE INDEX messages_by_conversation ON messages (conversation, id)',
@@ -3223,6 +3669,7 @@ abstract class _$MeshDatabase extends GeneratedDatabase {
     nodes,
     channels,
     messages,
+    verifiedKeys,
     messagesByConversation,
     messagesByNativeId,
   ];
@@ -3551,6 +3998,7 @@ typedef $$NodesTableCreateCompanionBuilder =
       Value<int?> battery,
       Value<bool> canMessage,
       Value<String?> routeHex,
+      Value<String?> publicKeyHex,
       Value<int> rowid,
     });
 typedef $$NodesTableUpdateCompanionBuilder =
@@ -3573,6 +4021,7 @@ typedef $$NodesTableUpdateCompanionBuilder =
       Value<int?> battery,
       Value<bool> canMessage,
       Value<String?> routeHex,
+      Value<String?> publicKeyHex,
       Value<int> rowid,
     });
 
@@ -3675,6 +4124,11 @@ class $$NodesTableFilterComposer extends Composer<_$MeshDatabase, $NodesTable> {
     column: $table.routeHex,
     builder: (column) => ColumnFilters(column),
   );
+
+  ColumnFilters<String> get publicKeyHex => $composableBuilder(
+    column: $table.publicKeyHex,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$NodesTableOrderingComposer
@@ -3775,6 +4229,11 @@ class $$NodesTableOrderingComposer
     column: $table.routeHex,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get publicKeyHex => $composableBuilder(
+    column: $table.publicKeyHex,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$NodesTableAnnotationComposer
@@ -3841,6 +4300,11 @@ class $$NodesTableAnnotationComposer
 
   GeneratedColumn<String> get routeHex =>
       $composableBuilder(column: $table.routeHex, builder: (column) => column);
+
+  GeneratedColumn<String> get publicKeyHex => $composableBuilder(
+    column: $table.publicKeyHex,
+    builder: (column) => column,
+  );
 }
 
 class $$NodesTableTableManager
@@ -3889,6 +4353,7 @@ class $$NodesTableTableManager
                 Value<int?> battery = const Value.absent(),
                 Value<bool> canMessage = const Value.absent(),
                 Value<String?> routeHex = const Value.absent(),
+                Value<String?> publicKeyHex = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => NodesCompanion(
                 radioId: radioId,
@@ -3909,6 +4374,7 @@ class $$NodesTableTableManager
                 battery: battery,
                 canMessage: canMessage,
                 routeHex: routeHex,
+                publicKeyHex: publicKeyHex,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -3931,6 +4397,7 @@ class $$NodesTableTableManager
                 Value<int?> battery = const Value.absent(),
                 Value<bool> canMessage = const Value.absent(),
                 Value<String?> routeHex = const Value.absent(),
+                Value<String?> publicKeyHex = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => NodesCompanion.insert(
                 radioId: radioId,
@@ -3951,6 +4418,7 @@ class $$NodesTableTableManager
                 battery: battery,
                 canMessage: canMessage,
                 routeHex: routeHex,
+                publicKeyHex: publicKeyHex,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -4214,6 +4682,7 @@ typedef $$MessagesTableCreateCompanionBuilder =
       Value<int?> replyTo,
       Value<bool> isReaction,
       Value<int> attempts,
+      Value<bool> authenticated,
       Value<String?> dedupeKey,
     });
 typedef $$MessagesTableUpdateCompanionBuilder =
@@ -4239,6 +4708,7 @@ typedef $$MessagesTableUpdateCompanionBuilder =
       Value<int?> replyTo,
       Value<bool> isReaction,
       Value<int> attempts,
+      Value<bool> authenticated,
       Value<String?> dedupeKey,
     });
 
@@ -4354,6 +4824,11 @@ class $$MessagesTableFilterComposer
 
   ColumnFilters<int> get attempts => $composableBuilder(
     column: $table.attempts,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get authenticated => $composableBuilder(
+    column: $table.authenticated,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4477,6 +4952,11 @@ class $$MessagesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get authenticated => $composableBuilder(
+    column: $table.authenticated,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get dedupeKey => $composableBuilder(
     column: $table.dedupeKey,
     builder: (column) => ColumnOrderings(column),
@@ -4567,6 +5047,11 @@ class $$MessagesTableAnnotationComposer
   GeneratedColumn<int> get attempts =>
       $composableBuilder(column: $table.attempts, builder: (column) => column);
 
+  GeneratedColumn<bool> get authenticated => $composableBuilder(
+    column: $table.authenticated,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get dedupeKey =>
       $composableBuilder(column: $table.dedupeKey, builder: (column) => column);
 }
@@ -4623,6 +5108,7 @@ class $$MessagesTableTableManager
                 Value<int?> replyTo = const Value.absent(),
                 Value<bool> isReaction = const Value.absent(),
                 Value<int> attempts = const Value.absent(),
+                Value<bool> authenticated = const Value.absent(),
                 Value<String?> dedupeKey = const Value.absent(),
               }) => MessagesCompanion(
                 id: id,
@@ -4646,6 +5132,7 @@ class $$MessagesTableTableManager
                 replyTo: replyTo,
                 isReaction: isReaction,
                 attempts: attempts,
+                authenticated: authenticated,
                 dedupeKey: dedupeKey,
               ),
           createCompanionCallback:
@@ -4671,6 +5158,7 @@ class $$MessagesTableTableManager
                 Value<int?> replyTo = const Value.absent(),
                 Value<bool> isReaction = const Value.absent(),
                 Value<int> attempts = const Value.absent(),
+                Value<bool> authenticated = const Value.absent(),
                 Value<String?> dedupeKey = const Value.absent(),
               }) => MessagesCompanion.insert(
                 id: id,
@@ -4694,6 +5182,7 @@ class $$MessagesTableTableManager
                 replyTo: replyTo,
                 isReaction: isReaction,
                 attempts: attempts,
+                authenticated: authenticated,
                 dedupeKey: dedupeKey,
               ),
           withReferenceMapper: (p0) => p0
@@ -4727,6 +5216,200 @@ typedef $$MessagesTableProcessedTableManager =
       MessageRow,
       PrefetchHooks Function()
     >;
+typedef $$VerifiedKeysTableCreateCompanionBuilder =
+    VerifiedKeysCompanion Function({
+      required String nodeKey,
+      required String publicKeyHex,
+      required DateTime verifiedAt,
+      required String method,
+      Value<int> rowid,
+    });
+typedef $$VerifiedKeysTableUpdateCompanionBuilder =
+    VerifiedKeysCompanion Function({
+      Value<String> nodeKey,
+      Value<String> publicKeyHex,
+      Value<DateTime> verifiedAt,
+      Value<String> method,
+      Value<int> rowid,
+    });
+
+class $$VerifiedKeysTableFilterComposer
+    extends Composer<_$MeshDatabase, $VerifiedKeysTable> {
+  $$VerifiedKeysTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get nodeKey => $composableBuilder(
+    column: $table.nodeKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get publicKeyHex => $composableBuilder(
+    column: $table.publicKeyHex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get verifiedAt => $composableBuilder(
+    column: $table.verifiedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get method => $composableBuilder(
+    column: $table.method,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$VerifiedKeysTableOrderingComposer
+    extends Composer<_$MeshDatabase, $VerifiedKeysTable> {
+  $$VerifiedKeysTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get nodeKey => $composableBuilder(
+    column: $table.nodeKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get publicKeyHex => $composableBuilder(
+    column: $table.publicKeyHex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get verifiedAt => $composableBuilder(
+    column: $table.verifiedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get method => $composableBuilder(
+    column: $table.method,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$VerifiedKeysTableAnnotationComposer
+    extends Composer<_$MeshDatabase, $VerifiedKeysTable> {
+  $$VerifiedKeysTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get nodeKey =>
+      $composableBuilder(column: $table.nodeKey, builder: (column) => column);
+
+  GeneratedColumn<String> get publicKeyHex => $composableBuilder(
+    column: $table.publicKeyHex,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get verifiedAt => $composableBuilder(
+    column: $table.verifiedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get method =>
+      $composableBuilder(column: $table.method, builder: (column) => column);
+}
+
+class $$VerifiedKeysTableTableManager
+    extends
+        RootTableManager<
+          _$MeshDatabase,
+          $VerifiedKeysTable,
+          VerifiedKeyRow,
+          $$VerifiedKeysTableFilterComposer,
+          $$VerifiedKeysTableOrderingComposer,
+          $$VerifiedKeysTableAnnotationComposer,
+          $$VerifiedKeysTableCreateCompanionBuilder,
+          $$VerifiedKeysTableUpdateCompanionBuilder,
+          (
+            VerifiedKeyRow,
+            BaseReferences<_$MeshDatabase, $VerifiedKeysTable, VerifiedKeyRow>,
+          ),
+          VerifiedKeyRow,
+          PrefetchHooks Function()
+        > {
+  $$VerifiedKeysTableTableManager(_$MeshDatabase db, $VerifiedKeysTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VerifiedKeysTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VerifiedKeysTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VerifiedKeysTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> nodeKey = const Value.absent(),
+                Value<String> publicKeyHex = const Value.absent(),
+                Value<DateTime> verifiedAt = const Value.absent(),
+                Value<String> method = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VerifiedKeysCompanion(
+                nodeKey: nodeKey,
+                publicKeyHex: publicKeyHex,
+                verifiedAt: verifiedAt,
+                method: method,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String nodeKey,
+                required String publicKeyHex,
+                required DateTime verifiedAt,
+                required String method,
+                Value<int> rowid = const Value.absent(),
+              }) => VerifiedKeysCompanion.insert(
+                nodeKey: nodeKey,
+                publicKeyHex: publicKeyHex,
+                verifiedAt: verifiedAt,
+                method: method,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$VerifiedKeysTable, VerifiedKeyRow>(table),
+                  BaseReferences<
+                    _$MeshDatabase,
+                    $VerifiedKeysTable,
+                    VerifiedKeyRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$VerifiedKeysTableProcessedTableManager =
+    ProcessedTableManager<
+      _$MeshDatabase,
+      $VerifiedKeysTable,
+      VerifiedKeyRow,
+      $$VerifiedKeysTableFilterComposer,
+      $$VerifiedKeysTableOrderingComposer,
+      $$VerifiedKeysTableAnnotationComposer,
+      $$VerifiedKeysTableCreateCompanionBuilder,
+      $$VerifiedKeysTableUpdateCompanionBuilder,
+      (
+        VerifiedKeyRow,
+        BaseReferences<_$MeshDatabase, $VerifiedKeysTable, VerifiedKeyRow>,
+      ),
+      VerifiedKeyRow,
+      PrefetchHooks Function()
+    >;
 
 class $MeshDatabaseManager {
   final _$MeshDatabase _db;
@@ -4739,4 +5422,6 @@ class $MeshDatabaseManager {
       $$ChannelsTableTableManager(_db, _db.channels);
   $$MessagesTableTableManager get messages =>
       $$MessagesTableTableManager(_db, _db.messages);
+  $$VerifiedKeysTableTableManager get verifiedKeys =>
+      $$VerifiedKeysTableTableManager(_db, _db.verifiedKeys);
 }

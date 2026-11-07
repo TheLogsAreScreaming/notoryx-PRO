@@ -240,6 +240,7 @@ final class Node {
     this.batteryPercent,
     this.canMessage = true,
     this.route = const [],
+    this.publicKey = const [],
   });
 
   final NodeKey key;
@@ -268,6 +269,10 @@ final class Node {
   /// our radio (each [routeHashSize] bytes). Empty when flooding or unknown.
   final List<int> route;
 
+  /// The node's public key (MeshCore identity, Meshtastic DM key); empty
+  /// when it hasn't shared one.
+  final List<int> publicKey;
+
   /// Bytes per hop in [route].
   int get routeHashSize {
     final hops = path.hops;
@@ -290,6 +295,7 @@ final class Node {
     bool? isFavorite,
     int? batteryPercent,
     List<int>? route,
+    List<int>? publicKey,
   }) => Node(
     key: key,
     radioId: radioId,
@@ -303,6 +309,7 @@ final class Node {
     batteryPercent: batteryPercent ?? this.batteryPercent,
     canMessage: canMessage,
     route: route ?? this.route,
+    publicKey: publicKey ?? this.publicKey,
   );
 }
 
@@ -464,6 +471,7 @@ final class Message {
     this.replyTo,
     this.isReaction = false,
     this.attempts = 0,
+    this.authenticated = false,
   });
 
   final Conversation conversation;
@@ -498,6 +506,11 @@ final class Message {
   /// Times an outgoing message was sent, retries included.
   final int attempts;
 
+  /// The sender is proven by encryption to the sender's key (MeshCore
+  /// direct messages, Meshtastic public-key direct messages). Channel posts
+  /// never are.
+  final bool authenticated;
+
   RadioId get radioId => conversation.radioId;
   RadioProtocol get protocol => radioId.protocol;
 
@@ -515,5 +528,6 @@ final class Message {
     replyTo: replyTo,
     isReaction: isReaction,
     attempts: attempts,
+    authenticated: authenticated,
   );
 }
