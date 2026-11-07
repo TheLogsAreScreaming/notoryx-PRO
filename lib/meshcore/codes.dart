@@ -12,13 +12,21 @@ abstract final class Cmd {
   static const sendSelfAdvert = 7;
   static const setAdvertName = 8;
   static const syncNextMessage = 10;
+  static const setRadioParams = 11;
+  static const setTxPower = 12;
   static const resetPath = 13;
+  static const setAdvertLatLon = 14;
   static const removeContact = 15;
+  static const reboot = 19;
   static const getBattAndStorage = 20;
   static const deviceQuery = 22;
+  static const sendLogin = 26;
+  static const sendStatusRequest = 27;
   static const getChannel = 31;
   static const sendTracePath = 36;
+  static const setOtherParams = 38;
   static const getStats = 56;
+  static const runCli = 66;
   static const setChannel = 32;
 }
 
@@ -43,6 +51,7 @@ abstract final class Resp {
   static const channelInfo = 18;
   static const stats = 24;
   static const channelData = 27;
+  static const cliReply = 29;
 }
 
 /// Notifications the radio sends at any time (0x80 and up).
@@ -51,6 +60,9 @@ abstract final class Push {
   static const pathUpdated = 0x81;
   static const sendConfirmed = 0x82;
   static const messagesWaiting = 0x83;
+  static const loginSuccess = 0x85;
+  static const loginFail = 0x86;
+  static const statusResponse = 0x87;
   static const rxLog = 0x88;
   static const traceData = 0x89;
   static const newAdvert = 0x8a;

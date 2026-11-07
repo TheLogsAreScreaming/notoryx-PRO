@@ -6,6 +6,7 @@ import '../app/radio_target.dart';
 import '../meshcore/firmware.dart';
 import '../meshtastic/firmware.dart';
 import '../radio/radio.dart';
+import 'admin_screens.dart';
 import 'common.dart';
 import 'diagnostics_screen.dart';
 import 'verify_screen.dart';
@@ -126,6 +127,18 @@ class _ConnectionCard extends StatelessWidget {
             Wrap(
               spacing: 8,
               children: [
+                if (c is MeshCoreConnection &&
+                    c.settings != null &&
+                    phase == SupervisorPhase.connected)
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.tune),
+                    label: Text(l.settings),
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => MeshCoreSettingsScreen(connection: c),
+                      ),
+                    ),
+                  ),
                 if (c.ownCard case final card?)
                   OutlinedButton.icon(
                     icon: const Icon(Icons.qr_code),
