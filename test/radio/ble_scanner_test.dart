@@ -8,7 +8,7 @@ import '../support/fake_ble.dart';
 /// Lets the scanner's async setup run.
 Future<void> flush() async {
   for (var i = 0; i < 10; i++) {
-    await flush();
+    await Future<void>.delayed(Duration.zero);
   }
 }
 
