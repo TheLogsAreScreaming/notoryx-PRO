@@ -25,8 +25,8 @@ Priorities from the competitive analysis ([docs/competitive/](docs/competitive/)
 
 ## Phase 4: what sets it apart
 
-10. **Unified map** (in review): both meshes' nodes, signal bars from SNR, MeshCore routes drawn through known repeaters, and offline use of every tile you've viewed. Downloading whole areas isn't offered for openstreetmap.org tiles (their tile policy forbids bulk downloads); a tile source that allows it can add that later.
-11. **Diagnostics**: live RX packet log, noise floor chart, trace path with saved routes, line of sight with Fresnel zone, and a **delivery diagnosis** sheet explaining why a message didn't arrive (P1).
+10. **Unified map** (done): both meshes' nodes, signal bars from SNR, MeshCore routes drawn through known repeaters, and offline use of every tile you've viewed. Downloading whole areas isn't offered for openstreetmap.org tiles (their tile policy forbids bulk downloads); a tile source that allows it can add that later.
+11. **Diagnostics** (in review): live packet log for both meshes, noise floor / channel activity chart, trace route (MeshCore trace path, Meshtastic traceroute) with each hop's signal, line of sight with Fresnel zone and Earth bulge (no terrain data), and delivery hints explaining why a message may not have arrived (P1). Saving trace results comes later.
 12. **Verified senders**: confirm a contact's key by QR or in person; channel posts from verified keys get a badge, and name clashes are flagged.
 13. **Radio and node admin**, split in two because each half is large:
     - **13a. MeshCore**: radio settings, repeater and room server login, CLI terminal, telemetry history with battery charge estimates.

@@ -54,6 +54,42 @@ class ProtoField {
 
   /// Length-delimited UTF-8 text.
   String get asString => utf8.decode(asBytes, allowMalformed: true);
+
+  /// Values of a repeated `fixed32` field (packed or one per field).
+  List<int> get asFixed32List {
+    if (wireType == WireType.fixed32) return [asInt];
+    final b = asBytes;
+    final d = ByteData.sublistView(b);
+    return [
+      for (var i = 0; i + 4 <= b.length; i += 4) d.getUint32(i, Endian.little),
+    ];
+  }
+
+  /// Values of a repeated `int32` field (packed or one per field).
+  List<int> get asInt32List {
+    if (wireType == WireType.varint) return [asInt32];
+    return [for (final f in readPackedVarints(asBytes)) f.toSigned(32)];
+  }
+}
+
+/// Decodes a packed run of varints.
+List<int> readPackedVarints(Uint8List data) {
+  final out = <int>[];
+  var i = 0;
+  while (i < data.length) {
+    var result = 0;
+    var shift = 0;
+    while (true) {
+      if (i >= data.length) throw const ProtobufException('truncated varint');
+      final b = data[i++];
+      if (shift < 64) result |= (b & 0x7f) << shift;
+      if (b & 0x80 == 0) break;
+      shift += 7;
+      if (shift > 63) throw const ProtobufException('varint too long');
+    }
+    out.add(result);
+  }
+  return out;
 }
 
 /// Reads every field of a message, in order. Unknown fields are kept, so

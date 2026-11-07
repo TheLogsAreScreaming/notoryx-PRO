@@ -318,6 +318,46 @@ class MeshtasticSession {
     return id;
   }
 
+  /// Asks [to] for the route between us (the firmware's traceroute).
+  ///
+  /// Throws [MeshtasticTimeout] if no answer comes within [timeout].
+  Future<RouteDiscovery> traceroute(
+    int to, {
+    int channel = 0,
+    Duration timeout = const Duration(seconds: 60),
+  }) async {
+    final id = _nonZeroId();
+    final answer = events
+        .where(
+          (e) =>
+              e is PacketFromRadio &&
+              e.packet.decoded?.portnum == PortNum.traceroute &&
+              e.packet.decoded?.requestId == id,
+        )
+        .cast<PacketFromRadio>()
+        .first;
+    await _write(
+      ToRadio.packet(
+        MeshPacket(
+          from: 0,
+          to: to,
+          id: id,
+          channel: channel,
+          decoded: DataPayload(
+            portnum: PortNum.traceroute,
+            payload: Uint8List(0),
+            wantResponse: true,
+          ),
+        ),
+      ),
+    );
+    final reply = await answer.timeout(
+      timeout,
+      onTimeout: () => throw const MeshtasticTimeout('traceroute'),
+    );
+    return RouteDiscovery.decode(reply.packet.decoded!.payload);
+  }
+
   /// Tells a USB/TCP node the app is leaving, then stops the heartbeat.
   Future<void> sayGoodbye() async {
     _stopHeartbeat();

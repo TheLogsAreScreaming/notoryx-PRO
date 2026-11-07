@@ -8,6 +8,8 @@ import 'package:notoryx_pro/radio/radio.dart';
 import 'package:notoryx_pro/store/mesh_store.dart';
 import 'package:notoryx_pro/ui/app.dart';
 import 'package:notoryx_pro/ui/conversation_screen.dart';
+import 'package:notoryx_pro/ui/diagnostics_screen.dart';
+import 'package:notoryx_pro/mesh/diagnostics.dart';
 import 'package:notoryx_pro/l10n/app_localizations.dart';
 
 import '../support/scripted_meshtastic.dart';
@@ -274,6 +276,102 @@ void main() {
     await tester.tap(find.text('Show route on map'));
     await tester.pumpAndSettle();
     expect(find.byType(PolylineLayer), findsOneWidget);
+    await tearDownApp(tester, app);
+  });
+
+  testWidgets('packet log lists packets newest first and pauses', (
+    tester,
+  ) async {
+    final log = PacketLog()
+      ..add(
+        PacketLogEntry(
+          time: DateTime(2026, 11, 7, 9, 0, 1),
+          protocol: RadioProtocol.meshcore,
+          kind: 'Advert',
+          path: const PathFacts(hops: 2, snr: 6.5, route: RouteKind.flood),
+          bytes: 120,
+          detail: 'a1 b2',
+        ),
+      )
+      ..add(
+        PacketLogEntry(
+          time: DateTime(2026, 11, 7, 9, 0, 2),
+          protocol: RadioProtocol.meshtastic,
+          kind: 'Encrypted',
+          from: '!0badcafe',
+          encrypted: true,
+        ),
+      );
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(body: PacketLogView(log: log)),
+      ),
+    );
+    final titles = tester
+        .widgetList<ListTile>(find.byType(ListTile))
+        .map((t) => (t.title as Text).data)
+        .toList();
+    expect(titles, ['09:00:02  Encrypted', '09:00:01  Advert']);
+    expect(find.textContaining("can't read (other channel)"), findsOneWidget);
+    expect(find.textContaining('a1 b2'), findsOneWidget);
+    await tester.tap(find.text('Pause'));
+    await tester.pump();
+    log.add(
+      PacketLogEntry(
+        time: DateTime(2026, 11, 7, 9, 0, 3),
+        protocol: RadioProtocol.meshcore,
+        kind: 'Ack',
+      ),
+    );
+    await tester.pump();
+    expect(find.text('1 packets arrived while paused'), findsOneWidget);
+    expect(find.textContaining('Ack'), findsNothing);
+  });
+
+  testWidgets('a failed MeshCore message explains what may be wrong', (
+    tester,
+  ) async {
+    final app = AppController(store: MeshStore.memory());
+    final sam = NodeKey.meshcore('ee' * 32);
+    await tester.runAsync(() async {
+      await app.store.upsertNode(
+        Node(
+          key: sam,
+          radioId: mc,
+          name: 'Sam',
+          lastHeard: DateTime.now().subtract(const Duration(days: 3)),
+          path: const PathFacts(route: RouteKind.flood),
+        ),
+      );
+      final now = DateTime.now();
+      await app.store.addMessage(
+        Message(
+          conversation: DirectConversation(mc, sam),
+          text: 'you there?',
+          outgoing: true,
+          sentAt: now,
+          receivedAt: now,
+          delivery: const Failed('No acknowledgement after 5 tries'),
+        ),
+      );
+    });
+    await tester.pumpWidget(NotoryxProApp(app: app));
+    await settle(tester);
+    await tester.tap(find.text('Sam'));
+    await tester.pumpAndSettle();
+    await settle(tester);
+    await tester.tap(find.text('you there?'));
+    await settle(tester);
+    await tester.pumpAndSettle();
+    expect(find.text('Why it might not have arrived'), findsOneWidget);
+    expect(
+      find.textContaining("haven't been heard for over a day"),
+      findsOneWidget,
+    );
+    expect(find.textContaining('no known route'), findsOneWidget);
+    expect(find.textContaining('have you as a contact'), findsOneWidget);
     await tearDownApp(tester, app);
   });
 
