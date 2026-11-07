@@ -7,6 +7,7 @@ import '../meshcore/firmware.dart';
 import '../meshtastic/firmware.dart';
 import '../radio/radio.dart';
 import 'common.dart';
+import 'diagnostics_screen.dart';
 
 /// Connected radios, and ways to connect more: Bluetooth, Wi-Fi and USB.
 class RadiosScreen extends StatelessWidget {
@@ -124,6 +125,16 @@ class _ConnectionCard extends StatelessWidget {
             Wrap(
               spacing: 8,
               children: [
+                if (radio != null)
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.monitor_heart_outlined),
+                    label: Text(l.diagnostics),
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => DiagnosticsScreen(connection: c),
+                      ),
+                    ),
+                  ),
                 if (phase == SupervisorPhase.reconnecting)
                   OutlinedButton(
                     onPressed: c.tryNow,

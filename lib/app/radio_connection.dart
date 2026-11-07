@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 
 import '../mesh/mesh.dart';
 import '../meshcore/meshcore.dart';
+import '../meshcore/raw_packet.dart';
 import '../meshtastic/meshtastic.dart';
 import '../radio/radio.dart';
 import '../store/mesh_store.dart';
@@ -82,6 +83,33 @@ abstract class RadioConnection extends ChangeNotifier {
   late final LinkSupervisor supervisor;
   late final StreamSubscription<SupervisorStatus> _statusSub;
   Radio? _radio;
+
+  /// Packets heard, for the diagnostics screen.
+  final PacketLog packetLog = PacketLog();
+
+  /// Noise and channel-activity readings over time.
+  final RadioSamples samples = RadioSamples();
+
+  /// The radio's frequency, when known (MeshCore reports it).
+  double? frequencyMHz;
+
+  /// Takes one reading of the radio's noise and activity, if the protocol
+  /// can be asked; null otherwise.
+  Future<RadioSample?> sampleRadio();
+
+  /// Whether [trace] can reach [node] (it must be on this radio, and for
+  /// MeshCore have a known route through repeaters).
+  bool canTrace(Node node);
+
+  /// Traces the route to [node] and reports each hop's signal.
+  Future<TraceResult> trace(Node node);
+
+  /// Display names for this radio's nodes, for labelling hops.
+  Future<Map<NodeKey, Node>> knownNodes() async {
+    final r = _radio;
+    if (r == null) return const {};
+    return {for (final n in await store.nodes(r.id)) n.key: n};
+  }
 
   RadioProtocol get protocol => target.protocol;
 
@@ -210,6 +238,7 @@ class MeshCoreConnection extends RadioConnection {
   @override
   Future<void> setUp() async {
     final h = await session.handshake();
+    frequencyMHz = h.self.frequencyMHz;
     final radio = MeshCoreMapper.radio(h);
     final mapper = _mapper = MeshCoreMapper(radio.id);
     await setRadio(radio);
@@ -254,6 +283,28 @@ class MeshCoreConnection extends RadioConnection {
         );
       case ContactFrame(fromNewAdvert: true):
         await store.upsertNode(mapper.node(frame));
+      case RxLogPush(:final snr, :final rssi, :final raw):
+        final info = MeshCorePacketInfo.parse(raw);
+        packetLog.add(
+          PacketLogEntry(
+            time: DateTime.now(),
+            protocol: RadioProtocol.meshcore,
+            kind: info?.payload.label ?? 'Unreadable packet',
+            path: PathFacts(
+              hops: info?.hops,
+              snr: snr,
+              rssi: rssi,
+              route: info == null
+                  ? RouteKind.unknown
+                  : info.isFlood
+                  ? RouteKind.flood
+                  : RouteKind.direct,
+            ),
+            bytes: raw.length,
+            detail: info == null || info.path.isEmpty ? null : info.pathText,
+            encrypted: true,
+          ),
+        );
       case ContactsFullPush():
         log.add('MeshCore ${link.label}', "radio's contact list is full");
       default:
@@ -286,6 +337,68 @@ class MeshCoreConnection extends RadioConnection {
         await store.setAttempts(id, 1);
         await store.setDelivery(id, const Sent());
     }
+  }
+
+  @override
+  Future<RadioSample?> sampleRadio() async {
+    try {
+      final s = await session.radioStats();
+      final sample = RadioSample(
+        time: DateTime.now(),
+        noiseFloor: s.noiseFloor,
+        lastSnr: s.lastSnr,
+        lastRssi: s.lastRssi,
+      );
+      samples.add(sample);
+      return sample;
+    } on UnsupportedFirmware {
+      return null;
+    }
+  }
+
+  @override
+  bool canTrace(Node node) =>
+      node.radioId == radio?.id && node.route.isNotEmpty;
+
+  /// Out along the route and back to us: hops h0…hk-1 then hk-2…h0.
+  static List<int> tracePath(Node node) {
+    final size = node.routeHashSize;
+    final hops = [
+      for (var i = 0; i + size <= node.route.length; i += size)
+        node.route.sublist(i, i + size),
+    ];
+    return [
+      for (final h in hops) ...h,
+      for (final h in hops.reversed.skip(1)) ...h,
+    ];
+  }
+
+  @override
+  Future<TraceResult> trace(Node node) async {
+    final size = node.routeHashSize;
+    final hopCount = node.route.length ~/ size;
+    final push = await session.trace(tracePath(node), hashSize: size);
+    final known = (await knownNodes()).values.toList();
+    TraceHop hop(int i, double snr) {
+      final prefix = toHex(push.hashes.sublist(i * size, (i + 1) * size));
+      final matches = [
+        for (final n in known)
+          if (n.key.native.startsWith(prefix)) n,
+      ];
+      final n = matches.length == 1 ? matches.single : null;
+      return TraceHop(n?.displayName ?? prefix, snr, node: n);
+    }
+
+    final all = [
+      for (var i = 0; i < push.hopSnrs.length; i++) hop(i, push.hopSnrs[i]),
+      TraceHop(radio?.name ?? 'Your radio', push.finalSnr),
+    ];
+    return TraceResult(
+      target: node.key,
+      towards: all.take(hopCount).toList(),
+      back: all.skip(hopCount).toList(),
+      time: DateTime.now(),
+    );
   }
 
   final Map<int, Completer<SendConfirmedPush>> _waiting = {};
@@ -394,7 +507,8 @@ class MeshtasticConnection extends RadioConnection {
     _subs
       ..add(session.texts.listen((t) => unawaited(_onText(t))))
       ..add(session.deliveries.listen((d) => unawaited(_onDelivery(d))))
-      ..add(session.nodes.listen((n) => unawaited(_onNode(n))));
+      ..add(session.nodes.listen((n) => unawaited(_onNode(n))))
+      ..add(session.events.listen(_onEvent));
   }
 
   final MeshtasticSession session;
@@ -445,6 +559,94 @@ class MeshtasticConnection extends RadioConnection {
     if (radio == null || mapper == null) return;
     final existing = await store.node(radio.id, NodeKey.meshtastic(u.num));
     await store.upsertNode(mapper.update(existing, u));
+  }
+
+  void _onEvent(FromRadio e) {
+    if (e is! PacketFromRadio) return;
+    final p = e.packet;
+    final data = p.decoded;
+    final me = session.myNodeNum;
+    if (data != null && data.portnum == PortNum.telemetry && p.from == me) {
+      try {
+        final local = Telemetry.decode(data.payload).local;
+        if (local != null) {
+          samples.add(
+            RadioSample(
+              time: DateTime.now(),
+              noiseFloor: local.noiseFloor,
+              channelUtilization: local.channelUtilization,
+              airUtilTx: local.airUtilTx,
+            ),
+          );
+        }
+      } on ProtobufException {
+        // Not ours to worry about; skip it.
+      }
+    }
+    if (p.from == me) return;
+    packetLog.add(
+      PacketLogEntry(
+        time: DateTime.now(),
+        protocol: RadioProtocol.meshtastic,
+        kind: data == null ? 'Encrypted' : portName(data.portnum),
+        from: meshtasticNodeId(p.from),
+        to: p.isBroadcast ? null : meshtasticNodeId(p.to),
+        path: PathFacts(
+          hops: p.hopsTaken,
+          snr: p.rxSnr,
+          rssi: p.rxRssi,
+          viaMqtt: p.viaMqtt,
+        ),
+        bytes: data?.payload.length ?? p.encrypted?.length,
+        encrypted: data == null,
+      ),
+    );
+  }
+
+  /// English names for common Meshtastic ports.
+  static String portName(int port) => switch (port) {
+    PortNum.textMessage => 'Text message',
+    PortNum.position => 'Position',
+    PortNum.nodeInfo => 'Node info',
+    PortNum.routing => 'Routing',
+    PortNum.admin => 'Admin',
+    PortNum.telemetry => 'Telemetry',
+    PortNum.traceroute => 'Traceroute',
+    _ => 'Port $port',
+  };
+
+  @override
+  Future<RadioSample?> sampleRadio() async => samples.latest;
+
+  @override
+  bool canTrace(Node node) => node.radioId == radio?.id;
+
+  @override
+  Future<TraceResult> trace(Node node) async {
+    final r = await session.traceroute(node.key.meshtasticNum!);
+    final known = await knownNodes();
+    TraceHop hop(int num, double? snr) {
+      final n = known[NodeKey.meshtastic(num)];
+      return TraceHop(n?.displayName ?? meshtasticNodeId(num), snr, node: n);
+    }
+
+    double? at(List<double?> l, int i) => i < l.length ? l[i] : null;
+    final towardsNums = [...r.route, node.key.meshtasticNum!];
+    final backNums = [...r.routeBack, session.myNodeNum ?? 0];
+    return TraceResult(
+      target: node.key,
+      towards: [
+        for (var i = 0; i < towardsNums.length; i++)
+          hop(towardsNums[i], at(r.snrTowards, i)),
+      ],
+      back: r.snrBack.isEmpty
+          ? const []
+          : [
+              for (var i = 0; i < backNums.length; i++)
+                hop(backNums[i], at(r.snrBack, i)),
+            ],
+      time: DateTime.now(),
+    );
   }
 
   /// Direct messages awaiting news: packet ID -> what's needed to resend.

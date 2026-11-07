@@ -540,6 +540,130 @@ class MeshNodeInfo {
   }
 }
 
+/// `LocalStats` from telemetry: what this node's radio sees.
+class LocalStats {
+  const LocalStats({
+    this.channelUtilization,
+    this.airUtilTx,
+    this.packetsTx,
+    this.packetsRx,
+    this.packetsRxBad,
+    this.onlineNodes,
+    this.noiseFloor,
+  });
+
+  /// Percent of time the channel is busy.
+  final double? channelUtilization;
+
+  /// Percent of the last hour this node spent transmitting.
+  final double? airUtilTx;
+  final int? packetsTx;
+  final int? packetsRx;
+  final int? packetsRxBad;
+  final int? onlineNodes;
+
+  /// Background noise in dBm, when the firmware reports it.
+  final int? noiseFloor;
+
+  static LocalStats decode(Uint8List data) {
+    double? ch, air;
+    int? tx, rx, bad, online, noise;
+    for (final f in readFields(data)) {
+      switch (f.number) {
+        case 2:
+          ch = f.asFloat;
+        case 3:
+          air = f.asFloat;
+        case 4:
+          tx = f.asInt;
+        case 5:
+          rx = f.asInt;
+        case 6:
+          bad = f.asInt;
+        case 7:
+          online = f.asInt;
+        case 15:
+          noise = f.asInt32;
+      }
+    }
+    return LocalStats(
+      channelUtilization: ch,
+      airUtilTx: air,
+      packetsTx: tx,
+      packetsRx: rx,
+      packetsRxBad: bad,
+      onlineNodes: online,
+      noiseFloor: noise,
+    );
+  }
+}
+
+/// `Telemetry`: the variants this app reads.
+class Telemetry {
+  const Telemetry({this.device, this.local});
+
+  final DeviceMetrics? device;
+  final LocalStats? local;
+
+  static Telemetry decode(Uint8List data) {
+    DeviceMetrics? device;
+    LocalStats? local;
+    for (final f in readFields(data)) {
+      switch (f.number) {
+        case 2:
+          device = DeviceMetrics.decode(f.asBytes);
+        case 6:
+          local = LocalStats.decode(f.asBytes);
+      }
+    }
+    return Telemetry(device: device, local: local);
+  }
+}
+
+/// `RouteDiscovery`: a traceroute's answer.
+class RouteDiscovery {
+  const RouteDiscovery({
+    this.route = const [],
+    this.snrTowards = const [],
+    this.routeBack = const [],
+    this.snrBack = const [],
+  });
+
+  /// Nodes between us and the target, in order.
+  final List<int> route;
+
+  /// SNR (dB) of each hop towards the target, including the last; null
+  /// where the firmware didn't know it.
+  final List<double?> snrTowards;
+  final List<int> routeBack;
+  final List<double?> snrBack;
+
+  static double? _snr(int raw) => raw == -128 ? null : raw / 4.0;
+
+  static RouteDiscovery decode(Uint8List data) {
+    final route = <int>[], back = <int>[];
+    final towards = <double?>[], backSnr = <double?>[];
+    for (final f in readFields(data)) {
+      switch (f.number) {
+        case 1:
+          route.addAll(f.asFixed32List);
+        case 2:
+          towards.addAll(f.asInt32List.map(_snr));
+        case 3:
+          back.addAll(f.asFixed32List);
+        case 4:
+          backSnr.addAll(f.asInt32List.map(_snr));
+      }
+    }
+    return RouteDiscovery(
+      route: route,
+      snrTowards: towards,
+      routeBack: back,
+      snrBack: backSnr,
+    );
+  }
+}
+
 /// Channel roles.
 enum ChannelRole { disabled, primary, secondary }
 

@@ -17,6 +17,8 @@ abstract final class Cmd {
   static const getBattAndStorage = 20;
   static const deviceQuery = 22;
   static const getChannel = 31;
+  static const sendTracePath = 36;
+  static const getStats = 56;
   static const setChannel = 32;
 }
 
@@ -39,6 +41,7 @@ abstract final class Resp {
   static const contactMsgV3 = 16;
   static const channelMsgV3 = 17;
   static const channelInfo = 18;
+  static const stats = 24;
   static const channelData = 27;
 }
 
@@ -49,6 +52,7 @@ abstract final class Push {
   static const sendConfirmed = 0x82;
   static const messagesWaiting = 0x83;
   static const rxLog = 0x88;
+  static const traceData = 0x89;
   static const newAdvert = 0x8a;
   static const contactDeleted = 0x8f;
   static const contactsFull = 0x90;

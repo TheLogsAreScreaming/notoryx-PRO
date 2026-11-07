@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
+import '../mesh/diagnostics.dart';
 import '../mesh/model.dart';
 import '../radio/radio.dart';
 
@@ -171,4 +172,18 @@ class SignalBars extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Text for a delivery hint.
+String hintText(BuildContext context, DeliveryHint h) {
+  final l = context.l10n;
+  return switch (h) {
+    DeliveryHint.notHeardRecently => l.hintNotHeardRecently,
+    DeliveryHint.noRoute => l.hintNoRoute,
+    DeliveryHint.longRoute => l.hintLongRoute,
+    DeliveryHint.weakSignal => l.hintWeakSignal,
+    DeliveryHint.needsYourContact => l.hintNeedsYourContact,
+    DeliveryHint.unknownKey => l.hintUnknownKey,
+    DeliveryHint.radioBusy => l.hintRadioBusy,
+  };
 }

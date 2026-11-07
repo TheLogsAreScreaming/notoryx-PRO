@@ -1,23 +1,34 @@
 import 'package:flutter/material.dart';
 
+import '../mesh/diagnostics.dart';
 import '../mesh/model.dart';
 import 'common.dart';
 
 /// Everything known about how one message travelled: route, hops, signal,
 /// internet relay, times, delivery and tries.
 class MessagePathCard extends StatelessWidget {
-  const MessagePathCard({super.key, required this.message});
+  const MessagePathCard({
+    super.key,
+    required this.message,
+    this.hints = const [],
+  });
 
   final Message message;
 
+  /// Likely reasons it didn't arrive (outgoing messages only).
+  final List<DeliveryHint> hints;
+
   /// Shows the card as a bottom sheet.
-  static Future<void> show(BuildContext context, Message message) =>
-      showModalBottomSheet<void>(
-        context: context,
-        showDragHandle: true,
-        isScrollControlled: true,
-        builder: (_) => MessagePathCard(message: message),
-      );
+  static Future<void> show(
+    BuildContext context,
+    Message message, {
+    List<DeliveryHint> hints = const [],
+  }) => showModalBottomSheet<void>(
+    context: context,
+    showDragHandle: true,
+    isScrollControlled: true,
+    builder: (_) => MessagePathCard(message: message, hints: hints),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +102,15 @@ class MessagePathCard extends StatelessWidget {
                   ],
                 ),
               ),
+            if (hints.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text(l.hintsTitle, style: Theme.of(context).textTheme.titleSmall),
+              for (final h in hints)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text('• ${hintText(context, h)}'),
+                ),
+            ],
           ],
         ),
       ),

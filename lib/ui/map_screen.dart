@@ -3,10 +3,12 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../app/app_controller.dart';
+import '../app/radio_connection.dart';
 import '../mesh/mesh.dart';
-import '../radio/radio_link.dart';
+import '../radio/radio.dart';
 import 'common.dart';
 import 'conversation_screen.dart';
+import 'diagnostics_screen.dart';
 import 'map_tiles.dart';
 
 /// Every node with a position, from both meshes, on one map.
@@ -248,6 +250,16 @@ class NodeSheet extends StatelessWidget {
   final List<RouteHop> hops;
   final bool routeShown;
 
+  /// The connected radio that knows this node, if any.
+  RadioConnection? _connection() {
+    final c = app.connectionFor(node.protocol);
+    return c != null &&
+            c.radio?.id == node.radioId &&
+            c.status.phase == SupervisorPhase.connected
+        ? c
+        : null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
@@ -327,6 +339,35 @@ class NodeSheet extends StatelessWidget {
                     icon: const Icon(Icons.route),
                     label: Text(routeShown ? l.mapHideRoute : l.mapShowRoute),
                     onPressed: () => Navigator.pop(context, !routeShown),
+                  ),
+                if (_connection() case final c? when c.canTrace(n))
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.timeline),
+                    label: Text(l.traceRoute),
+                    onPressed: () => showModalBottomSheet<void>(
+                      context: context,
+                      showDragHandle: true,
+                      isScrollControlled: true,
+                      builder: (_) => TraceSheet(connection: c, node: n),
+                    ),
+                  ),
+                if ((_connection()?.radio?.position, n.position) case (
+                  final from?,
+                  final to?,
+                ))
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.landscape_outlined),
+                    label: Text(l.lineOfSight),
+                    onPressed: () => showModalBottomSheet<void>(
+                      context: context,
+                      showDragHandle: true,
+                      isScrollControlled: true,
+                      builder: (_) => LineOfSightSheet(
+                        from: from,
+                        to: to,
+                        frequencyMHz: _connection()?.frequencyMHz ?? 915,
+                      ),
+                    ),
                   ),
               ],
             ),

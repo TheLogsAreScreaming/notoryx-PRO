@@ -2,6 +2,7 @@
 /// MeshCore and Meshtastic.
 library;
 
+export 'diagnostics.dart';
 export 'meshcore_mapper.dart';
 export 'meshtastic_mapper.dart';
 export 'model.dart';

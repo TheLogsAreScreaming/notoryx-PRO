@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../app/app_controller.dart';
 import '../app/radio_connection.dart';
+import '../mesh/diagnostics.dart';
 import '../mesh/model.dart';
 import '../radio/radio.dart';
 import '../store/mesh_store.dart';
@@ -35,6 +36,17 @@ class _ConversationScreenState extends State<ConversationScreen> {
   AppController get app => widget.app;
   Conversation get conversation => widget.conversation;
   String get title => widget.title;
+
+  Future<void> _details(Message m) async {
+    var hints = const <DeliveryHint>[];
+    final c = conversation;
+    if (m.outgoing && c is DirectConversation) {
+      final recipient = await app.store.node(c.radioId, c.node);
+      hints = diagnoseDelivery(m, recipient);
+    }
+    if (!mounted) return;
+    await MessagePathCard.show(context, m, hints: hints);
+  }
 
   /// The connected radio for this conversation, if any.
   RadioConnection? _ready() {
@@ -86,6 +98,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                           onResend: c == null
                               ? null
                               : () => c.resend(stored.id),
+                          onTap: () => _details(stored.message),
                         );
                       },
                     );
@@ -108,9 +121,17 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
 /// One message, with sender, time, delivery and path facts.
 class MessageBubble extends StatelessWidget {
-  const MessageBubble({super.key, required this.message, this.onResend});
+  const MessageBubble({
+    super.key,
+    required this.message,
+    this.onResend,
+    this.onTap,
+  });
 
   final Message message;
+
+  /// Opens details; defaults to the path card without hints.
+  final VoidCallback? onTap;
 
   /// Sends a failed message again; null when its radio isn't connected.
   final VoidCallback? onResend;
@@ -130,7 +151,7 @@ class MessageBubble extends StatelessWidget {
     return Align(
       alignment: m.outgoing ? Alignment.centerRight : Alignment.centerLeft,
       child: GestureDetector(
-        onTap: () => MessagePathCard.show(context, m),
+        onTap: onTap ?? () => MessagePathCard.show(context, m),
         child: Container(
           constraints: const BoxConstraints(maxWidth: 520),
           margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),

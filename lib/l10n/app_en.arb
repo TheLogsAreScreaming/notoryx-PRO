@@ -215,5 +215,112 @@
     }
   },
   "signalUnknown": "Signal unknown",
-  "mapLastHop": "Signal is from the last repeater"
+  "mapLastHop": "Signal is from the last repeater",
+  "diagnostics": "Diagnostics",
+  "diagPackets": "Packets heard",
+  "diagRadio": "Radio",
+  "diagPause": "Pause",
+  "diagResume": "Resume",
+  "diagClear": "Clear",
+  "diagNoPackets": "No packets yet. Everything this radio hears shows up here.",
+  "diagMissed": "{count} packets arrived while paused",
+  "@diagMissed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "diagEncrypted": "can't read (other channel)",
+  "diagNoiseFloor": "Noise floor",
+  "diagChannelBusy": "Channel busy",
+  "diagAirtime": "Your airtime (last hour)",
+  "diagLastSignal": "Last packet",
+  "diagValueDbm": "{value} dBm",
+  "@diagValueDbm": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "diagValuePercent": "{value}%",
+  "@diagValuePercent": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "diagNoSamples": "No readings yet.",
+  "diagMeshCoreSampling": "Read from the radio every 15 seconds while this screen is open.",
+  "diagMeshtasticSampling": "Meshtastic nodes report these every few minutes on their own.",
+  "diagStatsUnsupported": "This radio's firmware doesn't report radio statistics.",
+  "traceRoute": "Trace route",
+  "traceRunning": "Tracing… this can take up to a minute.",
+  "traceTowards": "Towards {name}",
+  "@traceTowards": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "traceBack": "Back to you",
+  "traceFailed": "The trace didn't come back: {reason}",
+  "@traceFailed": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "traceWeakest": "Weakest hop: {name}",
+  "@traceWeakest": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "traceNotReported": "not reported",
+  "lineOfSight": "Line of sight",
+  "losDistance": "Distance",
+  "losFresnel": "Fresnel zone at mid-path",
+  "losBulge": "Earth's curve at mid-path",
+  "losClearance": "Clear height needed at mid-path",
+  "losMetres": "{value} m",
+  "@losMetres": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "losKm": "{value} km",
+  "@losKm": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "losAt": "At {mhz} MHz",
+  "@losAt": {
+    "placeholders": {
+      "mhz": {
+        "type": "String"
+      }
+    }
+  },
+  "losExplain": "Both antennas need to clear any hill, tree or building at the midpoint by this much. This uses no terrain data, so it can't see hills: check a map.",
+  "losNeedPositions": "Needs a position for your radio and for this node.",
+  "hintsTitle": "Why it might not have arrived",
+  "hintNotHeardRecently": "They haven't been heard for over a day; they may be out of range or switched off.",
+  "hintNoRoute": "There's no known route, so it had to flood through the mesh.",
+  "hintLongRoute": "The route has many hops; each one can lose it.",
+  "hintWeakSignal": "The signal on the last hop is weak.",
+  "hintNeedsYourContact": "MeshCore can only deliver a direct message if they have you as a contact. Ask them to add you, or send an advert.",
+  "hintUnknownKey": "Their radio doesn't know your key yet. Wait until your node info reaches them, then send again.",
+  "hintRadioBusy": "Your radio was busy or at its sending limit; try again in a minute."
 }

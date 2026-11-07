@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:math';
 import 'dart:typed_data';
 
 import '../radio/connection_log.dart';
@@ -338,6 +339,43 @@ class MeshCoreSession {
             return false;
         }
       },
+    );
+  }
+
+  /// Radio statistics: noise floor, last signal, airtime (protocol 8+).
+  Future<RadioStatsFrame> radioStats() {
+    requireFeature(MeshCoreFeature.stats);
+    return _expect<RadioStatsFrame>(MeshCoreCommands.getStats(1));
+  }
+
+  /// Packet counters (protocol 8+).
+  Future<PacketStatsFrame> packetStats() {
+    requireFeature(MeshCoreFeature.stats);
+    return _expect<PacketStatsFrame>(MeshCoreCommands.getStats(2));
+  }
+
+  /// Sends a trace along [path] and waits for it to come back.
+  ///
+  /// Throws [MeshCoreTimeout] if it doesn't return within the radio's
+  /// estimate plus [extra].
+  Future<TraceDataPush> trace(
+    List<int> path, {
+    int hashSize = 1,
+    Duration extra = const Duration(seconds: 5),
+    Random? random,
+  }) async {
+    final tag = (random ?? Random()).nextInt(0x7fffffff) + 1;
+    final back = pushes
+        .where((f) => f is TraceDataPush && f.tag == tag)
+        .cast<TraceDataPush>()
+        .first;
+    final sent = await _expect<SentFrame>(
+      MeshCoreCommands.sendTracePath(tag: tag, path: path, hashSize: hashSize),
+    );
+    final wait = Duration(milliseconds: sent.timeoutMs) + extra;
+    return back.timeout(
+      wait,
+      onTimeout: () => throw const MeshCoreTimeout(Cmd.sendTracePath),
     );
   }
 

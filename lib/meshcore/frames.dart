@@ -366,6 +366,90 @@ final class ContactsFullPush extends MeshCoreFrame {
   bool get isPush => true;
 }
 
+/// Radio statistics (reply to GET_STATS type 1).
+final class RadioStatsFrame extends MeshCoreFrame {
+  const RadioStatsFrame({
+    required this.noiseFloor,
+    required this.lastRssi,
+    required this.lastSnr,
+    required this.txAirSeconds,
+    required this.rxAirSeconds,
+  });
+
+  /// Background noise in dBm.
+  final int noiseFloor;
+  final int lastRssi;
+  final double lastSnr;
+
+  /// Total time spent transmitting / receiving since boot.
+  final int txAirSeconds;
+  final int rxAirSeconds;
+}
+
+/// Packet counters (reply to GET_STATS type 2).
+final class PacketStatsFrame extends MeshCoreFrame {
+  const PacketStatsFrame({
+    required this.received,
+    required this.sent,
+    required this.sentFlood,
+    required this.sentDirect,
+    required this.receivedFlood,
+    required this.receivedDirect,
+    required this.receiveErrors,
+  });
+
+  final int received;
+  final int sent;
+  final int sentFlood;
+  final int sentDirect;
+  final int receivedFlood;
+  final int receivedDirect;
+  final int receiveErrors;
+}
+
+/// Core statistics (reply to GET_STATS type 0).
+final class CoreStatsFrame extends MeshCoreFrame {
+  const CoreStatsFrame({
+    required this.batteryMv,
+    required this.uptimeSeconds,
+    required this.errorFlags,
+    required this.queueLength,
+  });
+
+  final int batteryMv;
+  final int uptimeSeconds;
+  final int errorFlags;
+  final int queueLength;
+}
+
+/// A trace came back: the SNR each hop heard it at (push).
+final class TraceDataPush extends MeshCoreFrame {
+  const TraceDataPush({
+    required this.tag,
+    required this.hashSize,
+    required this.hashes,
+    required this.hopSnrs,
+    required this.finalSnr,
+  });
+
+  final int tag;
+
+  /// Bytes per hop hash.
+  final int hashSize;
+
+  /// Repeater hashes along the trace, in order.
+  final Uint8List hashes;
+
+  /// SNR (dB) at which each repeater heard the trace.
+  final List<double> hopSnrs;
+
+  /// SNR at our radio for the last hop back.
+  final double finalSnr;
+
+  @override
+  bool get isPush => true;
+}
+
 /// A frame this app doesn't decode yet.
 final class UnknownFrame extends MeshCoreFrame {
   const UnknownFrame(this.code, this.data);
@@ -492,8 +576,62 @@ MeshCoreFrame _decode(int code, ByteReader r, Uint8List data) {
       return ContactDeletedPush(r.bytes(MeshCoreLimits.publicKey));
     case Push.contactsFull:
       return const ContactsFullPush();
+    case Resp.stats:
+      return _stats(r);
+    case Push.traceData:
+      {
+        r.skip(1);
+        final pathLen = r.u8();
+        final flags = r.u8();
+        final tag = r.u32();
+        r.skip(4); // auth code
+        final hashes = r.bytes(pathLen);
+        final size = 1 << (flags & 3);
+        final snrs = [for (var i = 0; i < pathLen ~/ size; i++) _snr(r.i8())];
+        return TraceDataPush(
+          tag: tag,
+          hashSize: size,
+          hashes: hashes,
+          hopSnrs: snrs,
+          finalSnr: _snr(r.i8()),
+        );
+      }
     default:
       return UnknownFrame(code, Uint8List.fromList(data));
+  }
+}
+
+MeshCoreFrame _stats(ByteReader r) {
+  final type = r.u8();
+  switch (type) {
+    case 0:
+      return CoreStatsFrame(
+        batteryMv: r.u16(),
+        uptimeSeconds: r.u32(),
+        errorFlags: r.u16(),
+        queueLength: r.u8(),
+      );
+    case 1:
+      final noise = ByteData(2)..setUint16(0, r.u16());
+      return RadioStatsFrame(
+        noiseFloor: noise.getInt16(0),
+        lastRssi: r.i8(),
+        lastSnr: _snr(r.i8()),
+        txAirSeconds: r.u32(),
+        rxAirSeconds: r.u32(),
+      );
+    case 2:
+      return PacketStatsFrame(
+        received: r.u32(),
+        sent: r.u32(),
+        sentFlood: r.u32(),
+        sentDirect: r.u32(),
+        receivedFlood: r.u32(),
+        receivedDirect: r.u32(),
+        receiveErrors: r.u32(),
+      );
+    default:
+      return UnknownFrame(Resp.stats, Uint8List.fromList([type]));
   }
 }
 

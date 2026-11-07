@@ -143,6 +143,33 @@ abstract final class MeshCoreCommands {
     return w.toBytes();
   }
 
+  /// `GET_STATS` for [type]: 0 core, 1 radio, 2 packets (protocol 8+).
+  static Uint8List getStats(int type) =>
+      Uint8List.fromList([Cmd.getStats, type]);
+
+  /// `SEND_TRACE_PATH` along [path] (repeater hashes of [hashSize] bytes:
+  /// 1, 2, 4 or 8). The radio replies SENT with [tag], then a TRACE_DATA
+  /// push when the trace comes back.
+  static Uint8List sendTracePath({
+    required int tag,
+    required List<int> path,
+    int hashSize = 1,
+    int auth = 0,
+  }) {
+    const sizes = {1: 0, 2: 1, 4: 2, 8: 3};
+    final flags = sizes[hashSize];
+    if (flags == null || path.isEmpty || path.length % hashSize != 0) {
+      throw ArgumentError.value(path, 'path', 'bad trace path');
+    }
+    final w = ByteWriter()
+      ..u8(Cmd.sendTracePath)
+      ..u32(tag)
+      ..u32(auth)
+      ..u8(flags)
+      ..bytes(path);
+    return _checked(w);
+  }
+
   /// `REMOVE_CONTACT` by full public key.
   static Uint8List removeContact(List<int> publicKey) =>
       Uint8List.fromList([Cmd.removeContact, ..._key(publicKey)]);
