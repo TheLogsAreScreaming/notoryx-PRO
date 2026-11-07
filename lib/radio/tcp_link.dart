@@ -6,11 +6,8 @@ import 'connection_log.dart';
 import 'radio_link.dart';
 
 /// Opens a socket; replaceable in tests.
-typedef SocketConnector = Future<Socket> Function(
-  String host,
-  int port,
-  Duration timeout,
-);
+typedef SocketConnector =
+    Future<Socket> Function(String host, int port, Duration timeout);
 
 Future<Socket> _connectSocket(String host, int port, Duration timeout) =>
     Socket.connect(host, port, timeout: timeout);
