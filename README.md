@@ -39,4 +39,4 @@ flutter test
 
 ## License
 
-Not chosen yet. The Meshtastic protobuf definitions are GPL-3.0, so code generated from them is likely to make the app GPL-3.0 as a whole; this needs deciding before the Meshtastic layer lands.
+NOTORYX PRO is free software under the [GNU General Public License v3.0](LICENSE). The Meshtastic protocol definitions it uses are GPL-3.0 too, so the app as a whole is GPL-3.0: anyone can use, study, share and change it, and anyone who shares a changed version must share its source under the same license.
