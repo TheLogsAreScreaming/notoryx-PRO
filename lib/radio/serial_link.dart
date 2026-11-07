@@ -19,8 +19,8 @@ abstract class SerialPortHandle {
   Future<void> close();
 }
 
-/// Opens a serial port by its [SerialPortInfo.id].
-typedef SerialOpener = Future<SerialPortHandle> Function(String id);
+/// Opens the serial port described by a [SerialPortInfo].
+typedef SerialOpener = Future<SerialPortHandle> Function(SerialPortInfo port);
 
 /// A USB serial device that might be a radio.
 class SerialPortInfo {
@@ -85,7 +85,7 @@ class SerialRadioLink extends BaseRadioLink {
     setState(LinkState.connecting);
     _log?.add(_source, 'opening');
     try {
-      final handle = await _opener(port.id);
+      final handle = await _opener(port);
       _handle = handle;
       _subscription = handle.input.listen(
         deliver,
@@ -146,6 +146,23 @@ class SerialRadioLink extends BaseRadioLink {
   }
 }
 
+/// Picks the device for [port] from [devices]: the same ID if still
+/// present, otherwise the only device with the same vendor and product IDs.
+T? matchUsbDevice<T>(
+  SerialPortInfo port,
+  List<({String id, int? vendorId, int? productId, T value})> devices,
+) {
+  for (final d in devices) {
+    if (d.id == port.id) return d.value;
+  }
+  if (port.vendorId == null || port.productId == null) return null;
+  final same = [
+    for (final d in devices)
+      if (d.vendorId == port.vendorId && d.productId == port.productId) d,
+  ];
+  return same.length == 1 ? same.single.value : null;
+}
+
 /// USB serial ports on Android, through the vendored usb_serial plugin.
 ///
 /// Other platforms report no ports for now; Mac USB support comes later.
@@ -173,13 +190,16 @@ class UsbSerialPorts {
     ];
   }
 
-  /// Opens the port with [id] at [baudRate], 8 data bits, no parity.
-  Future<SerialPortHandle> open(String id) async {
+  /// Opens [port] at [baudRate], 8 data bits, no parity.
+  ///
+  /// Android gives a replugged device a new ID, so if the old ID is gone the
+  /// port is found again by its USB vendor and product IDs.
+  Future<SerialPortHandle> open(SerialPortInfo port) async {
     final devices = await UsbSerial.listDevices();
-    UsbDevice? device;
-    for (final d in devices) {
-      if ('${d.deviceId}' == id) device = d;
-    }
+    final device = matchUsbDevice(port, [
+      for (final d in devices)
+        (id: '${d.deviceId}', vendorId: d.vid, productId: d.pid, value: d),
+    ]);
     if (device == null) throw const LinkException('The radio was unplugged');
     final port = await device.create();
     if (port == null || !await port.open()) {
