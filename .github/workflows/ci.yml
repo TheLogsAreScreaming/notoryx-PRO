@@ -28,9 +28,7 @@ jobs:
       - name: Check for meshcore-open code
         run: python3 -I tools/check_independence.py "$RUNNER_TEMP/meshcore-open" .
 
-  platforms:
-    # Until the platform folders are committed, generate them here so the
-    # native build is checked and the folders can be downloaded and committed.
+  android-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -42,20 +40,20 @@ jobs:
         with:
           channel: stable
           cache: true
-      - name: Generate missing platform folders
-        run: |
-          if [ ! -d android ]; then
-            flutter create --project-name notoryx_pro --org com.bastionmesh \
-              --platforms=android,ios,macos .
-            git checkout -- lib test pubspec.yaml analysis_options.yaml
-          fi
-      - run: flutter build apk --debug
-      - uses: actions/upload-artifact@v4
+      - run: flutter pub get
+      - name: Build debug APK (checks the Android project compiles)
+        run: flutter build apk --debug
+
+  apple-build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
         with:
-          name: platform-folders
-          path: |
-            android/
-            ios/
-            macos/
-            pubspec.lock
-          retention-days: 7
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Build Mac app (checks entitlements and Xcode project)
+        run: flutter build macos --debug
+      - name: Build iPhone app without signing
+        run: flutter build ios --debug --no-codesign

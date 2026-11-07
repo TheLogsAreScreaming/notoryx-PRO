@@ -4,8 +4,8 @@ One pull request per step. Each step lands with tests and a green CI before the 
 
 ## Phase 1: foundations
 
-1. **Project setup** (this commit): starter app, CI, independence check, docs.
-2. **Platform folders**: commit Android, iPhone and Mac folders with Bluetooth, USB, network and notification permissions; silver-and-orange NOTORYX PRO icon.
+1. **Project setup** (done): starter app, CI, independence check, docs.
+2. **Platform folders** (done): commit Android, iPhone and Mac folders with Bluetooth, USB, network and notification permissions; blue NOTORYX PRO icon.
 3. **Radio link layer** shared by both protocols: one `RadioLink` interface with Bluetooth, USB serial and TCP links, a scanner that tells MeshCore and Meshtastic radios apart, and a redacted connection log.
 
 ## Phase 2: two protocols
