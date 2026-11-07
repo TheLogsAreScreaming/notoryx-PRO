@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 
 import '../mesh/model.dart';
 import '../radio/radio_link.dart';
+import 'database.steps.dart';
 
 part 'database.g.dart';
 
@@ -96,6 +97,9 @@ class Messages extends Table {
   IntColumn get replyTo => integer().nullable()();
   BoolColumn get isReaction => boolean().withDefault(const Constant(false))();
 
+  /// Times this outgoing message was sent (retries included). Schema v2.
+  IntColumn get attempts => integer().withDefault(const Constant(0))();
+
   /// Identifies a received message so a repeat isn't stored twice.
   TextColumn get dedupeKey => text().nullable().unique()();
 }
@@ -120,13 +124,16 @@ class MeshDatabase extends _$MeshDatabase {
   MeshDatabase(super.e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) => m.createAll(),
-    onUpgrade: (m, from, to) async {
-      // Version 1 is the first schema; later versions add steps here.
-    },
+    onUpgrade: stepByStep(
+      from1To2: (m, schema) async {
+        // v2: count send attempts per message.
+        await m.addColumn(schema.messages, schema.messages.attempts);
+      },
+    ),
   );
 }

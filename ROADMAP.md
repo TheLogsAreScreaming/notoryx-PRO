@@ -20,8 +20,8 @@ Priorities from the competitive analysis ([docs/competitive/](docs/competitive/)
 
 ## Phase 3: first test build
 
-8. **Core screens** (in review): connect (both protocols), a unified inbox by person and channel with a protocol badge per thread, conversation, node list. **Every UI string through `gen_l10n`** from the start (P1; English first).
-9. **Messaging that works**: send/receive on both with delivery ticks and **retries matching the official apps** (P0): MeshCore direct attempts, then reset path, then flood; Meshtastic `want_ack` with resend. A **message path card** showing how each message arrived (P1). **First test build (0.1.0-test.1)** published to notoryx-PRO-releases, tried on a real MeshCore and a real Meshtastic radio.
+8. **Core screens** (done): connect (both protocols), a unified inbox by person and channel with a protocol badge per thread, conversation, node list. **Every UI string through `gen_l10n`** from the start (P1; English first).
+9. **Messaging that works** (in review): send/receive on both with delivery ticks and **retries matching the official apps** (P0): MeshCore direct attempts, then reset path, then flood; Meshtastic `want_ack` with resend. A **message path card** showing how each message arrived (P1). **First test build (0.1.0-test.1)** published to notoryx-PRO-releases, tried on a real MeshCore and a real Meshtastic radio.
 
 ## Phase 4: what sets it apart
 

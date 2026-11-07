@@ -449,6 +449,7 @@ final class Message {
     this.nativeId,
     this.replyTo,
     this.isReaction = false,
+    this.attempts = 0,
   });
 
   final Conversation conversation;
@@ -480,6 +481,9 @@ final class Message {
   /// An emoji reaction to [replyTo].
   final bool isReaction;
 
+  /// Times an outgoing message was sent, retries included.
+  final int attempts;
+
   RadioId get radioId => conversation.radioId;
   RadioProtocol get protocol => radioId.protocol;
 
@@ -496,5 +500,6 @@ final class Message {
     nativeId: nativeId,
     replyTo: replyTo,
     isReaction: isReaction,
+    attempts: attempts,
   );
 }

@@ -4,6 +4,7 @@ import '../radio/radio.dart';
 import '../store/mesh_store.dart';
 import 'radio_connection.dart';
 import 'radio_target.dart';
+import 'retry_policy.dart';
 
 /// App-wide state: the store and the connected radios (at most one per
 /// protocol, so a MeshCore and a Meshtastic radio can be used together).
@@ -13,12 +14,16 @@ class AppController extends ChangeNotifier {
     this.links = const LinkFactory(),
     ConnectionLog? log,
     this.retryDelays,
+    this.retries = const RetryPolicy(),
   }) : log = log ?? ConnectionLog();
 
   final MeshStore store;
   final LinkFactory links;
   final ConnectionLog log;
   final List<Duration>? retryDelays;
+
+  /// Delivery retry settings for every connection.
+  final RetryPolicy retries;
   final Map<RadioProtocol, RadioConnection> _connections = {};
 
   /// Connected (or reconnecting) radios.
@@ -38,6 +43,7 @@ class AppController extends ChangeNotifier {
       log: log,
       links: links,
       retryDelays: retryDelays,
+      retries: retries,
     );
     c.addListener(notifyListeners);
     _connections[target.protocol] = c;

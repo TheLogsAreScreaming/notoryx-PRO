@@ -8,6 +8,7 @@ import '../meshtastic/meshtastic.dart';
 import '../radio/radio.dart';
 import '../store/mesh_store.dart';
 import 'radio_target.dart';
+import 'retry_policy.dart';
 
 /// One connected radio: its link, protocol session and supervisor, with
 /// everything it hears saved to the [MeshStore].
@@ -21,6 +22,7 @@ abstract class RadioConnection extends ChangeNotifier {
     required this.store,
     required this.log,
     List<Duration>? retryDelays,
+    this.retries = const RetryPolicy(),
   }) {
     supervisor = LinkSupervisor(
       link,
@@ -47,6 +49,7 @@ abstract class RadioConnection extends ChangeNotifier {
     required ConnectionLog log,
     LinkFactory links = const LinkFactory(),
     List<Duration>? retryDelays,
+    RetryPolicy retries = const RetryPolicy(),
   }) {
     final link = links.create(target, log: log);
     return switch (target.protocol) {
@@ -56,6 +59,7 @@ abstract class RadioConnection extends ChangeNotifier {
         store: store,
         log: log,
         retryDelays: retryDelays,
+        retries: retries,
       ),
       RadioProtocol.meshtastic => MeshtasticConnection(
         target: target,
@@ -63,6 +67,7 @@ abstract class RadioConnection extends ChangeNotifier {
         store: store,
         log: log,
         retryDelays: retryDelays,
+        retries: retries,
       ),
     };
   }
@@ -71,6 +76,9 @@ abstract class RadioConnection extends ChangeNotifier {
   final RadioLink link;
   final MeshStore store;
   final ConnectionLog log;
+
+  /// How hard to try delivering direct messages.
+  final RetryPolicy retries;
   late final LinkSupervisor supervisor;
   late final StreamSubscription<SupervisorStatus> _statusSub;
   Radio? _radio;
@@ -124,17 +132,43 @@ abstract class RadioConnection extends ChangeNotifier {
         from: radio.self,
       ),
     ))!;
-    try {
-      await transmit(id, conversation, text);
-    } on Object catch (e) {
-      await store.setDelivery(id, Failed(describeError(e)));
-    }
+    await _transmitSafely(id, conversation, text, now);
     return id;
   }
 
-  /// Protocol-specific sending; records the native ID and first state.
+  /// Sends a failed message again, keeping its place in the conversation.
+  Future<void> resend(int id) async {
+    final stored = await store.message(id);
+    final radio = _radio;
+    if (stored == null || !stored.message.outgoing || radio == null) return;
+    final m = stored.message;
+    if (m.radioId != radio.id || m.delivery is! Failed) return;
+    await store.setDelivery(id, const Pending());
+    await _transmitSafely(id, m.conversation, m.text, m.sentAt);
+  }
+
+  Future<void> _transmitSafely(
+    int id,
+    Conversation conversation,
+    String text,
+    DateTime sentAt,
+  ) async {
+    try {
+      await transmit(id, conversation, text, sentAt);
+    } on Object catch (e) {
+      await store.setDelivery(id, Failed(describeError(e)));
+    }
+  }
+
+  /// Protocol-specific sending: records the native ID and first state,
+  /// then keeps retrying in the background as [retries] says.
   @protected
-  Future<void> transmit(int id, Conversation conversation, String text);
+  Future<void> transmit(
+    int id,
+    Conversation conversation,
+    String text,
+    DateTime sentAt,
+  );
 
   /// Text for an error, for a failed message.
   static String describeError(Object e) => switch (e) {
@@ -159,6 +193,7 @@ class MeshCoreConnection extends RadioConnection {
     required super.store,
     required super.log,
     super.retryDelays,
+    super.retries,
   }) : session = MeshCoreSession(link, log: log) {
     _subs
       ..add(session.messages.listen((f) => unawaited(_onMessage(f))))
@@ -210,6 +245,8 @@ class MeshCoreConnection extends RadioConnection {
     if (radio == null || mapper == null) return;
     switch (frame) {
       case SendConfirmedPush(:final ackCode):
+        final waiter = _waiting[ackCode];
+        if (waiter != null && !waiter.isCompleted) waiter.complete(frame);
         await store.setDeliveryByNativeId(
           radio.id,
           ackCode,
@@ -225,18 +262,112 @@ class MeshCoreConnection extends RadioConnection {
   }
 
   @override
-  Future<void> transmit(int id, Conversation conversation, String text) async {
+  Future<void> transmit(
+    int id,
+    Conversation conversation,
+    String text,
+    DateTime sentAt,
+  ) async {
     switch (conversation) {
       case DirectConversation(:final node):
-        final sent = await session.sendText(
-          publicKey: fromHex(node.native),
-          text: text,
+        final key = fromHex(node.native);
+        // First attempt now (errors reach the caller); the rest run on.
+        final first = await _attempt(id, key, text, sentAt, 0);
+        unawaited(
+          _keepTrying(id, key, text, sentAt, first).catchError((Object e) {
+            return store.setDelivery(
+              id,
+              Failed(RadioConnection.describeError(e)),
+            );
+          }),
         );
-        await store.setNativeId(id, sent.ackCode);
-        await store.setDelivery(id, MeshCoreMapper.sent(sent));
       case ChannelConversation(:final index):
-        await session.sendChannelText(channel: index, text: text);
+        await session.sendChannelText(channel: index, text: text, at: sentAt);
+        await store.setAttempts(id, 1);
         await store.setDelivery(id, const Sent());
+    }
+  }
+
+  final Map<int, Completer<SendConfirmedPush>> _waiting = {};
+
+  Future<SentFrame> _attempt(
+    int id,
+    List<int> key,
+    String text,
+    DateTime sentAt,
+    int attempt,
+  ) async {
+    final sent = await session.sendText(
+      publicKey: key,
+      text: text,
+      at: sentAt,
+      attempt: attempt.clamp(0, 3),
+    );
+    _waiting[sent.ackCode] = Completer<SendConfirmedPush>();
+    await store.setNativeId(id, sent.ackCode);
+    await store.setAttempts(id, attempt + 1);
+    await store.setDelivery(id, MeshCoreMapper.sent(sent));
+    return sent;
+  }
+
+  /// Waits for any attempt's acknowledgement; after the direct attempts,
+  /// resets the route and floods, like the official MeshCore app.
+  Future<void> _keepTrying(
+    int id,
+    List<int> key,
+    String text,
+    DateTime sentAt,
+    SentFrame first,
+  ) async {
+    final acks = <int>{first.ackCode};
+    var sent = first;
+    var attempt = 0;
+    var flooding = first.flood;
+    var floodsLeft = retries.floodAttempts;
+    var directLeft = flooding ? 0 : retries.directAttempts - 1;
+    if (flooding) floodsLeft--;
+    while (true) {
+      if (await _confirmed(id, acks, retries.waitFor(sent.timeoutMs))) return;
+      if (!flooding && directLeft == 0) {
+        log.add('MeshCore ${link.label}', 'no ack on direct path; flooding');
+        await session.resetPath(key);
+        flooding = true;
+      }
+      if (flooding && floodsLeft <= 0) break;
+      attempt++;
+      sent = await _attempt(id, key, text, sentAt, attempt);
+      acks.add(sent.ackCode);
+      if (flooding || sent.flood) {
+        flooding = true;
+        floodsLeft--;
+      } else {
+        directLeft--;
+      }
+    }
+    if (await _confirmed(id, acks, Duration.zero)) return;
+    await store.setDelivery(
+      id,
+      Failed('No acknowledgement after ${attempt + 1} tries'),
+    );
+  }
+
+  /// Whether any attempt in [acks] is confirmed within [wait]; if so the
+  /// message is marked delivered (an early attempt's ack counts too).
+  Future<bool> _confirmed(int id, Set<int> acks, Duration wait) async {
+    final waits = [
+      for (final a in acks)
+        if (_waiting[a] case final c?) c.future,
+    ];
+    if (waits.isEmpty) return false;
+    try {
+      final push = await Future.any(waits).timeout(wait);
+      for (final a in acks) {
+        _waiting.remove(a);
+      }
+      await store.setDelivery(id, MeshCoreMapper.confirmed(push));
+      return true;
+    } on TimeoutException {
+      return false;
     }
   }
 
@@ -258,6 +389,7 @@ class MeshtasticConnection extends RadioConnection {
     required super.store,
     required super.log,
     super.retryDelays,
+    super.retries,
   }) : session = MeshtasticSession(link, log: log) {
     _subs
       ..add(session.texts.listen((t) => unawaited(_onText(t))))
@@ -298,6 +430,7 @@ class MeshtasticConnection extends RadioConnection {
   Future<void> _onDelivery(DeliveryUpdate d) async {
     final radio = this.radio;
     if (radio == null) return;
+    if (await _maybeResend(d)) return;
     final state = MeshtasticMapper.delivery(d);
     // The node can answer before the packet ID is saved; try once more.
     if (!await store.setDeliveryByNativeId(radio.id, d.packetId, state)) {
@@ -314,23 +447,72 @@ class MeshtasticConnection extends RadioConnection {
     await store.upsertNode(mapper.update(existing, u));
   }
 
+  /// Direct messages awaiting news: packet ID -> what's needed to resend.
+  final Map<int, _PendingDm> _dms = {};
+
   @override
-  Future<void> transmit(int id, Conversation conversation, String text) async {
-    final packetId = switch (conversation) {
-      DirectConversation(:final node) => await session.sendText(
-        text,
-        to: node.meshtasticNum!,
-      ),
-      ChannelConversation(:final index) => await session.sendText(
-        text,
-        channel: index,
-      ),
-    };
+  Future<void> transmit(
+    int id,
+    Conversation conversation,
+    String text,
+    DateTime sentAt,
+  ) async {
+    switch (conversation) {
+      case DirectConversation(:final node):
+        await _sendDm(id, node.meshtasticNum!, text, attempt: 1);
+      case ChannelConversation(:final index):
+        final packetId = await session.sendText(text, channel: index);
+        await store.setNativeId(id, packetId);
+        await store.setAttempts(id, 1);
+    }
+  }
+
+  Future<void> _sendDm(
+    int id,
+    int to,
+    String text, {
+    required int attempt,
+  }) async {
+    final packetId = await session.sendText(text, to: to);
+    final pending = _PendingDm(id, to, text, attempt);
+    _dms[packetId] = pending;
     await store.setNativeId(id, packetId);
+    await store.setAttempts(id, attempt);
+    pending.timer = Timer(retries.meshtasticTimeout, () {
+      if (_dms.remove(packetId) != null) {
+        unawaited(store.setDelivery(id, const Failed('No acknowledgement')));
+      }
+    });
+  }
+
+  /// Retries a direct message the mesh couldn't deliver; true if resent.
+  Future<bool> _maybeResend(DeliveryUpdate d) async {
+    final dm = _dms[d.packetId];
+    if (dm == null || d.status == DeliveryStatus.queued) return false;
+    _dms.remove(d.packetId);
+    dm.timer?.cancel();
+    if (d.status != DeliveryStatus.failed) return false;
+    const retryable = {
+      RoutingError.maxRetransmit,
+      RoutingError.timeout,
+      RoutingError.noResponse,
+    };
+    if (!retryable.contains(d.error) ||
+        dm.attempt > retries.meshtasticResends) {
+      return false;
+    }
+    log.add('Meshtastic ${link.label}', 'no ack; sending again');
+    await store.setDelivery(dm.id, const Pending());
+    await _sendDm(dm.id, dm.to, dm.text, attempt: dm.attempt + 1);
+    return true;
   }
 
   @override
   Future<void> close() async {
+    for (final dm in _dms.values) {
+      dm.timer?.cancel();
+    }
+    _dms.clear();
     await session.sayGoodbye();
     for (final s in _subs) {
       await s.cancel();
@@ -338,4 +520,14 @@ class MeshtasticConnection extends RadioConnection {
     await session.dispose();
     await super.close();
   }
+}
+
+class _PendingDm {
+  _PendingDm(this.id, this.to, this.text, this.attempt);
+
+  final int id;
+  final int to;
+  final String text;
+  final int attempt;
+  Timer? timer;
 }

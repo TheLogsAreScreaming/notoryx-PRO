@@ -341,6 +341,10 @@ class MeshCoreSession {
     );
   }
 
+  /// Forgets the route to a contact so the next message floods.
+  Future<void> resetPath(List<int> publicKey) =>
+      _expect<OkFrame>(MeshCoreCommands.resetPath(publicKey));
+
   /// Sends this radio's advert, flooded or to neighbours only.
   Future<void> sendAdvert({bool flood = false}) =>
       _expect<OkFrame>(MeshCoreCommands.sendSelfAdvert(flood: flood));

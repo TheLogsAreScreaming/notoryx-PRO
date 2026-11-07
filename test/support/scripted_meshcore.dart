@@ -212,12 +212,16 @@ abstract final class RadioFrames {
     return w.toBytes();
   }
 
-  static Uint8List sent({int ack = 0xdeadbeef, bool flood = false}) =>
+  static Uint8List sent({
+    int ack = 0xdeadbeef,
+    bool flood = false,
+    int timeoutMs = 9000,
+  }) =>
       (ByteWriter()
             ..u8(6)
             ..u8(flood ? 1 : 0)
             ..u32(ack)
-            ..u32(9000))
+            ..u32(timeoutMs))
           .toBytes();
 
   static Uint8List sendConfirmed(int ack) =>

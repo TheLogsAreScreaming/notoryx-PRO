@@ -87,5 +87,27 @@
   "agoHours": "{count} h ago",
   "@agoHours": {"placeholders": {"count": {"type": "int"}}},
   "agoDays": "{count} d ago",
-  "@agoDays": {"placeholders": {"count": {"type": "int"}}}
+  "@agoDays": {"placeholders": {"count": {"type": "int"}}},
+
+  "pathCardTitle": "How this message travelled",
+  "pathCardRoute": "Route",
+  "pathRouteDirect": "Along a known path",
+  "pathRouteFlood": "Flooded through the mesh",
+  "pathRouteUnknown": "Not reported",
+  "pathCardHops": "Hops",
+  "pathCardSignal": "Signal at your radio",
+  "pathCardInternet": "Came via the internet (MQTT)",
+  "pathCardSent": "Sent",
+  "pathCardReceived": "Received",
+  "pathCardDelivery": "Delivery",
+  "pathCardAttempts": "Tries",
+  "pathCardRoundTrip": "Round trip",
+  "pathCardRoundTripValue": "{seconds} s",
+  "@pathCardRoundTripValue": {"placeholders": {"seconds": {"type": "String"}}},
+  "pathCardSender": "From",
+  "pathCardMesh": "Mesh",
+  "notReported": "Not reported",
+  "yes": "Yes",
+  "no": "No",
+  "sendAgain": "Send again"
 }
