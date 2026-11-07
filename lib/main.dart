@@ -1,30 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
-void main() => runApp(const NotoryxProApp());
+import 'app/app_controller.dart';
+import 'store/mesh_store.dart';
+import 'ui/app.dart';
 
-/// Root widget for NOTORYX PRO.
-///
-/// The radio layers for MeshCore and Meshtastic arrive in later pull
-/// requests (see ROADMAP.md); for now the app only shows its name.
-class NotoryxProApp extends StatelessWidget {
-  const NotoryxProApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'NOTORYX PRO',
-      theme: ThemeData(
-        colorSchemeSeed: const Color(0xFFE0782A),
-        brightness: Brightness.dark,
-      ),
-      home: const Scaffold(
-        body: Center(
-          child: Text(
-            'NOTORYX PRO\nMeshCore + Meshtastic',
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ),
-    );
-  }
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final dir = await getApplicationSupportDirectory();
+  final store = MeshStore.open(File('${dir.path}/notoryx_pro.sqlite'));
+  runApp(NotoryxProApp(app: AppController(store: store)));
 }
