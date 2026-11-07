@@ -322,5 +322,62 @@
   "hintWeakSignal": "The signal on the last hop is weak.",
   "hintNeedsYourContact": "MeshCore can only deliver a direct message if they have you as a contact. Ask them to add you, or send an advert.",
   "hintUnknownKey": "Their radio doesn't know your key yet. Wait until your node info reaches them, then send again.",
-  "hintRadioBusy": "Your radio was busy or at its sending limit; try again in a minute."
+  "hintRadioBusy": "Your radio was busy or at its sending limit; try again in a minute.",
+  "verify": "Verify",
+  "verifyTitle": "Verify {name}",
+  "@verifyTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyIntro": "Check that this really is who you think it is. Compare the codes below in person or over a call, or scan their code. Once verified, their direct messages show a badge, and you'll be warned if their key ever changes.",
+  "verifyTheirCode": "Their fingerprint",
+  "verifyYourCode": "Your fingerprint",
+  "verifyNoKey": "This node hasn't shared a key yet, so it can't be verified. Wait until its node info arrives.",
+  "verifyNoOwnRadio": "Connect your radio for this mesh to show your own code.",
+  "verifyScan": "Scan their code",
+  "verifyPaste": "Paste their link",
+  "verifyPasteHint": "meshcore://… or https://meshtastic.org/v/#…",
+  "verifyMatch": "The fingerprints match",
+  "verifyMatchConfirm": "Only confirm if you compared every group with them directly. Mark {name} as verified?",
+  "@verifyMatchConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyConfirm": "Verify",
+  "verifyShowMine": "Show my code",
+  "verifyRemove": "Remove verification",
+  "verifyDone": "{name} is verified.",
+  "@verifyDone": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyMismatch": "That code belongs to someone else, or their key differs from the one your radio knows. Not verified.",
+  "verifyNotALink": "That isn't a MeshCore or Meshtastic contact link.",
+  "verifyCopy": "Copy link",
+  "verifyCopied": "Link copied",
+  "myCode": "My code",
+  "myCodeTitle": "{name}'s contact code",
+  "@myCodeTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "myCodeHelp": "Let the other person scan this, then compare fingerprints.",
+  "trustVerified": "Verified",
+  "trustKeyChanged": "Key changed: verify again",
+  "trustVerifiedSender": "Verified sender",
+  "nameClash": "Another node uses this name",
+  "channelNotProven": "Channel posts can't prove who sent them.",
+  "scanTitle": "Scan a contact code"
 }

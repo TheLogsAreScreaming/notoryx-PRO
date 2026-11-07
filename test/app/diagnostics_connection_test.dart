@@ -120,7 +120,7 @@ void main() {
     expect(r.towards.map((h) => h.snr), [3.0, 1.0]);
     expect(r.back.map((h) => h.label), ['Peak', 'Ridge Base']);
     expect(r.weakest!.snr, -1.0);
-    app.dispose();
+    await app.shutdown();
   });
 
   test('Meshtastic: packet log, local stats and traceroute', () async {
@@ -184,7 +184,7 @@ void main() {
     expect(r.towards.map((h) => h.label), ['Ridge Relay', '!00000033']);
     expect(r.towards.map((h) => h.snr), [6.0, 4.0]);
     expect(r.back, isEmpty);
-    app.dispose();
+    await app.shutdown();
   });
 
   test('describeError covers trace timeouts', () {

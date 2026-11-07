@@ -9,6 +9,7 @@ import '../radio/radio.dart';
 import 'common.dart';
 import 'conversation_screen.dart';
 import 'diagnostics_screen.dart';
+import 'verify_screen.dart';
 import 'map_tiles.dart';
 
 /// Every node with a position, from both meshes, on one map.
@@ -317,6 +318,18 @@ class NodeSheet extends StatelessWidget {
             Wrap(
               spacing: 8,
               children: [
+                OutlinedButton.icon(
+                  icon: const Icon(Icons.verified_user_outlined),
+                  label: Text(l.verify),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => VerifyScreen(app: app, node: n),
+                      ),
+                    );
+                  },
+                ),
                 if (n.canMessage && n.kind != NodeKind.relay)
                   FilledButton.icon(
                     icon: const Icon(Icons.chat_bubble_outline),

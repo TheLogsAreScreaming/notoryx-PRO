@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../app/app_controller.dart';
 import '../app/radio_connection.dart';
 import '../mesh/diagnostics.dart';
+import '../mesh/identity.dart';
 import '../mesh/model.dart';
 import '../radio/radio.dart';
 import '../store/mesh_store.dart';
@@ -32,6 +33,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
   late final Stream<List<StoredMessage>> _messages = app.store.watchMessages(
     conversation,
   );
+  late final Stream<List<Node>> _nodes = app.store.watchAllNodes();
+  late final Stream<Map<NodeKey, Verification>> _verifications = app.store
+      .watchVerifications();
 
   AppController get app => widget.app;
   Conversation get conversation => widget.conversation;
@@ -83,26 +87,23 @@ class _ConversationScreenState extends State<ConversationScreen> {
                     icon: Icons.chat_bubble_outline,
                   );
                 }
-                return ListView.builder(
-                  reverse: true,
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  itemCount: messages.length,
-                  itemBuilder: (context, i) {
-                    final stored = messages[messages.length - 1 - i];
-                    return ListenableBuilder(
-                      listenable: app,
-                      builder: (context, _) {
-                        final c = _ready();
-                        return MessageBubble(
-                          message: stored.message,
-                          onResend: c == null
-                              ? null
-                              : () => c.resend(stored.id),
-                          onTap: () => _details(stored.message),
-                        );
-                      },
-                    );
-                  },
+                return StreamBuilder<List<Node>>(
+                  stream: _nodes,
+                  builder: (context, nodeSnap) =>
+                      StreamBuilder<Map<NodeKey, Verification>>(
+                        stream: _verifications,
+                        builder: (context, vSnap) {
+                          final nodes = {
+                            for (final n in nodeSnap.data ?? const <Node>[])
+                              if (n.radioId == conversation.radioId) n.key: n,
+                          };
+                          final clashes =
+                              nameClashes(nodes.values)[conversation.radioId] ??
+                              const <String>{};
+                          final verified = vSnap.data ?? const {};
+                          return _list(messages, nodes, clashes, verified);
+                        },
+                      ),
                 );
               },
             ),
@@ -117,6 +118,45 @@ class _ConversationScreenState extends State<ConversationScreen> {
       ),
     );
   }
+
+  Widget _list(
+    List<StoredMessage> messages,
+    Map<NodeKey, Node> nodes,
+    Set<String> clashes,
+    Map<NodeKey, Verification> verified,
+  ) => ListView.builder(
+    reverse: true,
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    itemCount: messages.length,
+    itemBuilder: (context, i) {
+      final stored = messages[messages.length - 1 - i];
+      final m = stored.message;
+      final sender = m.from == null ? null : nodes[m.from];
+      final label = m.senderName ?? sender?.displayName;
+      final verifiedSender =
+          m.authenticated &&
+          sender != null &&
+          trustOf(sender, verified[sender.key]) == TrustStatus.verified;
+      final clash =
+          !m.outgoing &&
+          label != null &&
+          clashes.contains(label.trim().toLowerCase());
+      return ListenableBuilder(
+        listenable: app,
+        builder: (context, _) {
+          final c = _ready();
+          return MessageBubble(
+            message: m,
+            senderLabel: label,
+            verifiedSender: verifiedSender,
+            nameClash: clash,
+            onResend: c == null ? null : () => c.resend(stored.id),
+            onTap: () => _details(m),
+          );
+        },
+      );
+    },
+  );
 }
 
 /// One message, with sender, time, delivery and path facts.
@@ -126,9 +166,21 @@ class MessageBubble extends StatelessWidget {
     required this.message,
     this.onResend,
     this.onTap,
+    this.senderLabel,
+    this.verifiedSender = false,
+    this.nameClash = false,
   });
 
   final Message message;
+
+  /// Who sent it, for incoming messages (name, or node name).
+  final String? senderLabel;
+
+  /// Proven by encryption to come from a node you verified.
+  final bool verifiedSender;
+
+  /// Another node on this mesh uses the same name.
+  final bool nameClash;
 
   /// Opens details; defaults to the path card without hints.
   final VoidCallback? onTap;
@@ -144,7 +196,8 @@ class MessageBubble extends StatelessWidget {
     final (icon, label) = deliveryLook(context, m.delivery);
     final path = pathSummary(context, m.path);
     final meta = [
-      if (!m.outgoing && m.senderName != null) m.senderName!,
+      if (!m.outgoing && (senderLabel ?? m.senderName) != null)
+        senderLabel ?? m.senderName!,
       ago(context, m.receivedAt),
       if (path.isNotEmpty) path,
     ].join(' · ');
@@ -165,6 +218,33 @@ class MessageBubble extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (verifiedSender || nameClash)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 2),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        verifiedSender ? Icons.verified : Icons.warning_amber,
+                        size: 14,
+                        color: verifiedSender ? scheme.primary : scheme.error,
+                      ),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          verifiedSender
+                              ? context.l10n.trustVerifiedSender
+                              : '${context.l10n.nameClash}. ${m.conversation is ChannelConversation ? context.l10n.channelNotProven : ''}',
+                          style: text.labelSmall?.copyWith(
+                            color: verifiedSender
+                                ? scheme.primary
+                                : scheme.error,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               Text(m.text),
               const SizedBox(height: 4),
               Row(

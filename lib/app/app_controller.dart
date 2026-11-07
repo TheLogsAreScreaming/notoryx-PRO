@@ -62,6 +62,13 @@ class AppController extends ChangeNotifier {
     await c.close();
   }
 
+  /// Disconnects every radio and waits until they have finished.
+  Future<void> shutdown() async {
+    for (final p in RadioProtocol.values) {
+      await disconnect(p);
+    }
+  }
+
   @override
   void dispose() {
     for (final p in RadioProtocol.values) {

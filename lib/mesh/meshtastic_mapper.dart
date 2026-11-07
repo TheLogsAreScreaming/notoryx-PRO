@@ -47,6 +47,7 @@ class MeshtasticMapper {
       isFavorite: n.isFavorite,
       batteryPercent: battery != null && battery <= 100 ? battery : null,
       canMessage: !(user?.isUnmessagable ?? false),
+      publicKey: user?.publicKey ?? const [],
     );
   }
 
@@ -63,6 +64,9 @@ class MeshtasticMapper {
       position: _point(u.position),
       lastHeard: _clock(),
       path: PathFacts(hops: u.hops, snr: u.snr, viaMqtt: u.viaMqtt),
+      publicKey: (user?.publicKey?.isNotEmpty ?? false)
+          ? user!.publicKey
+          : null,
     );
   }
 
@@ -111,6 +115,7 @@ class MeshtasticMapper {
       nativeId: t.id,
       replyTo: t.replyId == 0 ? null : t.replyId,
       isReaction: t.isReaction,
+      authenticated: t.isDirect && t.packet.pkiEncrypted,
     );
   }
 

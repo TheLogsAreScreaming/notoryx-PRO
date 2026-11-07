@@ -3,6 +3,7 @@
 library;
 
 export 'diagnostics.dart';
+export 'identity.dart';
 export 'meshcore_mapper.dart';
 export 'meshtastic_mapper.dart';
 export 'model.dart';

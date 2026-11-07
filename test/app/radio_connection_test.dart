@@ -121,7 +121,7 @@ void main() {
     expect(last.outgoing, isTrue);
     expect(last.delivery, isA<Sent>());
 
-    app.dispose();
+    await app.shutdown();
   });
 
   test('Meshtastic: connect, sync, receive, send and deliver', () async {
@@ -169,7 +169,7 @@ void main() {
     expect(mine.message.delivery, isA<Delivered>());
     expect(link.sent.last.packet!.to, 0x0badcafe);
 
-    app.dispose();
+    await app.shutdown();
   });
 
   test('old firmware stops the connection with a reason', () async {
@@ -184,7 +184,7 @@ void main() {
     expect(c.status.phase, SupervisorPhase.failed);
     expect(c.status.lastError, isA<UnsupportedMeshtasticFirmware>());
     expect(c.radio, isNull);
-    app.dispose();
+    await app.shutdown();
   });
 
   test('sending while not connected fails clearly', () async {
@@ -201,6 +201,6 @@ void main() {
     await app.disconnect(RadioProtocol.meshtastic);
     expect(app.connections, isEmpty);
     expect(link.state, LinkState.disconnected);
-    app.dispose();
+    await app.shutdown();
   });
 }

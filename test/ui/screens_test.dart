@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,6 +11,8 @@ import 'package:notoryx_pro/store/mesh_store.dart';
 import 'package:notoryx_pro/ui/app.dart';
 import 'package:notoryx_pro/ui/conversation_screen.dart';
 import 'package:notoryx_pro/ui/diagnostics_screen.dart';
+import 'package:notoryx_pro/ui/verify_screen.dart';
+import 'package:notoryx_pro/mesh/identity.dart';
 import 'package:notoryx_pro/mesh/diagnostics.dart';
 import 'package:notoryx_pro/l10n/app_localizations.dart';
 
@@ -372,6 +376,140 @@ void main() {
     );
     expect(find.textContaining('no known route'), findsOneWidget);
     expect(find.textContaining('have you as a contact'), findsOneWidget);
+    await tearDownApp(tester, app);
+  });
+
+  testWidgets('verify by scanning their code, then badges appear', (
+    tester,
+  ) async {
+    final app = AppController(store: MeshStore.memory());
+    final key = Uint8List.fromList(List.generate(32, (i) => 0xee - i));
+    final sam = Node(
+      key: NodeKey.meshcore(hexOf(key)),
+      radioId: mc,
+      name: 'Sam',
+      publicKey: key,
+    );
+    final impostor = Node(
+      key: NodeKey.meshcore('11' * 32),
+      radioId: mc,
+      name: 'Sam',
+      publicKey: Uint8List.fromList(List.filled(32, 0x11)),
+    );
+    await tester.runAsync(() async {
+      await app.store.upsertNodes([sam, impostor]);
+      final now = DateTime.now();
+      await app.store.addMessage(
+        Message(
+          conversation: DirectConversation(mc, sam.key),
+          text: 'it is me',
+          outgoing: false,
+          sentAt: now,
+          receivedAt: now,
+          delivery: const Received(),
+          from: sam.key,
+          authenticated: true,
+        ),
+      );
+      await app.store.replaceChannels(mc, [
+        Channel(
+          radioId: mc,
+          index: 0,
+          name: 'Public',
+          kind: ChannelKind.public,
+        ),
+      ]);
+      await app.store.addMessage(
+        Message(
+          conversation: ChannelConversation(mc, 0),
+          text: 'send me your password',
+          outgoing: false,
+          sentAt: now,
+          receivedAt: now,
+          delivery: const Received(),
+          senderName: 'Sam',
+        ),
+      );
+    });
+
+    var scanned = ContactCard(
+      protocol: RadioProtocol.meshcore,
+      name: 'Sam',
+      publicKey: Uint8List.fromList(List.filled(32, 0x11)),
+    ).toLink();
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: VerifyScreen(app: app, node: sam, scan: (_) async => scanned),
+      ),
+    );
+    await settle(tester);
+    expect(find.text(keyFingerprint(key)), findsOneWidget);
+    expect(find.textContaining('Connect your radio'), findsOneWidget);
+
+    await tester.tap(find.text('Scan their code'));
+    await settle(tester);
+    expect(find.textContaining('belongs to someone else'), findsOneWidget);
+    ScaffoldMessenger.of(
+      tester.element(find.byType(VerifyScreen)),
+    ).removeCurrentSnackBar();
+    await tester.pump();
+
+    scanned = ContactCard(
+      protocol: RadioProtocol.meshcore,
+      name: 'Sam',
+      publicKey: key,
+    ).toLink();
+    await tester.tap(find.text('Scan their code'));
+    await settle(tester);
+    expect(find.text('Sam is verified.'), findsOneWidget);
+    expect(find.text('Verified'), findsOneWidget);
+    expect(find.text('Remove verification'), findsOneWidget);
+
+    await tester.pumpWidget(NotoryxProApp(app: app));
+    await settle(tester);
+    await tester.tap(find.text('Sam'));
+    await tester.pumpAndSettle();
+    await settle(tester);
+    expect(find.text('Verified sender'), findsOneWidget);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Public'));
+    await tester.pumpAndSettle();
+    await settle(tester);
+    expect(find.textContaining('Another node uses this name'), findsOneWidget);
+    expect(find.textContaining("can't prove who sent them"), findsOneWidget);
+    await tearDownApp(tester, app);
+  });
+
+  testWidgets('verify by comparing fingerprints asks for confirmation', (
+    tester,
+  ) async {
+    final app = AppController(store: MeshStore.memory());
+    final key = Uint8List.fromList(List.generate(32, (i) => i));
+    final node = Node(
+      key: NodeKey.meshtastic(7),
+      radioId: mt,
+      name: 'Ranger',
+      publicKey: key,
+    );
+    await tester.runAsync(() => app.store.upsertNode(node));
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: VerifyScreen(app: app, node: node),
+      ),
+    );
+    await settle(tester);
+    await tester.tap(find.text('The fingerprints match'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('compared every group'), findsOneWidget);
+    await tester.tap(find.widgetWithText(FilledButton, 'Verify'));
+    await settle(tester);
+    final v = await tester.runAsync(() => app.store.verifications());
+    expect(v![node.key]!.method, VerificationMethod.compared);
     await tearDownApp(tester, app);
   });
 

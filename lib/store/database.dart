@@ -53,6 +53,10 @@ class Nodes extends Table {
   /// MeshCore out-path as hex (repeater hash prefixes, in order). Schema v3.
   TextColumn get routeHex => text().nullable()();
 
+  /// The node's public key as hex (MeshCore: its identity; Meshtastic: the
+  /// key it advertises for encrypted direct messages). Schema v4.
+  TextColumn get publicKeyHex => text().nullable()();
+
   @override
   Set<Column<Object>> get primaryKey => {radioId, nodeKey};
 }
@@ -103,8 +107,31 @@ class Messages extends Table {
   /// Times this outgoing message was sent (retries included). Schema v2.
   IntColumn get attempts => integer().withDefault(const Constant(0))();
 
+  /// The sender is proven by encryption (MeshCore direct messages,
+  /// Meshtastic public-key direct messages). Schema v4.
+  BoolColumn get authenticated =>
+      boolean().withDefault(const Constant(false))();
+
   /// Identifies a received message so a repeat isn't stored twice.
   TextColumn get dedupeKey => text().nullable().unique()();
+}
+
+/// Keys the person has confirmed belong to who they say. Schema v4.
+@DataClassName('VerifiedKeyRow')
+class VerifiedKeys extends Table {
+  /// `NodeKey.toString()`.
+  TextColumn get nodeKey => text()();
+
+  /// The public key that was confirmed; a different key later means the
+  /// node changed (re-flashed, or someone else) and needs checking again.
+  TextColumn get publicKeyHex => text()();
+  DateTimeColumn get verifiedAt => dateTime()();
+
+  /// How: `qr` (scanned their code) or `compared` (fingerprints compared).
+  TextColumn get method => text()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {nodeKey};
 }
 
 /// How delivery states are stored.
@@ -122,12 +149,12 @@ enum DeliveryCode {
 ///
 /// Schema changes bump [schemaVersion] and add a step to [migration]; each
 /// version's schema is saved in `drift_schemas/` and tested.
-@DriftDatabase(tables: [Radios, Nodes, Channels, Messages])
+@DriftDatabase(tables: [Radios, Nodes, Channels, Messages, VerifiedKeys])
 class MeshDatabase extends _$MeshDatabase {
   MeshDatabase(super.e);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -140,6 +167,12 @@ class MeshDatabase extends _$MeshDatabase {
       from2To3: (m, schema) async {
         // v3: MeshCore route bytes on nodes, for drawing paths on the map.
         await m.addColumn(schema.nodes, schema.nodes.routeHex);
+      },
+      from3To4: (m, schema) async {
+        // v4: public keys, verified keys and authenticated messages.
+        await m.addColumn(schema.nodes, schema.nodes.publicKeyHex);
+        await m.addColumn(schema.messages, schema.messages.authenticated);
+        await m.createTable(schema.verifiedKeys);
       },
     ),
   );
