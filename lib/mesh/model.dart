@@ -63,6 +63,17 @@ final class NodeKey {
   factory NodeKey.meshtastic(int nodeNum) =>
       NodeKey._(RadioProtocol.meshtastic, meshtasticNodeId(nodeNum));
 
+  /// Reads the form written by [toString].
+  static NodeKey? tryParse(String text) {
+    final i = text.indexOf(':');
+    if (i <= 0 || i == text.length - 1) return null;
+    final protocol = RadioProtocol.values
+        .where((p) => p.name == text.substring(0, i))
+        .firstOrNull;
+    if (protocol == null) return null;
+    return NodeKey._(protocol, text.substring(i + 1));
+  }
+
   final RadioProtocol protocol;
   final String native;
 
@@ -335,6 +346,26 @@ sealed class Conversation {
 
   /// Stable text form, used as a database key.
   String get key;
+
+  /// Reads a [key] back; null if it isn't one.
+  static Conversation? tryParse(String key) {
+    final dm = key.indexOf('/dm/');
+    if (dm > 0) {
+      final radio = RadioId.tryParse(key.substring(0, dm));
+      final node = NodeKey.tryParse(key.substring(dm + 4));
+      if (radio != null && node != null) return DirectConversation(radio, node);
+      return null;
+    }
+    final ch = key.indexOf('/ch/');
+    if (ch > 0) {
+      final radio = RadioId.tryParse(key.substring(0, ch));
+      final index = int.tryParse(key.substring(ch + 4));
+      if (radio != null && index != null) {
+        return ChannelConversation(radio, index);
+      }
+    }
+    return null;
+  }
 
   @override
   bool operator ==(Object other) => other is Conversation && other.key == key;
