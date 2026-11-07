@@ -116,6 +116,58 @@ void main() {
 
     tearDown(() => session.dispose());
 
+    test(
+      'firmware older than protocol 3 is refused before any write',
+      () async {
+        await start(
+          responder: (cmd) => switch (cmd.first) {
+            Cmd.appStart => [RadioFrames.selfInfo()],
+            Cmd.deviceQuery => [
+              Uint8List.fromList([13, 2]),
+            ],
+            _ => [RadioFrames.ok()],
+          },
+        );
+        await expectLater(
+          session.handshake(),
+          throwsA(
+            isA<UnsupportedFirmware>()
+                .having((e) => e.found, 'found', 2)
+                .having((e) => e.message, 'message', contains('too old')),
+          ),
+        );
+        expect(link.commands.map((c) => c.first), [
+          Cmd.appStart,
+          Cmd.deviceQuery,
+        ]);
+      },
+    );
+
+    test('features are gated by protocol code', () async {
+      await start();
+      expect(
+        () => session.requireFeature(MeshCoreFeature.stats),
+        throwsA(isA<UnsupportedFirmware>()),
+        reason: 'unknown before the handshake',
+      );
+      await session.handshake();
+      expect(session.firmwareCode, 14);
+      session.requireFeature(MeshCoreFeature.companionCli);
+      expect(
+        MeshCoreFirmware.supports(8, MeshCoreFeature.companionCli),
+        isFalse,
+      );
+      expect(
+        const UnsupportedFirmware(
+          found: 8,
+          needed: 14,
+          version: 'v1.11.0',
+          feature: MeshCoreFeature.companionCli,
+        ).message,
+        'Radio command line needs newer MeshCore firmware than v1.11.0.',
+      );
+    });
+
     test('a radio clock ahead of the phone is not an error', () async {
       await start(clockAhead: true);
       final h = await session.handshake();

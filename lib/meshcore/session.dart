@@ -6,6 +6,7 @@ import '../radio/connection_log.dart';
 import '../radio/radio_link.dart';
 import 'codes.dart';
 import 'commands.dart';
+import 'firmware.dart';
 import 'frames.dart';
 import 'stream_framing.dart';
 
@@ -168,6 +169,16 @@ class MeshCoreSession {
     attach();
     final self = await appStart();
     final device = await deviceQuery();
+    _firmwareCode = device.firmwareCode;
+    if (device.firmwareCode < MeshCoreFirmware.minimumCode) {
+      _log?.add(_source, 'firmware too old: ${device.firmwareCode}');
+      // Stop before changing anything on the radio.
+      throw UnsupportedFirmware(
+        found: device.firmwareCode,
+        needed: MeshCoreFirmware.minimumCode,
+        version: device.version,
+      );
+    }
     var clockSet = true;
     try {
       await setTime(_clock());
@@ -179,6 +190,24 @@ class MeshCoreSession {
       'ready: protocol ${device.firmwareCode}, ${device.version ?? 'unknown'}',
     );
     return MeshCoreHandshake(self: self, device: device, clockSet: clockSet);
+  }
+
+  /// Protocol code from DEVICE_INFO, once [handshake] or [deviceQuery] ran.
+  int? get firmwareCode => _firmwareCode;
+  int? _firmwareCode;
+
+  /// Throws [UnsupportedFirmware] unless the radio has [feature].
+  ///
+  /// Call before using a command that older firmware lacks.
+  void requireFeature(MeshCoreFeature feature) {
+    final code = _firmwareCode;
+    if (code == null || !MeshCoreFirmware.supports(code, feature)) {
+      throw UnsupportedFirmware(
+        found: code ?? 0,
+        needed: feature.minimumCode,
+        feature: feature,
+      );
+    }
   }
 
   /// APP_START → SELF_INFO.
