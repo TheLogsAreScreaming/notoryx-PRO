@@ -9,13 +9,13 @@ Priorities from the competitive analysis ([docs/competitive/](docs/competitive/)
 1. **Project setup** (done): starter app, CI, independence check, docs. License: **GPL-3.0**.
 2. **Platform folders** (done): commit Android, iPhone and Mac folders with Bluetooth, USB, network and notification permissions; blue NOTORYX PRO icon.
 3. **Radio link layer** (done): one `RadioLink` interface with Bluetooth, USB serial and TCP links, a scanner that tells MeshCore and Meshtastic radios apart, and a redacted connection log.
-   - **3b. Auto-reconnect on every link** (P0): a reconnect supervisor for Bluetooth, USB and TCP with backoff, a "Try now" option and every step in the connection log. Acceptance: a dropped TCP connection, an unplugged-and-replugged USB radio and Bluetooth turned off and on all recover by themselves.
+   - **3b. Auto-reconnect on every link** (done, P0): a reconnect supervisor for Bluetooth, USB and TCP with backoff, a "Try now" option and every step in the connection log. Acceptance: a dropped TCP connection, an unplugged-and-replugged USB radio and Bluetooth turned off and on all recover by themselves.
 
 ## Phase 2: two protocols
 
-4. **MeshCore codec and session** (in review, PR #3) from the MeshCore companion protocol docs: frames, command queue (one command at a time), pushes. **Firmware gate** (P0): refuses firmware below protocol 3 before writing anything, and checks newer features by protocol code.
-5. **Meshtastic codec and session** from the Meshtastic protobufs: `ToRadio`/`FromRadio`, `want_config` handshake, heartbeat, BLE characteristics and the `0x94 0xC3` serial/TCP framing. **Firmware gate** (P0): read the firmware version from the device metadata and refuse unsupported versions with a clear message.
-6. **Common mesh model**: `MeshNetwork`, `Node`, `Channel`, `Message`, `DeliveryState` and a protocol tag on each, so screens never branch on protocol internals. A **`radioId` on everything**, so one MeshCore and one Meshtastic radio can be connected at once (P2). Someone seen on both meshes stays two identities unless the user links them.
+4. **MeshCore codec and session** (done) from the MeshCore companion protocol docs: frames, command queue (one command at a time), pushes. **Firmware gate** (P0): refuses firmware below protocol 3 before writing anything, and checks newer features by protocol code.
+5. **Meshtastic codec and session** (done) from the Meshtastic protobufs: `ToRadio`/`FromRadio`, `want_config` handshake, heartbeat, BLE characteristics and the `0x94 0xC3` serial/TCP framing. **Firmware gate** (P0): read the firmware version from the device metadata and refuse unsupported versions with a clear message.
+6. **Common mesh model** (in review): `MeshNetwork`, `Node`, `Channel`, `Message`, `DeliveryState` and a protocol tag on each, so screens never branch on protocol internals. A **`radioId` on everything**, so one MeshCore and one Meshtastic radio can be connected at once (P2). Someone seen on both meshes stays two identities unless the user links them.
 7. **Data store** (drift/SQLite): radios, nodes, channels, messages per radio; schema migrations tested from day one. **Path facts on every message** (P0): hops, SNR, RSSI, route (direct or flood) and whether it came via MQTT, plus the `radioId`.
 
 ## Phase 3: first test build
