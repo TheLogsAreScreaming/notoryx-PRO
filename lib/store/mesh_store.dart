@@ -94,6 +94,20 @@ class MeshStore {
   /// Live version of [nodes].
   Stream<List<Node>> watchNodes(RadioId radio) => _nodesQuery(radio).watch();
 
+  /// Every radio's nodes, most recently heard first.
+  Stream<List<Node>> watchAllNodes() =>
+      (db.select(db.nodes)..orderBy([
+            (n) => OrderingTerm(
+              expression: n.lastHeard,
+              mode: OrderingMode.desc,
+              nulls: NullsOrder.last,
+            ),
+            (n) => OrderingTerm.asc(n.name),
+          ]))
+          .map(_node)
+          .watch()
+          .map((rows) => rows.nonNulls.toList());
+
   /// One node, if saved.
   Future<Node?> node(RadioId radio, NodeKey key) async {
     final row =
@@ -155,6 +169,27 @@ class MeshStore {
 
   /// [radio]'s channels in slot order.
   Future<List<Channel>> channels(RadioId radio) => _channelsQuery(radio).get();
+
+  /// Every radio's channels, by radio then slot.
+  Stream<List<Channel>> watchAllChannels() =>
+      (db.select(db.channels)..orderBy([
+            (c) => OrderingTerm.asc(c.radioId),
+            (c) => OrderingTerm.asc(c.slot),
+          ]))
+          .watch()
+          .map(
+            (rows) => [
+              for (final r in rows)
+                if (RadioId.tryParse(r.radioId) case final id?)
+                  Channel(
+                    radioId: id,
+                    index: r.slot,
+                    name: r.name,
+                    kind: r.kind,
+                    isPrimary: r.isPrimary,
+                  ),
+            ],
+          );
 
   /// Live version of [channels].
   Stream<List<Channel>> watchChannels(RadioId radio) =>
