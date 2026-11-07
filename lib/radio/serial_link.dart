@@ -201,21 +201,21 @@ class UsbSerialPorts {
         (id: '${d.deviceId}', vendorId: d.vid, productId: d.pid, value: d),
     ]);
     if (device == null) throw const LinkException('The radio was unplugged');
-    final port = await device.create();
-    if (port == null || !await port.open()) {
+    final usb = await device.create();
+    if (usb == null || !await usb.open()) {
       throw const LinkException('Android did not allow access to the radio');
     }
     // DTR on and RTS off: some boards reset or stay in the bootloader
     // otherwise.
-    await port.setDTR(true);
-    await port.setRTS(false);
-    await port.setPortParameters(
+    await usb.setDTR(true);
+    await usb.setRTS(false);
+    await usb.setPortParameters(
       baudRate,
       UsbPort.DATABITS_8,
       UsbPort.STOPBITS_1,
       UsbPort.PARITY_NONE,
     );
-    return UsbSerialPortHandle(port);
+    return UsbSerialPortHandle(usb);
   }
 }
 
