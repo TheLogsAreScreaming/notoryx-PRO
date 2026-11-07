@@ -239,6 +239,7 @@ final class Node {
     this.isFavorite = false,
     this.batteryPercent,
     this.canMessage = true,
+    this.route = const [],
   });
 
   final NodeKey key;
@@ -263,6 +264,17 @@ final class Node {
   /// False for nodes that refuse direct messages.
   final bool canMessage;
 
+  /// MeshCore: the known route as repeater hash prefixes, in order from
+  /// our radio (each [routeHashSize] bytes). Empty when flooding or unknown.
+  final List<int> route;
+
+  /// Bytes per hop in [route].
+  int get routeHashSize {
+    final hops = path.hops;
+    if (route.isEmpty || hops == null || hops == 0) return 1;
+    return (route.length ~/ hops).clamp(1, 3);
+  }
+
   RadioProtocol get protocol => key.protocol;
 
   /// Name to show, falling back to the short key.
@@ -277,6 +289,7 @@ final class Node {
     PathFacts? path,
     bool? isFavorite,
     int? batteryPercent,
+    List<int>? route,
   }) => Node(
     key: key,
     radioId: radioId,
@@ -289,6 +302,7 @@ final class Node {
     isFavorite: isFavorite ?? this.isFavorite,
     batteryPercent: batteryPercent ?? this.batteryPercent,
     canMessage: canMessage,
+    route: route ?? this.route,
   );
 }
 

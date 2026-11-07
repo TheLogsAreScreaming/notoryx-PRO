@@ -21,11 +21,11 @@ Priorities from the competitive analysis ([docs/competitive/](docs/competitive/)
 ## Phase 3: first test build
 
 8. **Core screens** (done): connect (both protocols), a unified inbox by person and channel with a protocol badge per thread, conversation, node list. **Every UI string through `gen_l10n`** from the start (P1; English first).
-9. **Messaging that works** (in review): send/receive on both with delivery ticks and **retries matching the official apps** (P0): MeshCore direct attempts, then reset path, then flood; Meshtastic `want_ack` with resend. A **message path card** showing how each message arrived (P1). **First test build (0.1.0-test.1)** published to notoryx-PRO-releases, tried on a real MeshCore and a real Meshtastic radio.
+9. **Messaging that works** (done; test 1 published): send/receive on both with delivery ticks and **retries matching the official apps** (P0): MeshCore direct attempts, then reset path, then flood; Meshtastic `want_ack` with resend. A **message path card** showing how each message arrived (P1). **First test build (0.1.0-test.1)** published to notoryx-PRO-releases, tried on a real MeshCore and a real Meshtastic radio.
 
 ## Phase 4: what sets it apart
 
-10. **Unified map** with offline tiles, both meshes' nodes, signal bars from SNR and hops, and path drawing.
+10. **Unified map** (in review): both meshes' nodes, signal bars from SNR, MeshCore routes drawn through known repeaters, and offline use of every tile you've viewed. Downloading whole areas isn't offered for openstreetmap.org tiles (their tile policy forbids bulk downloads); a tile source that allows it can add that later.
 11. **Diagnostics**: live RX packet log, noise floor chart, trace path with saved routes, line of sight with Fresnel zone, and a **delivery diagnosis** sheet explaining why a message didn't arrive (P1).
 12. **Verified senders**: confirm a contact's key by QR or in person; channel posts from verified keys get a badge, and name clashes are flagged.
 13. **Radio and node admin**, split in two because each half is large:

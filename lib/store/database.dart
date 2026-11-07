@@ -50,6 +50,9 @@ class Nodes extends Table {
   IntColumn get battery => integer().nullable()();
   BoolColumn get canMessage => boolean().withDefault(const Constant(true))();
 
+  /// MeshCore out-path as hex (repeater hash prefixes, in order). Schema v3.
+  TextColumn get routeHex => text().nullable()();
+
   @override
   Set<Column<Object>> get primaryKey => {radioId, nodeKey};
 }
@@ -124,7 +127,7 @@ class MeshDatabase extends _$MeshDatabase {
   MeshDatabase(super.e);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -133,6 +136,10 @@ class MeshDatabase extends _$MeshDatabase {
       from1To2: (m, schema) async {
         // v2: count send attempts per message.
         await m.addColumn(schema.messages, schema.messages.attempts);
+      },
+      from2To3: (m, schema) async {
+        // v3: MeshCore route bytes on nodes, for drawing paths on the map.
+        await m.addColumn(schema.nodes, schema.nodes.routeHex);
       },
     ),
   );

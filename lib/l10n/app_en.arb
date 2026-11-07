@@ -6,14 +6,18 @@
   "tabRadios": "Radios",
   "protocolMeshCore": "MeshCore",
   "protocolMeshtastic": "Meshtastic",
-
   "inboxEmpty": "No conversations yet. Connect a radio on the Radios tab.",
   "inboxNoMessages": "No messages yet",
   "inboxChannelsHeader": "Channels",
   "inboxDirectHeader": "Direct messages",
   "youPrefix": "You: {text}",
-  "@youPrefix": {"placeholders": {"text": {"type": "String"}}},
-
+  "@youPrefix": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
   "nodesEmpty": "No nodes yet. Nodes appear as your radios hear them.",
   "nodeKindPerson": "Person",
   "nodeKindRelay": "Relay",
@@ -21,7 +25,6 @@
   "nodeKindSensor": "Sensor",
   "nodeKindUnknown": "Node",
   "nodeCannotMessage": "Doesn't accept direct messages",
-
   "radiosConnected": "Connected radios",
   "radiosNone": "No radio connected. Find one below.",
   "radiosFindBluetooth": "Find Bluetooth radios",
@@ -44,51 +47,120 @@
   "radiosCancel": "Cancel",
   "radiosDisconnect": "Disconnect",
   "radiosTryNow": "Try now",
-
   "statusStopped": "Disconnected",
   "statusConnecting": "Connecting…",
   "statusConnected": "Connected",
   "statusReconnecting": "Reconnecting (attempt {attempt})",
-  "@statusReconnecting": {"placeholders": {"attempt": {"type": "int"}}},
+  "@statusReconnecting": {
+    "placeholders": {
+      "attempt": {
+        "type": "int"
+      }
+    }
+  },
   "statusFailed": "Stopped: {reason}",
-  "@statusFailed": {"placeholders": {"reason": {"type": "String"}}},
+  "@statusFailed": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
   "radioFirmware": "Firmware {version}",
-  "@radioFirmware": {"placeholders": {"version": {"type": "String"}}},
-
+  "@radioFirmware": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
   "composerHint": "Message",
   "composerSend": "Send",
   "composerBytes": "{used}/{max}",
-  "@composerBytes": {"placeholders": {"used": {"type": "int"}, "max": {"type": "int"}}},
+  "@composerBytes": {
+    "placeholders": {
+      "used": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "composerOffline": "Connect this radio to send messages.",
   "conversationEmpty": "No messages yet. Say hello.",
-
   "pathDirect": "direct",
   "pathHops": "{count, plural, =0{heard directly} =1{1 hop} other{{count} hops}}",
-  "@pathHops": {"placeholders": {"count": {"type": "int"}}},
+  "@pathHops": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "pathSnr": "SNR {snr} dB",
-  "@pathSnr": {"placeholders": {"snr": {"type": "String"}}},
+  "@pathSnr": {
+    "placeholders": {
+      "snr": {
+        "type": "String"
+      }
+    }
+  },
   "pathRssi": "{rssi} dBm",
-  "@pathRssi": {"placeholders": {"rssi": {"type": "int"}}},
+  "@pathRssi": {
+    "placeholders": {
+      "rssi": {
+        "type": "int"
+      }
+    }
+  },
   "pathMqtt": "via internet",
-
   "deliveryPending": "Sending",
   "deliverySent": "Sent",
   "deliveryRelayed": "Heard repeated",
   "deliveryDelivered": "Delivered",
   "deliveryFailed": "Not delivered: {reason}",
-  "@deliveryFailed": {"placeholders": {"reason": {"type": "String"}}},
-
+  "@deliveryFailed": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
   "channelPrimary": "Primary",
   "lastHeard": "Heard {when}",
-  "@lastHeard": {"placeholders": {"when": {"type": "String"}}},
+  "@lastHeard": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
   "agoNow": "just now",
   "agoMinutes": "{count} min ago",
-  "@agoMinutes": {"placeholders": {"count": {"type": "int"}}},
+  "@agoMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "agoHours": "{count} h ago",
-  "@agoHours": {"placeholders": {"count": {"type": "int"}}},
+  "@agoHours": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "agoDays": "{count} d ago",
-  "@agoDays": {"placeholders": {"count": {"type": "int"}}},
-
+  "@agoDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "pathCardTitle": "How this message travelled",
   "pathCardRoute": "Route",
   "pathRouteDirect": "Along a known path",
@@ -103,11 +175,45 @@
   "pathCardAttempts": "Tries",
   "pathCardRoundTrip": "Round trip",
   "pathCardRoundTripValue": "{seconds} s",
-  "@pathCardRoundTripValue": {"placeholders": {"seconds": {"type": "String"}}},
+  "@pathCardRoundTripValue": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
   "pathCardSender": "From",
   "pathCardMesh": "Mesh",
   "notReported": "Not reported",
   "yes": "Yes",
   "no": "No",
-  "sendAgain": "Send again"
+  "sendAgain": "Send again",
+  "tabMap": "Map",
+  "mapNoPositions": "No positions yet. Nodes appear here when they share their location.",
+  "mapFitAll": "Show everything",
+  "mapShowRoute": "Show route on map",
+  "mapHideRoute": "Hide route",
+  "mapMessage": "Message",
+  "mapYourRadio": "Your radio",
+  "mapOffline": "No internet: showing saved map tiles",
+  "mapRoute": "Route",
+  "mapRouteUnknownHop": "Unknown repeater ({prefix})",
+  "@mapRouteUnknownHop": {
+    "placeholders": {
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
+  "mapRouteFlood": "No known route; messages flood",
+  "signalBars": "Signal {bars} of 4",
+  "@signalBars": {
+    "placeholders": {
+      "bars": {
+        "type": "int"
+      }
+    }
+  },
+  "signalUnknown": "Signal unknown",
+  "mapLastHop": "Signal is from the last repeater"
 }

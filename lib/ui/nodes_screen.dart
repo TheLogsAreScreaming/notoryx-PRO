@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../app/app_controller.dart';
-import '../mesh/model.dart';
+import '../mesh/mesh.dart';
 import 'common.dart';
 import 'conversation_screen.dart';
 
@@ -61,6 +61,8 @@ class NodeTile extends StatelessWidget {
           const SizedBox(width: 8),
           ProtocolBadge(n.protocol),
           if (n.isFavorite) const Icon(Icons.star, size: 16),
+          const SizedBox(width: 8),
+          SignalBars(signalBars(n.path)),
         ],
       ),
       subtitle: Text(details, maxLines: 2, overflow: TextOverflow.ellipsis),

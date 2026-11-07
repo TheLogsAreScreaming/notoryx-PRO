@@ -51,6 +51,7 @@ class MeshCoreMapper {
       route: c.hasPath ? RouteKind.direct : RouteKind.flood,
     ),
     isFavorite: c.flags & 1 != 0,
+    route: c.path,
   );
 
   /// A channel slot; null for an unused one.
