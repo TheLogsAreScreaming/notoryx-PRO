@@ -117,7 +117,7 @@ void main() {
       final l = SerialRadioLink(
         port: info,
         protocol: RadioProtocol.meshtastic,
-        opener: (id) async => port,
+        opener: (_) async => port,
       );
       final received = <int>[];
       l.incoming.listen(received.addAll);
@@ -137,7 +137,7 @@ void main() {
         final l = SerialRadioLink(
           port: info,
           protocol: RadioProtocol.meshcore,
-          opener: (id) async => port,
+          opener: (_) async => port,
         );
         await l.open();
         await port.inputs.close();
@@ -151,7 +151,7 @@ void main() {
       final l = SerialRadioLink(
         port: info,
         protocol: RadioProtocol.meshcore,
-        opener: (id) async => throw StateError('no permission'),
+        opener: (_) async => throw StateError('no permission'),
       );
       await expectLater(l.open(), throwsA(isA<LinkException>()));
       expect(l.state, LinkState.disconnected);
@@ -162,11 +162,41 @@ void main() {
       final l = SerialRadioLink(
         port: info,
         protocol: RadioProtocol.meshcore,
-        opener: (id) async => port,
+        opener: (_) async => port,
       );
       await l.open();
       await expectLater(l.send(bytes([1])), throwsA(isA<LinkException>()));
     });
+  });
+
+  test('matchUsbDevice finds a replugged radio by vendor and product', () {
+    const port = SerialPortInfo(
+      id: '7',
+      name: 'T-Beam',
+      vendorId: 0x1a86,
+      productId: 0x55d4,
+    );
+    expect(
+      matchUsbDevice(port, [
+        (id: '7', vendorId: 1, productId: 2, value: 'same id'),
+      ]),
+      'same id',
+    );
+    expect(
+      matchUsbDevice(port, [
+        (id: '9', vendorId: 0x1a86, productId: 0x55d4, value: 'replugged'),
+        (id: '3', vendorId: 0x10c4, productId: 0xea60, value: 'other'),
+      ]),
+      'replugged',
+    );
+    expect(
+      matchUsbDevice(port, [
+        (id: '9', vendorId: 0x1a86, productId: 0x55d4, value: 'a'),
+        (id: '10', vendorId: 0x1a86, productId: 0x55d4, value: 'b'),
+      ]),
+      isNull,
+      reason: 'two identical radios: do not guess',
+    );
   });
 
   group('ConnectionLog', () {
