@@ -2,7 +2,7 @@ name: notoryx_pro
 description: "NOTORYX PRO: one app for MeshCore and Meshtastic LoRa radios"
 publish_to: 'none'
 
-version: 0.0.1+1
+version: 0.0.1+2
 
 environment:
   sdk: ^3.9.0
@@ -10,6 +10,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  universal_ble: ^3.2.0
+  # Vendored: the published package's Android build uses jcenter().
+  usb_serial:
+    path: third_party/usb_serial
 
 dev_dependencies:
   flutter_test:

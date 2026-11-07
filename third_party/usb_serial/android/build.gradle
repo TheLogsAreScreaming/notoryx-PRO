@@ -1,0 +1,36 @@
+group 'dev.bessems.usbserial'
+version '1.0'
+
+// Vendored for NOTORYX PRO: the published 0.5.2 build script uses jcenter(),
+// which no longer exists, and an Android Gradle Plugin too old for current
+// Flutter. Only this file differs from the published package.
+rootProject.allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 34
+
+    namespace 'dev.bessems.usbserial'
+
+    defaultConfig {
+        minSdkVersion 21
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation 'com.github.felHR85:UsbSerial:6.1.0'
+}

@@ -8,6 +8,7 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
@@ -15,9 +16,22 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get
+      - name: Lock file is up to date
+        run: |
+          if ! git diff --quiet -- pubspec.lock; then
+            echo "::error::pubspec.lock is out of date; download the pubspec-lock artifact and commit it."
+            git diff --stat -- pubspec.lock
+            exit 1
+          fi
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: pubspec-lock
+          path: pubspec.lock
+          retention-days: 3
       - run: dart format --output=none --set-exit-if-changed lib test
       - run: flutter analyze
-      - run: flutter test
+      - run: flutter test --reporter expanded --timeout 30s
 
   independence:
     runs-on: ubuntu-latest
