@@ -1,0 +1,491 @@
+{
+  "meta": {
+    "legend": [
+      "NOTORYX PRO is at roadmap step 2 of 14, so most NX cells are M. The \"Evidence / note\" column names the roadmap step that plans the feature.",
+      "Competitor cells are I/S/F/M only when a primary source (README, release notes, store listing) says so; otherwise U.",
+      "MCO and MTA are the best single-protocol apps. They show the bar each protocol half has to clear.",
+      "No competitor app was installed and tested hands-on for this report."
+    ],
+    "title": "NOTORYX PRO: master feature comparison matrix (target vs today)",
+    "researched": "2026-11-07 (NOTORYX PRO `main` d283be7 = roadmap step 2; PR #2 = step 3 radio links, in review)",
+    "ours": "NX",
+    "codes": {
+      "I": "Implemented",
+      "P": "Partial",
+      "M": "Missing",
+      "S": "Superior",
+      "F": "Inferior",
+      "U": "Unverified",
+      "NA": "Not applicable",
+      "O": "In open PR"
+    },
+    "counts_for_ours": {
+      "Missing": 28,
+      "In open PR": 4,
+      "Implemented": 1,
+      "Partial": 1
+    },
+    "rows": 34
+  },
+  "apps": [
+    {
+      "key": "NX",
+      "name": "NOTORYX PRO (main d283be7)"
+    },
+    {
+      "key": "MW",
+      "name": "Mesh World 2.0.3 (iOS)"
+    },
+    {
+      "key": "MCL",
+      "name": "mesh-client v6.6.0 (desktop)"
+    },
+    {
+      "key": "OV",
+      "name": "OverMesh v2.0 (self-hosted web)"
+    },
+    {
+      "key": "MCO",
+      "name": "MeshCore official v1.51.0"
+    },
+    {
+      "key": "MTA",
+      "name": "Meshtastic Android v2.8.3"
+    }
+  ],
+  "areas": [
+    {
+      "area": "Protocols and connectivity",
+      "features": [
+        {
+          "feature": "MeshCore companion protocol",
+          "status": {
+            "NX": "Missing",
+            "MW": "Implemented",
+            "MCL": "Implemented",
+            "OV": "Implemented",
+            "MCO": "Implemented",
+            "MTA": "Not applicable"
+          },
+          "evidence": "Step 4"
+        },
+        {
+          "feature": "Meshtastic PhoneAPI",
+          "status": {
+            "NX": "Missing",
+            "MW": "Implemented",
+            "MCL": "Implemented",
+            "OV": "Implemented",
+            "MCO": "Not applicable",
+            "MTA": "Implemented"
+          },
+          "evidence": "Step 5"
+        },
+        {
+          "feature": "Bluetooth LE",
+          "status": {
+            "NX": "In open PR",
+            "MW": "Implemented",
+            "MCL": "Implemented",
+            "OV": "Unverified",
+            "MCO": "Implemented",
+            "MTA": "Implemented"
+          },
+          "evidence": "PR #2 (step 3)"
+        },
+        {
+          "feature": "USB serial",
+          "status": {
+            "NX": "In open PR",
+            "MW": "Missing",
+            "MCL": "Implemented",
+            "OV": "Unverified",
+            "MCO": "Implemented",
+            "MTA": "Implemented"
+          },
+          "evidence": "PR #2; Mesh World review asks for serial/HTTP"
+        },
+        {
+          "feature": "Wi-Fi / TCP",
+          "status": {
+            "NX": "In open PR",
+            "MW": "Missing",
+            "MCL": "Implemented",
+            "OV": "Unverified",
+            "MCO": "Implemented",
+            "MTA": "Implemented"
+          },
+          "evidence": "PR #2"
+        },
+        {
+          "feature": "Scanner tells MeshCore and Meshtastic radios apart",
+          "status": {
+            "NX": "In open PR",
+            "MW": "Unverified",
+            "MCL": "Implemented",
+            "OV": "Unverified",
+            "MCO": "Not applicable",
+            "MTA": "Not applicable"
+          },
+          "evidence": "PR #2"
+        },
+        {
+          "feature": "Two radios connected at once",
+          "status": {
+            "NX": "Missing",
+            "MW": "Unverified",
+            "MCL": "Unverified",
+            "OV": "Implemented",
+            "MCO": "Unverified",
+            "MTA": "Unverified"
+          },
+          "evidence": "OverMesh \"multi-radio MeshCore support\"; not on NX roadmap yet"
+        },
+        {
+          "feature": "Auto-reconnect on every transport",
+          "status": {
+            "NX": "Missing",
+            "MW": "Unverified",
+            "MCL": "Unverified",
+            "OV": "Unverified",
+            "MCO": "Implemented",
+            "MTA": "Implemented"
+          },
+          "evidence": "Step 9; Core's reconnect is Bluetooth-only, so test all three"
+        }
+      ]
+    },
+    {
+      "area": "Messaging",
+      "features": [
+        {
+          "feature": "Unified inbox with protocol badge",
+          "status": {
+            "NX": "Missing",
+            "MW": "Unverified",
+            "MCL": "Partial",
+            "OV": "Implemented",
+            "MCO": "Not applicable",
+            "MTA": "Not applicable"
+          },
+          "evidence": "Step 8; mesh-client uses a protocol switcher rail, OverMesh shows MT and MC together"
+        },
+        {
+          "feature": "Delivery ticks and retries (flood fallback / want_ack)",
+          "status": {
+            "NX": "Missing",
+            "MW": "Implemented",
+            "MCL": "Implemented",
+            "OV": "Implemented",
+            "MCO": "Implemented",
+            "MTA": "Implemented"
+          },
+          "evidence": "Step 9"
+        },
+        {
+          "feature": "Durable SQLite history",
+          "status": {
+            "NX": "Missing",
+            "MW": "Unverified",
+            "MCL": "Implemented",
+            "OV": "Partial",
+            "MCO": "Unverified",
+            "MTA": "Implemented"
+          },
+          "evidence": "Step 7 (drift); mesh-client \"local SQLite storage with retention limits\""
+        },
+        {
+          "feature": "RF / MQTT / hops on each message",
+          "status": {
+            "NX": "Missing",
+            "MW": "Unverified",
+            "MCL": "Implemented",
+            "OV": "Implemented",
+            "MCO": "Unverified",
+            "MTA": "Implemented"
+          },
+          "evidence": "Step 10; OverMesh hop badges, mesh-client transport indicator"
+        },
+        {
+          "feature": "Verified senders (key confirmed by QR)",
+          "status": {
+            "NX": "Missing",
+            "MW": "Unverified",
+            "MCL": "Unverified",
+            "OV": "Unverified",
+            "MCO": "Unverified",
+            "MTA": "Unverified"
+          },
+          "evidence": "Step 12"
+        },
+        {
+          "feature": "Structured emergency messages",
+          "status": {
+            "NX": "Missing",
+            "MW": "Unverified",
+            "MCL": "Implemented",
+            "OV": "Unverified",
+            "MCO": "Unverified",
+            "MTA": "Unverified"
+          },
+          "evidence": "mesh-client MECP; not on NX roadmap"
+        },
+        {
+          "feature": "Cross-protocol bridge (MC channel ↔ MT channel)",
+          "status": {
+            "NX": "Missing",
+            "MW": "Unverified",
+            "MCL": "Unverified",
+            "OV": "Unverified",
+            "MCO": "Not applicable",
+            "MTA": "Not applicable"
+          },
+          "evidence": "NX \"Later\"; separate bridge projects exist (ximi87/mesh-bridge, Renbrant/MeshCrossway hardware)"
+        }
+      ]
+    },
+    {
+      "area": "Maps and diagnostics",
+      "features": [
+        {
+          "feature": "Unified map with both meshes",
+          "status": {
+            "NX": "Missing",
+            "MW": "Implemented",
+            "MCL": "Unverified",
+            "OV": "Implemented",
+            "MCO": "Not applicable",
+            "MTA": "Not applicable"
+          },
+          "evidence": "Step 10"
+        },
+        {
+          "feature": "Offline tiles",
+          "status": {
+            "NX": "Missing",
+            "MW": "Implemented",
+            "MCL": "Unverified",
+            "OV": "Implemented",
+            "MCO": "Unverified",
+            "MTA": "Unverified"
+          },
+          "evidence": "Step 10; Mesh World and OverMesh list offline maps"
+        },
+        {
+          "feature": "Path drawn on the map",
+          "status": {
+            "NX": "Missing",
+            "MW": "Implemented",
+            "MCL": "Unverified",
+            "OV": "Implemented",
+            "MCO": "Implemented",
+            "MTA": "Unverified"
+          },
+          "evidence": "Step 10; Mesh World \"custom path routing through MeshCore repeaters\""
+        },
+        {
+          "feature": "Live RX log, noise floor",
+          "status": {
+            "NX": "Missing",
+            "MW": "Unverified",
+            "MCL": "Implemented",
+            "OV": "Implemented",
+            "MCO": "Unverified",
+            "MTA": "Unverified"
+          },
+          "evidence": "Step 11; mesh-client diagnostics"
+        },
+        {
+          "feature": "Foreign LoRa traffic detection",
+          "status": {
+            "NX": "Missing",
+            "MW": "Unverified",
+            "MCL": "Implemented",
+            "OV": "Unverified",
+            "MCO": "Not applicable",
+            "MTA": "Not applicable"
+          },
+          "evidence": "mesh-client \"Cross-Protocol Signal Analyzer\"; not on NX roadmap"
+        },
+        {
+          "feature": "Line of sight / Fresnel",
+          "status": {
+            "NX": "Missing",
+            "MW": "Unverified",
+            "MCL": "Unverified",
+            "OV": "Unverified",
+            "MCO": "Implemented",
+            "MTA": "Implemented"
+          },
+          "evidence": "Step 11; MTA Site Planner on phone"
+        },
+        {
+          "feature": "Trace path with saved routes",
+          "status": {
+            "NX": "Missing",
+            "MW": "Unverified",
+            "MCL": "Implemented",
+            "OV": "Implemented",
+            "MCO": "Implemented",
+            "MTA": "Implemented"
+          },
+          "evidence": "Step 11"
+        }
+      ]
+    },
+    {
+      "area": "Admin and config",
+      "features": [
+        {
+          "feature": "Radio settings for both protocols",
+          "status": {
+            "NX": "Missing",
+            "MW": "Implemented",
+            "MCL": "Implemented",
+            "OV": "Implemented",
+            "MCO": "Not applicable",
+            "MTA": "Not applicable"
+          },
+          "evidence": "Step 13"
+        },
+        {
+          "feature": "MeshCore repeater/room login and CLI",
+          "status": {
+            "NX": "Missing",
+            "MW": "Unverified",
+            "MCL": "Implemented",
+            "OV": "Unverified",
+            "MCO": "Partial",
+            "MTA": "Not applicable"
+          },
+          "evidence": "Step 13; official app puts a paid wait timer on remote admin"
+        },
+        {
+          "feature": "Meshtastic remote admin",
+          "status": {
+            "NX": "Missing",
+            "MW": "Unverified",
+            "MCL": "Partial",
+            "OV": "Unverified",
+            "MCO": "Not applicable",
+            "MTA": "Implemented"
+          },
+          "evidence": "Step 13; mesh-client admin is local radio only"
+        },
+        {
+          "feature": "Firmware update",
+          "status": {
+            "NX": "Missing",
+            "MW": "Unverified",
+            "MCL": "Partial",
+            "OV": "Unverified",
+            "MCO": "Unverified",
+            "MTA": "Implemented"
+          },
+          "evidence": "Not planned; mesh-client offers reboot-to-OTA / DFU only"
+        },
+        {
+          "feature": "MQTT observer feeds",
+          "status": {
+            "NX": "Missing",
+            "MW": "Unverified",
+            "MCL": "Implemented",
+            "OV": "Implemented",
+            "MCO": "Unverified",
+            "MTA": "Implemented"
+          },
+          "evidence": "NX \"Later\""
+        },
+        {
+          "feature": "Regional presets for both",
+          "status": {
+            "NX": "Missing",
+            "MW": "Unverified",
+            "MCL": "Partial",
+            "OV": "Unverified",
+            "MCO": "Implemented",
+            "MTA": "Implemented"
+          },
+          "evidence": "Step 14"
+        }
+      ]
+    },
+    {
+      "area": "Platform, privacy and distribution",
+      "features": [
+        {
+          "feature": "Android",
+          "status": {
+            "NX": "Missing",
+            "MW": "Missing",
+            "MCL": "Not applicable",
+            "OV": "Not applicable",
+            "MCO": "Implemented",
+            "MTA": "Implemented"
+          },
+          "evidence": "Step 2 committed the folder; first APK at step 9"
+        },
+        {
+          "feature": "iOS",
+          "status": {
+            "NX": "Missing",
+            "MW": "Implemented",
+            "MCL": "Not applicable",
+            "OV": "Not applicable",
+            "MCO": "Implemented",
+            "MTA": "Not applicable"
+          },
+          "evidence": "Platform folder committed; no build yet"
+        },
+        {
+          "feature": "Desktop",
+          "status": {
+            "NX": "Missing",
+            "MW": "Missing",
+            "MCL": "Implemented",
+            "OV": "Partial",
+            "MCO": "Implemented",
+            "MTA": "Implemented"
+          },
+          "evidence": "macOS folder committed; OverMesh runs in a browser"
+        },
+        {
+          "feature": "No account / no email",
+          "status": {
+            "NX": "Implemented",
+            "MW": "Inferior",
+            "MCL": "Implemented",
+            "OV": "Implemented",
+            "MCO": "Unverified",
+            "MTA": "Implemented"
+          },
+          "evidence": "Mesh World review: email required, subscription"
+        },
+        {
+          "feature": "Open source",
+          "status": {
+            "NX": "Partial",
+            "MW": "Missing",
+            "MCL": "Implemented",
+            "OV": "Implemented",
+            "MCO": "Missing",
+            "MTA": "Implemented"
+          },
+          "evidence": "NX source is public but has no license yet, so it is not legally open source (blocks step 5: protobufs are GPL-3.0)"
+        },
+        {
+          "feature": "Translations",
+          "status": {
+            "NX": "Missing",
+            "MW": "Unverified",
+            "MCL": "Implemented",
+            "OV": "Unverified",
+            "MCO": "Implemented",
+            "MTA": "Implemented"
+          },
+          "evidence": "NX \"Later\""
+        }
+      ]
+    }
+  ]
+}
