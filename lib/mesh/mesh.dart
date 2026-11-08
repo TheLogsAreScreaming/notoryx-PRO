@@ -2,6 +2,7 @@
 /// MeshCore and Meshtastic.
 library;
 
+export 'channel_links.dart';
 export 'diagnostics.dart';
 export 'identity.dart';
 export 'meshcore_mapper.dart';

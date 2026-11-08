@@ -10,6 +10,7 @@ import 'admin_screens.dart';
 import 'common.dart';
 import 'diagnostics_screen.dart';
 import 'verify_screen.dart';
+import 'channels_screen.dart';
 import 'meshtastic_admin_screen.dart';
 import 'telemetry_screen.dart';
 
@@ -188,6 +189,16 @@ class _ConnectionCard extends StatelessWidget {
                           node: radio.self,
                           name: radio.name,
                         ),
+                      ),
+                    ),
+                  ),
+                if (phase == SupervisorPhase.connected && radio != null)
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.tag),
+                    label: Text(l.channelsButton),
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => ChannelsScreen(connection: c),
                       ),
                     ),
                   ),
