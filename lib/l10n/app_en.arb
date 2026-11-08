@@ -916,5 +916,33 @@
   "notifyBackground": "Stay connected in the background",
   "logButton": "Connection log",
   "logTitle": "Connection log",
-  "logEmpty": "Nothing yet. Try connecting a radio."
+  "logEmpty": "Nothing yet. Try connecting a radio.",
+  "searchTitle": "Search messages",
+  "searchHint": "Search all messages",
+  "searchNone": "No messages found",
+  "deleteAction": "Delete",
+  "messageDeleteConfirm": "Delete this message from this device? It stays on other people's devices.",
+  "conversationDelete": "Delete conversation",
+  "conversationDeleteConfirm": "Delete all messages in {name} from this device? This can't be undone.",
+  "@conversationDeleteConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "exportTitle": "Export messages",
+  "exportAll": "Export all messages",
+  "exportHelp": "The file contains the message text. Anyone you share it with can read it.",
+  "exportCsv": "Spreadsheet (CSV)",
+  "exportJson": "Data file (JSON)",
+  "exportNothing": "No messages to export",
+  "exportFailed": "Couldn't export: {error}",
+  "@exportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

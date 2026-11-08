@@ -331,6 +331,47 @@ class MeshStore {
     limit,
   ).watch().map((rows) => rows.reversed.toList());
 
+  /// Messages containing [query] (ignoring case for plain letters), newest
+  /// first. Reactions aren't messages anyone would look for.
+  Future<List<StoredMessage>> searchMessages(
+    String query, {
+    int limit = 100,
+  }) async {
+    final escaped = query.replaceAllMapped(
+      RegExp(r'[\\%_]'),
+      (m) => '\\${m[0]}',
+    );
+    final rows = await db
+        .customSelect(
+          r"SELECT * FROM messages WHERE is_reaction = 0 "
+          r"AND body LIKE ? ESCAPE '\' ORDER BY id DESC LIMIT ?",
+          variables: [
+            Variable.withString('%$escaped%'),
+            Variable.withInt(limit),
+          ],
+          readsFrom: {db.messages},
+        )
+        .get();
+    return [for (final r in rows) ?_message(db.messages.map(r.data))];
+  }
+
+  /// Every message, or those in [only], oldest first, for exporting.
+  Future<List<StoredMessage>> allMessages({Conversation? only}) async {
+    final query = db.select(db.messages)
+      ..orderBy([(m) => OrderingTerm.asc(m.id)]);
+    if (only != null) query.where((m) => m.conversation.equals(only.key));
+    return [for (final r in await query.get()) ?_message(r)];
+  }
+
+  /// Removes one message from this device.
+  Future<void> deleteMessage(int id) =>
+      (db.delete(db.messages)..where((m) => m.id.equals(id))).go();
+
+  /// Removes every message in [conversation] from this device.
+  Future<void> deleteConversation(Conversation conversation) => (db.delete(
+    db.messages,
+  )..where((m) => m.conversation.equals(conversation.key))).go();
+
   /// The newest message of every conversation, newest first.
   Stream<List<ConversationSummary>> watchConversations() =>
       _conversationsQuery().watch();
@@ -813,6 +854,9 @@ class MeshStore {
       ),
     );
   }
+
+  /// The stable name of a delivery state, as stored and exported.
+  static String deliveryCode(DeliveryState s) => _deliveryParts(s).$1.name;
 
   static (DeliveryCode, String?, int?) _deliveryParts(DeliveryState s) =>
       switch (s) {

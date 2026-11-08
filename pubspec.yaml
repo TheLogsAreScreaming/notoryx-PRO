@@ -27,6 +27,7 @@ dependencies:
   usb_serial:
     path: third_party/usb_serial
   flutter_local_notifications: ^22.3.3
+  share_plus: ^13.3.1
 
 dev_dependencies:
   flutter_test:

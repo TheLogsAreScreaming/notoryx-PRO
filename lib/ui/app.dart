@@ -7,6 +7,7 @@ import '../app/message_alerts.dart';
 import '../l10n/app_localizations.dart';
 import 'common.dart';
 import 'conversation_screen.dart';
+import 'export_sheet.dart';
 import 'inbox_screen.dart';
 import 'map_screen.dart';
 import 'map_tiles.dart';
@@ -14,6 +15,7 @@ import 'mute_menu.dart';
 import 'nodes_screen.dart';
 import 'notification_settings.dart';
 import 'radios_screen.dart';
+import 'search_screen.dart';
 
 /// Blue from the NOTORYX PRO icon.
 const notoryxBlue = Color(0xFF2AA7E0);
@@ -150,6 +152,14 @@ class _HomeShellState extends State<HomeShell> {
         actions: [
           if (_tab == 0)
             IconButton(
+              tooltip: l.searchTitle,
+              icon: const Icon(Icons.search),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(builder: (_) => SearchScreen(app: app)),
+              ),
+            ),
+          if (_tab == 0)
+            IconButton(
               tooltip: l.markAllRead,
               icon: const Icon(Icons.done_all),
               onPressed: () => app.store.markAllRead(),
@@ -163,6 +173,14 @@ class _HomeShellState extends State<HomeShell> {
               builder: (_) => NotificationSettingsSheet(app: app),
             ),
           ),
+          if (_tab == 0)
+            PopupMenuButton<bool>(
+              key: const Key('inbox-menu'),
+              onSelected: (_) => showExportSheet(context, store: app.store),
+              itemBuilder: (context) => [
+                PopupMenuItem(value: true, child: Text(context.l10n.exportAll)),
+              ],
+            ),
         ],
       ),
       body: switch (_tab) {

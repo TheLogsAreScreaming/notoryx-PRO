@@ -11,6 +11,7 @@ import '../mesh/model.dart';
 import '../radio/radio.dart';
 import '../store/mesh_store.dart';
 import 'common.dart';
+import 'export_sheet.dart';
 import 'message_path_card.dart';
 import 'mute_menu.dart';
 
@@ -79,6 +80,40 @@ class _ConversationScreenState extends State<ConversationScreen> {
     await MessagePathCard.show(context, m, hints: hints);
   }
 
+  Future<bool> _confirmDelete(String question) async {
+    final l = context.l10n;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text(question),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l.radiosCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l.deleteAction),
+          ),
+        ],
+      ),
+    );
+    return ok == true;
+  }
+
+  Future<void> _deleteMessage(int id) async {
+    if (await _confirmDelete(context.l10n.messageDeleteConfirm)) {
+      await app.store.deleteMessage(id);
+    }
+  }
+
+  Future<void> _deleteConversation() async {
+    final question = context.l10n.conversationDeleteConfirm(widget.title);
+    if (!await _confirmDelete(question)) return;
+    await app.store.deleteConversation(conversation);
+    if (mounted) Navigator.of(context).pop();
+  }
+
   /// The connected radio for this conversation, if any.
   RadioConnection? _ready() {
     final c = app.connectionForRadio(conversation.radioId);
@@ -100,7 +135,29 @@ class _ConversationScreenState extends State<ConversationScreen> {
             ProtocolBadge(conversation.radioId.protocol),
           ],
         ),
-        actions: [MuteButton(store: app.store, conversation: conversation)],
+        actions: [
+          MuteButton(store: app.store, conversation: conversation),
+          PopupMenuButton<VoidCallback>(
+            key: const Key('conversation-menu'),
+            onSelected: (run) => run(),
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: () => unawaited(
+                  showExportSheet(
+                    this.context,
+                    store: app.store,
+                    only: conversation,
+                  ),
+                ),
+                child: Text(context.l10n.exportTitle),
+              ),
+              PopupMenuItem(
+                value: () => unawaited(_deleteConversation()),
+                child: Text(context.l10n.conversationDelete),
+              ),
+            ],
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -180,6 +237,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
             nameClash: clash,
             onResend: c == null ? null : () => c.resend(stored.id),
             onTap: () => _details(m),
+            onLongPress: () => _deleteMessage(stored.id),
           );
         },
       );
@@ -194,6 +252,7 @@ class MessageBubble extends StatelessWidget {
     required this.message,
     this.onResend,
     this.onTap,
+    this.onLongPress,
     this.senderLabel,
     this.verifiedSender = false,
     this.nameClash = false,
@@ -212,6 +271,9 @@ class MessageBubble extends StatelessWidget {
 
   /// Opens details; defaults to the path card without hints.
   final VoidCallback? onTap;
+
+  /// Offers to delete the message.
+  final VoidCallback? onLongPress;
 
   /// Sends a failed message again; null when its radio isn't connected.
   final VoidCallback? onResend;
@@ -233,6 +295,7 @@ class MessageBubble extends StatelessWidget {
       alignment: m.outgoing ? Alignment.centerRight : Alignment.centerLeft,
       child: GestureDetector(
         onTap: onTap ?? () => MessagePathCard.show(context, m),
+        onLongPress: onLongPress,
         child: Container(
           constraints: const BoxConstraints(maxWidth: 520),
           margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),

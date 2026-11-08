@@ -51,7 +51,8 @@ class MuteButton extends StatelessWidget {
       builder: (context, snap) {
         final until = snap.data?[conversation.key];
         final muted = mutedAt(until, DateTime.now());
-        return PopupMenuButton<MuteLength?>(
+        // A record, because a menu treats a null value as dismissed.
+        return PopupMenuButton<(MuteLength?,)>(
           key: const Key('mute-menu'),
           tooltip: muted ? l.muteUnmute : l.muteTitle,
           icon: Icon(
@@ -61,13 +62,13 @@ class MuteButton extends StatelessWidget {
           ),
           onSelected: (v) => store.setMuted(
             conversation,
-            v == null ? null : muteEnd(v, DateTime.now()),
+            v.$1 == null ? null : muteEnd(v.$1!, DateTime.now()),
           ),
           itemBuilder: (context) => [
-            if (muted) PopupMenuItem<MuteLength?>(child: Text(l.muteUnmute)),
+            if (muted) PopupMenuItem(value: (null,), child: Text(l.muteUnmute)),
             for (final m in MuteLength.values)
-              PopupMenuItem<MuteLength?>(
-                value: m,
+              PopupMenuItem(
+                value: (m,),
                 child: Text(muteLengthName(context, m)),
               ),
           ],
