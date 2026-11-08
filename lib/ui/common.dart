@@ -187,3 +187,95 @@ String hintText(BuildContext context, DeliveryHint h) {
     DeliveryHint.radioBusy => l.hintRadioBusy,
   };
 }
+
+/// Asks for one line of text in a dialog; null when cancelled. The dialog
+/// owns its text field, so nothing is disposed while it is still closing.
+Future<String?> showTextPrompt(
+  BuildContext context, {
+  required String title,
+  required String confirm,
+  String initial = '',
+  String? label,
+  String? hint,
+  String? Function(String text)? validate,
+  Key? fieldKey,
+}) => showDialog<String>(
+  context: context,
+  builder: (_) => _TextPrompt(
+    title: title,
+    confirm: confirm,
+    initial: initial,
+    label: label,
+    hint: hint,
+    validate: validate,
+    fieldKey: fieldKey,
+  ),
+);
+
+class _TextPrompt extends StatefulWidget {
+  const _TextPrompt({
+    required this.title,
+    required this.confirm,
+    required this.initial,
+    this.label,
+    this.hint,
+    this.validate,
+    this.fieldKey,
+  });
+
+  final String title;
+  final String confirm;
+  final String initial;
+  final String? label;
+  final String? hint;
+  final String? Function(String text)? validate;
+  final Key? fieldKey;
+
+  @override
+  State<_TextPrompt> createState() => _TextPromptState();
+}
+
+class _TextPromptState extends State<_TextPrompt> {
+  late final _controller = TextEditingController(text: widget.initial);
+  final _form = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    if (_form.currentState!.validate()) {
+      Navigator.pop(context, _controller.text.trim());
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+    title: Text(widget.title),
+    content: Form(
+      key: _form,
+      child: TextFormField(
+        key: widget.fieldKey,
+        controller: _controller,
+        autofocus: true,
+        decoration: InputDecoration(
+          labelText: widget.label,
+          hintText: widget.hint,
+        ),
+        validator: widget.validate == null
+            ? null
+            : (v) => widget.validate!((v ?? '').trim()),
+        onFieldSubmitted: (_) => _submit(),
+      ),
+    ),
+    actions: [
+      TextButton(
+        onPressed: () => Navigator.pop(context),
+        child: Text(context.l10n.radiosCancel),
+      ),
+      FilledButton(onPressed: _submit, child: Text(widget.confirm)),
+    ],
+  );
+}

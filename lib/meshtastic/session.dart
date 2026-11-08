@@ -465,6 +465,17 @@ class MeshtasticSession {
     );
   }
 
+  /// Writes one channel slot on node [to]; the node saves it at once.
+  Future<void> writeChannel(
+    int to,
+    MeshChannel channel, {
+    Duration timeout = const Duration(seconds: 30),
+  }) async {
+    final key = await _passkeyFor(to, timeout);
+    await _sendAdmin(to, AdminMessages.setChannel(channel.encode(), key));
+    _log?.add(_source, 'saved channel ${channel.index} on ${nodeIdOf(to)}');
+  }
+
   /// Restarts node [to].
   Future<void> rebootNode(
     int to, {

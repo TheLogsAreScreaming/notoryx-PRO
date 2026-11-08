@@ -98,6 +98,17 @@ abstract class RadioConnection extends ChangeNotifier {
   /// This radio's own contact card, for "show my code"; set on connect.
   ContactCard? ownCard;
 
+  /// The channels on the radio, with their keys (for sharing).
+  Future<List<ChannelSlot>> channelSlots();
+
+  /// Joins [invite]'s channel in the first free slot and returns the slot;
+  /// a channel already on the radio returns its slot. Throws
+  /// [ChannelsFull] when no slot is free.
+  Future<int> addChannel(ChannelInvite invite);
+
+  /// Leaves the channel in slot [index].
+  Future<void> removeChannel(int index);
+
   /// Takes one reading of the radio's noise and activity, if the protocol
   /// can be asked; null otherwise.
   Future<RadioSample?> sampleRadio();
@@ -266,7 +277,7 @@ class MeshCoreConnection extends RadioConnection {
       radio.id,
       contacts.contacts.map((c) => NodeKey.meshcore(c.keyHex)),
     );
-    final slots = h.device.maxChannels ?? 8;
+    final slots = channelSlotCount = h.device.maxChannels ?? 8;
     final channels = await session.getChannels(slots);
     await store.replaceChannels(
       radio.id,
@@ -500,6 +511,60 @@ class MeshCoreConnection extends RadioConnection {
   /// How many contacts the radio can hold, from its device info.
   int? maxContacts;
 
+  /// Channel slots the radio has.
+  int channelSlotCount = 8;
+
+  @override
+  Future<List<ChannelSlot>> channelSlots() async => [
+    for (final f in await session.getChannels(channelSlotCount))
+      if (!f.isEmpty)
+        ChannelSlot(
+          index: f.index,
+          invite: ChannelInvite(
+            protocol: RadioProtocol.meshcore,
+            name: f.name,
+            secret: f.secret,
+          ),
+        ),
+  ];
+
+  @override
+  Future<int> addChannel(ChannelInvite invite) async {
+    final all = await session.getChannels(channelSlotCount);
+    for (final f in all) {
+      if (!f.isEmpty && toHex(f.secret) == hexOf(invite.secret)) return f.index;
+    }
+    var free = -1;
+    for (var i = 0; i < channelSlotCount; i++) {
+      final used = i < all.length && !all[i].isEmpty;
+      if (!used) {
+        free = i;
+        break;
+      }
+    }
+    if (free < 0) throw const ChannelsFull();
+    await session.setChannel(free, invite.name, invite.secret);
+    await _refreshChannels();
+    return free;
+  }
+
+  @override
+  Future<void> removeChannel(int index) async {
+    await session.setChannel(index, '', Uint8List(16));
+    await _refreshChannels();
+  }
+
+  Future<void> _refreshChannels() async {
+    final radio = this.radio;
+    final mapper = _mapper;
+    if (radio == null || mapper == null) return;
+    final channels = await session.getChannels(channelSlotCount);
+    await store.replaceChannels(
+      radio.id,
+      channels.map(mapper.channel).nonNulls,
+    );
+  }
+
   /// Puts [node] in the radio's contact list if it isn't there, so the
   /// radio can message it. When the list is full, the least recently heard
   /// contact that isn't a favourite (people before repeaters and rooms)
@@ -720,6 +785,76 @@ class MeshtasticConnection extends RadioConnection {
   /// The radio has no LoRa region set, so it won't transmit.
   bool regionUnset = false;
 
+  /// Channel slots as the radio last reported them, by index.
+  final Map<int, MeshChannel> _channels = {};
+
+  /// Meshtastic radios have eight channel slots; slot 0 is the primary.
+  static const channelSlotCount = 8;
+
+  @override
+  Future<List<ChannelSlot>> channelSlots() async => [
+    for (final c
+        in _channels.values.toList()
+          ..sort((a, b) => a.index.compareTo(b.index)))
+      if (c.isEnabled)
+        ChannelSlot(
+          index: c.index,
+          isPrimary: c.role == ChannelRole.primary,
+          invite: ChannelInvite(
+            protocol: RadioProtocol.meshtastic,
+            name: c.name,
+            secret: c.psk ?? Uint8List(0),
+          ),
+        ),
+  ];
+
+  @override
+  Future<int> addChannel(ChannelInvite invite) async {
+    for (final c in _channels.values) {
+      if (c.isEnabled &&
+          c.name == invite.name &&
+          hexOf(c.psk ?? const []) == hexOf(invite.secret)) {
+        return c.index;
+      }
+    }
+    var free = -1;
+    for (var i = 1; i < channelSlotCount; i++) {
+      if (!(_channels[i]?.isEnabled ?? false)) {
+        free = i;
+        break;
+      }
+    }
+    if (free < 0) throw const ChannelsFull();
+    await _writeChannel(
+      MeshChannel(
+        index: free,
+        role: ChannelRole.secondary,
+        name: invite.name,
+        psk: invite.secret,
+      ),
+    );
+    return free;
+  }
+
+  @override
+  Future<void> removeChannel(int index) async {
+    if (index == 0) throw ArgumentError('The primary channel stays');
+    await _writeChannel(MeshChannel(index: index, role: ChannelRole.disabled));
+  }
+
+  Future<void> _writeChannel(MeshChannel c) async {
+    await session.writeChannel(_me, c);
+    _channels[c.index] = c;
+    final radio = this.radio;
+    final mapper = _mapper;
+    if (radio == null || mapper == null) return;
+    await store.replaceChannels(
+      radio.id,
+      [for (final ch in _channels.values) ?mapper.channel(ch)]
+        ..sort((a, b) => a.index.compareTo(b.index)),
+    );
+  }
+
   @override
   Future<void> setUp() async {
     final config = await session.handshake();
@@ -741,6 +876,9 @@ class MeshtasticConnection extends RadioConnection {
           .where((n) => n.num != config.myInfo.nodeNum)
           .map(mapper.node),
     );
+    _channels
+      ..clear()
+      ..addAll({for (final c in config.channels) c.index: c});
     await store.replaceChannels(
       radio.id,
       config.channels.map(mapper.channel).nonNulls,
@@ -1047,4 +1185,28 @@ class _PendingDm {
   final String text;
   final int attempt;
   Timer? timer;
+}
+
+/// A channel on a radio, with what's needed to share it.
+class ChannelSlot {
+  const ChannelSlot({
+    required this.index,
+    required this.invite,
+    this.isPrimary = false,
+  });
+
+  final int index;
+  final ChannelInvite invite;
+
+  /// Meshtastic primary channel (can't be removed).
+  final bool isPrimary;
+
+  String get name => invite.name;
+}
+
+/// Every channel slot on the radio is in use.
+class ChannelsFull implements Exception {
+  const ChannelsFull();
+  @override
+  String toString() => 'ChannelsFull';
 }

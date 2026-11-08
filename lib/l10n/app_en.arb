@@ -836,5 +836,72 @@
       }
     }
   },
-  "nodeAppOnly": "Kept by the app, not on the radio (added when you message them)"
+  "nodeAppOnly": "Kept by the app, not on the radio (added when you message them)",
+  "channelsButton": "Channels",
+  "channelsTitle": "Channels: {radio}",
+  "@channelsTitle": {
+    "placeholders": {
+      "radio": {
+        "type": "String"
+      }
+    }
+  },
+  "channelsPrimary": "Primary",
+  "channelsKindPublic": "Open to everyone",
+  "channelsKindHashtag": "Hashtag: anyone who knows the name can join",
+  "channelsKindPrivate": "Private: only people you share it with",
+  "channelsShare": "Share",
+  "channelsLeave": "Leave",
+  "channelsLeaveConfirm": "Leave {name}? Its messages stay in the app.",
+  "@channelsLeaveConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channelsNewPrivate": "New private channel",
+  "channelsHashtag": "Join a hashtag channel",
+  "channelsHashtagHelp": "For example #hiking. Its key comes from its name.",
+  "channelsScan": "Join by scanning a code",
+  "channelsPaste": "Join from a link",
+  "channelsPasteHint": "meshcore://channel/… or meshtastic.org/e/#…",
+  "channelsName": "Channel name",
+  "channelsNameInvalid": "1 to {max} bytes",
+  "@channelsNameInvalid": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "channelsAdd": "Add",
+  "channelsJoined": "Joined {name}",
+  "@channelsJoined": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channelsFull": "Every channel slot on this radio is in use. Leave one first.",
+  "channelsWrongMesh": "That channel is for the other mesh.",
+  "channelsNotALink": "That isn't a channel link.",
+  "channelsLoadFailed": "The radio didn't list its channels: {reason}",
+  "@channelsLoadFailed": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "channelsShareTitle": "Join {name}",
+  "@channelsShareTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channelsShareHelp": "Anyone with this code can read and post in the channel. The official apps can scan it too."
 }

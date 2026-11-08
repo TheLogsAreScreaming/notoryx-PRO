@@ -13,6 +13,7 @@ abstract final class AdminField {
   static const getMetadataRequest = 12;
   static const getMetadataResponse = 13;
   static const setOwner = 32;
+  static const setChannel = 33;
   static const setConfig = 34;
   static const setModuleConfig = 35;
   static const beginEditSettings = 64;
@@ -238,6 +239,13 @@ abstract final class AdminMessages {
       section.setPayload,
       always: true,
     ),
+    passkey,
+  );
+
+  /// Replaces one channel slot (`set_channel`); bytes from
+  /// `MeshChannel.encode`.
+  static Uint8List setChannel(Uint8List channel, List<int> passkey) => _with(
+    (w) => w.bytes(AdminField.setChannel, channel, always: true),
     passkey,
   );
 

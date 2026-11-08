@@ -748,6 +748,20 @@ class MeshChannel {
 
   bool get isEnabled => role != ChannelRole.disabled;
 
+  /// Encodes the channel for an admin `set_channel`.
+  Uint8List encode() {
+    final settings = ProtoWriter()
+      ..bytes(2, psk ?? const [])
+      ..string(3, name)
+      ..boolean(5, uplink)
+      ..boolean(6, downlink);
+    return (ProtoWriter()
+          ..uint(1, index)
+          ..bytes(2, settings.toBytes(), always: true)
+          ..uint(3, role.index))
+        .toBytes();
+  }
+
   static MeshChannel decode(Uint8List data) {
     var index = 0, role = 0;
     var name = '';
