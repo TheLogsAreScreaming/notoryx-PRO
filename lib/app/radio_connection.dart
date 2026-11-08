@@ -8,6 +8,7 @@ import '../meshcore/raw_packet.dart';
 import '../meshtastic/meshtastic.dart';
 import '../radio/radio.dart';
 import '../store/mesh_store.dart';
+import 'meshcore_settings.dart';
 import 'radio_target.dart';
 import 'retry_policy.dart';
 
@@ -246,6 +247,7 @@ class MeshCoreConnection extends RadioConnection {
   @override
   Future<void> setUp() async {
     final h = await session.handshake();
+    selfInfo = h.self;
     frequencyMHz = h.self.frequencyMHz;
     ownCard = ContactCard(
       protocol: RadioProtocol.meshcore,
@@ -271,6 +273,10 @@ class MeshCoreConnection extends RadioConnection {
     final radio = this.radio;
     if (mapper == null || radio == null) return;
     NodeKey? sender;
+    // Repeater command replies go to the console, not the inbox.
+    if (frame is ContactMessageFrame && frame.textType == TextType.cliData) {
+      return;
+    }
     if (frame is ContactMessageFrame) {
       sender = await store.meshCoreNodeByPrefix(
         radio.id,
@@ -413,6 +419,94 @@ class MeshCoreConnection extends RadioConnection {
       time: DateTime.now(),
     );
   }
+
+  /// The radio's own identity and settings, from the last handshake.
+  SelfInfoFrame? selfInfo;
+
+  /// The settings to edit, or null before the first handshake.
+  MeshCoreSettings? get settings {
+    final s = selfInfo;
+    return s == null ? null : MeshCoreSettings.from(s);
+  }
+
+  /// Sends only what changed from the radio's current settings, then reads
+  /// them back so the screen shows what the radio really accepted.
+  Future<MeshCoreSettings> applySettings(MeshCoreSettings wanted) async {
+    final now = settings;
+    if (now == null) throw StateError('Not connected');
+    if (wanted.name.trim() != now.name) {
+      await session.setName(wanted.name.trim());
+    }
+    if (wanted.txPower != now.txPower) {
+      await session.setTxPower(wanted.txPower);
+    }
+    if (wanted.radioDiffers(now)) {
+      await session.setRadioParams(
+        frequencyMHz: wanted.frequencyMHz,
+        bandwidthKHz: wanted.bandwidthKHz,
+        spreadingFactor: wanted.spreadingFactor,
+        codingRate: wanted.codingRate,
+      );
+    }
+    if (wanted.latitude != now.latitude || wanted.longitude != now.longitude) {
+      await session.setPosition(wanted.latitude, wanted.longitude);
+    }
+    if (wanted.otherDiffers(now)) {
+      await session.setOtherParams(
+        manualAddContacts: wanted.manualAddContacts,
+        telemetryMode: wanted.telemetryMode,
+        advertLocationPolicy: wanted.shareLocationInAdverts ? 1 : 0,
+        multiAcks: wanted.multiAcks,
+      );
+    }
+    final fresh = selfInfo = await session.appStart();
+    frequencyMHz = fresh.frequencyMHz;
+    final radio = this.radio;
+    if (radio != null) {
+      await setRadio(
+        Radio(
+          id: radio.id,
+          name: fresh.name,
+          self: radio.self,
+          firmware: radio.firmware,
+          model: radio.model,
+          maxChannels: radio.maxChannels,
+          position: fresh.latitude == 0 && fresh.longitude == 0
+              ? null
+              : GeoPoint(fresh.latitude, fresh.longitude),
+        ),
+      );
+    }
+    return MeshCoreSettings.from(fresh);
+  }
+
+  /// Sends this radio's advert: to neighbours, or flooded mesh-wide.
+  Future<void> sendAdvert({bool flood = false}) =>
+      session.sendAdvert(flood: flood);
+
+  /// Restarts the radio; the app reconnects by itself.
+  Future<void> reboot() => session.reboot();
+
+  /// Whether the companion can run commands itself (protocol 14+).
+  bool get hasCompanionCli => MeshCoreFirmware.supports(
+    session.firmwareCode ?? 0,
+    MeshCoreFeature.companionCli,
+  );
+
+  /// Runs a command on this radio.
+  Future<String> runCli(String command) => session.runCli(command);
+
+  /// Logs in to a repeater or room server.
+  Future<LoginResultPush> login(Node server, String password) =>
+      session.login(fromHex(server.key.native), password);
+
+  /// A repeater or room server's status.
+  Future<RepeaterStatusPush> serverStatus(Node server) =>
+      session.serverStatus(fromHex(server.key.native));
+
+  /// Runs a command on a repeater or room server you're logged in to.
+  Future<String> serverCommand(Node server, String command) =>
+      session.serverCommand(fromHex(server.key.native), command);
 
   final Map<int, Completer<SendConfirmedPush>> _waiting = {};
 

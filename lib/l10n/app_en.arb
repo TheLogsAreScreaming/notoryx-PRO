@@ -379,5 +379,144 @@
   "trustVerifiedSender": "Verified sender",
   "nameClash": "Another node uses this name",
   "channelNotProven": "Channel posts can't prove who sent them.",
-  "scanTitle": "Scan a contact code"
+  "scanTitle": "Scan a contact code",
+  "settings": "Settings",
+  "settingsTitle": "{name} settings",
+  "@settingsTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsName": "Name others see",
+  "settingsNameInvalid": "1 to 31 bytes",
+  "settingsTxPower": "Transmit power",
+  "settingsTxPowerValue": "{dbm} dBm",
+  "@settingsTxPowerValue": {
+    "placeholders": {
+      "dbm": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsRadio": "Radio",
+  "settingsRadioWarning": "Every radio in your mesh must use the same frequency, bandwidth, spreading factor and coding rate. Changing them takes you off your current mesh.",
+  "settingsFrequency": "Frequency (MHz)",
+  "settingsFrequencyInvalid": "150 to 2500 MHz",
+  "settingsBandwidth": "Bandwidth (kHz)",
+  "settingsSpreading": "Spreading factor",
+  "settingsCoding": "Coding rate",
+  "settingsCodingValue": "4/{n}",
+  "@settingsCodingValue": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPosition": "Position",
+  "settingsLatitude": "Latitude",
+  "settingsLongitude": "Longitude",
+  "settingsPositionInvalid": "Not a valid position",
+  "settingsShareLocation": "Include position in adverts",
+  "settingsAutoAdd": "Add nodes I hear to contacts automatically",
+  "settingsSave": "Save to radio",
+  "settingsSaved": "Saved. The radio now reports these settings.",
+  "settingsSaveFailed": "The radio didn't accept that: {reason}",
+  "@settingsSaveFailed": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsAdvertNeighbours": "Advertise to neighbours",
+  "settingsAdvertEveryone": "Advertise mesh-wide",
+  "settingsAdvertSent": "Advert sent",
+  "settingsReboot": "Restart radio",
+  "settingsRebootConfirm": "Restart the radio now? The app reconnects when it's back.",
+  "settingsCli": "Radio command line",
+  "consoleHint": "Command, e.g. ver",
+  "consoleRun": "Run",
+  "consoleFailed": "No answer: {reason}",
+  "@consoleFailed": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "consoleEmpty": "Type a command and press Run. Replies appear here.",
+  "manage": "Manage",
+  "serverTitle": "Manage {name}",
+  "@serverTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "serverPassword": "Password",
+  "serverPasswordHelp": "Not saved. Leave empty for guest access where the server allows it.",
+  "serverLogin": "Log in",
+  "serverLoggedInAdmin": "Logged in as admin",
+  "serverLoggedInGuest": "Logged in as guest",
+  "serverLoginFailed": "Wrong password, or the server refused the login.",
+  "serverNoAnswer": "No answer: {reason}",
+  "@serverNoAnswer": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "serverStatus": "Get status",
+  "serverConsole": "Command line",
+  "serverConsoleNeedsLogin": "Log in as admin to use the command line.",
+  "statusBattery": "Battery",
+  "statusVolts": "{v} V",
+  "@statusVolts": {
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "statusUptime": "Up for",
+  "statusUptimeValue": "{days} d {hours} h",
+  "@statusUptimeValue": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "statusNoise": "Noise floor",
+  "statusLastSignal": "Last packet heard",
+  "statusPackets": "Packets in / out",
+  "statusPacketsValue": "{rx} / {tx}",
+  "@statusPacketsValue": {
+    "placeholders": {
+      "rx": {
+        "type": "int"
+      },
+      "tx": {
+        "type": "int"
+      }
+    }
+  },
+  "statusAirtime": "Time transmitting",
+  "statusAirtimeValue": "{minutes} min",
+  "@statusAirtimeValue": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "statusQueue": "Waiting to send"
 }

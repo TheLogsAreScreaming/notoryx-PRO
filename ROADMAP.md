@@ -29,7 +29,7 @@ Priorities from the competitive analysis ([docs/competitive/](docs/competitive/)
 11. **Diagnostics** (done): live packet log for both meshes, noise floor / channel activity chart, trace route (MeshCore trace path, Meshtastic traceroute) with each hop's signal, line of sight with Fresnel zone and Earth bulge (no terrain data), and delivery hints explaining why a message may not have arrived (P1). Saving trace results comes later.
 12. **Verified senders** (done): confirm a node's key by scanning its QR code (MeshCore and Meshtastic contact formats) or comparing fingerprints; direct messages proven by encryption from a verified key get a badge, a changed key is flagged, and posts under a name another node also uses are flagged. Channel posts can't be proven on either mesh, so they never get the badge.
 13. **Radio and node admin**, split in two because each half is large:
-    - **13a. MeshCore**: radio settings, repeater and room server login, CLI terminal, telemetry history with battery charge estimates.
+    - **13a. MeshCore** (in review): radio settings (name, power, frequency/bandwidth/SF/CR, position, auto-add, sharing position), adverts, restart, the radio's own command line (protocol 14), repeater and room server login, status and command line. Telemetry history with battery charge estimates comes later.
     - **13b. Meshtastic**: radio and module settings, remote admin of other nodes, telemetry history.
 14. **Unread counts, notifications, mute**, and regional presets for both protocols.
 

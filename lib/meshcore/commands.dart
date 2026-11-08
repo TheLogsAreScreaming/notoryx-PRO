@@ -170,6 +170,96 @@ abstract final class MeshCoreCommands {
     return _checked(w);
   }
 
+  /// `SET_RADIO_PARAMS`: frequency in MHz, bandwidth in kHz, spreading
+  /// factor 5–12, coding rate 5–8 (as the firmware checks them).
+  static Uint8List setRadioParams({
+    required double frequencyMHz,
+    required double bandwidthKHz,
+    required int spreadingFactor,
+    required int codingRate,
+  }) {
+    final freq = (frequencyMHz * 1000).round();
+    final bw = (bandwidthKHz * 1000).round();
+    if (freq < 150000 || freq > 2500000) {
+      throw ArgumentError.value(frequencyMHz, 'frequencyMHz', '150–2500 MHz');
+    }
+    if (bw < 7000 || bw > 500000) {
+      throw ArgumentError.value(bandwidthKHz, 'bandwidthKHz', '7.8–500 kHz');
+    }
+    if (spreadingFactor < 5 || spreadingFactor > 12) {
+      throw ArgumentError.value(spreadingFactor, 'spreadingFactor', '5–12');
+    }
+    if (codingRate < 5 || codingRate > 8) {
+      throw ArgumentError.value(codingRate, 'codingRate', '5–8');
+    }
+    return (ByteWriter()
+          ..u8(Cmd.setRadioParams)
+          ..u32(freq)
+          ..u32(bw)
+          ..u8(spreadingFactor)
+          ..u8(codingRate))
+        .toBytes();
+  }
+
+  /// `SET_RADIO_TX_POWER` in dBm (-9 up to the radio's maximum).
+  static Uint8List setTxPower(int dbm) =>
+      Uint8List.fromList([Cmd.setTxPower, dbm & 0xff]);
+
+  /// `SET_ADVERT_LATLON` in degrees.
+  static Uint8List setAdvertPosition(double latitude, double longitude) {
+    if (latitude.abs() > 90 || longitude.abs() > 180) {
+      throw ArgumentError('position out of range');
+    }
+    return (ByteWriter()
+          ..u8(Cmd.setAdvertLatLon)
+          ..i32((latitude * 1e6).round())
+          ..i32((longitude * 1e6).round()))
+        .toBytes();
+  }
+
+  /// `SET_OTHER_PARAMS`: contact auto-add, telemetry sharing bits,
+  /// whether adverts include the position, and extra acks.
+  static Uint8List setOtherParams({
+    required bool manualAddContacts,
+    required int telemetryMode,
+    required int advertLocationPolicy,
+    required int multiAcks,
+  }) => Uint8List.fromList([
+    Cmd.setOtherParams,
+    manualAddContacts ? 1 : 0,
+    telemetryMode & 0x3f,
+    advertLocationPolicy,
+    multiAcks,
+  ]);
+
+  /// `REBOOT`: the radio restarts without replying.
+  static Uint8List reboot() =>
+      Uint8List.fromList([Cmd.reboot, ...utf8.encode('reboot')]);
+
+  /// `SEND_LOGIN` to a repeater or room server.
+  static Uint8List sendLogin(List<int> publicKey, String password) {
+    final pw = utf8.encode(password);
+    if (pw.length > 15) {
+      throw ArgumentError.value(password, 'password', 'longer than 15 bytes');
+    }
+    return Uint8List.fromList([Cmd.sendLogin, ..._key(publicKey), ...pw]);
+  }
+
+  /// `SEND_STATUS_REQ` to a repeater or room server.
+  static Uint8List sendStatusRequest(List<int> publicKey) =>
+      Uint8List.fromList([Cmd.sendStatusRequest, ..._key(publicKey)]);
+
+  /// `RUN_CLI_COMMAND` on the companion radio itself (protocol 14+).
+  static Uint8List runCli(String command) {
+    final text = utf8.encode(command);
+    if (text.isEmpty) throw ArgumentError.value(command, 'command', 'empty');
+    return _checked(
+      ByteWriter()
+        ..u8(Cmd.runCli)
+        ..bytes(text),
+    );
+  }
+
   /// `REMOVE_CONTACT` by full public key.
   static Uint8List removeContact(List<int> publicKey) =>
       Uint8List.fromList([Cmd.removeContact, ..._key(publicKey)]);

@@ -305,12 +305,14 @@ class MeshCoreSession {
     required String text,
     DateTime? at,
     int attempt = 0,
+    TextType type = TextType.plain,
   }) => _expect<SentFrame>(
     MeshCoreCommands.sendText(
       publicKey: publicKey,
       text: text,
       timestamp: _seconds(at),
       attempt: attempt,
+      type: type,
     ),
   );
 
@@ -377,6 +379,139 @@ class MeshCoreSession {
       wait,
       onTimeout: () => throw const MeshCoreTimeout(Cmd.sendTracePath),
     );
+  }
+
+  /// Renames the radio (what others see in its adverts).
+  Future<void> setName(String name) =>
+      _expect<OkFrame>(MeshCoreCommands.setAdvertName(name));
+
+  /// Changes frequency, bandwidth, spreading factor and coding rate.
+  Future<void> setRadioParams({
+    required double frequencyMHz,
+    required double bandwidthKHz,
+    required int spreadingFactor,
+    required int codingRate,
+  }) => _expect<OkFrame>(
+    MeshCoreCommands.setRadioParams(
+      frequencyMHz: frequencyMHz,
+      bandwidthKHz: bandwidthKHz,
+      spreadingFactor: spreadingFactor,
+      codingRate: codingRate,
+    ),
+  );
+
+  /// Sets transmit power in dBm.
+  Future<void> setTxPower(int dbm) =>
+      _expect<OkFrame>(MeshCoreCommands.setTxPower(dbm));
+
+  /// Sets the position the radio advertises.
+  Future<void> setPosition(double latitude, double longitude) =>
+      _expect<OkFrame>(MeshCoreCommands.setAdvertPosition(latitude, longitude));
+
+  /// Contact auto-add, telemetry sharing, advert position, extra acks.
+  Future<void> setOtherParams({
+    required bool manualAddContacts,
+    required int telemetryMode,
+    required int advertLocationPolicy,
+    required int multiAcks,
+  }) => _expect<OkFrame>(
+    MeshCoreCommands.setOtherParams(
+      manualAddContacts: manualAddContacts,
+      telemetryMode: telemetryMode,
+      advertLocationPolicy: advertLocationPolicy,
+      multiAcks: multiAcks,
+    ),
+  );
+
+  /// Restarts the radio. It doesn't reply; the link drops and reconnects.
+  Future<void> reboot() async {
+    attach();
+    final cmd = MeshCoreCommands.reboot();
+    await link.send(link.deliversFrames ? cmd : wrapStreamFrame(cmd));
+  }
+
+  /// Runs a command on the companion radio itself (protocol 14+).
+  Future<String> runCli(String command) async {
+    requireFeature(MeshCoreFeature.companionCli);
+    final r = await _expect<CliReplyFrame>(MeshCoreCommands.runCli(command));
+    return r.text;
+  }
+
+  /// Logs in to a repeater or room server. Waits for its answer.
+  Future<LoginResultPush> login(
+    List<int> publicKey,
+    String password, {
+    Duration extra = const Duration(seconds: 10),
+  }) => _askServer<LoginResultPush>(
+    publicKey,
+    MeshCoreCommands.sendLogin(publicKey, password),
+    extra,
+  );
+
+  /// Asks a repeater or room server for its status.
+  Future<RepeaterStatusPush> serverStatus(
+    List<int> publicKey, {
+    Duration extra = const Duration(seconds: 10),
+  }) => _askServer<RepeaterStatusPush>(
+    publicKey,
+    MeshCoreCommands.sendStatusRequest(publicKey),
+    extra,
+  );
+
+  /// Runs [command] on a repeater or room server you're logged in to and
+  /// returns its reply.
+  Future<String> serverCommand(
+    List<int> publicKey,
+    String command, {
+    Duration timeout = const Duration(seconds: 20),
+  }) async {
+    final prefix = publicKey.sublist(0, MeshCoreLimits.keyPrefix);
+    final reply = messages
+        .where(
+          (f) =>
+              f is ContactMessageFrame &&
+              f.textType == TextType.cliData &&
+              _samePrefix(f.keyPrefix, prefix),
+        )
+        .cast<ContactMessageFrame>()
+        .first;
+    await sendText(publicKey: publicKey, text: command, type: TextType.cliData);
+    final m = await reply.timeout(
+      timeout,
+      onTimeout: () => throw const MeshCoreTimeout(Cmd.sendText),
+    );
+    return m.text;
+  }
+
+  Future<T> _askServer<T extends MeshCoreFrame>(
+    List<int> publicKey,
+    Uint8List command,
+    Duration extra,
+  ) async {
+    final prefix = publicKey.sublist(0, MeshCoreLimits.keyPrefix);
+    final answer = pushes
+        .where((f) => f is T && _samePrefix(_prefixOf(f), prefix))
+        .cast<T>()
+        .first;
+    final sent = await _expect<SentFrame>(command);
+    return answer.timeout(
+      Duration(milliseconds: sent.timeoutMs) + extra,
+      onTimeout: () => throw MeshCoreTimeout(command.first),
+    );
+  }
+
+  static List<int> _prefixOf(MeshCoreFrame f) => switch (f) {
+    LoginResultPush(:final keyPrefix) => keyPrefix,
+    RepeaterStatusPush(:final keyPrefix) => keyPrefix,
+    _ => const [],
+  };
+
+  static bool _samePrefix(List<int> a, List<int> b) {
+    if (a.length < b.length) return false;
+    for (var i = 0; i < b.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
   }
 
   /// Forgets the route to a contact so the next message floods.

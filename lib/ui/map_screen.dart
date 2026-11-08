@@ -6,6 +6,7 @@ import '../app/app_controller.dart';
 import '../app/radio_connection.dart';
 import '../mesh/mesh.dart';
 import '../radio/radio.dart';
+import 'admin_screens.dart';
 import 'common.dart';
 import 'conversation_screen.dart';
 import 'diagnostics_screen.dart';
@@ -318,6 +319,20 @@ class NodeSheet extends StatelessWidget {
             Wrap(
               spacing: 8,
               children: [
+                if (_connection() case final MeshCoreConnection c
+                    when n.kind == NodeKind.relay || n.kind == NodeKind.room)
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.admin_panel_settings_outlined),
+                    label: Text(l.manage),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => ServerScreen(connection: c, node: n),
+                        ),
+                      );
+                    },
+                  ),
                 OutlinedButton.icon(
                   icon: const Icon(Icons.verified_user_outlined),
                   label: Text(l.verify),

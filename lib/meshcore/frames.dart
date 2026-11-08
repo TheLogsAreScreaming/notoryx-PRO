@@ -450,6 +450,72 @@ final class TraceDataPush extends MeshCoreFrame {
   bool get isPush => true;
 }
 
+/// A repeater or room server answered a login (push).
+final class LoginResultPush extends MeshCoreFrame {
+  const LoginResultPush({
+    required this.success,
+    required this.keyPrefix,
+    this.isAdmin = false,
+  });
+
+  final bool success;
+
+  /// First 6 bytes of the server's key.
+  final Uint8List keyPrefix;
+
+  /// Logged in with admin rights (can change settings).
+  final bool isAdmin;
+
+  @override
+  bool get isPush => true;
+}
+
+/// A repeater or room server's status (push answering SEND_STATUS_REQ).
+final class RepeaterStatusPush extends MeshCoreFrame {
+  const RepeaterStatusPush({
+    required this.keyPrefix,
+    required this.batteryMv,
+    required this.queueLength,
+    required this.noiseFloor,
+    required this.lastRssi,
+    required this.packetsReceived,
+    required this.packetsSent,
+    required this.airTimeSeconds,
+    required this.uptimeSeconds,
+    required this.sentFlood,
+    required this.sentDirect,
+    required this.receivedFlood,
+    required this.receivedDirect,
+    required this.errorEvents,
+    required this.lastSnr,
+  });
+
+  final Uint8List keyPrefix;
+  final int batteryMv;
+  final int queueLength;
+  final int noiseFloor;
+  final int lastRssi;
+  final int packetsReceived;
+  final int packetsSent;
+  final int airTimeSeconds;
+  final int uptimeSeconds;
+  final int sentFlood;
+  final int sentDirect;
+  final int receivedFlood;
+  final int receivedDirect;
+  final int errorEvents;
+  final double lastSnr;
+
+  @override
+  bool get isPush => true;
+}
+
+/// Text output of a command run on the companion (reply to RUN_CLI_COMMAND).
+final class CliReplyFrame extends MeshCoreFrame {
+  const CliReplyFrame(this.text);
+  final String text;
+}
+
 /// A frame this app doesn't decode yet.
 final class UnknownFrame extends MeshCoreFrame {
   const UnknownFrame(this.code, this.data);
@@ -578,6 +644,45 @@ MeshCoreFrame _decode(int code, ByteReader r, Uint8List data) {
       return const ContactsFullPush();
     case Resp.stats:
       return _stats(r);
+    case Resp.cliReply:
+      return CliReplyFrame(decodeText(r.rest(), stopAtNull: true));
+    case Push.loginSuccess:
+      {
+        final perms = r.u8();
+        return LoginResultPush(
+          success: true,
+          keyPrefix: r.bytes(MeshCoreLimits.keyPrefix),
+          isAdmin: perms & 1 != 0,
+        );
+      }
+    case Push.loginFail:
+      r.skip(1);
+      return LoginResultPush(
+        success: false,
+        keyPrefix: r.bytes(MeshCoreLimits.keyPrefix),
+      );
+    case Push.statusResponse:
+      {
+        r.skip(1);
+        final prefix = r.bytes(MeshCoreLimits.keyPrefix);
+        return RepeaterStatusPush(
+          keyPrefix: prefix,
+          batteryMv: r.u16(),
+          queueLength: r.u16(),
+          noiseFloor: (ByteData(2)..setUint16(0, r.u16())).getInt16(0),
+          lastRssi: (ByteData(2)..setUint16(0, r.u16())).getInt16(0),
+          packetsReceived: r.u32(),
+          packetsSent: r.u32(),
+          airTimeSeconds: r.u32(),
+          uptimeSeconds: r.u32(),
+          sentFlood: r.u32(),
+          sentDirect: r.u32(),
+          receivedFlood: r.u32(),
+          receivedDirect: r.u32(),
+          errorEvents: r.u16(),
+          lastSnr: (ByteData(2)..setUint16(0, r.u16())).getInt16(0) / 4.0,
+        );
+      }
     case Push.traceData:
       {
         r.skip(1);
