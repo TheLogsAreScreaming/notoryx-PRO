@@ -319,6 +319,56 @@ void main() {
     await closeAll(tester, controller, store);
   });
 
+  testWidgets('standard setup for a region fills region, preset, slot', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1000, 4000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final store = MeshStore.memory();
+    final bench = Bench();
+    bench.local.sections[SectionKind.lora] =
+        (ProtoWriter()
+              ..uint(LoraField.region, 0)
+              ..uint(LoraField.modemPreset, 3)
+              ..uint(LoraField.channelNum, 9)
+              ..uint(LoraField.hopLimit, 3))
+            .toBytes();
+    final controller = AppController(
+      store: store,
+      links: FakeLinks(bench.link),
+    );
+    final c =
+        (await tester.runAsync(() => controller.connect(target)))!
+            as MeshtasticConnection;
+    expect(c.regionUnset, isTrue);
+    await tester.pumpWidget(app(MeshtasticSettingsScreen(connection: c)));
+    await settle(tester);
+    expect(find.text('Not set'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('mt-presets')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.tap(find.text('EU 868 MHz'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.text('EU 868 MHz'), findsOneWidget);
+    expect(find.text('Long Fast'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('mt-save')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Save to radio').last);
+    await settle(tester);
+    final lora = SettingsSection(
+      SectionKind.lora,
+      bench.local.sections[SectionKind.lora]!,
+    );
+    expect(lora.number(LoraField.region), 3);
+    expect(lora.flag(LoraField.usePreset), isTrue);
+    expect(lora.number(LoraField.modemPreset), MeshtasticPreset.longFast);
+    expect(lora.number(LoraField.channelNum), 0);
+    expect(c.regionUnset, isFalse);
+    await closeAll(tester, controller, store);
+  });
+
   testWidgets('remote admin explains a silent node and offers the key', (
     tester,
   ) async {

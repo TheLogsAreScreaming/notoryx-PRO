@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import '../radio/radio.dart';
 import '../store/mesh_store.dart';
+import 'message_alerts.dart';
 import 'radio_connection.dart';
 import 'radio_target.dart';
 import 'retry_policy.dart';
@@ -15,7 +16,14 @@ class AppController extends ChangeNotifier {
     ConnectionLog? log,
     this.retryDelays,
     this.retries = const RetryPolicy(),
-  }) : log = log ?? ConnectionLog();
+    Notifier? notifier,
+  }) : log = log ?? ConnectionLog(),
+       alerts = notifier == null
+           ? null
+           : MessageAlerts(store: store, notifier: notifier);
+
+  /// Message notifications; null when there is no notifier (tests).
+  final MessageAlerts? alerts;
 
   final MeshStore store;
   final LinkFactory links;
@@ -64,6 +72,7 @@ class AppController extends ChangeNotifier {
 
   /// Disconnects every radio and waits until they have finished.
   Future<void> shutdown() async {
+    await alerts?.dispose();
     for (final p in RadioProtocol.values) {
       await disconnect(p);
     }

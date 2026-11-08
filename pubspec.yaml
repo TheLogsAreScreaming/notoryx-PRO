@@ -26,6 +26,7 @@ dependencies:
   # Vendored: the published package's Android build uses jcenter().
   usb_serial:
     path: third_party/usb_serial
+  flutter_local_notifications: ^22.3.3
 
 dev_dependencies:
   flutter_test:

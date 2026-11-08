@@ -752,5 +752,71 @@
         "type": "String"
       }
     }
-  }
+  },
+  "muteTitle": "Mute",
+  "muteUnmute": "Unmute",
+  "muteHour": "Mute for 1 hour",
+  "muteEightHours": "Mute for 8 hours",
+  "muteWeek": "Mute for a week",
+  "muteAlways": "Mute until I unmute",
+  "mutedLabel": "Muted",
+  "markRead": "Mark as read",
+  "markAllRead": "Mark all as read",
+  "unreadCount": "{count, plural, =1{1 unread message} other{{count} unread messages}}",
+  "@unreadCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notifyTitle": "Notifications",
+  "notifyDirect": "Direct messages",
+  "notifyChannels": "Channel messages",
+  "notifyHelp": "Muted conversations never notify. Notifications arrive while the app is running and connected to a radio.",
+  "notifyAllow": "Allow notifications",
+  "notifyAllowed": "Notifications are on.",
+  "notifyDenied": "Notifications are off. You can turn them on in the system settings.",
+  "presetsButton": "Choose settings for my area",
+  "presetsIntro": "Every radio in a mesh must use the same settings. Pick your area, then check with your local group before saving.",
+  "presetsNear": "Meshes near your radio",
+  "presetsSuggested": "Suggested by the MeshCore project",
+  "presetsLocal": "Local meshes",
+  "presetsLocalHelp": "Some of these are worked out from the settings people report on the public MeshCore map and haven't been confirmed on air.",
+  "presetValues": "{freq} MHz · BW {bw} · SF{sf} · CR{cr}",
+  "@presetValues": {
+    "placeholders": {
+      "freq": {
+        "type": "String"
+      },
+      "bw": {
+        "type": "String"
+      },
+      "sf": {
+        "type": "int"
+      },
+      "cr": {
+        "type": "int"
+      }
+    }
+  },
+  "presetRetired": "{name} (replaced)",
+  "@presetRetired": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "presetApplied": "{name} filled in. Save to send it to the radio.",
+  "@presetApplied": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "presetsMeshtasticIntro": "The standard setup for a region: Long Fast with the slot chosen automatically, which is what most Meshtastic meshes use.",
+  "presetsMeshtasticButton": "Standard setup for a region",
+  "regionUnsetWarning": "This radio has no region set, so it won't transmit. Open Settings to choose one."
 }

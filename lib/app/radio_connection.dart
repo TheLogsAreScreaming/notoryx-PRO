@@ -627,9 +627,14 @@ class MeshtasticConnection extends RadioConnection {
   @override
   int get maxTextBytes => meshtasticMaxPayload;
 
+  /// The radio has no LoRa region set, so it won't transmit.
+  bool regionUnset = false;
+
   @override
   Future<void> setUp() async {
     final config = await session.handshake();
+    regionUnset =
+        config.lora?.number(LoraField.region) == MeshtasticRegion.unset;
     final me = config.self?.user;
     ownCard = ContactCard(
       protocol: RadioProtocol.meshtastic,
@@ -787,6 +792,15 @@ class MeshtasticConnection extends RadioConnection {
       settings.changed,
       timeout: timeout,
     );
+    final newRegion = settings.sections[SectionKind.lora]?.number(
+      LoraField.region,
+    );
+    if (node == null &&
+        newRegion != null &&
+        newRegion != MeshtasticRegion.unset) {
+      regionUnset = false;
+      notifyListeners();
+    }
     final owner = settings.sections[SectionKind.owner];
     final radio = this.radio;
     if (node == null && radio != null && owner != null && owner.changed) {
