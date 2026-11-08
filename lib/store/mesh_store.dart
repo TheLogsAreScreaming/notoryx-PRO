@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:drift/drift.dart';
@@ -40,8 +41,16 @@ class MeshStore {
       MeshStore(MeshDatabase(NativeDatabase.memory()));
 
   final MeshDatabase db;
+  final _incoming = StreamController<StoredMessage>.broadcast();
 
-  Future<void> close() => db.close();
+  /// Received messages as they are saved (repeats are left out), for
+  /// notifications.
+  Stream<StoredMessage> get incoming => _incoming.stream;
+
+  Future<void> close() async {
+    await _incoming.close();
+    await db.close();
+  }
 
   // Radios
 
@@ -213,7 +222,7 @@ class MeshStore {
     }
     final (code, reason, roundTrip) = _deliveryParts(message.delivery);
     final path = message.path;
-    return db
+    final id = await db
         .into(db.messages)
         .insert(
           MessagesCompanion.insert(
@@ -241,6 +250,10 @@ class MeshStore {
             dedupeKey: Value(dedupe),
           ),
         );
+    if (!message.outgoing && !_incoming.isClosed) {
+      _incoming.add(StoredMessage(id, message));
+    }
+    return id;
   }
 
   /// Moves message [id] to [state], unless that would go backwards (a
@@ -332,6 +345,104 @@ class MeshStore {
     final secs = m.sentAt.millisecondsSinceEpoch ~/ 1000;
     return '${m.conversation.key}|$who|$secs|${m.text.hashCode}';
   }
+
+  /// A conversation's name: the node's or channel's name.
+  Future<String> conversationTitle(Conversation c) async {
+    switch (c) {
+      case DirectConversation(:final node):
+        return (await this.node(c.radioId, node))?.displayName ?? node.short;
+      case ChannelConversation(:final index):
+        for (final ch in await channels(c.radioId)) {
+          if (ch.index == index) return ch.name;
+        }
+        return '#$index';
+    }
+  }
+
+  // Read state and mutes
+
+  /// Unread received messages per conversation key (reactions don't count).
+  Stream<Map<String, int>> watchUnread() => db
+      .customSelect(
+        'SELECT m.conversation AS c, COUNT(*) AS n FROM messages m '
+        'LEFT JOIN conversation_states s ON s.conversation = m.conversation '
+        'WHERE m.outgoing = 0 AND m.is_reaction = 0 '
+        'AND m.id > COALESCE(s.last_read_id, 0) '
+        'GROUP BY m.conversation',
+        readsFrom: {db.messages, db.conversationStates},
+      )
+      .watch()
+      .map(
+        (rows) => {for (final r in rows) r.read<String>('c'): r.read<int>('n')},
+      );
+
+  /// Marks everything in [conversation] as read.
+  Future<void> markRead(Conversation conversation) => db.customUpdate(
+    'INSERT INTO conversation_states (conversation, last_read_id) '
+    'VALUES (?1, (SELECT COALESCE(MAX(id), 0) FROM messages '
+    'WHERE conversation = ?1)) '
+    'ON CONFLICT (conversation) DO UPDATE '
+    'SET last_read_id = excluded.last_read_id',
+    variables: [Variable.withString(conversation.key)],
+    updates: {db.conversationStates},
+  );
+
+  /// Marks every conversation as read.
+  Future<void> markAllRead() => db.customUpdate(
+    'INSERT INTO conversation_states (conversation, last_read_id) '
+    'SELECT conversation, MAX(id) FROM messages WHERE true '
+    'GROUP BY conversation ON CONFLICT (conversation) DO UPDATE '
+    'SET last_read_id = excluded.last_read_id',
+    updates: {db.conversationStates},
+  );
+
+  /// Mutes [conversation] until [until]; null unmutes it.
+  Future<void> setMuted(Conversation conversation, DateTime? until) =>
+      db.customUpdate(
+        'INSERT INTO conversation_states (conversation, muted_until) '
+        'VALUES (?1, ?2) ON CONFLICT (conversation) DO UPDATE '
+        'SET muted_until = excluded.muted_until',
+        variables: [
+          Variable.withString(conversation.key),
+          Variable<DateTime>(until),
+        ],
+        updates: {db.conversationStates},
+      );
+
+  /// When each muted conversation's mute ends, by conversation key.
+  Stream<Map<String, DateTime>> watchMutes() =>
+      (db.select(db.conversationStates)..where((s) => s.mutedUntil.isNotNull()))
+          .watch()
+          .map((rows) => {for (final r in rows) r.conversation: r.mutedUntil!});
+
+  /// Whether [conversation] is muted at [now].
+  Future<bool> isMuted(Conversation conversation, DateTime now) async {
+    final row = await (db.select(
+      db.conversationStates,
+    )..where((s) => s.conversation.equals(conversation.key))).getSingleOrNull();
+    final until = row?.mutedUntil;
+    return until != null && until.isAfter(now);
+  }
+
+  // Preferences
+
+  /// A preference, or null when never set.
+  Future<String?> preference(String name) async => (await (db.select(
+    db.preferences,
+  )..where((p) => p.name.equals(name))).getSingleOrNull())?.value;
+
+  /// Saves a preference.
+  Future<void> setPreference(String name, String value) => db
+      .into(db.preferences)
+      .insertOnConflictUpdate(
+        PreferencesCompanion.insert(name: name, value: value),
+      );
+
+  /// A preference as it changes.
+  Stream<String?> watchPreference(String name) =>
+      (db.select(db.preferences)..where((p) => p.name.equals(name)))
+          .watchSingleOrNull()
+          .map((r) => r?.value);
 
   // Telemetry
 

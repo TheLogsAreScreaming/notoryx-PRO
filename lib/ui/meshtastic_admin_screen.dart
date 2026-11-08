@@ -8,6 +8,7 @@ import '../app/radio_connection.dart';
 import '../mesh/mesh.dart';
 import '../meshtastic/admin.dart';
 import 'common.dart';
+import 'preset_sheet.dart';
 
 /// Settings of a Meshtastic node: the connected radio, or another node
 /// ([node]) administered over the mesh.
@@ -319,8 +320,35 @@ class _MeshtasticSettingsScreenState extends State<MeshtasticSettingsScreen> {
             l.settingsRadioWarning,
             style: TextStyle(color: Theme.of(context).colorScheme.error),
           ),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: TextButton.icon(
+              key: const Key('mt-presets'),
+              icon: const Icon(Icons.public),
+              label: Text(l.presetsMeshtasticButton),
+              onPressed: () async {
+                final code = await showMeshtasticRegions(
+                  context,
+                  current: region,
+                );
+                if (code == null || !mounted) return;
+                _slot.text = '0';
+                setState(() {
+                  _settings = _settings!
+                      .withValue(SectionKind.lora, LoraField.region, code)
+                      .withValue(SectionKind.lora, LoraField.usePreset, true)
+                      .withValue(
+                        SectionKind.lora,
+                        LoraField.modemPreset,
+                        MeshtasticPreset.longFast,
+                      )
+                      .withValue(SectionKind.lora, LoraField.channelNum, 0);
+                });
+              },
+            ),
+          ),
           DropdownButtonFormField<int>(
-            key: const Key('mt-region'),
+            key: ValueKey('mt-region-$region'),
             initialValue: region,
             isExpanded: true,
             decoration: InputDecoration(labelText: l.mtRegion),
@@ -352,7 +380,7 @@ class _MeshtasticSettingsScreenState extends State<MeshtasticSettingsScreen> {
           ),
           if (usePreset)
             DropdownButtonFormField<int>(
-              key: const Key('mt-preset'),
+              key: ValueKey('mt-preset-$preset'),
               initialValue: preset,
               isExpanded: true,
               decoration: InputDecoration(labelText: l.mtPreset),

@@ -125,6 +125,16 @@ class _ConnectionCard extends StatelessWidget {
             Text(statusText(context, c)),
             if (radio != null && radio.firmware.isNotEmpty)
               Text(l.radioFirmware(radio.firmware)),
+            if (c is MeshtasticConnection &&
+                c.regionUnset &&
+                phase == SupervisorPhase.connected)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  l.regionUnsetWarning,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+              ),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,

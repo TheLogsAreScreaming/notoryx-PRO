@@ -7,6 +7,7 @@ import '../app/radio_connection.dart';
 import '../mesh/mesh.dart';
 import '../meshcore/frames.dart';
 import 'common.dart';
+import 'preset_sheet.dart';
 
 /// A MeshCore companion's own settings.
 class MeshCoreSettingsScreen extends StatefulWidget {
@@ -142,6 +143,29 @@ class _MeshCoreSettingsScreenState extends State<MeshCoreSettingsScreen> {
               l.settingsRadioWarning,
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: TextButton.icon(
+                key: const Key('settings-presets'),
+                icon: const Icon(Icons.public),
+                label: Text(l.presetsButton),
+                onPressed: () async {
+                  final p = await showMeshCorePresets(
+                    context,
+                    latitude: double.tryParse(_lat.text.trim()),
+                    longitude: double.tryParse(_lon.text.trim()),
+                  );
+                  if (p == null || !mounted) return;
+                  setState(() {
+                    _freq.text = p.frequencyMHz.toStringAsFixed(3);
+                    _bw = _nearestBandwidth(p.bandwidthKHz);
+                    _sf = p.spreadingFactor;
+                    _cr = p.codingRate;
+                  });
+                  _say(l.presetApplied(p.name));
+                },
+              ),
+            ),
             TextFormField(
               key: const Key('settings-frequency'),
               controller: _freq,
@@ -153,6 +177,7 @@ class _MeshCoreSettingsScreenState extends State<MeshCoreSettingsScreen> {
                   number(v, 150, 2500, l.settingsFrequencyInvalid),
             ),
             DropdownButtonFormField<double>(
+              key: ValueKey('_bw-$_bw'),
               initialValue: _bw,
               decoration: InputDecoration(labelText: l.settingsBandwidth),
               items: [
@@ -162,6 +187,7 @@ class _MeshCoreSettingsScreenState extends State<MeshCoreSettingsScreen> {
               onChanged: (v) => setState(() => _bw = v ?? _bw),
             ),
             DropdownButtonFormField<int>(
+              key: ValueKey('_sf-$_sf'),
               initialValue: _sf,
               decoration: InputDecoration(labelText: l.settingsSpreading),
               items: [
@@ -171,6 +197,7 @@ class _MeshCoreSettingsScreenState extends State<MeshCoreSettingsScreen> {
               onChanged: (v) => setState(() => _sf = v ?? _sf),
             ),
             DropdownButtonFormField<int>(
+              key: ValueKey('_cr-$_cr'),
               initialValue: _cr,
               decoration: InputDecoration(labelText: l.settingsCoding),
               items: [

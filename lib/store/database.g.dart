@@ -4388,6 +4388,501 @@ class TelemetryReadingsCompanion extends UpdateCompanion<TelemetryRow> {
   }
 }
 
+class $ConversationStatesTable extends ConversationStates
+    with TableInfo<$ConversationStatesTable, ConversationStateRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ConversationStatesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _conversationMeta = const VerificationMeta(
+    'conversation',
+  );
+  @override
+  late final GeneratedColumn<String> conversation = GeneratedColumn<String>(
+    'conversation',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastReadIdMeta = const VerificationMeta(
+    'lastReadId',
+  );
+  @override
+  late final GeneratedColumn<int> lastReadId = GeneratedColumn<int>(
+    'last_read_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _mutedUntilMeta = const VerificationMeta(
+    'mutedUntil',
+  );
+  @override
+  late final GeneratedColumn<DateTime> mutedUntil = GeneratedColumn<DateTime>(
+    'muted_until',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [conversation, lastReadId, mutedUntil];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'conversation_states';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ConversationStateRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('conversation')) {
+      context.handle(
+        _conversationMeta,
+        conversation.isAcceptableOrUnknown(
+          data['conversation']!,
+          _conversationMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_conversationMeta);
+    }
+    if (data.containsKey('last_read_id')) {
+      context.handle(
+        _lastReadIdMeta,
+        lastReadId.isAcceptableOrUnknown(
+          data['last_read_id']!,
+          _lastReadIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('muted_until')) {
+      context.handle(
+        _mutedUntilMeta,
+        mutedUntil.isAcceptableOrUnknown(data['muted_until']!, _mutedUntilMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {conversation};
+  @override
+  ConversationStateRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ConversationStateRow(
+      conversation: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}conversation'],
+      )!,
+      lastReadId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}last_read_id'],
+      )!,
+      mutedUntil: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}muted_until'],
+      ),
+    );
+  }
+
+  @override
+  $ConversationStatesTable createAlias(String alias) {
+    return $ConversationStatesTable(attachedDatabase, alias);
+  }
+}
+
+class ConversationStateRow extends DataClass
+    implements Insertable<ConversationStateRow> {
+  /// `Conversation.key`.
+  final String conversation;
+
+  /// Messages up to and including this ID have been read.
+  final int lastReadId;
+
+  /// No notifications until then; null when not muted.
+  final DateTime? mutedUntil;
+  const ConversationStateRow({
+    required this.conversation,
+    required this.lastReadId,
+    this.mutedUntil,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['conversation'] = Variable<String>(conversation);
+    map['last_read_id'] = Variable<int>(lastReadId);
+    if (!nullToAbsent || mutedUntil != null) {
+      map['muted_until'] = Variable<DateTime>(mutedUntil);
+    }
+    return map;
+  }
+
+  ConversationStatesCompanion toCompanion(bool nullToAbsent) {
+    return ConversationStatesCompanion(
+      conversation: Value(conversation),
+      lastReadId: Value(lastReadId),
+      mutedUntil: mutedUntil == null && nullToAbsent
+          ? const Value.absent()
+          : Value(mutedUntil),
+    );
+  }
+
+  factory ConversationStateRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ConversationStateRow(
+      conversation: serializer.fromJson<String>(json['conversation']),
+      lastReadId: serializer.fromJson<int>(json['lastReadId']),
+      mutedUntil: serializer.fromJson<DateTime?>(json['mutedUntil']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'conversation': serializer.toJson<String>(conversation),
+      'lastReadId': serializer.toJson<int>(lastReadId),
+      'mutedUntil': serializer.toJson<DateTime?>(mutedUntil),
+    };
+  }
+
+  ConversationStateRow copyWith({
+    String? conversation,
+    int? lastReadId,
+    Value<DateTime?> mutedUntil = const Value.absent(),
+  }) => ConversationStateRow(
+    conversation: conversation ?? this.conversation,
+    lastReadId: lastReadId ?? this.lastReadId,
+    mutedUntil: mutedUntil.present ? mutedUntil.value : this.mutedUntil,
+  );
+  ConversationStateRow copyWithCompanion(ConversationStatesCompanion data) {
+    return ConversationStateRow(
+      conversation: data.conversation.present
+          ? data.conversation.value
+          : this.conversation,
+      lastReadId: data.lastReadId.present
+          ? data.lastReadId.value
+          : this.lastReadId,
+      mutedUntil: data.mutedUntil.present
+          ? data.mutedUntil.value
+          : this.mutedUntil,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ConversationStateRow(')
+          ..write('conversation: $conversation, ')
+          ..write('lastReadId: $lastReadId, ')
+          ..write('mutedUntil: $mutedUntil')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(conversation, lastReadId, mutedUntil);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ConversationStateRow &&
+          other.conversation == this.conversation &&
+          other.lastReadId == this.lastReadId &&
+          other.mutedUntil == this.mutedUntil);
+}
+
+class ConversationStatesCompanion
+    extends UpdateCompanion<ConversationStateRow> {
+  final Value<String> conversation;
+  final Value<int> lastReadId;
+  final Value<DateTime?> mutedUntil;
+  final Value<int> rowid;
+  const ConversationStatesCompanion({
+    this.conversation = const Value.absent(),
+    this.lastReadId = const Value.absent(),
+    this.mutedUntil = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ConversationStatesCompanion.insert({
+    required String conversation,
+    this.lastReadId = const Value.absent(),
+    this.mutedUntil = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : conversation = Value(conversation);
+  static Insertable<ConversationStateRow> custom({
+    Expression<String>? conversation,
+    Expression<int>? lastReadId,
+    Expression<DateTime>? mutedUntil,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (conversation != null) 'conversation': conversation,
+      if (lastReadId != null) 'last_read_id': lastReadId,
+      if (mutedUntil != null) 'muted_until': mutedUntil,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ConversationStatesCompanion copyWith({
+    Value<String>? conversation,
+    Value<int>? lastReadId,
+    Value<DateTime?>? mutedUntil,
+    Value<int>? rowid,
+  }) {
+    return ConversationStatesCompanion(
+      conversation: conversation ?? this.conversation,
+      lastReadId: lastReadId ?? this.lastReadId,
+      mutedUntil: mutedUntil ?? this.mutedUntil,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (conversation.present) {
+      map['conversation'] = Variable<String>(conversation.value);
+    }
+    if (lastReadId.present) {
+      map['last_read_id'] = Variable<int>(lastReadId.value);
+    }
+    if (mutedUntil.present) {
+      map['muted_until'] = Variable<DateTime>(mutedUntil.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ConversationStatesCompanion(')
+          ..write('conversation: $conversation, ')
+          ..write('lastReadId: $lastReadId, ')
+          ..write('mutedUntil: $mutedUntil, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PreferencesTable extends Preferences
+    with TableInfo<$PreferencesTable, PreferenceRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PreferencesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<String> value = GeneratedColumn<String>(
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [name, value];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'preferences';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PreferenceRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {name};
+  @override
+  PreferenceRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PreferenceRow(
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      value: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}value'],
+      )!,
+    );
+  }
+
+  @override
+  $PreferencesTable createAlias(String alias) {
+    return $PreferencesTable(attachedDatabase, alias);
+  }
+}
+
+class PreferenceRow extends DataClass implements Insertable<PreferenceRow> {
+  final String name;
+  final String value;
+  const PreferenceRow({required this.name, required this.value});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['name'] = Variable<String>(name);
+    map['value'] = Variable<String>(value);
+    return map;
+  }
+
+  PreferencesCompanion toCompanion(bool nullToAbsent) {
+    return PreferencesCompanion(name: Value(name), value: Value(value));
+  }
+
+  factory PreferenceRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PreferenceRow(
+      name: serializer.fromJson<String>(json['name']),
+      value: serializer.fromJson<String>(json['value']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'name': serializer.toJson<String>(name),
+      'value': serializer.toJson<String>(value),
+    };
+  }
+
+  PreferenceRow copyWith({String? name, String? value}) =>
+      PreferenceRow(name: name ?? this.name, value: value ?? this.value);
+  PreferenceRow copyWithCompanion(PreferencesCompanion data) {
+    return PreferenceRow(
+      name: data.name.present ? data.name.value : this.name,
+      value: data.value.present ? data.value.value : this.value,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PreferenceRow(')
+          ..write('name: $name, ')
+          ..write('value: $value')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(name, value);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PreferenceRow &&
+          other.name == this.name &&
+          other.value == this.value);
+}
+
+class PreferencesCompanion extends UpdateCompanion<PreferenceRow> {
+  final Value<String> name;
+  final Value<String> value;
+  final Value<int> rowid;
+  const PreferencesCompanion({
+    this.name = const Value.absent(),
+    this.value = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  PreferencesCompanion.insert({
+    required String name,
+    required String value,
+    this.rowid = const Value.absent(),
+  }) : name = Value(name),
+       value = Value(value);
+  static Insertable<PreferenceRow> custom({
+    Expression<String>? name,
+    Expression<String>? value,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (name != null) 'name': name,
+      if (value != null) 'value': value,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  PreferencesCompanion copyWith({
+    Value<String>? name,
+    Value<String>? value,
+    Value<int>? rowid,
+  }) {
+    return PreferencesCompanion(
+      name: name ?? this.name,
+      value: value ?? this.value,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<String>(value.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PreferencesCompanion(')
+          ..write('name: $name, ')
+          ..write('value: $value, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$MeshDatabase extends GeneratedDatabase {
   _$MeshDatabase(QueryExecutor e) : super(e);
   $MeshDatabaseManager get managers => $MeshDatabaseManager(this);
@@ -4398,6 +4893,9 @@ abstract class _$MeshDatabase extends GeneratedDatabase {
   late final $VerifiedKeysTable verifiedKeys = $VerifiedKeysTable(this);
   late final $TelemetryReadingsTable telemetryReadings =
       $TelemetryReadingsTable(this);
+  late final $ConversationStatesTable conversationStates =
+      $ConversationStatesTable(this);
+  late final $PreferencesTable preferences = $PreferencesTable(this);
   late final Index messagesByConversation = Index(
     'messages_by_conversation',
     'CREATE INDEX messages_by_conversation ON messages (conversation, id)',
@@ -4421,6 +4919,8 @@ abstract class _$MeshDatabase extends GeneratedDatabase {
     messages,
     verifiedKeys,
     telemetryReadings,
+    conversationStates,
+    preferences,
     messagesByConversation,
     messagesByNativeId,
     telemetryByNode,
@@ -6519,6 +7019,347 @@ typedef $$TelemetryReadingsTableProcessedTableManager =
       TelemetryRow,
       PrefetchHooks Function()
     >;
+typedef $$ConversationStatesTableCreateCompanionBuilder =
+    ConversationStatesCompanion Function({
+      required String conversation,
+      Value<int> lastReadId,
+      Value<DateTime?> mutedUntil,
+      Value<int> rowid,
+    });
+typedef $$ConversationStatesTableUpdateCompanionBuilder =
+    ConversationStatesCompanion Function({
+      Value<String> conversation,
+      Value<int> lastReadId,
+      Value<DateTime?> mutedUntil,
+      Value<int> rowid,
+    });
+
+class $$ConversationStatesTableFilterComposer
+    extends Composer<_$MeshDatabase, $ConversationStatesTable> {
+  $$ConversationStatesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get conversation => $composableBuilder(
+    column: $table.conversation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get lastReadId => $composableBuilder(
+    column: $table.lastReadId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get mutedUntil => $composableBuilder(
+    column: $table.mutedUntil,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ConversationStatesTableOrderingComposer
+    extends Composer<_$MeshDatabase, $ConversationStatesTable> {
+  $$ConversationStatesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get conversation => $composableBuilder(
+    column: $table.conversation,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get lastReadId => $composableBuilder(
+    column: $table.lastReadId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get mutedUntil => $composableBuilder(
+    column: $table.mutedUntil,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ConversationStatesTableAnnotationComposer
+    extends Composer<_$MeshDatabase, $ConversationStatesTable> {
+  $$ConversationStatesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get conversation => $composableBuilder(
+    column: $table.conversation,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get lastReadId => $composableBuilder(
+    column: $table.lastReadId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get mutedUntil => $composableBuilder(
+    column: $table.mutedUntil,
+    builder: (column) => column,
+  );
+}
+
+class $$ConversationStatesTableTableManager
+    extends
+        RootTableManager<
+          _$MeshDatabase,
+          $ConversationStatesTable,
+          ConversationStateRow,
+          $$ConversationStatesTableFilterComposer,
+          $$ConversationStatesTableOrderingComposer,
+          $$ConversationStatesTableAnnotationComposer,
+          $$ConversationStatesTableCreateCompanionBuilder,
+          $$ConversationStatesTableUpdateCompanionBuilder,
+          (
+            ConversationStateRow,
+            BaseReferences<
+              _$MeshDatabase,
+              $ConversationStatesTable,
+              ConversationStateRow
+            >,
+          ),
+          ConversationStateRow,
+          PrefetchHooks Function()
+        > {
+  $$ConversationStatesTableTableManager(
+    _$MeshDatabase db,
+    $ConversationStatesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ConversationStatesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ConversationStatesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ConversationStatesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> conversation = const Value.absent(),
+                Value<int> lastReadId = const Value.absent(),
+                Value<DateTime?> mutedUntil = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ConversationStatesCompanion(
+                conversation: conversation,
+                lastReadId: lastReadId,
+                mutedUntil: mutedUntil,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String conversation,
+                Value<int> lastReadId = const Value.absent(),
+                Value<DateTime?> mutedUntil = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ConversationStatesCompanion.insert(
+                conversation: conversation,
+                lastReadId: lastReadId,
+                mutedUntil: mutedUntil,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ConversationStatesTable, ConversationStateRow>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$MeshDatabase,
+                    $ConversationStatesTable,
+                    ConversationStateRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ConversationStatesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$MeshDatabase,
+      $ConversationStatesTable,
+      ConversationStateRow,
+      $$ConversationStatesTableFilterComposer,
+      $$ConversationStatesTableOrderingComposer,
+      $$ConversationStatesTableAnnotationComposer,
+      $$ConversationStatesTableCreateCompanionBuilder,
+      $$ConversationStatesTableUpdateCompanionBuilder,
+      (
+        ConversationStateRow,
+        BaseReferences<
+          _$MeshDatabase,
+          $ConversationStatesTable,
+          ConversationStateRow
+        >,
+      ),
+      ConversationStateRow,
+      PrefetchHooks Function()
+    >;
+typedef $$PreferencesTableCreateCompanionBuilder =
+    PreferencesCompanion Function({
+      required String name,
+      required String value,
+      Value<int> rowid,
+    });
+typedef $$PreferencesTableUpdateCompanionBuilder =
+    PreferencesCompanion Function({
+      Value<String> name,
+      Value<String> value,
+      Value<int> rowid,
+    });
+
+class $$PreferencesTableFilterComposer
+    extends Composer<_$MeshDatabase, $PreferencesTable> {
+  $$PreferencesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PreferencesTableOrderingComposer
+    extends Composer<_$MeshDatabase, $PreferencesTable> {
+  $$PreferencesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PreferencesTableAnnotationComposer
+    extends Composer<_$MeshDatabase, $PreferencesTable> {
+  $$PreferencesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+}
+
+class $$PreferencesTableTableManager
+    extends
+        RootTableManager<
+          _$MeshDatabase,
+          $PreferencesTable,
+          PreferenceRow,
+          $$PreferencesTableFilterComposer,
+          $$PreferencesTableOrderingComposer,
+          $$PreferencesTableAnnotationComposer,
+          $$PreferencesTableCreateCompanionBuilder,
+          $$PreferencesTableUpdateCompanionBuilder,
+          (
+            PreferenceRow,
+            BaseReferences<_$MeshDatabase, $PreferencesTable, PreferenceRow>,
+          ),
+          PreferenceRow,
+          PrefetchHooks Function()
+        > {
+  $$PreferencesTableTableManager(_$MeshDatabase db, $PreferencesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PreferencesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PreferencesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PreferencesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> name = const Value.absent(),
+                Value<String> value = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) =>
+                  PreferencesCompanion(name: name, value: value, rowid: rowid),
+          createCompanionCallback:
+              ({
+                required String name,
+                required String value,
+                Value<int> rowid = const Value.absent(),
+              }) => PreferencesCompanion.insert(
+                name: name,
+                value: value,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$PreferencesTable, PreferenceRow>(table),
+                  BaseReferences<
+                    _$MeshDatabase,
+                    $PreferencesTable,
+                    PreferenceRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PreferencesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$MeshDatabase,
+      $PreferencesTable,
+      PreferenceRow,
+      $$PreferencesTableFilterComposer,
+      $$PreferencesTableOrderingComposer,
+      $$PreferencesTableAnnotationComposer,
+      $$PreferencesTableCreateCompanionBuilder,
+      $$PreferencesTableUpdateCompanionBuilder,
+      (
+        PreferenceRow,
+        BaseReferences<_$MeshDatabase, $PreferencesTable, PreferenceRow>,
+      ),
+      PreferenceRow,
+      PrefetchHooks Function()
+    >;
 
 class $MeshDatabaseManager {
   final _$MeshDatabase _db;
@@ -6535,4 +7376,8 @@ class $MeshDatabaseManager {
       $$VerifiedKeysTableTableManager(_db, _db.verifiedKeys);
   $$TelemetryReadingsTableTableManager get telemetryReadings =>
       $$TelemetryReadingsTableTableManager(_db, _db.telemetryReadings);
+  $$ConversationStatesTableTableManager get conversationStates =>
+      $$ConversationStatesTableTableManager(_db, _db.conversationStates);
+  $$PreferencesTableTableManager get preferences =>
+      $$PreferencesTableTableManager(_db, _db.preferences);
 }

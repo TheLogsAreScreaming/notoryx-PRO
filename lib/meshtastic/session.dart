@@ -28,7 +28,17 @@ class MeshtasticConfig {
     required this.channels,
     required this.configSections,
     required this.moduleSections,
+    this.config = const {},
   });
+
+  /// `Config` sections by oneof field number (e.g. 6 for LoRa), each the
+  /// section's own bytes.
+  final Map<int, Uint8List> config;
+
+  /// The LoRa section, when the node sent one.
+  SettingsSection? get lora => config[SectionKind.lora.field] == null
+      ? null
+      : SettingsSection(SectionKind.lora, config[SectionKind.lora.field]!);
 
   final MyNodeInfo myInfo;
   final DeviceMetadata? metadata;
@@ -224,6 +234,7 @@ class MeshtasticSession {
     final nodes = <int, MeshNodeInfo>{};
     final channels = <MeshChannel>[];
     var configs = 0, modules = 0;
+    final config = <int, Uint8List>{};
     final done = Completer<void>();
 
     final sub = events.listen((e) {
@@ -236,8 +247,19 @@ class MeshtasticSession {
           nodes[node.num] = node;
         case ChannelFromRadio(:final channel):
           channels.add(channel);
-        case ConfigFromRadio(:final module):
+        case ConfigFromRadio(:final module, :final raw):
           module ? modules++ : configs++;
+          if (!module) {
+            try {
+              for (final f in readFields(raw)) {
+                if (f.wireType == WireType.lengthDelimited) {
+                  config[f.number] = f.asBytes;
+                }
+              }
+            } on ProtobufException {
+              // Keep going; settings are read again for the admin screen.
+            }
+          }
         case ConfigCompleteFromRadio(nonce: final n) when n == nonce:
           if (!done.isCompleted) done.complete();
         default:
@@ -283,6 +305,7 @@ class MeshtasticSession {
       channels: channels,
       configSections: configs,
       moduleSections: modules,
+      config: config,
     );
   }
 

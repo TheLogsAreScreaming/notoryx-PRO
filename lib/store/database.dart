@@ -155,6 +155,32 @@ class TelemetryReadings extends Table {
   RealColumn get barometricPressure => real().nullable()();
 }
 
+/// What the person has read and muted, per conversation. Schema v6.
+@DataClassName('ConversationStateRow')
+class ConversationStates extends Table {
+  /// `Conversation.key`.
+  TextColumn get conversation => text()();
+
+  /// Messages up to and including this ID have been read.
+  IntColumn get lastReadId => integer().withDefault(const Constant(0))();
+
+  /// No notifications until then; null when not muted.
+  DateTimeColumn get mutedUntil => dateTime().nullable()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {conversation};
+}
+
+/// App preferences as text, by name. Schema v6.
+@DataClassName('PreferenceRow')
+class Preferences extends Table {
+  TextColumn get name => text()();
+  TextColumn get value => text()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {name};
+}
+
 /// How delivery states are stored.
 enum DeliveryCode {
   pending,
@@ -171,13 +197,22 @@ enum DeliveryCode {
 /// Schema changes bump [schemaVersion] and add a step to [migration]; each
 /// version's schema is saved in `drift_schemas/` and tested.
 @DriftDatabase(
-  tables: [Radios, Nodes, Channels, Messages, VerifiedKeys, TelemetryReadings],
+  tables: [
+    Radios,
+    Nodes,
+    Channels,
+    Messages,
+    VerifiedKeys,
+    TelemetryReadings,
+    ConversationStates,
+    Preferences,
+  ],
 )
 class MeshDatabase extends _$MeshDatabase {
   MeshDatabase(super.e);
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -201,6 +236,16 @@ class MeshDatabase extends _$MeshDatabase {
         // v5: telemetry history.
         await m.createTable(schema.telemetryReadings);
         await m.createIndex(schema.telemetryByNode);
+      },
+      from5To6: (m, schema) async {
+        // v6: read state, mutes and preferences. Everything already stored
+        // counts as read, so an upgrade doesn't show old messages as new.
+        await m.createTable(schema.conversationStates);
+        await m.createTable(schema.preferences);
+        await customStatement(
+          'INSERT INTO conversation_states (conversation, last_read_id) '
+          'SELECT conversation, MAX(id) FROM messages GROUP BY conversation',
+        );
       },
     ),
   );
