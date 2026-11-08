@@ -18,6 +18,7 @@ class PacketLogEntry {
     this.bytes,
     this.detail,
     this.encrypted = false,
+    this.otherMesh = false,
   });
 
   final DateTime time;
@@ -38,6 +39,41 @@ class PacketLogEntry {
 
   /// The payload couldn't be read by this radio (another channel's key).
   final bool encrypted;
+
+  /// Belongs to the other mesh, heard by accident.
+  final bool otherMesh;
+}
+
+/// The Meshtastic sender in [raw] if a radio's raw packet is a Meshtastic
+/// broadcast, else null.
+///
+/// Only broadcasts count: `ff ff ff ff` as the destination is distinctive,
+/// and a MeshCore packet can't start that way in practice. The flags byte
+/// must also hold a sane hop count (hops left never above hops at start).
+int? meshtasticBroadcastSender(Uint8List raw) {
+  if (raw.length < 16) return null;
+  if (raw.sublist(0, 4).any((b) => b != 0xff)) return null;
+  final from = ByteData.sublistView(raw).getUint32(4, Endian.little);
+  if (from == 0 || from == 0xffffffff) return null;
+  final flags = raw[12];
+  final hopLimit = flags & 0x07;
+  final hopStart = flags >> 5;
+  return hopStart != 0 && hopLimit > hopStart ? null : from;
+}
+
+/// What a radio has heard of the other mesh since connecting.
+class OtherMeshSummary {
+  const OtherMeshSummary({
+    required this.packets,
+    required this.senders,
+    required this.lastHeard,
+    this.strongestRssi,
+  });
+
+  final int packets;
+  final int senders;
+  final DateTime lastHeard;
+  final int? strongestRssi;
 }
 
 /// The newest [capacity] packets, oldest first; notifies on each new one.
@@ -62,7 +98,32 @@ class PacketLog extends ChangeNotifier {
   /// Packets heard while paused and not shown.
   int get missedWhilePaused => _dropped;
 
+  int _otherPackets = 0;
+  final Set<String> _otherSenders = {};
+  DateTime? _otherLast;
+  int? _otherRssi;
+
+  /// The other mesh's traffic so far; null if none. Clearing the log
+  /// keeps it, and it still counts while paused.
+  OtherMeshSummary? get otherMesh => _otherLast == null
+      ? null
+      : OtherMeshSummary(
+          packets: _otherPackets,
+          senders: _otherSenders.length,
+          lastHeard: _otherLast!,
+          strongestRssi: _otherRssi,
+        );
+
   void add(PacketLogEntry e) {
+    if (e.otherMesh) {
+      _otherPackets++;
+      if (e.from != null) _otherSenders.add(e.from!);
+      _otherLast = e.time;
+      final rssi = e.path.rssi;
+      if (rssi != null && (_otherRssi == null || rssi > _otherRssi!)) {
+        _otherRssi = rssi;
+      }
+    }
     if (_paused) {
       _dropped++;
       notifyListeners();

@@ -994,5 +994,25 @@
   "mecpIncludePosition": "Include my radio's position",
   "mecpNote": "Details (optional)",
   "mecpNoteHelp": "For example 2pax for two people. Others may not share your language.",
-  "mecpUse": "Put in message box"
+  "mecpUse": "Put in message box",
+  "otherMeshHeard": "Meshtastic radios are nearby",
+  "otherMeshCounts": "{packets} packets from {senders} nodes",
+  "@otherMeshCounts": {
+    "placeholders": {
+      "packets": {
+        "type": "int"
+      },
+      "senders": {
+        "type": "int"
+      }
+    }
+  },
+  "otherMeshRssi": "strongest {rssi} dBm",
+  "@otherMeshRssi": {
+    "placeholders": {
+      "rssi": {
+        "type": "int"
+      }
+    }
+  }
 }

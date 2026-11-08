@@ -321,6 +321,22 @@ class MeshCoreConnection extends RadioConnection {
       case ContactFrame(fromNewAdvert: true):
         await store.upsertNode(mapper.node(frame));
       case RxLogPush(:final snr, :final rssi, :final raw):
+        final stranger = meshtasticBroadcastSender(raw);
+        if (stranger != null) {
+          packetLog.add(
+            PacketLogEntry(
+              time: DateTime.now(),
+              protocol: RadioProtocol.meshtastic,
+              kind: 'Meshtastic broadcast',
+              from: meshtasticNodeId(stranger),
+              path: PathFacts(snr: snr, rssi: rssi),
+              bytes: raw.length,
+              encrypted: true,
+              otherMesh: true,
+            ),
+          );
+          return;
+        }
         final info = MeshCorePacketInfo.parse(raw);
         packetLog.add(
           PacketLogEntry(
