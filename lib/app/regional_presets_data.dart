@@ -231,6 +231,7 @@ const _suggested = <MeshCorePreset>[
 const _local = <MeshCorePreset>[
   MeshCorePreset(
     name: 'Philadelphia',
+    pathHashBytes: 2,
     frequencyMHz: 919.5,
     bandwidthKHz: 500.0,
     spreadingFactor: 10,
@@ -257,6 +258,7 @@ const _local = <MeshCorePreset>[
   ),
   MeshCorePreset(
     name: 'Irvine, California',
+    pathHashBytes: 3,
     frequencyMHz: 927.875,
     bandwidthKHz: 62.5,
     spreadingFactor: 7,
@@ -283,6 +285,7 @@ const _local = <MeshCorePreset>[
   ),
   MeshCorePreset(
     name: 'Prague, Czechia',
+    pathHashBytes: 2,
     frequencyMHz: 869.432,
     bandwidthKHz: 62.5,
     spreadingFactor: 7,

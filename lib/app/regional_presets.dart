@@ -16,6 +16,7 @@ class MeshCorePreset {
     this.fromMap = false,
     this.retired = false,
     this.notes = '',
+    this.pathHashBytes,
   });
 
   final String name;
@@ -35,6 +36,9 @@ class MeshCorePreset {
   /// Superseded by a newer preset for the same place.
   final bool retired;
   final String notes;
+
+  /// Hop ID size this mesh has settled on, in bytes; null if none is known.
+  final int? pathHashBytes;
 
   bool get isLocal => latitude != null && longitude != null;
 

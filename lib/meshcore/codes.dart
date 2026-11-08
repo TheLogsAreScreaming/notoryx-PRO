@@ -27,6 +27,7 @@ abstract final class Cmd {
   static const sendTracePath = 36;
   static const setOtherParams = 38;
   static const getStats = 56;
+  static const setPathHashMode = 61;
   static const runCli = 66;
   static const setChannel = 32;
 }

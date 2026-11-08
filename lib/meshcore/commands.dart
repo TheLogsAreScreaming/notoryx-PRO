@@ -232,6 +232,10 @@ abstract final class MeshCoreCommands {
     multiAcks,
   ]);
 
+  /// `SET_PATH_HASH_MODE`: [mode] is the hop ID size in bytes, minus one.
+  static Uint8List setPathHashMode(int mode) =>
+      Uint8List.fromList([Cmd.setPathHashMode, 0, mode]);
+
   /// `REBOOT`: the radio restarts without replying.
   static Uint8List reboot() =>
       Uint8List.fromList([Cmd.reboot, ...utf8.encode('reboot')]);

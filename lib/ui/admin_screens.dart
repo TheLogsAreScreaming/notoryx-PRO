@@ -32,6 +32,7 @@ class _MeshCoreSettingsScreenState extends State<MeshCoreSettingsScreen> {
   late int _cr = _current.codingRate;
   late bool _share = _current.shareLocationInAdverts;
   late bool _autoAdd = !_current.manualAddContacts;
+  late int? _pathHash = widget.connection.pathHashBytes;
   bool _saving = false;
 
   static double _nearestBandwidth(double v) => MeshCoreSettings.bandwidths
@@ -66,6 +67,7 @@ class _MeshCoreSettingsScreenState extends State<MeshCoreSettingsScreen> {
           shareLocationInAdverts: _share,
           manualAddContacts: !_autoAdd,
         ),
+        pathHashBytes: _pathHash,
       );
       if (!mounted) return;
       setState(() => _current = saved);
@@ -161,6 +163,9 @@ class _MeshCoreSettingsScreenState extends State<MeshCoreSettingsScreen> {
                     _bw = _nearestBandwidth(p.bandwidthKHz);
                     _sf = p.spreadingFactor;
                     _cr = p.codingRate;
+                    if (_pathHash != null) {
+                      _pathHash = p.pathHashBytes ?? _pathHash;
+                    }
                   });
                   _say(l.presetApplied(p.name));
                 },
@@ -242,6 +247,24 @@ class _MeshCoreSettingsScreenState extends State<MeshCoreSettingsScreen> {
                 ),
               ],
             ),
+            if (_pathHash != null)
+              DropdownButtonFormField<int>(
+                key: ValueKey('settings-path-hash-$_pathHash'),
+                initialValue: _pathHash,
+                decoration: InputDecoration(
+                  labelText: l.settingsPathHash,
+                  helperText: l.settingsPathHashHelp,
+                  helperMaxLines: 4,
+                ),
+                items: [
+                  for (final n in const [1, 2, 3])
+                    DropdownMenuItem(
+                      value: n,
+                      child: Text(l.settingsPathHashValue(n)),
+                    ),
+                ],
+                onChanged: (v) => setState(() => _pathHash = v),
+              ),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(l.settingsShareLocation),

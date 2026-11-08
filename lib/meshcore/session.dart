@@ -423,6 +423,12 @@ class MeshCoreSession {
     ),
   );
 
+  /// Sets the hop ID size (`0` is one byte, up to `2`, three bytes).
+  Future<void> setPathHashMode(int mode) {
+    requireFeature(MeshCoreFeature.pathHashMode);
+    return _expect<OkFrame>(MeshCoreCommands.setPathHashMode(mode));
+  }
+
   /// Restarts the radio. It doesn't reply; the link drops and reconnects.
   Future<void> reboot() async {
     attach();

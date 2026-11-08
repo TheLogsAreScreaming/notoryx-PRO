@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:notoryx_pro/app/app_controller.dart';
 import 'package:notoryx_pro/app/radio_connection.dart';
 import 'package:notoryx_pro/app/radio_target.dart';
+import 'package:notoryx_pro/app/regional_presets.dart';
 import 'package:notoryx_pro/l10n/app_localizations.dart';
 import 'package:notoryx_pro/mesh/mesh.dart';
 import 'package:notoryx_pro/meshcore/bytes.dart';
@@ -331,6 +332,73 @@ void main() {
     final closing = store.close();
     await tester.pump(const Duration(seconds: 1));
     await tester.runAsync(() => closing);
+  });
+
+  group('hop ID size', () {
+    Future<(AppController, MeshStore, MeshCoreConnection)> connect(
+      List<Uint8List> Function(Uint8List cmd) responder,
+    ) async {
+      final store = MeshStore.memory();
+      final app = AppController(
+        store: store,
+        links: FakeLinks(ScriptedMeshCoreLink(responder: responder)),
+      );
+      final c =
+          await app.connect(
+                const TcpTarget(host: 'mc', protocol: RadioProtocol.meshcore),
+              )
+              as MeshCoreConnection;
+      return (app, store, c);
+    }
+
+    test('is read, changed only when different, and read back', () async {
+      final radio = Companion();
+      var mode = 1;
+      final sent = <List<int>>[];
+      final (app, store, c) = await connect((cmd) {
+        if (cmd.first == Cmd.setPathHashMode) {
+          sent.add(cmd);
+          mode = cmd[2];
+          return [RadioFrames.ok()];
+        }
+        if (cmd.first == Cmd.deviceQuery) {
+          return [RadioFrames.deviceInfo()..[81] = mode];
+        }
+        return radio.call(cmd);
+      });
+      expect(c.pathHashBytes, 2);
+      await c.applySettings(c.settings!, pathHashBytes: 2);
+      expect(sent, isEmpty);
+      await c.applySettings(c.settings!, pathHashBytes: 3);
+      expect(sent, [
+        [Cmd.setPathHashMode, 0, 2],
+      ]);
+      expect(c.pathHashBytes, 3);
+      await app.shutdown();
+      await store.close();
+    });
+
+    test('older firmware does not offer it', () async {
+      final radio = Companion();
+      final (app, store, c) = await connect((cmd) {
+        if (cmd.first == Cmd.deviceQuery) {
+          return [RadioFrames.deviceInfo()..[1] = 9];
+        }
+        return radio.call(cmd);
+      });
+      expect(c.pathHashBytes, isNull);
+      await app.shutdown();
+      await store.close();
+    });
+
+    test('area presets carry the size they use', () {
+      int? bytes(String name) =>
+          MeshCorePresets.local.firstWhere((p) => p.name == name).pathHashBytes;
+      expect(bytes('Philadelphia'), 2);
+      expect(bytes('Irvine, California'), 3);
+      expect(bytes('Prague, Czechia'), 2);
+      expect(bytes('Noordwijkerhout, South Holland'), isNull);
+    });
   });
 
   testWidgets('server screen: log in, status, console', (tester) async {
