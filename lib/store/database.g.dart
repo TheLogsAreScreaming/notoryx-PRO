@@ -3644,6 +3644,750 @@ class VerifiedKeysCompanion extends UpdateCompanion<VerifiedKeyRow> {
   }
 }
 
+class $TelemetryReadingsTable extends TelemetryReadings
+    with TableInfo<$TelemetryReadingsTable, TelemetryRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TelemetryReadingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _radioIdMeta = const VerificationMeta(
+    'radioId',
+  );
+  @override
+  late final GeneratedColumn<String> radioId = GeneratedColumn<String>(
+    'radio_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nodeKeyMeta = const VerificationMeta(
+    'nodeKey',
+  );
+  @override
+  late final GeneratedColumn<String> nodeKey = GeneratedColumn<String>(
+    'node_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _timeMeta = const VerificationMeta('time');
+  @override
+  late final GeneratedColumn<DateTime> time = GeneratedColumn<DateTime>(
+    'time',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _batteryLevelMeta = const VerificationMeta(
+    'batteryLevel',
+  );
+  @override
+  late final GeneratedColumn<int> batteryLevel = GeneratedColumn<int>(
+    'battery_level',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _voltageMeta = const VerificationMeta(
+    'voltage',
+  );
+  @override
+  late final GeneratedColumn<double> voltage = GeneratedColumn<double>(
+    'voltage',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _channelUtilizationMeta =
+      const VerificationMeta('channelUtilization');
+  @override
+  late final GeneratedColumn<double> channelUtilization =
+      GeneratedColumn<double>(
+        'channel_utilization',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _airUtilTxMeta = const VerificationMeta(
+    'airUtilTx',
+  );
+  @override
+  late final GeneratedColumn<double> airUtilTx = GeneratedColumn<double>(
+    'air_util_tx',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _uptimeSecondsMeta = const VerificationMeta(
+    'uptimeSeconds',
+  );
+  @override
+  late final GeneratedColumn<int> uptimeSeconds = GeneratedColumn<int>(
+    'uptime_seconds',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _temperatureMeta = const VerificationMeta(
+    'temperature',
+  );
+  @override
+  late final GeneratedColumn<double> temperature = GeneratedColumn<double>(
+    'temperature',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _relativeHumidityMeta = const VerificationMeta(
+    'relativeHumidity',
+  );
+  @override
+  late final GeneratedColumn<double> relativeHumidity = GeneratedColumn<double>(
+    'relative_humidity',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _barometricPressureMeta =
+      const VerificationMeta('barometricPressure');
+  @override
+  late final GeneratedColumn<double> barometricPressure =
+      GeneratedColumn<double>(
+        'barometric_pressure',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    radioId,
+    nodeKey,
+    time,
+    batteryLevel,
+    voltage,
+    channelUtilization,
+    airUtilTx,
+    uptimeSeconds,
+    temperature,
+    relativeHumidity,
+    barometricPressure,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'telemetry_readings';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TelemetryRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('radio_id')) {
+      context.handle(
+        _radioIdMeta,
+        radioId.isAcceptableOrUnknown(data['radio_id']!, _radioIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_radioIdMeta);
+    }
+    if (data.containsKey('node_key')) {
+      context.handle(
+        _nodeKeyMeta,
+        nodeKey.isAcceptableOrUnknown(data['node_key']!, _nodeKeyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nodeKeyMeta);
+    }
+    if (data.containsKey('time')) {
+      context.handle(
+        _timeMeta,
+        time.isAcceptableOrUnknown(data['time']!, _timeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_timeMeta);
+    }
+    if (data.containsKey('battery_level')) {
+      context.handle(
+        _batteryLevelMeta,
+        batteryLevel.isAcceptableOrUnknown(
+          data['battery_level']!,
+          _batteryLevelMeta,
+        ),
+      );
+    }
+    if (data.containsKey('voltage')) {
+      context.handle(
+        _voltageMeta,
+        voltage.isAcceptableOrUnknown(data['voltage']!, _voltageMeta),
+      );
+    }
+    if (data.containsKey('channel_utilization')) {
+      context.handle(
+        _channelUtilizationMeta,
+        channelUtilization.isAcceptableOrUnknown(
+          data['channel_utilization']!,
+          _channelUtilizationMeta,
+        ),
+      );
+    }
+    if (data.containsKey('air_util_tx')) {
+      context.handle(
+        _airUtilTxMeta,
+        airUtilTx.isAcceptableOrUnknown(data['air_util_tx']!, _airUtilTxMeta),
+      );
+    }
+    if (data.containsKey('uptime_seconds')) {
+      context.handle(
+        _uptimeSecondsMeta,
+        uptimeSeconds.isAcceptableOrUnknown(
+          data['uptime_seconds']!,
+          _uptimeSecondsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('temperature')) {
+      context.handle(
+        _temperatureMeta,
+        temperature.isAcceptableOrUnknown(
+          data['temperature']!,
+          _temperatureMeta,
+        ),
+      );
+    }
+    if (data.containsKey('relative_humidity')) {
+      context.handle(
+        _relativeHumidityMeta,
+        relativeHumidity.isAcceptableOrUnknown(
+          data['relative_humidity']!,
+          _relativeHumidityMeta,
+        ),
+      );
+    }
+    if (data.containsKey('barometric_pressure')) {
+      context.handle(
+        _barometricPressureMeta,
+        barometricPressure.isAcceptableOrUnknown(
+          data['barometric_pressure']!,
+          _barometricPressureMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TelemetryRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TelemetryRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      radioId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}radio_id'],
+      )!,
+      nodeKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}node_key'],
+      )!,
+      time: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}time'],
+      )!,
+      batteryLevel: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}battery_level'],
+      ),
+      voltage: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}voltage'],
+      ),
+      channelUtilization: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}channel_utilization'],
+      ),
+      airUtilTx: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}air_util_tx'],
+      ),
+      uptimeSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}uptime_seconds'],
+      ),
+      temperature: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}temperature'],
+      ),
+      relativeHumidity: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}relative_humidity'],
+      ),
+      barometricPressure: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}barometric_pressure'],
+      ),
+    );
+  }
+
+  @override
+  $TelemetryReadingsTable createAlias(String alias) {
+    return $TelemetryReadingsTable(attachedDatabase, alias);
+  }
+}
+
+class TelemetryRow extends DataClass implements Insertable<TelemetryRow> {
+  final int id;
+  final String radioId;
+
+  /// `NodeKey.toString()`.
+  final String nodeKey;
+  final DateTime time;
+  final int? batteryLevel;
+  final double? voltage;
+  final double? channelUtilization;
+  final double? airUtilTx;
+  final int? uptimeSeconds;
+  final double? temperature;
+  final double? relativeHumidity;
+  final double? barometricPressure;
+  const TelemetryRow({
+    required this.id,
+    required this.radioId,
+    required this.nodeKey,
+    required this.time,
+    this.batteryLevel,
+    this.voltage,
+    this.channelUtilization,
+    this.airUtilTx,
+    this.uptimeSeconds,
+    this.temperature,
+    this.relativeHumidity,
+    this.barometricPressure,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['radio_id'] = Variable<String>(radioId);
+    map['node_key'] = Variable<String>(nodeKey);
+    map['time'] = Variable<DateTime>(time);
+    if (!nullToAbsent || batteryLevel != null) {
+      map['battery_level'] = Variable<int>(batteryLevel);
+    }
+    if (!nullToAbsent || voltage != null) {
+      map['voltage'] = Variable<double>(voltage);
+    }
+    if (!nullToAbsent || channelUtilization != null) {
+      map['channel_utilization'] = Variable<double>(channelUtilization);
+    }
+    if (!nullToAbsent || airUtilTx != null) {
+      map['air_util_tx'] = Variable<double>(airUtilTx);
+    }
+    if (!nullToAbsent || uptimeSeconds != null) {
+      map['uptime_seconds'] = Variable<int>(uptimeSeconds);
+    }
+    if (!nullToAbsent || temperature != null) {
+      map['temperature'] = Variable<double>(temperature);
+    }
+    if (!nullToAbsent || relativeHumidity != null) {
+      map['relative_humidity'] = Variable<double>(relativeHumidity);
+    }
+    if (!nullToAbsent || barometricPressure != null) {
+      map['barometric_pressure'] = Variable<double>(barometricPressure);
+    }
+    return map;
+  }
+
+  TelemetryReadingsCompanion toCompanion(bool nullToAbsent) {
+    return TelemetryReadingsCompanion(
+      id: Value(id),
+      radioId: Value(radioId),
+      nodeKey: Value(nodeKey),
+      time: Value(time),
+      batteryLevel: batteryLevel == null && nullToAbsent
+          ? const Value.absent()
+          : Value(batteryLevel),
+      voltage: voltage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(voltage),
+      channelUtilization: channelUtilization == null && nullToAbsent
+          ? const Value.absent()
+          : Value(channelUtilization),
+      airUtilTx: airUtilTx == null && nullToAbsent
+          ? const Value.absent()
+          : Value(airUtilTx),
+      uptimeSeconds: uptimeSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(uptimeSeconds),
+      temperature: temperature == null && nullToAbsent
+          ? const Value.absent()
+          : Value(temperature),
+      relativeHumidity: relativeHumidity == null && nullToAbsent
+          ? const Value.absent()
+          : Value(relativeHumidity),
+      barometricPressure: barometricPressure == null && nullToAbsent
+          ? const Value.absent()
+          : Value(barometricPressure),
+    );
+  }
+
+  factory TelemetryRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TelemetryRow(
+      id: serializer.fromJson<int>(json['id']),
+      radioId: serializer.fromJson<String>(json['radioId']),
+      nodeKey: serializer.fromJson<String>(json['nodeKey']),
+      time: serializer.fromJson<DateTime>(json['time']),
+      batteryLevel: serializer.fromJson<int?>(json['batteryLevel']),
+      voltage: serializer.fromJson<double?>(json['voltage']),
+      channelUtilization: serializer.fromJson<double?>(
+        json['channelUtilization'],
+      ),
+      airUtilTx: serializer.fromJson<double?>(json['airUtilTx']),
+      uptimeSeconds: serializer.fromJson<int?>(json['uptimeSeconds']),
+      temperature: serializer.fromJson<double?>(json['temperature']),
+      relativeHumidity: serializer.fromJson<double?>(json['relativeHumidity']),
+      barometricPressure: serializer.fromJson<double?>(
+        json['barometricPressure'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'radioId': serializer.toJson<String>(radioId),
+      'nodeKey': serializer.toJson<String>(nodeKey),
+      'time': serializer.toJson<DateTime>(time),
+      'batteryLevel': serializer.toJson<int?>(batteryLevel),
+      'voltage': serializer.toJson<double?>(voltage),
+      'channelUtilization': serializer.toJson<double?>(channelUtilization),
+      'airUtilTx': serializer.toJson<double?>(airUtilTx),
+      'uptimeSeconds': serializer.toJson<int?>(uptimeSeconds),
+      'temperature': serializer.toJson<double?>(temperature),
+      'relativeHumidity': serializer.toJson<double?>(relativeHumidity),
+      'barometricPressure': serializer.toJson<double?>(barometricPressure),
+    };
+  }
+
+  TelemetryRow copyWith({
+    int? id,
+    String? radioId,
+    String? nodeKey,
+    DateTime? time,
+    Value<int?> batteryLevel = const Value.absent(),
+    Value<double?> voltage = const Value.absent(),
+    Value<double?> channelUtilization = const Value.absent(),
+    Value<double?> airUtilTx = const Value.absent(),
+    Value<int?> uptimeSeconds = const Value.absent(),
+    Value<double?> temperature = const Value.absent(),
+    Value<double?> relativeHumidity = const Value.absent(),
+    Value<double?> barometricPressure = const Value.absent(),
+  }) => TelemetryRow(
+    id: id ?? this.id,
+    radioId: radioId ?? this.radioId,
+    nodeKey: nodeKey ?? this.nodeKey,
+    time: time ?? this.time,
+    batteryLevel: batteryLevel.present ? batteryLevel.value : this.batteryLevel,
+    voltage: voltage.present ? voltage.value : this.voltage,
+    channelUtilization: channelUtilization.present
+        ? channelUtilization.value
+        : this.channelUtilization,
+    airUtilTx: airUtilTx.present ? airUtilTx.value : this.airUtilTx,
+    uptimeSeconds: uptimeSeconds.present
+        ? uptimeSeconds.value
+        : this.uptimeSeconds,
+    temperature: temperature.present ? temperature.value : this.temperature,
+    relativeHumidity: relativeHumidity.present
+        ? relativeHumidity.value
+        : this.relativeHumidity,
+    barometricPressure: barometricPressure.present
+        ? barometricPressure.value
+        : this.barometricPressure,
+  );
+  TelemetryRow copyWithCompanion(TelemetryReadingsCompanion data) {
+    return TelemetryRow(
+      id: data.id.present ? data.id.value : this.id,
+      radioId: data.radioId.present ? data.radioId.value : this.radioId,
+      nodeKey: data.nodeKey.present ? data.nodeKey.value : this.nodeKey,
+      time: data.time.present ? data.time.value : this.time,
+      batteryLevel: data.batteryLevel.present
+          ? data.batteryLevel.value
+          : this.batteryLevel,
+      voltage: data.voltage.present ? data.voltage.value : this.voltage,
+      channelUtilization: data.channelUtilization.present
+          ? data.channelUtilization.value
+          : this.channelUtilization,
+      airUtilTx: data.airUtilTx.present ? data.airUtilTx.value : this.airUtilTx,
+      uptimeSeconds: data.uptimeSeconds.present
+          ? data.uptimeSeconds.value
+          : this.uptimeSeconds,
+      temperature: data.temperature.present
+          ? data.temperature.value
+          : this.temperature,
+      relativeHumidity: data.relativeHumidity.present
+          ? data.relativeHumidity.value
+          : this.relativeHumidity,
+      barometricPressure: data.barometricPressure.present
+          ? data.barometricPressure.value
+          : this.barometricPressure,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TelemetryRow(')
+          ..write('id: $id, ')
+          ..write('radioId: $radioId, ')
+          ..write('nodeKey: $nodeKey, ')
+          ..write('time: $time, ')
+          ..write('batteryLevel: $batteryLevel, ')
+          ..write('voltage: $voltage, ')
+          ..write('channelUtilization: $channelUtilization, ')
+          ..write('airUtilTx: $airUtilTx, ')
+          ..write('uptimeSeconds: $uptimeSeconds, ')
+          ..write('temperature: $temperature, ')
+          ..write('relativeHumidity: $relativeHumidity, ')
+          ..write('barometricPressure: $barometricPressure')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    radioId,
+    nodeKey,
+    time,
+    batteryLevel,
+    voltage,
+    channelUtilization,
+    airUtilTx,
+    uptimeSeconds,
+    temperature,
+    relativeHumidity,
+    barometricPressure,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TelemetryRow &&
+          other.id == this.id &&
+          other.radioId == this.radioId &&
+          other.nodeKey == this.nodeKey &&
+          other.time == this.time &&
+          other.batteryLevel == this.batteryLevel &&
+          other.voltage == this.voltage &&
+          other.channelUtilization == this.channelUtilization &&
+          other.airUtilTx == this.airUtilTx &&
+          other.uptimeSeconds == this.uptimeSeconds &&
+          other.temperature == this.temperature &&
+          other.relativeHumidity == this.relativeHumidity &&
+          other.barometricPressure == this.barometricPressure);
+}
+
+class TelemetryReadingsCompanion extends UpdateCompanion<TelemetryRow> {
+  final Value<int> id;
+  final Value<String> radioId;
+  final Value<String> nodeKey;
+  final Value<DateTime> time;
+  final Value<int?> batteryLevel;
+  final Value<double?> voltage;
+  final Value<double?> channelUtilization;
+  final Value<double?> airUtilTx;
+  final Value<int?> uptimeSeconds;
+  final Value<double?> temperature;
+  final Value<double?> relativeHumidity;
+  final Value<double?> barometricPressure;
+  const TelemetryReadingsCompanion({
+    this.id = const Value.absent(),
+    this.radioId = const Value.absent(),
+    this.nodeKey = const Value.absent(),
+    this.time = const Value.absent(),
+    this.batteryLevel = const Value.absent(),
+    this.voltage = const Value.absent(),
+    this.channelUtilization = const Value.absent(),
+    this.airUtilTx = const Value.absent(),
+    this.uptimeSeconds = const Value.absent(),
+    this.temperature = const Value.absent(),
+    this.relativeHumidity = const Value.absent(),
+    this.barometricPressure = const Value.absent(),
+  });
+  TelemetryReadingsCompanion.insert({
+    this.id = const Value.absent(),
+    required String radioId,
+    required String nodeKey,
+    required DateTime time,
+    this.batteryLevel = const Value.absent(),
+    this.voltage = const Value.absent(),
+    this.channelUtilization = const Value.absent(),
+    this.airUtilTx = const Value.absent(),
+    this.uptimeSeconds = const Value.absent(),
+    this.temperature = const Value.absent(),
+    this.relativeHumidity = const Value.absent(),
+    this.barometricPressure = const Value.absent(),
+  }) : radioId = Value(radioId),
+       nodeKey = Value(nodeKey),
+       time = Value(time);
+  static Insertable<TelemetryRow> custom({
+    Expression<int>? id,
+    Expression<String>? radioId,
+    Expression<String>? nodeKey,
+    Expression<DateTime>? time,
+    Expression<int>? batteryLevel,
+    Expression<double>? voltage,
+    Expression<double>? channelUtilization,
+    Expression<double>? airUtilTx,
+    Expression<int>? uptimeSeconds,
+    Expression<double>? temperature,
+    Expression<double>? relativeHumidity,
+    Expression<double>? barometricPressure,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (radioId != null) 'radio_id': radioId,
+      if (nodeKey != null) 'node_key': nodeKey,
+      if (time != null) 'time': time,
+      if (batteryLevel != null) 'battery_level': batteryLevel,
+      if (voltage != null) 'voltage': voltage,
+      if (channelUtilization != null) 'channel_utilization': channelUtilization,
+      if (airUtilTx != null) 'air_util_tx': airUtilTx,
+      if (uptimeSeconds != null) 'uptime_seconds': uptimeSeconds,
+      if (temperature != null) 'temperature': temperature,
+      if (relativeHumidity != null) 'relative_humidity': relativeHumidity,
+      if (barometricPressure != null) 'barometric_pressure': barometricPressure,
+    });
+  }
+
+  TelemetryReadingsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? radioId,
+    Value<String>? nodeKey,
+    Value<DateTime>? time,
+    Value<int?>? batteryLevel,
+    Value<double?>? voltage,
+    Value<double?>? channelUtilization,
+    Value<double?>? airUtilTx,
+    Value<int?>? uptimeSeconds,
+    Value<double?>? temperature,
+    Value<double?>? relativeHumidity,
+    Value<double?>? barometricPressure,
+  }) {
+    return TelemetryReadingsCompanion(
+      id: id ?? this.id,
+      radioId: radioId ?? this.radioId,
+      nodeKey: nodeKey ?? this.nodeKey,
+      time: time ?? this.time,
+      batteryLevel: batteryLevel ?? this.batteryLevel,
+      voltage: voltage ?? this.voltage,
+      channelUtilization: channelUtilization ?? this.channelUtilization,
+      airUtilTx: airUtilTx ?? this.airUtilTx,
+      uptimeSeconds: uptimeSeconds ?? this.uptimeSeconds,
+      temperature: temperature ?? this.temperature,
+      relativeHumidity: relativeHumidity ?? this.relativeHumidity,
+      barometricPressure: barometricPressure ?? this.barometricPressure,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (radioId.present) {
+      map['radio_id'] = Variable<String>(radioId.value);
+    }
+    if (nodeKey.present) {
+      map['node_key'] = Variable<String>(nodeKey.value);
+    }
+    if (time.present) {
+      map['time'] = Variable<DateTime>(time.value);
+    }
+    if (batteryLevel.present) {
+      map['battery_level'] = Variable<int>(batteryLevel.value);
+    }
+    if (voltage.present) {
+      map['voltage'] = Variable<double>(voltage.value);
+    }
+    if (channelUtilization.present) {
+      map['channel_utilization'] = Variable<double>(channelUtilization.value);
+    }
+    if (airUtilTx.present) {
+      map['air_util_tx'] = Variable<double>(airUtilTx.value);
+    }
+    if (uptimeSeconds.present) {
+      map['uptime_seconds'] = Variable<int>(uptimeSeconds.value);
+    }
+    if (temperature.present) {
+      map['temperature'] = Variable<double>(temperature.value);
+    }
+    if (relativeHumidity.present) {
+      map['relative_humidity'] = Variable<double>(relativeHumidity.value);
+    }
+    if (barometricPressure.present) {
+      map['barometric_pressure'] = Variable<double>(barometricPressure.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TelemetryReadingsCompanion(')
+          ..write('id: $id, ')
+          ..write('radioId: $radioId, ')
+          ..write('nodeKey: $nodeKey, ')
+          ..write('time: $time, ')
+          ..write('batteryLevel: $batteryLevel, ')
+          ..write('voltage: $voltage, ')
+          ..write('channelUtilization: $channelUtilization, ')
+          ..write('airUtilTx: $airUtilTx, ')
+          ..write('uptimeSeconds: $uptimeSeconds, ')
+          ..write('temperature: $temperature, ')
+          ..write('relativeHumidity: $relativeHumidity, ')
+          ..write('barometricPressure: $barometricPressure')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$MeshDatabase extends GeneratedDatabase {
   _$MeshDatabase(QueryExecutor e) : super(e);
   $MeshDatabaseManager get managers => $MeshDatabaseManager(this);
@@ -3652,6 +4396,8 @@ abstract class _$MeshDatabase extends GeneratedDatabase {
   late final $ChannelsTable channels = $ChannelsTable(this);
   late final $MessagesTable messages = $MessagesTable(this);
   late final $VerifiedKeysTable verifiedKeys = $VerifiedKeysTable(this);
+  late final $TelemetryReadingsTable telemetryReadings =
+      $TelemetryReadingsTable(this);
   late final Index messagesByConversation = Index(
     'messages_by_conversation',
     'CREATE INDEX messages_by_conversation ON messages (conversation, id)',
@@ -3659,6 +4405,10 @@ abstract class _$MeshDatabase extends GeneratedDatabase {
   late final Index messagesByNativeId = Index(
     'messages_by_native_id',
     'CREATE INDEX messages_by_native_id ON messages (radio_id, native_id)',
+  );
+  late final Index telemetryByNode = Index(
+    'telemetry_by_node',
+    'CREATE INDEX telemetry_by_node ON telemetry_readings (radio_id, node_key, time)',
   );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
@@ -3670,8 +4420,10 @@ abstract class _$MeshDatabase extends GeneratedDatabase {
     channels,
     messages,
     verifiedKeys,
+    telemetryReadings,
     messagesByConversation,
     messagesByNativeId,
+    telemetryByNode,
   ];
 }
 
@@ -5410,6 +6162,363 @@ typedef $$VerifiedKeysTableProcessedTableManager =
       VerifiedKeyRow,
       PrefetchHooks Function()
     >;
+typedef $$TelemetryReadingsTableCreateCompanionBuilder =
+    TelemetryReadingsCompanion Function({
+      Value<int> id,
+      required String radioId,
+      required String nodeKey,
+      required DateTime time,
+      Value<int?> batteryLevel,
+      Value<double?> voltage,
+      Value<double?> channelUtilization,
+      Value<double?> airUtilTx,
+      Value<int?> uptimeSeconds,
+      Value<double?> temperature,
+      Value<double?> relativeHumidity,
+      Value<double?> barometricPressure,
+    });
+typedef $$TelemetryReadingsTableUpdateCompanionBuilder =
+    TelemetryReadingsCompanion Function({
+      Value<int> id,
+      Value<String> radioId,
+      Value<String> nodeKey,
+      Value<DateTime> time,
+      Value<int?> batteryLevel,
+      Value<double?> voltage,
+      Value<double?> channelUtilization,
+      Value<double?> airUtilTx,
+      Value<int?> uptimeSeconds,
+      Value<double?> temperature,
+      Value<double?> relativeHumidity,
+      Value<double?> barometricPressure,
+    });
+
+class $$TelemetryReadingsTableFilterComposer
+    extends Composer<_$MeshDatabase, $TelemetryReadingsTable> {
+  $$TelemetryReadingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get radioId => $composableBuilder(
+    column: $table.radioId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nodeKey => $composableBuilder(
+    column: $table.nodeKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get time => $composableBuilder(
+    column: $table.time,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get batteryLevel => $composableBuilder(
+    column: $table.batteryLevel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get voltage => $composableBuilder(
+    column: $table.voltage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get channelUtilization => $composableBuilder(
+    column: $table.channelUtilization,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get airUtilTx => $composableBuilder(
+    column: $table.airUtilTx,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get uptimeSeconds => $composableBuilder(
+    column: $table.uptimeSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get temperature => $composableBuilder(
+    column: $table.temperature,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get relativeHumidity => $composableBuilder(
+    column: $table.relativeHumidity,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get barometricPressure => $composableBuilder(
+    column: $table.barometricPressure,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$TelemetryReadingsTableOrderingComposer
+    extends Composer<_$MeshDatabase, $TelemetryReadingsTable> {
+  $$TelemetryReadingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get radioId => $composableBuilder(
+    column: $table.radioId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nodeKey => $composableBuilder(
+    column: $table.nodeKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get time => $composableBuilder(
+    column: $table.time,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get batteryLevel => $composableBuilder(
+    column: $table.batteryLevel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get voltage => $composableBuilder(
+    column: $table.voltage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get channelUtilization => $composableBuilder(
+    column: $table.channelUtilization,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get airUtilTx => $composableBuilder(
+    column: $table.airUtilTx,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get uptimeSeconds => $composableBuilder(
+    column: $table.uptimeSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get temperature => $composableBuilder(
+    column: $table.temperature,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get relativeHumidity => $composableBuilder(
+    column: $table.relativeHumidity,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get barometricPressure => $composableBuilder(
+    column: $table.barometricPressure,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TelemetryReadingsTableAnnotationComposer
+    extends Composer<_$MeshDatabase, $TelemetryReadingsTable> {
+  $$TelemetryReadingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get radioId =>
+      $composableBuilder(column: $table.radioId, builder: (column) => column);
+
+  GeneratedColumn<String> get nodeKey =>
+      $composableBuilder(column: $table.nodeKey, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get time =>
+      $composableBuilder(column: $table.time, builder: (column) => column);
+
+  GeneratedColumn<int> get batteryLevel => $composableBuilder(
+    column: $table.batteryLevel,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get voltage =>
+      $composableBuilder(column: $table.voltage, builder: (column) => column);
+
+  GeneratedColumn<double> get channelUtilization => $composableBuilder(
+    column: $table.channelUtilization,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get airUtilTx =>
+      $composableBuilder(column: $table.airUtilTx, builder: (column) => column);
+
+  GeneratedColumn<int> get uptimeSeconds => $composableBuilder(
+    column: $table.uptimeSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get temperature => $composableBuilder(
+    column: $table.temperature,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get relativeHumidity => $composableBuilder(
+    column: $table.relativeHumidity,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get barometricPressure => $composableBuilder(
+    column: $table.barometricPressure,
+    builder: (column) => column,
+  );
+}
+
+class $$TelemetryReadingsTableTableManager
+    extends
+        RootTableManager<
+          _$MeshDatabase,
+          $TelemetryReadingsTable,
+          TelemetryRow,
+          $$TelemetryReadingsTableFilterComposer,
+          $$TelemetryReadingsTableOrderingComposer,
+          $$TelemetryReadingsTableAnnotationComposer,
+          $$TelemetryReadingsTableCreateCompanionBuilder,
+          $$TelemetryReadingsTableUpdateCompanionBuilder,
+          (
+            TelemetryRow,
+            BaseReferences<
+              _$MeshDatabase,
+              $TelemetryReadingsTable,
+              TelemetryRow
+            >,
+          ),
+          TelemetryRow,
+          PrefetchHooks Function()
+        > {
+  $$TelemetryReadingsTableTableManager(
+    _$MeshDatabase db,
+    $TelemetryReadingsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TelemetryReadingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TelemetryReadingsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TelemetryReadingsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> radioId = const Value.absent(),
+                Value<String> nodeKey = const Value.absent(),
+                Value<DateTime> time = const Value.absent(),
+                Value<int?> batteryLevel = const Value.absent(),
+                Value<double?> voltage = const Value.absent(),
+                Value<double?> channelUtilization = const Value.absent(),
+                Value<double?> airUtilTx = const Value.absent(),
+                Value<int?> uptimeSeconds = const Value.absent(),
+                Value<double?> temperature = const Value.absent(),
+                Value<double?> relativeHumidity = const Value.absent(),
+                Value<double?> barometricPressure = const Value.absent(),
+              }) => TelemetryReadingsCompanion(
+                id: id,
+                radioId: radioId,
+                nodeKey: nodeKey,
+                time: time,
+                batteryLevel: batteryLevel,
+                voltage: voltage,
+                channelUtilization: channelUtilization,
+                airUtilTx: airUtilTx,
+                uptimeSeconds: uptimeSeconds,
+                temperature: temperature,
+                relativeHumidity: relativeHumidity,
+                barometricPressure: barometricPressure,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String radioId,
+                required String nodeKey,
+                required DateTime time,
+                Value<int?> batteryLevel = const Value.absent(),
+                Value<double?> voltage = const Value.absent(),
+                Value<double?> channelUtilization = const Value.absent(),
+                Value<double?> airUtilTx = const Value.absent(),
+                Value<int?> uptimeSeconds = const Value.absent(),
+                Value<double?> temperature = const Value.absent(),
+                Value<double?> relativeHumidity = const Value.absent(),
+                Value<double?> barometricPressure = const Value.absent(),
+              }) => TelemetryReadingsCompanion.insert(
+                id: id,
+                radioId: radioId,
+                nodeKey: nodeKey,
+                time: time,
+                batteryLevel: batteryLevel,
+                voltage: voltage,
+                channelUtilization: channelUtilization,
+                airUtilTx: airUtilTx,
+                uptimeSeconds: uptimeSeconds,
+                temperature: temperature,
+                relativeHumidity: relativeHumidity,
+                barometricPressure: barometricPressure,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$TelemetryReadingsTable, TelemetryRow>(table),
+                  BaseReferences<
+                    _$MeshDatabase,
+                    $TelemetryReadingsTable,
+                    TelemetryRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$TelemetryReadingsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$MeshDatabase,
+      $TelemetryReadingsTable,
+      TelemetryRow,
+      $$TelemetryReadingsTableFilterComposer,
+      $$TelemetryReadingsTableOrderingComposer,
+      $$TelemetryReadingsTableAnnotationComposer,
+      $$TelemetryReadingsTableCreateCompanionBuilder,
+      $$TelemetryReadingsTableUpdateCompanionBuilder,
+      (
+        TelemetryRow,
+        BaseReferences<_$MeshDatabase, $TelemetryReadingsTable, TelemetryRow>,
+      ),
+      TelemetryRow,
+      PrefetchHooks Function()
+    >;
 
 class $MeshDatabaseManager {
   final _$MeshDatabase _db;
@@ -5424,4 +6533,6 @@ class $MeshDatabaseManager {
       $$MessagesTableTableManager(_db, _db.messages);
   $$VerifiedKeysTableTableManager get verifiedKeys =>
       $$VerifiedKeysTableTableManager(_db, _db.verifiedKeys);
+  $$TelemetryReadingsTableTableManager get telemetryReadings =>
+      $$TelemetryReadingsTableTableManager(_db, _db.telemetryReadings);
 }

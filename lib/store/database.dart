@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 
 import '../mesh/model.dart';
+import '../mesh/telemetry.dart';
 import '../radio/radio_link.dart';
 import 'database.steps.dart';
 
@@ -134,6 +135,26 @@ class VerifiedKeys extends Table {
   Set<Column<Object>> get primaryKey => {nodeKey};
 }
 
+/// Telemetry readings from nodes, kept for [telemetryKeep]. Schema v5.
+@DataClassName('TelemetryRow')
+@TableIndex(name: 'telemetry_by_node', columns: {#radioId, #nodeKey, #time})
+class TelemetryReadings extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get radioId => text()();
+
+  /// `NodeKey.toString()`.
+  TextColumn get nodeKey => text()();
+  DateTimeColumn get time => dateTime()();
+  IntColumn get batteryLevel => integer().nullable()();
+  RealColumn get voltage => real().nullable()();
+  RealColumn get channelUtilization => real().nullable()();
+  RealColumn get airUtilTx => real().nullable()();
+  IntColumn get uptimeSeconds => integer().nullable()();
+  RealColumn get temperature => real().nullable()();
+  RealColumn get relativeHumidity => real().nullable()();
+  RealColumn get barometricPressure => real().nullable()();
+}
+
 /// How delivery states are stored.
 enum DeliveryCode {
   pending,
@@ -149,12 +170,14 @@ enum DeliveryCode {
 ///
 /// Schema changes bump [schemaVersion] and add a step to [migration]; each
 /// version's schema is saved in `drift_schemas/` and tested.
-@DriftDatabase(tables: [Radios, Nodes, Channels, Messages, VerifiedKeys])
+@DriftDatabase(
+  tables: [Radios, Nodes, Channels, Messages, VerifiedKeys, TelemetryReadings],
+)
 class MeshDatabase extends _$MeshDatabase {
   MeshDatabase(super.e);
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -173,6 +196,11 @@ class MeshDatabase extends _$MeshDatabase {
         await m.addColumn(schema.nodes, schema.nodes.publicKeyHex);
         await m.addColumn(schema.messages, schema.messages.authenticated);
         await m.createTable(schema.verifiedKeys);
+      },
+      from4To5: (m, schema) async {
+        // v5: telemetry history.
+        await m.createTable(schema.telemetryReadings);
+        await m.createIndex(schema.telemetryByNode);
       },
     ),
   );

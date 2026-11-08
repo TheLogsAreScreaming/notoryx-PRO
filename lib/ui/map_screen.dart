@@ -12,6 +12,8 @@ import 'conversation_screen.dart';
 import 'diagnostics_screen.dart';
 import 'verify_screen.dart';
 import 'map_tiles.dart';
+import 'meshtastic_admin_screen.dart';
+import 'telemetry_screen.dart';
 
 /// Every node with a position, from both meshes, on one map.
 ///
@@ -329,6 +331,39 @@ class NodeSheet extends StatelessWidget {
                       Navigator.of(context).push(
                         MaterialPageRoute<void>(
                           builder: (_) => ServerScreen(connection: c, node: n),
+                        ),
+                      );
+                    },
+                  ),
+                if (_connection() case final MeshtasticConnection c
+                    when n.protocol == RadioProtocol.meshtastic)
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.admin_panel_settings_outlined),
+                    label: Text(l.manage),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) =>
+                              MeshtasticSettingsScreen(connection: c, node: n),
+                        ),
+                      );
+                    },
+                  ),
+                if (n.protocol == RadioProtocol.meshtastic)
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.battery_charging_full),
+                    label: Text(l.telemetryButton),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => TelemetryScreen(
+                            store: app.store,
+                            radioId: n.radioId,
+                            node: n.key,
+                            name: n.displayName,
+                          ),
                         ),
                       );
                     },

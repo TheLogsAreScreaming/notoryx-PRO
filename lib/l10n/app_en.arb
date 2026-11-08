@@ -518,5 +518,239 @@
       }
     }
   },
-  "statusQueue": "Waiting to send"
+  "statusQueue": "Waiting to send",
+  "mtLoading": "Asking the node for its settings…",
+  "mtRemoteFailed": "{name} didn't answer. A node only lets you change its settings if your radio's public key is in its admin keys (Security settings, on the node itself or in the official app). It may also be out of range.",
+  "@mtRemoteFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mtLocalFailed": "The radio didn't send its settings: {reason}",
+  "@mtLocalFailed": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "mtCopyMyKey": "Copy my admin key",
+  "mtKeyCopied": "Your public key is copied. Add it to the node's admin keys.",
+  "mtTryAgain": "Try again",
+  "mtRemoteTitle": "Admin: {name}",
+  "@mtRemoteTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mtNames": "Names",
+  "mtLongName": "Long name",
+  "mtShortName": "Short name (up to 4)",
+  "mtLongNameInvalid": "1 to 39 bytes",
+  "mtShortNameInvalid": "1 to 4 characters",
+  "mtRole": "Role",
+  "mtRoleClient": "Client",
+  "mtRoleClientMute": "Client (doesn't relay)",
+  "mtRoleClientBase": "Client base",
+  "mtRoleClientHidden": "Client (hidden)",
+  "mtRoleTracker": "Tracker",
+  "mtRoleSensor": "Sensor",
+  "mtRoleRouter": "Router",
+  "mtRoleRouterLate": "Router (late)",
+  "mtRoleTak": "TAK",
+  "mtRoleTakTracker": "TAK tracker",
+  "mtRoleLostAndFound": "Lost and found",
+  "mtRoleOld": "Old role ({value})",
+  "@mtRoleOld": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "mtRoleHelpClient": "Sends and relays messages. Right for most people.",
+  "mtRoleHelpClientMute": "Sends messages but never relays for others.",
+  "mtRoleHelpClientBase": "A home or rooftop node that relays first for your favourite nodes.",
+  "mtRoleHelpClientHidden": "Sends only when needed, for stealth or battery.",
+  "mtRoleHelpTracker": "Sends its position first.",
+  "mtRoleHelpSensor": "Sends its sensor readings first.",
+  "mtRoleHelpRouter": "Only for a node with exceptional coverage, like a mountain top. Relays everything first.",
+  "mtRoleHelpRouterLate": "A fixed node that relays everything, after everyone else.",
+  "mtRoleHelpTak": "For ATAK users; sends less routine traffic.",
+  "mtRoleHelpTakTracker": "Sends TAK position reports by itself.",
+  "mtRoleHelpLostAndFound": "Regularly posts its location on the main channel, to help find it.",
+  "mtRoleHelpOld": "This role is no longer supported; choose another.",
+  "mtRadio": "Radio",
+  "mtRegion": "Region",
+  "mtRegionUnset": "Not set",
+  "mtRegionOther": "Region {value}",
+  "@mtRegionOther": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "mtUsePreset": "Use a modem preset",
+  "mtPreset": "Modem preset",
+  "mtPresetOther": "Preset {value}",
+  "@mtPresetOther": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "mtCustomRadio": "This node uses custom bandwidth, spreading factor and coding rate. Change them in the official app.",
+  "mtHopLimit": "Hops: {count}",
+  "@mtHopLimit": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mtHopHelp": "How many times a message may be relayed. 3 suits most meshes.",
+  "mtSlot": "Frequency slot (0 = automatic)",
+  "mtSlotInvalid": "A whole number, 0 or more",
+  "mtTxEnabled": "Transmit",
+  "mtTxPower": "Transmit power: {value}",
+  "@mtTxPower": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "mtTxPowerMax": "highest legal for the region",
+  "mtOkToMqtt": "Allow my messages onto MQTT",
+  "mtIgnoreMqtt": "Ignore messages that came through MQTT",
+  "mtPosition": "Position",
+  "mtPositionInterval": "Send position",
+  "mtSmartPosition": "Only when it moved (smart position)",
+  "mtGpsMode": "GPS",
+  "mtGpsEnabled": "On",
+  "mtGpsDisabled": "Off",
+  "mtGpsNotPresent": "No GPS",
+  "mtFixedPosition": "This node sends a fixed position. Change it in the official app.",
+  "mtTelemetry": "Telemetry",
+  "mtDeviceInterval": "Send battery and load",
+  "mtEnvironmentEnabled": "Send sensor readings",
+  "mtEnvironmentInterval": "Send sensor readings every",
+  "mtIntervalDefault": "Default",
+  "mtIntervalMinutes": "Every {count} min",
+  "@mtIntervalMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mtIntervalHours": "Every {count} h",
+  "@mtIntervalHours": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mtIntervalSeconds": "Every {count} s",
+  "@mtIntervalSeconds": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mtNoChanges": "Nothing changed",
+  "mtConfirmTitle": "Save these changes?",
+  "mtConfirmRadio": "The region, preset or slot changes. This node will only hear nodes set the same way.",
+  "mtConfirmRouter": "Router roles relay everything first. Only use them on a node with exceptional coverage.",
+  "mtConfirmRestart": "The node restarts to apply some changes.",
+  "mtSavedLocal": "Saved. The radio restarts if it needs to and the app reconnects by itself.",
+  "mtSavedRemote": "Sent to {name}. It restarts if it needs to; open its settings again in a minute to check.",
+  "@mtSavedRemote": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mtRestartConfirm": "Restart {name}?",
+  "@mtRestartConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mtRemoteRestarted": "Asked {name} to restart.",
+  "@mtRemoteRestarted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetryTitle": "Telemetry: {name}",
+  "@telemetryTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetryButton": "Telemetry",
+  "telemetryEmpty": "No readings yet. Nodes send battery and load readings every 30 minutes or so; they are kept for 14 days.",
+  "telemetryDay": "24 hours",
+  "telemetryWeek": "7 days",
+  "telemetryFortnight": "14 days",
+  "telemetryBattery": "Battery",
+  "telemetryVoltage": "Voltage",
+  "telemetryChannel": "Channel busy",
+  "telemetryAirtime": "Transmitting",
+  "telemetryTemperature": "Temperature",
+  "telemetryHumidity": "Humidity",
+  "telemetryPressure": "Pressure",
+  "telemetryPowered": "Plugged in",
+  "telemetryRange": "Low {low} · high {high}",
+  "@telemetryRange": {
+    "placeholders": {
+      "low": {
+        "type": "String"
+      },
+      "high": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetryReadings": "{count, plural, =1{1 reading} other{{count} readings}}",
+  "@telemetryReadings": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "telemetryChartLabel": "{title}: now {latest}, low {low}, high {high}",
+  "@telemetryChartLabel": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "latest": {
+        "type": "String"
+      },
+      "low": {
+        "type": "String"
+      },
+      "high": {
+        "type": "String"
+      }
+    }
+  }
 }

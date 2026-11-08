@@ -211,6 +211,25 @@ class ProtoWriter {
   /// `string`.
   void string(int number, String value) => bytes(number, utf8.encode(value));
 
+  /// Writes [field] exactly as it was read, so fields this app doesn't
+  /// edit survive a read-change-write of a message.
+  void field(ProtoField field) {
+    _key(field.number, field.wireType);
+    switch (field.wireType) {
+      case WireType.varint:
+        _varint(field.asInt);
+      case WireType.fixed32:
+        final d = ByteData(4)..setUint32(0, field.asInt, Endian.little);
+        _b.add(d.buffer.asUint8List());
+      case WireType.fixed64:
+        final d = ByteData(8)..setUint64(0, field.asInt, Endian.little);
+        _b.add(d.buffer.asUint8List());
+      default:
+        _varint(field.asBytes.length);
+        _b.add(field.asBytes);
+    }
+  }
+
   /// The encoded message.
   Uint8List toBytes() => _b.toBytes();
 }

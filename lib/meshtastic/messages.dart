@@ -261,7 +261,8 @@ class MeshPacket {
     w
       ..fixed32(6, id)
       ..uint(9, hopLimit)
-      ..boolean(10, wantAck);
+      ..boolean(10, wantAck)
+      ..boolean(17, pkiEncrypted);
     return w.toBytes();
   }
 }
@@ -598,25 +599,81 @@ class LocalStats {
   }
 }
 
+/// `EnvironmentMetrics` from telemetry.proto (the common readings).
+class EnvironmentMetrics {
+  const EnvironmentMetrics({
+    this.temperature,
+    this.relativeHumidity,
+    this.barometricPressure,
+  });
+
+  /// Degrees Celsius.
+  final double? temperature;
+
+  /// Percent.
+  final double? relativeHumidity;
+
+  /// hPa.
+  final double? barometricPressure;
+
+  bool get isEmpty =>
+      temperature == null &&
+      relativeHumidity == null &&
+      barometricPressure == null;
+
+  static EnvironmentMetrics decode(Uint8List data) {
+    double? t, h, p;
+    for (final f in readFields(data)) {
+      switch (f.number) {
+        case 1:
+          t = f.asFloat;
+        case 2:
+          h = f.asFloat;
+        case 3:
+          p = f.asFloat;
+      }
+    }
+    return EnvironmentMetrics(
+      temperature: t,
+      relativeHumidity: h,
+      barometricPressure: p,
+    );
+  }
+}
+
 /// `Telemetry`: the variants this app reads.
 class Telemetry {
-  const Telemetry({this.device, this.local});
+  const Telemetry({this.time, this.device, this.environment, this.local});
 
+  /// When the node took the reading, Unix seconds; null if not set.
+  final int? time;
   final DeviceMetrics? device;
+  final EnvironmentMetrics? environment;
   final LocalStats? local;
 
   static Telemetry decode(Uint8List data) {
+    int? time;
     DeviceMetrics? device;
+    EnvironmentMetrics? environment;
     LocalStats? local;
     for (final f in readFields(data)) {
       switch (f.number) {
+        case 1:
+          time = f.asInt == 0 ? null : f.asInt;
         case 2:
           device = DeviceMetrics.decode(f.asBytes);
+        case 3:
+          environment = EnvironmentMetrics.decode(f.asBytes);
         case 6:
           local = LocalStats.decode(f.asBytes);
       }
     }
-    return Telemetry(device: device, local: local);
+    return Telemetry(
+      time: time,
+      device: device,
+      environment: environment,
+      local: local,
+    );
   }
 }
 

@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import '../radio/connection_log.dart';
 import '../radio/radio_link.dart';
+import 'admin.dart';
 import 'firmware.dart';
 import 'messages.dart';
 import 'protobuf.dart';
@@ -356,6 +357,138 @@ class MeshtasticSession {
       onTimeout: () => throw const MeshtasticTimeout('traceroute'),
     );
     return RouteDiscovery.decode(reply.packet.decoded!.payload);
+  }
+
+  /// Session passkeys per node, with when they arrived. Nodes accept
+  /// changes only with a recent one (firmware keeps them about 5 minutes).
+  final Map<int, (Uint8List, DateTime)> _passkeys = {};
+
+  /// How long a passkey is trusted before asking for a fresh one.
+  static const passkeyLifetime = Duration(minutes: 4);
+
+  /// Sends an admin request to node [to] (this node's own number for the
+  /// connected radio) and returns its answer.
+  ///
+  /// Other nodes are reached with a public-key encrypted packet; they only
+  /// answer if this radio's key is in their admin keys. Throws
+  /// [MeshtasticTimeout] if no answer arrives in [timeout].
+  Future<AdminReply> adminRequest(
+    int to,
+    Uint8List admin, {
+    Duration timeout = const Duration(seconds: 30),
+  }) async {
+    final id = _nonZeroId();
+    final answer = events
+        .where(
+          (e) =>
+              e is PacketFromRadio &&
+              e.packet.decoded?.portnum == PortNum.admin &&
+              e.packet.decoded?.requestId == id,
+        )
+        .cast<PacketFromRadio>()
+        .first;
+    await _sendAdmin(to, admin, id: id, wantResponse: true);
+    final packet = await answer.timeout(
+      timeout,
+      onTimeout: () => throw const MeshtasticTimeout('admin answer'),
+    );
+    final reply = AdminReply.decode(packet.packet.decoded!.payload);
+    if (reply.passkey.isNotEmpty) {
+      _passkeys[to] = (reply.passkey, DateTime.now());
+    }
+    return reply;
+  }
+
+  /// Reads one settings section (or the owner) from node [to].
+  Future<SettingsSection> readSection(
+    int to,
+    SectionKind kind, {
+    Duration timeout = const Duration(seconds: 30),
+  }) async {
+    final reply = await adminRequest(
+      to,
+      AdminMessages.get(kind),
+      timeout: timeout,
+    );
+    final section = reply.section(kind);
+    if (section == null) {
+      throw MeshtasticTimeout('answer for ${kind.name} settings');
+    }
+    return section;
+  }
+
+  /// Saves the changed [sections] on node [to] as one batch. The node
+  /// restarts afterwards if a change needs it.
+  Future<void> writeSections(
+    int to,
+    Iterable<SettingsSection> sections, {
+    Duration timeout = const Duration(seconds: 30),
+  }) async {
+    final changed = [
+      for (final s in sections)
+        if (s.changed) s,
+    ];
+    if (changed.isEmpty) return;
+    final key = await _passkeyFor(to, timeout);
+    await _sendAdmin(to, AdminMessages.beginEdit(key));
+    for (final s in changed) {
+      await _sendAdmin(to, AdminMessages.set(s, key));
+    }
+    await _sendAdmin(to, AdminMessages.commitEdit(key));
+    _log?.add(
+      _source,
+      'saved ${changed.map((s) => s.kind.name).join(', ')} settings on '
+      '${nodeIdOf(to)}',
+    );
+  }
+
+  /// Restarts node [to].
+  Future<void> rebootNode(
+    int to, {
+    Duration timeout = const Duration(seconds: 30),
+  }) async {
+    final key = await _passkeyFor(to, timeout);
+    await _sendAdmin(to, AdminMessages.reboot(key));
+    _log?.add(_source, 'asked ${nodeIdOf(to)} to restart');
+  }
+
+  Future<Uint8List> _passkeyFor(int to, Duration timeout) async {
+    final known = _passkeys[to];
+    if (known != null &&
+        DateTime.now().difference(known.$2) < passkeyLifetime) {
+      return known.$1;
+    }
+    final reply = await adminRequest(
+      to,
+      AdminMessages.getMetadata(),
+      timeout: timeout,
+    );
+    return reply.passkey;
+  }
+
+  Future<void> _sendAdmin(
+    int to,
+    Uint8List admin, {
+    int? id,
+    bool wantResponse = false,
+  }) {
+    final remote = to != _myNode;
+    return _write(
+      ToRadio.packet(
+        MeshPacket(
+          from: 0,
+          to: to,
+          id: id ?? _nonZeroId(),
+          wantAck: remote && !wantResponse,
+          pkiEncrypted: remote,
+          decoded: DataPayload(
+            portnum: PortNum.admin,
+            payload: admin,
+            wantResponse: wantResponse,
+          ),
+        ),
+      ),
+    );
   }
 
   /// Tells a USB/TCP node the app is leaving, then stops the heartbeat.

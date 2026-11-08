@@ -9,6 +9,7 @@ import '../meshtastic/meshtastic.dart';
 import '../radio/radio.dart';
 import '../store/mesh_store.dart';
 import 'meshcore_settings.dart';
+import 'meshtastic_settings.dart';
 import 'radio_target.dart';
 import 'retry_policy.dart';
 
@@ -206,6 +207,7 @@ abstract class RadioConnection extends ChangeNotifier {
   static String describeError(Object e) => switch (e) {
     MeshCoreException(:final code) => code.message,
     MeshCoreTimeout() => 'The radio did not answer',
+    MeshtasticTimeout() => 'The radio did not answer',
     LinkException(:final message) => message,
     _ => 'Could not send',
   };
@@ -683,10 +685,11 @@ class MeshtasticConnection extends RadioConnection {
     final p = e.packet;
     final data = p.decoded;
     final me = session.myNodeNum;
-    if (data != null && data.portnum == PortNum.telemetry && p.from == me) {
+    if (data != null && data.portnum == PortNum.telemetry) {
       try {
-        final local = Telemetry.decode(data.payload).local;
-        if (local != null) {
+        final t = Telemetry.decode(data.payload);
+        final local = t.local;
+        if (local != null && p.from == me) {
           samples.add(
             RadioSample(
               time: DateTime.now(),
@@ -696,6 +699,7 @@ class MeshtasticConnection extends RadioConnection {
             ),
           );
         }
+        unawaited(_saveTelemetry(p.from, t));
       } on ProtobufException {
         // Not ours to worry about; skip it.
       }
@@ -718,6 +722,96 @@ class MeshtasticConnection extends RadioConnection {
         encrypted: data == null,
       ),
     );
+  }
+
+  /// Keeps [t]'s battery, load and sensor readings in the history.
+  Future<void> _saveTelemetry(int from, Telemetry t) async {
+    final radio = this.radio;
+    final device = t.device;
+    final env = t.environment;
+    if (radio == null || closed || (device == null && env == null)) return;
+    final now = DateTime.now();
+    // Use the node's own clock only when it looks right.
+    var time = now;
+    if (t.time case final secs?) {
+      final told = DateTime.fromMillisecondsSinceEpoch(secs * 1000);
+      if (told.isBefore(now.add(const Duration(minutes: 5))) &&
+          now.difference(told) < const Duration(hours: 6)) {
+        time = told;
+      }
+    }
+    await store.addTelemetry(
+      TelemetryPoint(
+        radioId: radio.id,
+        node: NodeKey.meshtastic(from),
+        time: time,
+        batteryLevel: device?.batteryLevel,
+        voltage: device?.voltage,
+        channelUtilization: device?.channelUtilization,
+        airUtilTx: device?.airUtilTx,
+        uptimeSeconds: device?.uptimeSeconds,
+        temperature: env?.temperature,
+        relativeHumidity: env?.relativeHumidity,
+        barometricPressure: env?.barometricPressure,
+      ),
+    );
+  }
+
+  /// This radio's node number, once connected.
+  int? get myNodeNum => session.myNodeNum;
+
+  /// Reads the settings of node [node] (this radio when null). Another
+  /// node only answers if this radio's key is in its admin keys.
+  Future<MeshtasticSettings> loadSettings({
+    int? node,
+    Duration timeout = const Duration(seconds: 30),
+  }) async {
+    final to = node ?? _me;
+    final sections = <SectionKind, SettingsSection>{};
+    for (final kind in MeshtasticSettings.kinds) {
+      sections[kind] = await session.readSection(to, kind, timeout: timeout);
+    }
+    return MeshtasticSettings(sections);
+  }
+
+  /// Saves what changed in [settings] on [node] (this radio when null).
+  /// The node restarts if a change needs it; this radio then reconnects by
+  /// itself.
+  Future<void> saveSettings(
+    MeshtasticSettings settings, {
+    int? node,
+    Duration timeout = const Duration(seconds: 30),
+  }) async {
+    await session.writeSections(
+      node ?? _me,
+      settings.changed,
+      timeout: timeout,
+    );
+    final owner = settings.sections[SectionKind.owner];
+    final radio = this.radio;
+    if (node == null && radio != null && owner != null && owner.changed) {
+      final name = owner.text(OwnerField.longName).trim();
+      await setRadio(
+        Radio(
+          id: radio.id,
+          name: name,
+          self: radio.self,
+          firmware: radio.firmware,
+          model: radio.model,
+          maxChannels: radio.maxChannels,
+          position: radio.position,
+        ),
+      );
+    }
+  }
+
+  /// Restarts [node] (this radio when null).
+  Future<void> rebootNode({int? node}) => session.rebootNode(node ?? _me);
+
+  int get _me {
+    final me = session.myNodeNum;
+    if (me == null) throw StateError('Not connected');
+    return me;
   }
 
   /// English names for common Meshtastic ports.
