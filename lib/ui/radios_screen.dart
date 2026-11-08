@@ -7,6 +7,7 @@ import '../meshcore/firmware.dart';
 import '../meshtastic/firmware.dart';
 import '../radio/radio.dart';
 import 'admin_screens.dart';
+import 'bridge_screen.dart';
 import 'feeds_screen.dart';
 import 'common.dart';
 import 'connection_log_sheet.dart';
@@ -86,6 +87,13 @@ class RadiosScreen extends StatelessWidget {
             label: Text(l.feedsTitle),
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute<void>(builder: (_) => FeedsScreen(app: app)),
+            ),
+          ),
+          TextButton.icon(
+            icon: const Icon(Icons.compare_arrows),
+            label: Text(l.bridgeTitle),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => BridgeScreen(app: app)),
             ),
           ),
           if (app.links.usb.supported) ...[

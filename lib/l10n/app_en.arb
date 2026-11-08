@@ -1045,5 +1045,56 @@
   "feedPassword": "Password (optional)",
   "feedTopic": "Topic",
   "feedPlainWarning": "Without TLS, this password is sent unencrypted.",
-  "feedSave": "Save"
+  "feedSave": "Save",
+  "bridgeTitle": "Mesh bridge",
+  "bridgeHelp": "Copies messages between a MeshCore and a Meshtastic conversation while both radios are connected to this phone. Every copied message shows which mesh and person it came from.",
+  "bridgeEmpty": "No bridges yet.",
+  "bridgeAdd": "Add a bridge",
+  "bridgeChannels": "Channels",
+  "bridgeDirect": "Two people",
+  "bridgeMeshCore": "MeshCore side",
+  "bridgeMeshtastic": "Meshtastic side",
+  "bridgeNeedBoth": "Connect a MeshCore radio and a Meshtastic radio first. Each needs something to link.",
+  "bridgeSave": "Save",
+  "bridgeExists": "Those two are already bridged.",
+  "bridgeConfirmTitle": "Turn on this bridge?",
+  "bridgeConfirmChannels": "Everything said on {a} will be sent to {b}, and the other way round. People on one side may not expect the other side to read it, even on a private channel. Tell them before you turn this on.",
+  "bridgeConfirmDirect": "Private messages from {a} will be passed to {b}, and the other way round, without end-to-end encryption between them: this phone reads and resends each one. Only do this if both of them agree.",
+  "bridgeTurnOn": "Turn on",
+  "bridgeOff": "Off",
+  "bridgeStatus": "{sent} copied, {held} held back",
+  "bridgeHoldTooOld": "Last held back: too old",
+  "bridgeHoldRepeated": "Last held back: repeated text",
+  "bridgeHoldTooFast": "Last held back: too many at once",
+  "bridgeHoldOffline": "Last held back: other radio not connected",
+  "@bridgeConfirmChannels": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "@bridgeConfirmDirect": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "@bridgeStatus": {
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "held": {
+        "type": "int"
+      }
+    }
+  }
 }
