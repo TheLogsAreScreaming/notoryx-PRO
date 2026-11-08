@@ -38,6 +38,7 @@ class NotificationSettingsSheet extends StatelessWidget {
             ),
             toggle(AlertPrefs.direct, l.notifyDirect),
             toggle(AlertPrefs.channels, l.notifyChannels),
+            toggle(AlertPrefs.background, l.notifyBackground),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
               child: Text(

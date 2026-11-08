@@ -75,9 +75,40 @@ class _HomeShellState extends State<HomeShell> {
   late final Stream<Map<String, DateTime>> _mutes = widget.app.store
       .watchMutes();
 
+  StreamSubscription<String?>? _bgPref;
+  bool _bgAllowed = true;
+  (bool, int)? _kept;
+
+  /// Keeps radios connected in the background while any are connected
+  /// (unless the person turned it off).
+  void _syncKeepAlive() {
+    final alerts = widget.app.alerts;
+    if (alerts == null || !mounted) return;
+    final n = widget.app.connections.length;
+    final want = (_bgAllowed && n > 0, n);
+    // Nothing to stop before anything was started.
+    if (want == _kept || (_kept == null && !want.$1)) return;
+    _kept = want;
+    final l = context.l10n;
+    unawaited(
+      alerts.notifier.keepAlive(
+        want.$1,
+        title: l.keepAliveTitle,
+        body: l.keepAliveBody(n),
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
+    widget.app.addListener(_syncKeepAlive);
+    _bgPref = widget.app.store.watchPreference(AlertPrefs.background).listen((
+      v,
+    ) {
+      _bgAllowed = v != 'off';
+      _syncKeepAlive();
+    });
     final alerts = widget.app.alerts;
     _lifecycle = AppLifecycleListener(
       onStateChange: (s) => alerts?.foreground = s == AppLifecycleState.resumed,
@@ -87,6 +118,8 @@ class _HomeShellState extends State<HomeShell> {
 
   @override
   void dispose() {
+    widget.app.removeListener(_syncKeepAlive);
+    unawaited(_bgPref?.cancel());
     _lifecycle.dispose();
     unawaited(_taps?.cancel());
     super.dispose();
