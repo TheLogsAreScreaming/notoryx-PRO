@@ -386,6 +386,12 @@ class FakeAdminNode {
                   always: true,
                 ))
                 .toBytes();
+      case AdminField.setFixedPosition:
+        sections[SectionKind.position] =
+            (ProtoWriter()..boolean(PositionField.fixedPosition, true))
+                .toBytes();
+      case AdminField.removeFixedPosition:
+        sections[SectionKind.position] = Uint8List(0);
       case AdminField.setOwner:
         sections[SectionKind.owner] = value as Uint8List;
       case AdminField.setConfig || AdminField.setModuleConfig:

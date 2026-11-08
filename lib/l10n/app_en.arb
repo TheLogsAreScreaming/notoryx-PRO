@@ -636,7 +636,7 @@
   "mtGpsEnabled": "On",
   "mtGpsDisabled": "Off",
   "mtGpsNotPresent": "No GPS",
-  "mtFixedPosition": "This node sends a fixed position. Change it in the official app.",
+  "mtFixedPosition": "This node sends a fixed position instead of using GPS.",
   "mtTelemetry": "Telemetry",
   "mtDeviceInterval": "Send battery and load",
   "mtEnvironmentEnabled": "Send sensor readings",
@@ -1195,5 +1195,11 @@
   "modPaxInterval": "Send every (seconds)",
   "modRemote": "Remote hardware",
   "modRemoteHelp": "Lets other nodes read and set this node's pins. Only turn on if you need it.",
-  "modRemoteUndefined": "Allow pins not listed as available"
+  "modRemoteUndefined": "Allow pins not listed as available",
+  "mtFixedSet": "Set fixed position",
+  "mtFixedRemove": "Remove fixed position",
+  "mtFixedHelp": "For a node that never moves. It stops using GPS for its position, and other nodes can see these coordinates.",
+  "mtFixedAltitude": "Altitude in metres (optional)",
+  "mtFixedSaved": "Fixed position sent.",
+  "mtFixedRemoved": "Fixed position removed."
 }

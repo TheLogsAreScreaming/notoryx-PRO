@@ -16,6 +16,8 @@ abstract final class AdminField {
   static const setChannel = 33;
   static const setConfig = 34;
   static const setModuleConfig = 35;
+  static const setFixedPosition = 41;
+  static const removeFixedPosition = 42;
   static const beginEditSettings = 64;
   static const commitEditSettings = 65;
   static const rebootSeconds = 97;
@@ -258,6 +260,36 @@ abstract final class AdminMessages {
     (w) => w.bytes(AdminField.setChannel, channel, always: true),
     passkey,
   );
+
+  /// Fixes the node at a position, in degrees and metres. The node saves
+  /// it at once and turns on its fixed-position setting.
+  static Uint8List setFixedPosition(
+    double latitude,
+    double longitude,
+    int? altitude,
+    List<int> passkey,
+  ) {
+    final position = ProtoWriter()
+      ..fixed32(1, (latitude * 1e7).round(), always: true)
+      ..fixed32(2, (longitude * 1e7).round(), always: true);
+    if (altitude != null) position.uint(3, altitude, always: true);
+    position.uint(5, _locationManual);
+    return _with(
+      (w) => w.bytes(
+        AdminField.setFixedPosition,
+        position.toBytes(),
+        always: true,
+      ),
+      passkey,
+    );
+  }
+
+  /// `Position.LocSource.LOC_MANUAL`.
+  static const _locationManual = 1;
+
+  /// Clears a fixed position so the node goes back to its GPS, if any.
+  static Uint8List removeFixedPosition(List<int> passkey) =>
+      _with((w) => w.boolean(AdminField.removeFixedPosition, true), passkey);
 
   /// Starts a batch of changes; the node saves them all on [commitEdit].
   static Uint8List beginEdit(List<int> passkey) =>

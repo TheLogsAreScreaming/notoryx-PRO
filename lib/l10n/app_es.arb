@@ -291,7 +291,7 @@
   "mtGpsEnabled": "Activado",
   "mtGpsDisabled": "Desactivado",
   "mtGpsNotPresent": "Sin GPS",
-  "mtFixedPosition": "Este nodo envía una posición fija. Cámbiala en la aplicación oficial.",
+  "mtFixedPosition": "Este nodo envía una posición fija en lugar de usar el GPS.",
   "mtTelemetry": "Telemetría",
   "mtDeviceInterval": "Enviar batería y carga",
   "mtEnvironmentEnabled": "Enviar lecturas de sensores",
@@ -529,5 +529,11 @@
   "modPaxInterval": "Enviar cada (segundos)",
   "modRemote": "Hardware remoto",
   "modRemoteHelp": "Permite a otros nodos leer y cambiar los pines de este. Actívalo solo si lo necesitas.",
-  "modRemoteUndefined": "Permitir pines no indicados como disponibles"
+  "modRemoteUndefined": "Permitir pines no indicados como disponibles",
+  "mtFixedSet": "Definir posición fija",
+  "mtFixedRemove": "Quitar posición fija",
+  "mtFixedHelp": "Para un nodo que nunca se mueve. Deja de usar el GPS para su posición y otros nodos pueden ver estas coordenadas.",
+  "mtFixedAltitude": "Altitud en metros (opcional)",
+  "mtFixedSaved": "Posición fija enviada.",
+  "mtFixedRemoved": "Posición fija quitada."
 }

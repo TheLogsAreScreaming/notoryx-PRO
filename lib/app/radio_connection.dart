@@ -1064,6 +1064,19 @@ class MeshtasticConnection extends RadioConnection {
     }
   }
 
+  /// Fixes [node] (this radio when null) at [position].
+  Future<void> setFixedPosition(GeoPoint position, {int? node}) =>
+      session.setFixedPosition(
+        node ?? _me,
+        position.latitude,
+        position.longitude,
+        position.altitude,
+      );
+
+  /// Clears the fixed position of [node] (this radio when null).
+  Future<void> removeFixedPosition({int? node}) =>
+      session.removeFixedPosition(node ?? _me);
+
   /// Restarts [node] (this radio when null).
   Future<void> rebootNode({int? node}) => session.rebootNode(node ?? _me);
 
