@@ -1,10 +1,11 @@
-import 'mqtt_feed.dart';
 import 'package:flutter/foundation.dart';
 
 import '../mesh/model.dart';
 import '../radio/radio.dart';
 import '../store/mesh_store.dart';
+import 'channel_bridge.dart';
 import 'message_alerts.dart';
+import 'mqtt_feed.dart';
 import 'radio_connection.dart';
 import 'radio_target.dart';
 import 'retry_policy.dart';
@@ -38,6 +39,16 @@ class AppController extends ChangeNotifier {
 
   /// Read-only MQTT feeds.
   late final MqttFeeds feeds = MqttFeeds(store);
+
+  /// Opt-in links between MeshCore and Meshtastic conversations.
+  late final ChannelBridge bridge = ChannelBridge(store, send: _bridgeSend);
+
+  Future<bool> _bridgeSend(Conversation to, String text) async {
+    final c = connectionForRadio(to.radioId);
+    if (c == null) return false;
+    await c.sendText(to, text);
+    return true;
+  }
 
   /// Most radios connected at once (Bluetooth adapters and phones cope
   /// badly with more).
@@ -75,6 +86,7 @@ class AppController extends ChangeNotifier {
     c.addListener(notifyListeners);
     _connections[target.address] = c;
     notifyListeners();
+    await bridge.load();
     await c.start();
     return c;
   }
@@ -97,6 +109,7 @@ class AppController extends ChangeNotifier {
   Future<void> shutdown() async {
     await alerts?.dispose();
     await feeds.stopAll();
+    await bridge.stop();
     for (final c in [..._connections.values]) {
       await disconnect(c);
     }
