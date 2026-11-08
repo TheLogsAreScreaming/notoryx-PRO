@@ -62,6 +62,14 @@ abstract class BleBackend {
   /// Asks for a larger packet size; returns the size granted.
   Future<int> requestMtu(String deviceId, int mtu);
 
+  /// Whether the system has a bond (pairing) with [deviceId]; null where
+  /// the platform can't tell.
+  Future<bool?> isPaired(String deviceId);
+
+  /// Asks the system to pair with [deviceId]; the person may be asked for
+  /// the radio's PIN.
+  Future<void> pair(String deviceId);
+
   /// Turns on notifications for a characteristic.
   Future<void> subscribe(String deviceId, String service, String char);
 
@@ -140,6 +148,13 @@ class UniversalBleBackend implements BleBackend {
     final services = await UniversalBle.discoverServices(deviceId);
     return [for (final s in services) s.uuid];
   }
+
+  @override
+  Future<bool?> isPaired(String deviceId) => UniversalBle.isPaired(deviceId);
+
+  @override
+  Future<void> pair(String deviceId) =>
+      UniversalBle.pair(deviceId, timeout: const Duration(seconds: 60));
 
   @override
   Future<int> requestMtu(String deviceId, int mtu) =>

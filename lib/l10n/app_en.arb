@@ -903,5 +903,8 @@
       }
     }
   },
-  "channelsShareHelp": "Anyone with this code can read and post in the channel. The official apps can scan it too."
+  "channelsShareHelp": "Anyone with this code can read and post in the channel. The official apps can scan it too.",
+  "logButton": "Connection log",
+  "logTitle": "Connection log",
+  "logEmpty": "Nothing yet. Try connecting a radio."
 }
