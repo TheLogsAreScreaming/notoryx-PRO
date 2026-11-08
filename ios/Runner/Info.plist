@@ -80,5 +80,10 @@
 	<array>
 		<string>bluetooth-central</string>
 	</array>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>es</string>
+	</array>
 </dict>
 </plist>

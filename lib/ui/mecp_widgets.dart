@@ -2,11 +2,25 @@ import 'package:flutter/material.dart';
 
 import '../mesh/mecp.dart';
 import '../mesh/mecp_codes.dart';
+import '../mesh/mecp_labels.dart';
 import '../mesh/model.dart';
 import 'common.dart';
 
+/// Labels in the phone's own language, which may be one MECP covers even
+/// when the rest of the app has fallen back to English.
+MecpLabels _labels() {
+  final locale = WidgetsBinding.instance.platformDispatcher.locale;
+  return MecpLabels.forLocale(
+    locale.languageCode,
+    script: locale.scriptCode,
+    country: locale.countryCode,
+  );
+}
+
 String _severityName(BuildContext context, MecpSeverity s) {
   final l = context.l10n;
+  final translated = _labels().severity(s);
+  if (translated != null) return translated;
   return switch (s) {
     MecpSeverity.mayday => l.mecpMayday,
     MecpSeverity.urgent => l.mecpUrgent,
@@ -59,7 +73,7 @@ class MecpCard extends StatelessWidget {
           ],
         ),
         for (final c in m.codes)
-          Text('• ${MecpMessage.label(c) ?? l.mecpUnknownCode(c)}'),
+          Text('• ${_labels().code(c) ?? l.mecpUnknownCode(c)}'),
         if (m.people != null) Text(l.mecpPeople(m.people!)),
         if (position != null)
           SelectableText(l.mecpPosition('${position.$1}, ${position.$2}')),
@@ -164,13 +178,13 @@ class _MecpComposerState extends State<_MecpComposer> {
                 if (cat.key != 'B')
                   ExpansionTile(
                     tilePadding: EdgeInsets.zero,
-                    title: Text(cat.value),
+                    title: Text(_labels().category(cat.key)),
                     children: [
                       for (final code in mecpCodes.entries)
                         if (code.key.startsWith(cat.key))
                           CheckboxListTile(
                             value: _codes.contains(code.key),
-                            title: Text(code.value),
+                            title: Text(_labels().code(code.key) ?? code.value),
                             onChanged: (on) => setState(() {
                               on == true
                                   ? _codes.add(code.key)
