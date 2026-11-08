@@ -363,7 +363,11 @@ class FakeAdminNode {
               k.requestType == value,
         );
         final inner =
-            (ProtoWriter()..bytes(kind.field, sections[kind]!, always: true))
+            (ProtoWriter()..bytes(
+                  kind.field,
+                  sections[kind] ?? Uint8List(0),
+                  always: true,
+                ))
                 .toBytes();
         answer =
             (ProtoWriter()..bytes(

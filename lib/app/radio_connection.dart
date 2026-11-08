@@ -1014,10 +1014,11 @@ class MeshtasticConnection extends RadioConnection {
   Future<MeshtasticSettings> loadSettings({
     int? node,
     Duration timeout = const Duration(seconds: 30),
+    List<SectionKind> kinds = MeshtasticSettings.kinds,
   }) async {
     final to = node ?? _me;
     final sections = <SectionKind, SettingsSection>{};
-    for (final kind in MeshtasticSettings.kinds) {
+    for (final kind in kinds) {
       sections[kind] = await session.readSection(to, kind, timeout: timeout);
     }
     return MeshtasticSettings(sections);

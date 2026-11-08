@@ -27,8 +27,8 @@ class MeshtasticSettings {
 
   /// Sections with changes.
   List<SettingsSection> get changed => [
-    for (final k in kinds)
-      if (sections[k] case final s? when s.changed) s,
+    for (final s in sections.values)
+      if (s.changed) s,
   ];
 
   bool get hasChanges => changed.isNotEmpty;

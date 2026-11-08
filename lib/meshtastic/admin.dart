@@ -32,6 +32,16 @@ enum SectionKind {
   position(2, module: false),
   lora(6, module: false),
   telemetry(6, module: true),
+  mqtt(1, module: true),
+  serial(2, module: true),
+  externalNotification(3, module: true),
+  storeForward(4, module: true),
+  rangeTest(5, module: true),
+  remoteHardware(9, module: true),
+  neighborInfo(10, module: true),
+  ambientLighting(11, module: true),
+  detectionSensor(12, module: true),
+  paxcounter(13, module: true),
 
   /// `User`: the node's names. Not part of `Config`.
   owner(0, module: false);

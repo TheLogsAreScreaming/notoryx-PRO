@@ -1096,5 +1096,104 @@
         "type": "int"
       }
     }
-  }
+  },
+  "modButton": "Modules",
+  "modTitle": "Modules: {name}",
+  "@modTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "modEnabled": "On",
+  "modInvalidNumber": "Use a whole number from 0 to {max}",
+  "@modInvalidNumber": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "modTooLong": "At most {max} bytes",
+  "@modTooLong": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "modOtherChoice": "Value {value}",
+  "@modOtherChoice": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "modNotCovered": "Canned messages, audio and newer modules can be changed in the official app.",
+  "modMqtt": "MQTT",
+  "modMqttHelp": "Connects this node's mesh to an internet broker. Traffic leaves the radio network.",
+  "modMqttAddress": "Broker address",
+  "modMqttUser": "Username",
+  "modMqttPassword": "Password",
+  "modMqttEncrypted": "Keep packets encrypted",
+  "modMqttJson": "Also publish as JSON",
+  "modMqttTls": "Use TLS",
+  "modMqttRoot": "Root topic",
+  "modMqttProxy": "Reach the broker through the phone",
+  "modMqttMap": "Report this node to the public map",
+  "modSerial": "Serial",
+  "modSerialHelp": "Connects the node's serial pins to other equipment.",
+  "modSerialEcho": "Echo what is sent",
+  "modSerialRx": "Receive pin",
+  "modSerialTx": "Transmit pin",
+  "modSerialBaud": "Speed",
+  "modSerialTimeout": "Timeout (ms)",
+  "modSerialMode": "Mode",
+  "modExternal": "External notification",
+  "modExternalHelp": "Drives a light, buzzer or vibration motor when a message arrives.",
+  "modExternalMs": "How long it stays on (ms)",
+  "modExternalPin": "Output pin",
+  "modExternalActive": "Output is active high",
+  "modExternalMessage": "Alert on every message",
+  "modExternalBell": "Alert on a bell character",
+  "modExternalPwm": "Use PWM",
+  "modExternalNag": "Repeat for (seconds)",
+  "modStore": "Store and forward",
+  "modStoreHelp": "Keeps recent messages to replay for nodes that were away. Needs a node with PSRAM.",
+  "modStoreHeartbeat": "Announce this server",
+  "modStoreRecords": "Messages to keep",
+  "modStoreMax": "Most messages to replay",
+  "modStoreWindow": "Replay window (minutes)",
+  "modStoreServer": "Act as a server",
+  "modRange": "Range test",
+  "modRangeHelp": "Sends numbered test messages. Use it briefly: it takes up airtime for everyone.",
+  "modRangeSender": "Send every (seconds, 0 = only listen)",
+  "modRangeSave": "Save results on the node",
+  "modNeighbor": "Neighbor info",
+  "modNeighborHelp": "Shares which nodes this one hears directly.",
+  "modNeighborInterval": "Send every (seconds)",
+  "modNeighborLora": "Also send over the radio",
+  "modAmbient": "Ambient lighting",
+  "modAmbientHelp": "Sets the colour and brightness of an LED on the board.",
+  "modAmbientCurrent": "Current",
+  "modAmbientRed": "Red",
+  "modAmbientGreen": "Green",
+  "modAmbientBlue": "Blue",
+  "modDetection": "Detection sensor",
+  "modDetectionHelp": "Sends a message when a pin changes, such as a door or motion sensor.",
+  "modDetectionMin": "Shortest gap between messages (seconds)",
+  "modDetectionState": "Send state every (seconds)",
+  "modDetectionBell": "Include a bell",
+  "modDetectionName": "Name in messages",
+  "modDetectionPin": "Sensor pin",
+  "modDetectionTrigger": "Trigger",
+  "modDetectionPullup": "Use internal pull-up",
+  "modPax": "Paxcounter",
+  "modPaxHelp": "Counts nearby Wi-Fi and Bluetooth devices. Check whether this is allowed where you are.",
+  "modPaxInterval": "Send every (seconds)",
+  "modRemote": "Remote hardware",
+  "modRemoteHelp": "Lets other nodes read and set this node's pins. Only turn on if you need it.",
+  "modRemoteUndefined": "Allow pins not listed as available"
 }

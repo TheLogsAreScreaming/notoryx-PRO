@@ -8,6 +8,7 @@ import '../app/radio_connection.dart';
 import '../mesh/mesh.dart';
 import '../meshtastic/admin.dart';
 import 'common.dart';
+import 'meshtastic_modules_screen.dart';
 import 'preset_sheet.dart';
 
 /// Settings of a Meshtastic node: the connected radio, or another node
@@ -557,6 +558,22 @@ class _MeshtasticSettingsScreenState extends State<MeshtasticSettingsScreen> {
             child: TextButton(
               onPressed: _restart,
               child: Text(l.settingsReboot),
+            ),
+          ),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: TextButton(
+              key: const Key('mt-modules'),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => MeshtasticModulesScreen(
+                    connection: widget.connection,
+                    node: widget.node,
+                    timeout: widget.timeout,
+                  ),
+                ),
+              ),
+              child: Text(l.modButton),
             ),
           ),
         ],
