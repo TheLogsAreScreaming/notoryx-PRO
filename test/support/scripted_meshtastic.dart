@@ -277,3 +277,141 @@ class ScriptedMeshtasticLink extends BaseRadioLink {
     return Uint8List.sublistView(data, 4);
   }
 }
+
+/// A node's settings and admin handling, for a [ScriptedMeshtasticLink]'s
+/// `onPacket`: answers get requests with a passkey and records changes.
+class FakeAdminNode {
+  FakeAdminNode(this.num, {this.answers = true});
+
+  final int num;
+
+  /// Whether it answers at all (a remote node without our admin key won't).
+  bool answers;
+  final passkey = Uint8List.fromList([9, 9, 9, 9]);
+
+  /// Section bytes by kind.
+  final sections = <SectionKind, Uint8List>{
+    SectionKind.owner:
+        (ProtoWriter()
+              ..string(1, '!0badcafe')
+              ..string(2, 'Ridge Relay')
+              ..string(3, 'RR')
+              ..uint(5, 43)
+              ..bytes(8, List.filled(32, 7)))
+            .toBytes(),
+    SectionKind.device: (ProtoWriter()..uint(DeviceField.role, 0)).toBytes(),
+    SectionKind.lora:
+        (ProtoWriter()
+              ..boolean(LoraField.usePreset, true)
+              ..uint(LoraField.region, 1)
+              ..uint(LoraField.hopLimit, 3)
+              ..boolean(LoraField.txEnabled, true)
+              ..fixed32(6, 0x3f800000) // frequency_offset 1.0
+              ..string(200, 'future field'))
+            .toBytes(),
+    SectionKind.position:
+        (ProtoWriter()
+              ..uint(PositionField.broadcastSecs, 900)
+              ..boolean(PositionField.smartBroadcast, true)
+              ..uint(PositionField.gpsMode, 1))
+            .toBytes(),
+    SectionKind.telemetry:
+        (ProtoWriter()..uint(TelemetryField.deviceInterval, 1800)).toBytes(),
+  };
+
+  /// Admin messages received: (field, body, passkey).
+  final received = <(int, Uint8List, Uint8List)>[];
+
+  /// Packets that carried them.
+  final packets = <MeshPacket>[];
+
+  List<Uint8List> call(MeshPacket p, {required int myNode}) {
+    final data = p.decoded;
+    if (data == null || data.portnum != PortNum.admin || p.to != num) {
+      return const [];
+    }
+    packets.add(p);
+    var field = 0;
+    Object value = 0;
+    var key = Uint8List(0);
+    for (final f in readFields(data.payload)) {
+      if (f.number == AdminField.sessionPasskey) {
+        key = f.asBytes;
+      } else {
+        field = f.number;
+        value = f.value;
+      }
+    }
+    received.add((field, value is Uint8List ? value : Uint8List(0), key));
+    if (!answers) return const [];
+    Uint8List? answer;
+    switch (field) {
+      case AdminField.getOwnerRequest:
+        answer =
+            (ProtoWriter()..bytes(
+                  AdminField.getOwnerResponse,
+                  sections[SectionKind.owner]!,
+                  always: true,
+                ))
+                .toBytes();
+      case AdminField.getConfigRequest || AdminField.getModuleConfigRequest:
+        final module = field == AdminField.getModuleConfigRequest;
+        final kind = SectionKind.values.firstWhere(
+          (k) =>
+              k != SectionKind.owner &&
+              k.module == module &&
+              k.requestType == value,
+        );
+        final inner =
+            (ProtoWriter()..bytes(kind.field, sections[kind]!, always: true))
+                .toBytes();
+        answer =
+            (ProtoWriter()..bytes(
+                  module
+                      ? AdminField.getModuleConfigResponse
+                      : AdminField.getConfigResponse,
+                  inner,
+                  always: true,
+                ))
+                .toBytes();
+      case AdminField.getMetadataRequest:
+        answer =
+            (ProtoWriter()..bytes(
+                  AdminField.getMetadataResponse,
+                  (ProtoWriter()..string(1, '2.8.2')).toBytes(),
+                  always: true,
+                ))
+                .toBytes();
+      case AdminField.setOwner:
+        sections[SectionKind.owner] = value as Uint8List;
+      case AdminField.setConfig || AdminField.setModuleConfig:
+        final module = field == AdminField.setModuleConfig;
+        final f = readFields(value as Uint8List).first;
+        final kind = SectionKind.values.firstWhere(
+          (k) =>
+              k != SectionKind.owner &&
+              k.module == module &&
+              k.field == f.number,
+        );
+        sections[kind] = f.asBytes;
+    }
+    if (answer == null) return const [];
+    final withKey =
+        (ProtoWriter()
+              ..field(readFields(answer).first)
+              ..bytes(AdminField.sessionPasskey, passkey))
+            .toBytes();
+    return [
+      NodeFrames.packet(
+        from: num,
+        to: myNode,
+        portnum: PortNum.admin,
+        payload: withKey,
+        requestId: p.id,
+      ),
+    ];
+  }
+
+  /// The fields of the admin messages received, in order.
+  List<int> get fields => [for (final r in received) r.$1];
+}

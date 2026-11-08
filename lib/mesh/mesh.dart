@@ -8,3 +8,4 @@ export 'meshcore_mapper.dart';
 export 'meshtastic_mapper.dart';
 export 'model.dart';
 export 'signal.dart';
+export 'telemetry.dart';

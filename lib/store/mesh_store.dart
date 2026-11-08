@@ -5,6 +5,7 @@ import 'package:drift/native.dart';
 
 import '../mesh/identity.dart';
 import '../mesh/model.dart';
+import '../mesh/telemetry.dart';
 import 'database.dart';
 
 /// A message as stored, with its database ID.
@@ -331,6 +332,83 @@ class MeshStore {
     final secs = m.sentAt.millisecondsSinceEpoch ~/ 1000;
     return '${m.conversation.key}|$who|$secs|${m.text.hashCode}';
   }
+
+  // Telemetry
+
+  /// Saves a reading and drops readings older than [telemetryKeep].
+  Future<void> addTelemetry(TelemetryPoint p) async {
+    if (p.isEmpty) return;
+    await db.transaction(() async {
+      await db
+          .into(db.telemetryReadings)
+          .insert(
+            TelemetryReadingsCompanion.insert(
+              radioId: p.radioId.toString(),
+              nodeKey: p.node.toString(),
+              time: p.time,
+              batteryLevel: Value(p.batteryLevel),
+              voltage: Value(p.voltage),
+              channelUtilization: Value(p.channelUtilization),
+              airUtilTx: Value(p.airUtilTx),
+              uptimeSeconds: Value(p.uptimeSeconds),
+              temperature: Value(p.temperature),
+              relativeHumidity: Value(p.relativeHumidity),
+              barometricPressure: Value(p.barometricPressure),
+            ),
+          );
+      final cutoff = p.time.subtract(telemetryKeep);
+      await (db.delete(
+        db.telemetryReadings,
+      )..where((t) => t.time.isSmallerThanValue(cutoff))).go();
+    });
+  }
+
+  SimpleSelectStatement<$TelemetryReadingsTable, TelemetryRow> _telemetryQuery(
+    RadioId radio,
+    NodeKey node,
+    DateTime since,
+  ) => db.select(db.telemetryReadings)
+    ..where(
+      (t) =>
+          t.radioId.equals(radio.toString()) &
+          t.nodeKey.equals(node.toString()) &
+          t.time.isBiggerOrEqualValue(since),
+    )
+    ..orderBy([(t) => OrderingTerm.asc(t.time)]);
+
+  /// A node's readings since [since], oldest first.
+  Future<List<TelemetryPoint>> telemetry(
+    RadioId radio,
+    NodeKey node, {
+    required DateTime since,
+  }) async => [
+    for (final r in await _telemetryQuery(radio, node, since).get())
+      _telemetryPoint(radio, node, r),
+  ];
+
+  /// [telemetry], updated as readings arrive.
+  Stream<List<TelemetryPoint>> watchTelemetry(
+    RadioId radio,
+    NodeKey node, {
+    required DateTime since,
+  }) => _telemetryQuery(radio, node, since).watch().map(
+    (rows) => [for (final r in rows) _telemetryPoint(radio, node, r)],
+  );
+
+  TelemetryPoint _telemetryPoint(RadioId radio, NodeKey node, TelemetryRow r) =>
+      TelemetryPoint(
+        radioId: radio,
+        node: node,
+        time: r.time,
+        batteryLevel: r.batteryLevel,
+        voltage: r.voltage,
+        channelUtilization: r.channelUtilization,
+        airUtilTx: r.airUtilTx,
+        uptimeSeconds: r.uptimeSeconds,
+        temperature: r.temperature,
+        relativeHumidity: r.relativeHumidity,
+        barometricPressure: r.barometricPressure,
+      );
 
   // Verified keys
 

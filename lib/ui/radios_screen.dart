@@ -10,6 +10,8 @@ import 'admin_screens.dart';
 import 'common.dart';
 import 'diagnostics_screen.dart';
 import 'verify_screen.dart';
+import 'meshtastic_admin_screen.dart';
+import 'telemetry_screen.dart';
 
 /// Connected radios, and ways to connect more: Bluetooth, Wi-Fi and USB.
 class RadiosScreen extends StatelessWidget {
@@ -136,6 +138,32 @@ class _ConnectionCard extends StatelessWidget {
                     onPressed: () => Navigator.of(context).push(
                       MaterialPageRoute<void>(
                         builder: (_) => MeshCoreSettingsScreen(connection: c),
+                      ),
+                    ),
+                  ),
+                if (c is MeshtasticConnection &&
+                    phase == SupervisorPhase.connected)
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.tune),
+                    label: Text(l.settings),
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => MeshtasticSettingsScreen(connection: c),
+                      ),
+                    ),
+                  ),
+                if (c is MeshtasticConnection && radio != null)
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.battery_charging_full),
+                    label: Text(l.telemetryButton),
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => TelemetryScreen(
+                          store: c.store,
+                          radioId: radio.id,
+                          node: radio.self,
+                          name: radio.name,
+                        ),
                       ),
                     ),
                   ),

@@ -30,7 +30,7 @@ Priorities from the competitive analysis ([docs/competitive/](docs/competitive/)
 12. **Verified senders** (done): confirm a node's key by scanning its QR code (MeshCore and Meshtastic contact formats) or comparing fingerprints; direct messages proven by encryption from a verified key get a badge, a changed key is flagged, and posts under a name another node also uses are flagged. Channel posts can't be proven on either mesh, so they never get the badge.
 13. **Radio and node admin**, split in two because each half is large:
     - **13a. MeshCore** (in review): radio settings (name, power, frequency/bandwidth/SF/CR, position, auto-add, sharing position), adverts, restart, the radio's own command line (protocol 14), repeater and room server login, status and command line. Telemetry history with battery charge estimates comes later.
-    - **13b. Meshtastic**: radio and module settings, remote admin of other nodes, telemetry history.
+    - **13b. Meshtastic** (in review): your radio's names, role, LoRa (region, preset, slot, hops, power, MQTT), position and telemetry settings, saved as one batch with the session passkey and only what changed; the same screen for another node over the mesh (public-key admin; the node must list your key); restart; telemetry history (battery, voltage, channel and airtime load, temperature, humidity, pressure) kept 14 days for every Meshtastic node, with charts.
 14. **Unread counts, notifications, mute**, and regional presets for both protocols.
 
 ## Later
