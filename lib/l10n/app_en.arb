@@ -944,5 +944,55 @@
         "type": "String"
       }
     }
-  }
+  },
+  "mecpTitle": "Emergency message",
+  "mecpMayday": "MAYDAY",
+  "mecpUrgent": "URGENT",
+  "mecpSafety": "SAFETY",
+  "mecpRoutine": "ROUTINE",
+  "mecpDrillOf": "DRILL ({severity})",
+  "@mecpDrillOf": {
+    "placeholders": {
+      "severity": {
+        "type": "String"
+      }
+    },
+    "description": "An MECP practice message; severity is MAYDAY etc."
+  },
+  "mecpUnknownCode": "Unknown code {code}",
+  "@mecpUnknownCode": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "mecpPeople": "{count, plural, =1{1 person} other{{count} people}}",
+  "@mecpPeople": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mecpPosition": "Position: {position}",
+  "@mecpPosition": {
+    "placeholders": {
+      "position": {
+        "type": "String"
+      }
+    }
+  },
+  "mecpTime": "Time: {time}",
+  "@mecpTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "mecpIncludePosition": "Include my radio's position",
+  "mecpNote": "Details (optional)",
+  "mecpNoteHelp": "For example 2pax for two people. Others may not share your language.",
+  "mecpUse": "Put in message box"
 }

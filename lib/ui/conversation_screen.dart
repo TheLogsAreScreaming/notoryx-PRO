@@ -7,11 +7,13 @@ import '../app/app_controller.dart';
 import '../app/radio_connection.dart';
 import '../mesh/diagnostics.dart';
 import '../mesh/identity.dart';
+import '../mesh/mecp.dart';
 import '../mesh/model.dart';
 import '../radio/radio.dart';
 import '../store/mesh_store.dart';
 import 'common.dart';
 import 'export_sheet.dart';
+import 'mecp_widgets.dart';
 import 'message_path_card.dart';
 import 'mute_menu.dart';
 
@@ -336,7 +338,10 @@ class MessageBubble extends StatelessWidget {
                     ],
                   ),
                 ),
-              Text(m.text),
+              if (MecpMessage.tryParse(m.text) case final mecp?)
+                MecpCard(mecp, raw: m.text)
+              else
+                Text(m.text),
               const SizedBox(height: 4),
               Row(
                 mainAxisSize: MainAxisSize.min,
@@ -411,6 +416,23 @@ class _ComposerState extends State<Composer> {
 
   int get _bytes => utf8.encode(_controller.text).length;
 
+  /// Builds an emergency message into the box; sending stays a separate
+  /// step, so a stray tap can't put out a MAYDAY.
+  Future<void> _emergency(RadioConnection c) async {
+    final radio = c.radio;
+    var position = radio?.position;
+    if (radio != null && position == null) {
+      position = (await c.store.node(radio.id, radio.self))?.position;
+    }
+    if (!mounted) return;
+    final text = await showMecpComposer(
+      context,
+      maxBytes: c.maxTextBytes,
+      position: position,
+    );
+    if (text != null && mounted) _controller.text = text;
+  }
+
   Future<void> _send() async {
     final c = widget.connection;
     final text = _controller.text.trim();
@@ -449,6 +471,11 @@ class _ComposerState extends State<Composer> {
             final tooLong = used > max;
             return Row(
               children: [
+                IconButton(
+                  tooltip: l.mecpTitle,
+                  icon: const Icon(Icons.sos),
+                  onPressed: () => _emergency(c),
+                ),
                 Expanded(
                   child: TextField(
                     controller: _controller,
