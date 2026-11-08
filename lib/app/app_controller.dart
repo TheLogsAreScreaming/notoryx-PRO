@@ -1,3 +1,4 @@
+import 'mqtt_feed.dart';
 import 'package:flutter/foundation.dart';
 
 import '../mesh/model.dart';
@@ -34,6 +35,9 @@ class AppController extends ChangeNotifier {
   /// Delivery retry settings for every connection.
   final RetryPolicy retries;
   final Map<String, RadioConnection> _connections = {};
+
+  /// Read-only MQTT feeds.
+  late final MqttFeeds feeds = MqttFeeds(store);
 
   /// Most radios connected at once (Bluetooth adapters and phones cope
   /// badly with more).
@@ -92,6 +96,7 @@ class AppController extends ChangeNotifier {
   /// Disconnects every radio and waits until they have finished.
   Future<void> shutdown() async {
     await alerts?.dispose();
+    await feeds.stopAll();
     for (final c in [..._connections.values]) {
       await disconnect(c);
     }

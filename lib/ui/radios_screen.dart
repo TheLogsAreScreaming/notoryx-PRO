@@ -7,6 +7,7 @@ import '../meshcore/firmware.dart';
 import '../meshtastic/firmware.dart';
 import '../radio/radio.dart';
 import 'admin_screens.dart';
+import 'feeds_screen.dart';
 import 'common.dart';
 import 'connection_log_sheet.dart';
 import 'diagnostics_screen.dart';
@@ -79,6 +80,13 @@ class RadiosScreen extends StatelessWidget {
             icon: const Icon(Icons.receipt_long_outlined),
             label: Text(l.logButton),
             onPressed: () => showConnectionLog(context, app.log),
+          ),
+          TextButton.icon(
+            icon: const Icon(Icons.rss_feed),
+            label: Text(l.feedsTitle),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => FeedsScreen(app: app)),
+            ),
           ),
           if (app.links.usb.supported) ...[
             const SizedBox(height: 24),
