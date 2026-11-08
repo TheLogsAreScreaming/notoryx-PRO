@@ -476,6 +476,32 @@ class MeshtasticSession {
     _log?.add(_source, 'saved channel ${channel.index} on ${nodeIdOf(to)}');
   }
 
+  /// Fixes node [to] at a position.
+  Future<void> setFixedPosition(
+    int to,
+    double latitude,
+    double longitude,
+    int? altitude, {
+    Duration timeout = const Duration(seconds: 30),
+  }) async {
+    final key = await _passkeyFor(to, timeout);
+    await _sendAdmin(
+      to,
+      AdminMessages.setFixedPosition(latitude, longitude, altitude, key),
+    );
+    _log?.add(_source, 'set fixed position on ${nodeIdOf(to)}');
+  }
+
+  /// Clears node [to]'s fixed position.
+  Future<void> removeFixedPosition(
+    int to, {
+    Duration timeout = const Duration(seconds: 30),
+  }) async {
+    final key = await _passkeyFor(to, timeout);
+    await _sendAdmin(to, AdminMessages.removeFixedPosition(key));
+    _log?.add(_source, 'removed fixed position on ${nodeIdOf(to)}');
+  }
+
   /// Restarts node [to].
   Future<void> rebootNode(
     int to, {

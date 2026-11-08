@@ -369,6 +369,52 @@ void main() {
     await closeAll(tester, controller, store);
   });
 
+  testWidgets('fixed position: set, reload, remove', (tester) async {
+    tester.view.physicalSize = const Size(1000, 4000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final store = MeshStore.memory();
+    final bench = Bench();
+    final controller = AppController(
+      store: store,
+      links: FakeLinks(bench.link),
+    );
+    final c =
+        (await tester.runAsync(() => controller.connect(target)))!
+            as MeshtasticConnection;
+    await tester.pumpWidget(app(MeshtasticSettingsScreen(connection: c)));
+    await settle(tester);
+    expect(find.byKey(const Key('mt-fixed-remove')), findsNothing);
+
+    await tester.tap(find.byKey(const Key('mt-fixed-set')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const Key('fixed-latitude')), '95');
+    await tester.enterText(find.byKey(const Key('fixed-longitude')), '-5.02');
+    await tester.tap(find.text('Save to radio').last);
+    await tester.pump();
+    expect(find.text('Not a valid position'), findsOneWidget);
+
+    await tester.enterText(find.byKey(const Key('fixed-latitude')), '56.68');
+    await tester.enterText(find.byKey(const Key('fixed-altitude')), '-12');
+    await tester.tap(find.text('Save to radio').last);
+    await settle(tester, rounds: 40);
+
+    final sent = bench.local.received
+        .where((r) => r.$1 == AdminField.setFixedPosition)
+        .single;
+    final fields = {for (final f in readFields(sent.$2)) f.number: f};
+    expect(fields[1]!.asSfixed32, 566800000);
+    expect(fields[2]!.asSfixed32, -50200000);
+    expect(fields[3]!.asInt.toSigned(32), -12);
+    expect(fields[5]!.asInt, 1);
+    expect(sent.$3, bench.local.passkey);
+
+    await tester.tap(find.byKey(const Key('mt-fixed-remove')));
+    await settle(tester, rounds: 40);
+    expect(bench.local.fields, contains(AdminField.removeFixedPosition));
+    await closeAll(tester, controller, store);
+  });
+
   testWidgets('remote admin explains a silent node and offers the key', (
     tester,
   ) async {

@@ -8,6 +8,7 @@ import '../app/radio_connection.dart';
 import '../mesh/mesh.dart';
 import '../meshtastic/admin.dart';
 import 'common.dart';
+import 'fixed_position_dialog.dart';
 import 'meshtastic_modules_screen.dart';
 import 'preset_sheet.dart';
 
@@ -148,6 +149,51 @@ class _MeshtasticSettingsScreenState extends State<MeshtasticSettingsScreen> {
       if (mounted) _say(l.settingsSaveFailed(RadioConnection.describeError(e)));
     } finally {
       if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  Future<void> _setFixed() async {
+    final l = context.l10n;
+    final known = widget.node?.position ?? widget.connection.radio?.position;
+    final point = await showFixedPositionDialog(context, initial: known);
+    if (point == null || !mounted) return;
+    await _changeFixed(
+      () => widget.connection.setFixedPosition(point, node: _target),
+      fixed: true,
+      done: l.mtFixedSaved,
+    );
+  }
+
+  Future<void> _removeFixed() => _changeFixed(
+    () => widget.connection.removeFixedPosition(node: _target),
+    fixed: false,
+    done: context.l10n.mtFixedRemoved,
+  );
+
+  /// Runs [change], which the node applies at once, and keeps the position
+  /// section in step so a later save can't undo it.
+  Future<void> _changeFixed(
+    Future<void> Function() change, {
+    required bool fixed,
+    required String done,
+  }) async {
+    final l = context.l10n;
+    setState(() => _saving = true);
+    try {
+      await change();
+      if (!mounted) return;
+      _say(done);
+      setState(() => _saving = false);
+      if (_settings!.hasChanges) {
+        _set(SectionKind.position, PositionField.fixedPosition, fixed);
+      } else {
+        await _load();
+      }
+    } on Object catch (e) {
+      if (mounted) {
+        setState(() => _saving = false);
+        _say(l.settingsSaveFailed(RadioConnection.describeError(e)));
+      }
     }
   }
 
@@ -510,6 +556,22 @@ class _MeshtasticSettingsScreenState extends State<MeshtasticSettingsScreen> {
               padding: const EdgeInsets.only(top: 8),
               child: Text(l.mtFixedPosition),
             ),
+          Wrap(
+            spacing: 8,
+            children: [
+              TextButton(
+                key: const Key('mt-fixed-set'),
+                onPressed: _saving ? null : _setFixed,
+                child: Text(l.mtFixedSet),
+              ),
+              if (position.flag(PositionField.fixedPosition))
+                TextButton(
+                  key: const Key('mt-fixed-remove'),
+                  onPressed: _saving ? null : _removeFixed,
+                  child: Text(l.mtFixedRemove),
+                ),
+            ],
+          ),
           const SizedBox(height: 16),
           Text(l.mtTelemetry, style: heading),
           _interval(
