@@ -9,11 +9,22 @@ import 'package:notoryx_pro/app/meshcore_settings.dart';
 import 'package:notoryx_pro/mesh/model.dart';
 import 'package:notoryx_pro/store/mesh_store.dart';
 import 'package:notoryx_pro/ui/app.dart';
+import 'package:notoryx_pro/app/radio_target.dart';
+import 'package:notoryx_pro/radio/radio.dart';
+
+import '../support/scripted_meshtastic.dart';
 
 final mt = RadioId.meshtastic(0xa1b2c3d4);
 final relay = NodeKey.meshtastic(0x0badcafe);
 final dm = DirectConversation(mt, relay);
 final channel = ChannelConversation(mt, 0);
+
+class FakeLinks extends LinkFactory {
+  FakeLinks(this.link);
+  final RadioLink link;
+  @override
+  RadioLink create(RadioTarget target, {ConnectionLog? log}) => link;
+}
 
 /// Records notifications instead of showing them.
 class FakeNotifier implements Notifier {
@@ -42,6 +53,15 @@ class FakeNotifier implements Notifier {
   Stream<String> get taps => _taps.stream;
 
   void tap(String payload) => _taps.add(payload);
+
+  final kept = <(bool, String)>[];
+
+  @override
+  Future<void> keepAlive(
+    bool on, {
+    String title = '',
+    String body = '',
+  }) async => kept.add((on, body));
 }
 
 Message received(
@@ -331,6 +351,43 @@ void main() {
       await close(tester, app);
     });
 
+    testWidgets('stays connected in the background while radios are', (
+      tester,
+    ) async {
+      final notifier = FakeNotifier();
+      final app = (await tester.runAsync(
+        () async => AppController(
+          store: MeshStore.memory(),
+          notifier: notifier,
+          links: FakeLinks(ScriptedMeshtasticLink()),
+        ),
+      ))!;
+      await tester.pumpWidget(NotoryxProApp(app: app));
+      await settle(tester);
+      expect(notifier.kept, isEmpty, reason: 'nothing connected');
+      await tester.runAsync(
+        () => app.connect(
+          const TcpTarget(host: 'n', protocol: RadioProtocol.meshtastic),
+        ),
+      );
+      await settle(tester);
+      expect(notifier.kept.last, (true, 'Connected to 1 radio'));
+      await tester.runAsync(
+        () => app.store.setPreference(AlertPrefs.background, 'off'),
+      );
+      await settle(tester);
+      expect(notifier.kept.last.$1, isFalse, reason: 'turned off');
+      await tester.runAsync(
+        () => app.store.setPreference(AlertPrefs.background, 'on'),
+      );
+      await settle(tester);
+      expect(notifier.kept.last.$1, isTrue);
+      await tester.runAsync(() => app.disconnect(app.connections.single));
+      await settle(tester);
+      expect(notifier.kept.last.$1, isFalse, reason: 'no radios left');
+      await close(tester, app);
+    });
+
     testWidgets('notification settings switch a kind off', (tester) async {
       final app = (await tester.runAsync(
         () async =>
@@ -348,6 +405,8 @@ void main() {
         await tester.runAsync(() => app.store.preference(AlertPrefs.channels)),
         'off',
       );
+      await tester.ensureVisible(find.text('Allow notifications'));
+      await tester.pump();
       await tester.tap(find.text('Allow notifications'));
       await tester.pump();
       expect(find.text('Notifications are on.'), findsOneWidget);

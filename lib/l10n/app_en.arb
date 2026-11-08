@@ -773,7 +773,7 @@
   "notifyTitle": "Notifications",
   "notifyDirect": "Direct messages",
   "notifyChannels": "Channel messages",
-  "notifyHelp": "Muted conversations never notify. Notifications arrive while the app is running and connected to a radio.",
+  "notifyHelp": "Muted conversations never notify. With \"Stay connected in the background\" on, Android keeps your radios connected and shows a small ongoing notification; iPhone keeps Bluetooth radios connected.",
   "notifyAllow": "Allow notifications",
   "notifyAllowed": "Notifications are on.",
   "notifyDenied": "Notifications are off. You can turn them on in the system settings.",
@@ -903,5 +903,15 @@
       }
     }
   },
-  "channelsShareHelp": "Anyone with this code can read and post in the channel. The official apps can scan it too."
+  "channelsShareHelp": "Anyone with this code can read and post in the channel. The official apps can scan it too.",
+  "keepAliveTitle": "NOTORYX PRO is listening",
+  "keepAliveBody": "{count, plural, =1{Connected to 1 radio} other{Connected to {count} radios}}",
+  "@keepAliveBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notifyBackground": "Stay connected in the background"
 }

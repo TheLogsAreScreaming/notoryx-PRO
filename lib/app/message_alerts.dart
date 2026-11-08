@@ -28,6 +28,11 @@ abstract interface class Notifier {
 
   /// Payloads of notifications the person tapped.
   Stream<String> get taps;
+
+  /// Keeps the app (and its radio connections) running in the background,
+  /// showing an ongoing notification with [title] and [body] where the
+  /// platform needs one; [on] false lets it stop.
+  Future<void> keepAlive(bool on, {String title = '', String body = ''});
 }
 
 /// [Notifier] on Android, iPhone and Mac.
@@ -129,6 +134,47 @@ class SystemNotifier implements Notifier {
 
   @override
   Stream<String> get taps => _taps.stream;
+
+  static const _keepAliveId = 1;
+  bool _alive = false;
+
+  @override
+  Future<void> keepAlive(bool on, {String title = '', String body = ''}) async {
+    if (!_ready || defaultTargetPlatform != TargetPlatform.android) return;
+    final android = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+    if (android == null) return;
+    try {
+      if (on) {
+        await android.startForegroundService(
+          id: _keepAliveId,
+          title: title,
+          body: body,
+          notificationDetails: const AndroidNotificationDetails(
+            'connection',
+            'Radio connection',
+            channelDescription: 'Shown while radios stay connected',
+            importance: Importance.low,
+            priority: Priority.low,
+            ongoing: true,
+            showWhen: false,
+          ),
+          foregroundServiceTypes: {
+            AndroidServiceForegroundType.foregroundServiceTypeConnectedDevice,
+          },
+        );
+        _alive = true;
+      } else if (_alive) {
+        await android.stopForegroundService();
+        _alive = false;
+      }
+    } on Object catch (e) {
+      // Missing permission or an older system: carry on without it.
+      debugPrint('keep-alive: $e');
+    }
+  }
 }
 
 /// Which messages notify.
@@ -136,6 +182,9 @@ abstract final class AlertPrefs {
   /// Preference names in the store.
   static const direct = 'notify.direct';
   static const channels = 'notify.channels';
+
+  /// Keep radios connected in the background (Android); on unless off.
+  static const background = 'notify.background';
 }
 
 /// Turns newly received messages into notifications: one per
