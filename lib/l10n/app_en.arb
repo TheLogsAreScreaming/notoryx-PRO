@@ -835,5 +835,6 @@
         "type": "String"
       }
     }
-  }
+  },
+  "nodeAppOnly": "Kept by the app, not on the radio (added when you message them)"
 }

@@ -181,6 +181,19 @@ class Preferences extends Table {
   Set<Column<Object>> get primaryKey => {name};
 }
 
+/// Which MeshCore nodes are in each radio's own contact list (the app keeps
+/// more nodes than a radio can hold). Schema v7.
+@DataClassName('RadioContactRow')
+class RadioContacts extends Table {
+  TextColumn get radioId => text()();
+
+  /// `NodeKey.toString()`.
+  TextColumn get nodeKey => text()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {radioId, nodeKey};
+}
+
 /// How delivery states are stored.
 enum DeliveryCode {
   pending,
@@ -206,13 +219,14 @@ enum DeliveryCode {
     TelemetryReadings,
     ConversationStates,
     Preferences,
+    RadioContacts,
   ],
 )
 class MeshDatabase extends _$MeshDatabase {
   MeshDatabase(super.e);
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -246,6 +260,10 @@ class MeshDatabase extends _$MeshDatabase {
           'INSERT INTO conversation_states (conversation, last_read_id) '
           'SELECT conversation, MAX(id) FROM messages GROUP BY conversation',
         );
+      },
+      from6To7: (m, schema) async {
+        // v7: which nodes are on each MeshCore radio; filled on connect.
+        await m.createTable(schema.radioContacts);
       },
     ),
   );

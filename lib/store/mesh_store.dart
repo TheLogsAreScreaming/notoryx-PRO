@@ -365,6 +365,66 @@ class MeshStore {
     }
   }
 
+  // MeshCore radio contacts
+
+  /// Records that [radio]'s contact list is exactly [keys].
+  Future<void> replaceRadioContacts(RadioId radio, Iterable<NodeKey> keys) =>
+      db.transaction(() async {
+        await (db.delete(
+          db.radioContacts,
+        )..where((c) => c.radioId.equals(radio.toString()))).go();
+        await db.batch(
+          (b) => b.insertAll(db.radioContacts, [
+            for (final k in keys)
+              RadioContactsCompanion.insert(
+                radioId: radio.toString(),
+                nodeKey: k.toString(),
+              ),
+          ], mode: InsertMode.insertOrIgnore),
+        );
+      });
+
+  /// Records that [key] was added to or removed from [radio]'s contacts.
+  Future<void> setOnRadio(RadioId radio, NodeKey key, bool onRadio) async {
+    if (onRadio) {
+      await db
+          .into(db.radioContacts)
+          .insert(
+            RadioContactsCompanion.insert(
+              radioId: radio.toString(),
+              nodeKey: key.toString(),
+            ),
+            mode: InsertMode.insertOrIgnore,
+          );
+    } else {
+      await (db.delete(db.radioContacts)..where(
+            (c) =>
+                c.radioId.equals(radio.toString()) &
+                c.nodeKey.equals(key.toString()),
+          ))
+          .go();
+    }
+  }
+
+  SimpleSelectStatement<$RadioContactsTable, RadioContactRow> _contactsQuery(
+    RadioId radio,
+  ) =>
+      db.select(db.radioContacts)
+        ..where((c) => c.radioId.equals(radio.toString()));
+
+  /// The nodes in [radio]'s own contact list.
+  Future<Set<NodeKey>> radioContacts(RadioId radio) async => {
+    for (final r in await _contactsQuery(radio).get())
+      ?NodeKey.tryParse(r.nodeKey),
+  };
+
+  /// [radioContacts] for every radio, as they change, as
+  /// `radioId|nodeKey` strings.
+  Stream<Set<String>> watchAllRadioContacts() => db
+      .select(db.radioContacts)
+      .watch()
+      .map((rows) => {for (final r in rows) '${r.radioId}|${r.nodeKey}'});
+
   // Read state and mutes
 
   /// Unread received messages per conversation key (reactions don't count).

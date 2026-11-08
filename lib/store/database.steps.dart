@@ -1536,12 +1536,220 @@ i1.GeneratedColumn<String> _column_59(String aliasedName) =>
       type: i1.DriftSqlType.string,
       $customConstraints: 'NOT NULL',
     );
+
+final class Schema7 extends i0.VersionedSchema {
+  Schema7({required super.database}) : super(version: 7);
+  @override
+  late final List<i1.DatabaseSchemaEntity> entities = [
+    radios,
+    nodes,
+    channels,
+    messages,
+    verifiedKeys,
+    telemetryReadings,
+    conversationStates,
+    preferences,
+    radioContacts,
+    messagesByConversation,
+    messagesByNativeId,
+    telemetryByNode,
+  ];
+  late final Shape0 radios = Shape0(
+    source: i0.VersionedTable(
+      entityName: 'radios',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(id)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_8,
+        _column_9,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape5 nodes = Shape5(
+    source: i0.VersionedTable(
+      entityName: 'nodes',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(radio_id, node_key)'],
+      columns: [
+        _column_10,
+        _column_11,
+        _column_2,
+        _column_12,
+        _column_13,
+        _column_7,
+        _column_8,
+        _column_14,
+        _column_15,
+        _column_16,
+        _column_17,
+        _column_18,
+        _column_19,
+        _column_20,
+        _column_21,
+        _column_22,
+        _column_23,
+        _column_42,
+        _column_43,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape2 channels = Shape2(
+    source: i0.VersionedTable(
+      entityName: 'channels',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(radio_id, slot)'],
+      columns: [_column_10, _column_24, _column_2, _column_13, _column_25],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape6 messages = Shape6(
+    source: i0.VersionedTable(
+      entityName: 'messages',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_26,
+        _column_10,
+        _column_27,
+        _column_28,
+        _column_29,
+        _column_30,
+        _column_31,
+        _column_32,
+        _column_33,
+        _column_34,
+        _column_35,
+        _column_36,
+        _column_16,
+        _column_17,
+        _column_18,
+        _column_19,
+        _column_20,
+        _column_37,
+        _column_38,
+        _column_39,
+        _column_40,
+        _column_44,
+        _column_41,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape7 verifiedKeys = Shape7(
+    source: i0.VersionedTable(
+      entityName: 'verified_keys',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(node_key)'],
+      columns: [_column_11, _column_45, _column_46, _column_47],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape8 telemetryReadings = Shape8(
+    source: i0.VersionedTable(
+      entityName: 'telemetry_readings',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_26,
+        _column_10,
+        _column_11,
+        _column_48,
+        _column_49,
+        _column_50,
+        _column_51,
+        _column_52,
+        _column_53,
+        _column_54,
+        _column_55,
+        _column_56,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape9 conversationStates = Shape9(
+    source: i0.VersionedTable(
+      entityName: 'conversation_states',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(conversation)'],
+      columns: [_column_27, _column_57, _column_58],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape10 preferences = Shape10(
+    source: i0.VersionedTable(
+      entityName: 'preferences',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(name)'],
+      columns: [_column_2, _column_59],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape11 radioContacts = Shape11(
+    source: i0.VersionedTable(
+      entityName: 'radio_contacts',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(radio_id, node_key)'],
+      columns: [_column_10, _column_11],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  final i1.Index messagesByConversation = i1.Index(
+    'messages_by_conversation',
+    'CREATE INDEX messages_by_conversation ON messages (conversation, id)',
+  );
+  final i1.Index messagesByNativeId = i1.Index(
+    'messages_by_native_id',
+    'CREATE INDEX messages_by_native_id ON messages (radio_id, native_id)',
+  );
+  final i1.Index telemetryByNode = i1.Index(
+    'telemetry_by_node',
+    'CREATE INDEX telemetry_by_node ON telemetry_readings (radio_id, node_key, time)',
+  );
+}
+
+class Shape11 extends i0.VersionedTable {
+  Shape11({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<String> get radioId =>
+      columnsByName['radio_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get nodeKey =>
+      columnsByName['node_key']! as i1.GeneratedColumn<String>;
+}
+
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
   required Future<void> Function(i1.Migrator m, Schema4 schema) from3To4,
   required Future<void> Function(i1.Migrator m, Schema5 schema) from4To5,
   required Future<void> Function(i1.Migrator m, Schema6 schema) from5To6,
+  required Future<void> Function(i1.Migrator m, Schema7 schema) from6To7,
 }) {
   return (currentVersion, database) async {
     switch (currentVersion) {
@@ -1570,6 +1778,11 @@ i0.MigrationStepWithVersion migrationSteps({
         final migrator = i1.Migrator(database, schema);
         await from5To6(migrator, schema);
         return 6;
+      case 6:
+        final schema = Schema7(database: database);
+        final migrator = i1.Migrator(database, schema);
+        await from6To7(migrator, schema);
+        return 7;
       default:
         throw ArgumentError.value('Unknown migration from $currentVersion');
     }
@@ -1582,6 +1795,7 @@ i1.OnUpgrade stepByStep({
   required Future<void> Function(i1.Migrator m, Schema4 schema) from3To4,
   required Future<void> Function(i1.Migrator m, Schema5 schema) from4To5,
   required Future<void> Function(i1.Migrator m, Schema6 schema) from5To6,
+  required Future<void> Function(i1.Migrator m, Schema7 schema) from6To7,
 }) => i0.VersionedSchema.stepByStepHelper(
   step: migrationSteps(
     from1To2: from1To2,
@@ -1589,5 +1803,6 @@ i1.OnUpgrade stepByStep({
     from3To4: from3To4,
     from4To5: from4To5,
     from5To6: from5To6,
+    from6To7: from6To7,
   ),
 );

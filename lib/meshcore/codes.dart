@@ -11,6 +11,7 @@ abstract final class Cmd {
   static const setDeviceTime = 6;
   static const sendSelfAdvert = 7;
   static const setAdvertName = 8;
+  static const addUpdateContact = 9;
   static const syncNextMessage = 10;
   static const setRadioParams = 11;
   static const setTxPower = 12;

@@ -260,6 +260,40 @@ abstract final class MeshCoreCommands {
     );
   }
 
+  /// `ADD_UPDATE_CONTACT`: puts a node in the radio's contact list, laid
+  /// out like a contact record. [pathLength] 0xFF means no known route, so
+  /// the radio floods until it learns one.
+  static Uint8List addUpdateContact({
+    required List<int> publicKey,
+    required int type,
+    required String name,
+    int flags = 0,
+    int pathLength = 0xff,
+    List<int> path = const [],
+    int lastAdvert = 0,
+    double? latitude,
+    double? longitude,
+  }) {
+    if (path.length > MeshCoreLimits.pathField) {
+      throw ArgumentError.value(path.length, 'path', 'longer than 64 bytes');
+    }
+    final w = ByteWriter()
+      ..u8(Cmd.addUpdateContact)
+      ..bytes(_key(publicKey))
+      ..u8(type)
+      ..u8(flags)
+      ..u8(pathLength)
+      ..bytes([
+        ...path,
+        ...List.filled(MeshCoreLimits.pathField - path.length, 0),
+      ])
+      ..fixedString(_fit(name, 31), 32)
+      ..u32(lastAdvert)
+      ..i32(((latitude ?? 0) * 1e6).round())
+      ..i32(((longitude ?? 0) * 1e6).round());
+    return _checked(w);
+  }
+
   /// `REMOVE_CONTACT` by full public key.
   static Uint8List removeContact(List<int> publicKey) =>
       Uint8List.fromList([Cmd.removeContact, ..._key(publicKey)]);
@@ -288,6 +322,15 @@ abstract final class MeshCoreCommands {
       );
     }
     return encoded;
+  }
+
+  /// [text] cut to at most [bytes] bytes of UTF-8, on a character boundary.
+  static String _fit(String text, int bytes) {
+    var out = text;
+    while (utf8.encode(out).length > bytes) {
+      out = String.fromCharCodes(out.runes.toList()..removeLast());
+    }
+    return out;
   }
 
   static Uint8List _checked(ByteWriter w) {
