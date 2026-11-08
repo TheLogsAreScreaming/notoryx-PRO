@@ -69,7 +69,8 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
   Node get node => widget.node;
 
-  ContactCard? get _ownCard => widget.app.connectionFor(node.protocol)?.ownCard;
+  ContactCard? get _ownCard =>
+      widget.app.connectionForRadio(node.radioId)?.ownCard;
 
   void _say(String text) =>
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
@@ -90,29 +91,12 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
   Future<void> _paste() async {
     final l = context.l10n;
-    final controller = TextEditingController();
-    final text = await showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l.verifyPaste),
-        content: TextField(
-          controller: controller,
-          decoration: InputDecoration(hintText: l.verifyPasteHint),
-          autofocus: true,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l.radiosCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, controller.text),
-            child: Text(l.verifyConfirm),
-          ),
-        ],
-      ),
+    final text = await showTextPrompt(
+      context,
+      title: l.verifyPaste,
+      confirm: l.verifyConfirm,
+      hint: l.verifyPasteHint,
     );
-    controller.dispose();
     await _check(text);
   }
 

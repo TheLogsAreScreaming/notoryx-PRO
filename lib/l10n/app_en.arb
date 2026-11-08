@@ -753,6 +753,157 @@
       }
     }
   },
+  "muteTitle": "Mute",
+  "muteUnmute": "Unmute",
+  "muteHour": "Mute for 1 hour",
+  "muteEightHours": "Mute for 8 hours",
+  "muteWeek": "Mute for a week",
+  "muteAlways": "Mute until I unmute",
+  "mutedLabel": "Muted",
+  "markRead": "Mark as read",
+  "markAllRead": "Mark all as read",
+  "unreadCount": "{count, plural, =1{1 unread message} other{{count} unread messages}}",
+  "@unreadCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notifyTitle": "Notifications",
+  "notifyDirect": "Direct messages",
+  "notifyChannels": "Channel messages",
+  "notifyHelp": "Muted conversations never notify. Notifications arrive while the app is running and connected to a radio.",
+  "notifyAllow": "Allow notifications",
+  "notifyAllowed": "Notifications are on.",
+  "notifyDenied": "Notifications are off. You can turn them on in the system settings.",
+  "presetsButton": "Choose settings for my area",
+  "presetsIntro": "Every radio in a mesh must use the same settings. Pick your area, then check with your local group before saving.",
+  "presetsNear": "Meshes near your radio",
+  "presetsSuggested": "Suggested by the MeshCore project",
+  "presetsLocal": "Local meshes",
+  "presetsLocalHelp": "Some of these are worked out from the settings people report on the public MeshCore map and haven't been confirmed on air.",
+  "presetValues": "{freq} MHz · BW {bw} · SF{sf} · CR{cr}",
+  "@presetValues": {
+    "placeholders": {
+      "freq": {
+        "type": "String"
+      },
+      "bw": {
+        "type": "String"
+      },
+      "sf": {
+        "type": "int"
+      },
+      "cr": {
+        "type": "int"
+      }
+    }
+  },
+  "presetRetired": "{name} (replaced)",
+  "@presetRetired": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "presetApplied": "{name} filled in. Save to send it to the radio.",
+  "@presetApplied": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "presetsMeshtasticIntro": "The standard setup for a region: Long Fast with the slot chosen automatically, which is what most Meshtastic meshes use.",
+  "presetsMeshtasticButton": "Standard setup for a region",
+  "regionUnsetWarning": "This radio has no region set, so it won't transmit. Open Settings to choose one.",
+  "radiosAddAnother": "You can add more radios, from either mesh.",
+  "radiosFull": "Up to {max} radios at once. Disconnect one to add another.",
+  "@radiosFull": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "inboxVia": "via {radio}",
+  "@inboxVia": {
+    "placeholders": {
+      "radio": {
+        "type": "String"
+      }
+    }
+  },
+  "nodeAppOnly": "Kept by the app, not on the radio (added when you message them)",
+  "channelsButton": "Channels",
+  "channelsTitle": "Channels: {radio}",
+  "@channelsTitle": {
+    "placeholders": {
+      "radio": {
+        "type": "String"
+      }
+    }
+  },
+  "channelsPrimary": "Primary",
+  "channelsKindPublic": "Open to everyone",
+  "channelsKindHashtag": "Hashtag: anyone who knows the name can join",
+  "channelsKindPrivate": "Private: only people you share it with",
+  "channelsShare": "Share",
+  "channelsLeave": "Leave",
+  "channelsLeaveConfirm": "Leave {name}? Its messages stay in the app.",
+  "@channelsLeaveConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channelsNewPrivate": "New private channel",
+  "channelsHashtag": "Join a hashtag channel",
+  "channelsHashtagHelp": "For example #hiking. Its key comes from its name.",
+  "channelsScan": "Join by scanning a code",
+  "channelsPaste": "Join from a link",
+  "channelsPasteHint": "meshcore://channel/… or meshtastic.org/e/#…",
+  "channelsName": "Channel name",
+  "channelsNameInvalid": "1 to {max} bytes",
+  "@channelsNameInvalid": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "channelsAdd": "Add",
+  "channelsJoined": "Joined {name}",
+  "@channelsJoined": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channelsFull": "Every channel slot on this radio is in use. Leave one first.",
+  "channelsWrongMesh": "That channel is for the other mesh.",
+  "channelsNotALink": "That isn't a channel link.",
+  "channelsLoadFailed": "The radio didn't list its channels: {reason}",
+  "@channelsLoadFailed": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "channelsShareTitle": "Join {name}",
+  "@channelsShareTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channelsShareHelp": "Anyone with this code can read and post in the channel. The official apps can scan it too.",
   "logButton": "Connection log",
   "logTitle": "Connection log",
   "logEmpty": "Nothing yet. Try connecting a radio."

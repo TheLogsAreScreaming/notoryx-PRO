@@ -29,16 +29,16 @@ Priorities from the competitive analysis ([docs/competitive/](docs/competitive/)
 11. **Diagnostics** (done): live packet log for both meshes, noise floor / channel activity chart, trace route (MeshCore trace path, Meshtastic traceroute) with each hop's signal, line of sight with Fresnel zone and Earth bulge (no terrain data), and delivery hints explaining why a message may not have arrived (P1). Saving trace results comes later.
 12. **Verified senders** (done): confirm a node's key by scanning its QR code (MeshCore and Meshtastic contact formats) or comparing fingerprints; direct messages proven by encryption from a verified key get a badge, a changed key is flagged, and posts under a name another node also uses are flagged. Channel posts can't be proven on either mesh, so they never get the badge.
 13. **Radio and node admin**, split in two because each half is large:
-    - **13a. MeshCore** (in review): radio settings (name, power, frequency/bandwidth/SF/CR, position, auto-add, sharing position), adverts, restart, the radio's own command line (protocol 14), repeater and room server login, status and command line. Telemetry history with battery charge estimates comes later.
-    - **13b. Meshtastic** (in review): your radio's names, role, LoRa (region, preset, slot, hops, power, MQTT), position and telemetry settings, saved as one batch with the session passkey and only what changed; the same screen for another node over the mesh (public-key admin; the node must list your key); restart; telemetry history (battery, voltage, channel and airtime load, temperature, humidity, pressure) kept 14 days for every Meshtastic node, with charts.
-14. **Unread counts, notifications, mute**, and regional presets for both protocols.
+    - **13a. MeshCore** (done): radio settings (name, power, frequency/bandwidth/SF/CR, position, auto-add, sharing position), adverts, restart, the radio's own command line (protocol 14), repeater and room server login, status and command line. Telemetry history with battery charge estimates comes later.
+    - **13b. Meshtastic** (done): your radio's names, role, LoRa (region, preset, slot, hops, power, MQTT), position and telemetry settings, saved as one batch with the session passkey and only what changed; the same screen for another node over the mesh (public-key admin; the node must list your key); restart; telemetry history (battery, voltage, channel and airtime load, temperature, humidity, pressure) kept 14 days for every Meshtastic node, with charts.
+14. **Unread counts, notifications, mute**, and regional presets for both protocols (in review): unread counts per conversation and on the Inbox tab, mark read / mark all read, mute for an hour, 8 hours, a week or until unmuted, one notification per conversation (direct and channel messages can be turned off separately; tapping opens the conversation), MeshCore presets (27 suggested by the MeshCore project, 27 local meshes with nearby ones first), Meshtastic standard setup per region, and a warning when a Meshtastic radio has no region.
 
 ## Later
 
-- Two radios connected at once in the UI (the model allows it from step 6).
+- Two radios connected at once in the UI (in review): up to four radios from either mesh, including several on the same mesh; the inbox says which radio a conversation is on when one mesh has more than one.
 - Foreign-traffic detection: spot a MeshCore network from the MeshCore RX log while using Meshtastic, and the reverse where the radio reports raw packets.
 - Emergency messages compatible with MECP rather than a new format.
-- Contacts beyond the radio's limit (app keeps everyone heard, swaps favourites onto the radio).
+- Contacts beyond the radio's limit (in review): the app keeps every MeshCore node heard and tracks which are in the radio's own list; messaging, logging in to or checking a node that isn't puts it on the radio first, and a full radio drops the least recently heard non-favourite (people before repeaters and rooms).
 - MQTT observer feeds for both meshes.
 - Bridging a MeshCore channel and a Meshtastic channel when both radios are connected: opt-in, every bridged message labelled, rate-limited, and never direct messages unless the user turns that on for a contact.
 - Translations beyond English.

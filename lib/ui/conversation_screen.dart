@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import '../radio/radio.dart';
 import '../store/mesh_store.dart';
 import 'common.dart';
 import 'message_path_card.dart';
+import 'mute_menu.dart';
 
 /// One conversation: messages with how each arrived, and a composer.
 class ConversationScreen extends StatefulWidget {
@@ -41,6 +43,31 @@ class _ConversationScreenState extends State<ConversationScreen> {
   Conversation get conversation => widget.conversation;
   String get title => widget.title;
 
+  StreamSubscription<List<StoredMessage>>? _readSub;
+  int _readUpTo = -1;
+
+  @override
+  void initState() {
+    super.initState();
+    app.alerts?.open = conversation;
+    unawaited(app.alerts?.clear(conversation));
+    // Whatever arrives while the conversation is open counts as read.
+    _readSub = app.store.watchMessages(conversation, limit: 1).listen((m) {
+      final last = m.isEmpty ? 0 : m.last.id;
+      if (last > _readUpTo) {
+        _readUpTo = last;
+        unawaited(app.store.markRead(conversation));
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    unawaited(_readSub?.cancel());
+    if (app.alerts?.open == conversation) app.alerts?.open = null;
+    super.dispose();
+  }
+
   Future<void> _details(Message m) async {
     var hints = const <DeliveryHint>[];
     final c = conversation;
@@ -54,7 +81,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   /// The connected radio for this conversation, if any.
   RadioConnection? _ready() {
-    final c = app.connectionFor(conversation.radioId.protocol);
+    final c = app.connectionForRadio(conversation.radioId);
     final ready =
         c != null &&
         c.radio?.id == conversation.radioId &&
@@ -73,6 +100,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
             ProtocolBadge(conversation.radioId.protocol),
           ],
         ),
+        actions: [MuteButton(store: app.store, conversation: conversation)],
       ),
       body: Column(
         children: [

@@ -515,6 +515,33 @@ class MeshCoreSession {
   }
 
   /// Forgets the route to a contact so the next message floods.
+  /// Adds or updates a contact on the radio; see
+  /// [MeshCoreCommands.addUpdateContact].
+  Future<void> addContact({
+    required List<int> publicKey,
+    required int type,
+    required String name,
+    int flags = 0,
+    int lastAdvert = 0,
+    double? latitude,
+    double? longitude,
+  }) => _expect<OkFrame>(
+    MeshCoreCommands.addUpdateContact(
+      publicKey: publicKey,
+      type: type,
+      name: name,
+      flags: flags,
+      lastAdvert: lastAdvert,
+      latitude: latitude,
+      longitude: longitude,
+    ),
+  );
+
+  /// Removes a contact from the radio.
+  Future<void> removeContact(List<int> publicKey) =>
+      _expect<OkFrame>(MeshCoreCommands.removeContact(publicKey));
+
+  /// Sends `RESET_PATH` for a contact.
   Future<void> resetPath(List<int> publicKey) =>
       _expect<OkFrame>(MeshCoreCommands.resetPath(publicKey));
 

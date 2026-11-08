@@ -1,10 +1,12 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Radio;
 
 import '../app/app_controller.dart';
 import '../mesh/model.dart';
+import '../radio/radio_link.dart';
 import '../store/mesh_store.dart';
 import 'common.dart';
 import 'conversation_screen.dart';
+import 'mute_menu.dart';
 
 /// Every channel and direct conversation, on both meshes, in one list.
 class InboxScreen extends StatelessWidget {
@@ -22,11 +24,25 @@ class InboxScreen extends StatelessWidget {
             stream: store.watchConversations(),
             builder: (context, convSnap) => StreamBuilder<List<Node>>(
               stream: store.watchAllNodes(),
-              builder: (context, nodeSnap) => _InboxList(
-                app: app,
-                channels: channelSnap.data ?? const [],
-                summaries: convSnap.data ?? const [],
-                nodes: nodeSnap.data ?? const [],
+              builder: (context, nodeSnap) => StreamBuilder<Map<String, int>>(
+                stream: store.watchUnread(),
+                builder: (context, unreadSnap) =>
+                    StreamBuilder<Map<String, DateTime>>(
+                      stream: store.watchMutes(),
+                      builder: (context, muteSnap) =>
+                          StreamBuilder<List<Radio>>(
+                            stream: store.watchRadios(),
+                            builder: (context, radioSnap) => _InboxList(
+                              app: app,
+                              radios: radioSnap.data ?? const [],
+                              channels: channelSnap.data ?? const [],
+                              summaries: convSnap.data ?? const [],
+                              nodes: nodeSnap.data ?? const [],
+                              unread: unreadSnap.data ?? const {},
+                              mutes: muteSnap.data ?? const {},
+                            ),
+                          ),
+                    ),
               ),
             ),
           ),
@@ -40,12 +56,20 @@ class _InboxList extends StatelessWidget {
     required this.channels,
     required this.summaries,
     required this.nodes,
+    required this.unread,
+    required this.mutes,
+    this.radios = const [],
   });
+
+  /// Saved radios, to tell conversations apart when one mesh has several.
+  final List<Radio> radios;
 
   final AppController app;
   final List<Channel> channels;
   final List<ConversationSummary> summaries;
   final List<Node> nodes;
+  final Map<String, int> unread;
+  final Map<String, DateTime> mutes;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +82,14 @@ class _InboxList extends StatelessWidget {
     if (channels.isEmpty && direct.isEmpty) {
       return EmptyState(l.inboxEmpty);
     }
+    final now = DateTime.now();
+    final perMesh = <RadioProtocol, int>{};
+    for (final r in radios) {
+      perMesh[r.protocol] = (perMesh[r.protocol] ?? 0) + 1;
+    }
+    final radioNames = {for (final r in radios) r.id: r.name};
+    String? via(RadioId id) =>
+        (perMesh[id.protocol] ?? 0) > 1 ? radioNames[id] : null;
     final channelRows = [...channels]
       ..sort((a, b) {
         final ia = latest[ChannelConversation(a.radioId, a.index)]?.id ?? -1;
@@ -74,6 +106,12 @@ class _InboxList extends StatelessWidget {
             title: c.name,
             icon: c.isPrimary ? Icons.public : Icons.tag,
             last: latest[ChannelConversation(c.radioId, c.index)],
+            via: via(c.radioId),
+            unread: unread[ChannelConversation(c.radioId, c.index).key] ?? 0,
+            muted: mutedAt(
+              mutes[ChannelConversation(c.radioId, c.index).key],
+              now,
+            ),
           ),
         if (direct.isNotEmpty) _Header(l.inboxDirectHeader),
         for (final s in direct)
@@ -83,6 +121,9 @@ class _InboxList extends StatelessWidget {
             title: _directTitle(s.conversation as DirectConversation, names),
             icon: Icons.person_outline,
             last: s.last,
+            via: via(s.conversation.radioId),
+            unread: unread[s.conversation.key] ?? 0,
+            muted: mutedAt(mutes[s.conversation.key], now),
           ),
       ],
     );
@@ -110,7 +151,15 @@ class _ConversationTile extends StatelessWidget {
     required this.title,
     required this.icon,
     required this.last,
+    this.unread = 0,
+    this.muted = false,
+    this.via,
   });
+
+  /// Which radio, when one mesh has several.
+  final String? via;
+  final int unread;
+  final bool muted;
 
   final AppController app;
   final Conversation conversation;
@@ -127,17 +176,72 @@ class _ConversationTile extends StatelessWidget {
         : m.outgoing
         ? l.youPrefix(m.text)
         : (m.senderName != null ? '${m.senderName}: ${m.text}' : m.text);
+    final bold = unread > 0
+        ? const TextStyle(fontWeight: FontWeight.bold)
+        : null;
     return ListTile(
       leading: Icon(icon),
       title: Row(
         children: [
-          Flexible(child: Text(title, overflow: TextOverflow.ellipsis)),
+          Flexible(
+            child: Text(title, overflow: TextOverflow.ellipsis, style: bold),
+          ),
           const SizedBox(width: 8),
           ProtocolBadge(conversation.radioId.protocol),
+          if (via case final name?) ...[
+            const SizedBox(width: 4),
+            Flexible(
+              child: Text(
+                l.inboxVia(name),
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+          ],
+          if (muted) ...[
+            const SizedBox(width: 4),
+            Icon(
+              Icons.notifications_off_outlined,
+              size: 16,
+              semanticLabel: l.mutedLabel,
+            ),
+          ],
         ],
       ),
-      subtitle: Text(preview, maxLines: 1, overflow: TextOverflow.ellipsis),
-      trailing: m == null ? null : Text(ago(context, m.receivedAt)),
+      subtitle: Text(
+        preview,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: bold,
+      ),
+      trailing: m == null
+          ? null
+          : Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(ago(context, m.receivedAt)),
+                if (unread > 0)
+                  Semantics(
+                    label: l.unreadCount(unread),
+                    child: ExcludeSemantics(
+                      child: Badge(
+                        label: Text(unread > 99 ? '99+' : '$unread'),
+                        backgroundColor: muted
+                            ? Theme.of(context).colorScheme.outline
+                            : null,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+      onLongPress: () => showConversationOptions(
+        context,
+        store: app.store,
+        conversation: conversation,
+        title: title,
+        muted: muted,
+      ),
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute<void>(
           builder: (_) => ConversationScreen(

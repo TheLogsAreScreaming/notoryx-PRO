@@ -126,11 +126,11 @@ abstract final class RadioFrames {
     return w.toBytes();
   }
 
-  static Uint8List deviceInfo() {
+  static Uint8List deviceInfo({int maxContacts = 350}) {
     final w = ByteWriter()
       ..u8(13)
       ..u8(14)
-      ..u8(175) // 350 contacts
+      ..u8(maxContacts ~/ 2)
       ..u8(40)
       ..u32(123456)
       ..fixedString('06 Oct 2026', 12)
@@ -148,6 +148,8 @@ abstract final class RadioFrames {
     int type = 1,
     int pathLength = 0x02,
     int lastModified = 1000,
+    int flags = 1,
+    int lastAdvert = 1762500000,
   }) {
     final path = Uint8List(64)
       ..[0] = 0xaa
@@ -156,11 +158,11 @@ abstract final class RadioFrames {
       ..u8(code)
       ..bytes(key(seed))
       ..u8(type)
-      ..u8(1)
+      ..u8(flags)
       ..u8(pathLength)
       ..bytes(path)
       ..fixedString(name, 32)
-      ..u32(1762500000)
+      ..u32(lastAdvert)
       ..i32(44500000)
       ..i32(-121000000)
       ..u32(lastModified);

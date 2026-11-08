@@ -11,6 +11,7 @@ import 'common.dart';
 import 'connection_log_sheet.dart';
 import 'diagnostics_screen.dart';
 import 'verify_screen.dart';
+import 'channels_screen.dart';
 import 'meshtastic_admin_screen.dart';
 import 'telemetry_screen.dart';
 
@@ -40,24 +41,38 @@ class RadiosScreen extends StatelessWidget {
             ),
           for (final c in app.connections)
             _ConnectionCard(app: app, connection: c),
+          if (app.connections.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                app.canAddRadio
+                    ? l.radiosAddAnother
+                    : l.radiosFull(AppController.maxRadios),
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
           const SizedBox(height: 16),
           FilledButton.icon(
             icon: const Icon(Icons.bluetooth_searching),
             label: Text(l.radiosFindBluetooth),
-            onPressed: () => showModalBottomSheet<void>(
-              context: context,
-              isScrollControlled: true,
-              builder: (_) => BluetoothScanSheet(app: app),
-            ),
+            onPressed: !app.canAddRadio
+                ? null
+                : () => showModalBottomSheet<void>(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (_) => BluetoothScanSheet(app: app),
+                  ),
           ),
           const SizedBox(height: 8),
           OutlinedButton.icon(
             icon: const Icon(Icons.wifi),
             label: Text(l.radiosAddWifi),
-            onPressed: () => showDialog<void>(
-              context: context,
-              builder: (_) => WifiRadioDialog(app: app),
-            ),
+            onPressed: !app.canAddRadio
+                ? null
+                : () => showDialog<void>(
+                    context: context,
+                    builder: (_) => WifiRadioDialog(app: app),
+                  ),
           ),
           const SizedBox(height: 8),
           TextButton.icon(
@@ -132,6 +147,16 @@ class _ConnectionCard extends StatelessWidget {
             Text(statusText(context, c)),
             if (radio != null && radio.firmware.isNotEmpty)
               Text(l.radioFirmware(radio.firmware)),
+            if (c is MeshtasticConnection &&
+                c.regionUnset &&
+                phase == SupervisorPhase.connected)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  l.regionUnsetWarning,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+              ),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
@@ -174,6 +199,16 @@ class _ConnectionCard extends StatelessWidget {
                       ),
                     ),
                   ),
+                if (phase == SupervisorPhase.connected && radio != null)
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.tag),
+                    label: Text(l.channelsButton),
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => ChannelsScreen(connection: c),
+                      ),
+                    ),
+                  ),
                 if (c.ownCard case final card?)
                   OutlinedButton.icon(
                     icon: const Icon(Icons.qr_code),
@@ -196,7 +231,7 @@ class _ConnectionCard extends StatelessWidget {
                     child: Text(l.radiosTryNow),
                   ),
                 TextButton(
-                  onPressed: () => app.disconnect(c.protocol),
+                  onPressed: () => app.disconnect(c),
                   child: Text(l.radiosDisconnect),
                 ),
               ],
@@ -456,6 +491,7 @@ class _UsbSectionState extends State<_UsbSection> {
                   ListTile(
                     leading: const Icon(Icons.usb),
                     title: Text(p.name),
+                    enabled: widget.app.canAddRadio,
                     onTap: () async {
                       final protocol = await pickProtocol(context);
                       if (protocol == null) return;
