@@ -4883,6 +4883,226 @@ class PreferencesCompanion extends UpdateCompanion<PreferenceRow> {
   }
 }
 
+class $RadioContactsTable extends RadioContacts
+    with TableInfo<$RadioContactsTable, RadioContactRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RadioContactsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _radioIdMeta = const VerificationMeta(
+    'radioId',
+  );
+  @override
+  late final GeneratedColumn<String> radioId = GeneratedColumn<String>(
+    'radio_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nodeKeyMeta = const VerificationMeta(
+    'nodeKey',
+  );
+  @override
+  late final GeneratedColumn<String> nodeKey = GeneratedColumn<String>(
+    'node_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [radioId, nodeKey];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'radio_contacts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RadioContactRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('radio_id')) {
+      context.handle(
+        _radioIdMeta,
+        radioId.isAcceptableOrUnknown(data['radio_id']!, _radioIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_radioIdMeta);
+    }
+    if (data.containsKey('node_key')) {
+      context.handle(
+        _nodeKeyMeta,
+        nodeKey.isAcceptableOrUnknown(data['node_key']!, _nodeKeyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nodeKeyMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {radioId, nodeKey};
+  @override
+  RadioContactRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RadioContactRow(
+      radioId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}radio_id'],
+      )!,
+      nodeKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}node_key'],
+      )!,
+    );
+  }
+
+  @override
+  $RadioContactsTable createAlias(String alias) {
+    return $RadioContactsTable(attachedDatabase, alias);
+  }
+}
+
+class RadioContactRow extends DataClass implements Insertable<RadioContactRow> {
+  final String radioId;
+
+  /// `NodeKey.toString()`.
+  final String nodeKey;
+  const RadioContactRow({required this.radioId, required this.nodeKey});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['radio_id'] = Variable<String>(radioId);
+    map['node_key'] = Variable<String>(nodeKey);
+    return map;
+  }
+
+  RadioContactsCompanion toCompanion(bool nullToAbsent) {
+    return RadioContactsCompanion(
+      radioId: Value(radioId),
+      nodeKey: Value(nodeKey),
+    );
+  }
+
+  factory RadioContactRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RadioContactRow(
+      radioId: serializer.fromJson<String>(json['radioId']),
+      nodeKey: serializer.fromJson<String>(json['nodeKey']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'radioId': serializer.toJson<String>(radioId),
+      'nodeKey': serializer.toJson<String>(nodeKey),
+    };
+  }
+
+  RadioContactRow copyWith({String? radioId, String? nodeKey}) =>
+      RadioContactRow(
+        radioId: radioId ?? this.radioId,
+        nodeKey: nodeKey ?? this.nodeKey,
+      );
+  RadioContactRow copyWithCompanion(RadioContactsCompanion data) {
+    return RadioContactRow(
+      radioId: data.radioId.present ? data.radioId.value : this.radioId,
+      nodeKey: data.nodeKey.present ? data.nodeKey.value : this.nodeKey,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RadioContactRow(')
+          ..write('radioId: $radioId, ')
+          ..write('nodeKey: $nodeKey')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(radioId, nodeKey);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RadioContactRow &&
+          other.radioId == this.radioId &&
+          other.nodeKey == this.nodeKey);
+}
+
+class RadioContactsCompanion extends UpdateCompanion<RadioContactRow> {
+  final Value<String> radioId;
+  final Value<String> nodeKey;
+  final Value<int> rowid;
+  const RadioContactsCompanion({
+    this.radioId = const Value.absent(),
+    this.nodeKey = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  RadioContactsCompanion.insert({
+    required String radioId,
+    required String nodeKey,
+    this.rowid = const Value.absent(),
+  }) : radioId = Value(radioId),
+       nodeKey = Value(nodeKey);
+  static Insertable<RadioContactRow> custom({
+    Expression<String>? radioId,
+    Expression<String>? nodeKey,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (radioId != null) 'radio_id': radioId,
+      if (nodeKey != null) 'node_key': nodeKey,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  RadioContactsCompanion copyWith({
+    Value<String>? radioId,
+    Value<String>? nodeKey,
+    Value<int>? rowid,
+  }) {
+    return RadioContactsCompanion(
+      radioId: radioId ?? this.radioId,
+      nodeKey: nodeKey ?? this.nodeKey,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (radioId.present) {
+      map['radio_id'] = Variable<String>(radioId.value);
+    }
+    if (nodeKey.present) {
+      map['node_key'] = Variable<String>(nodeKey.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RadioContactsCompanion(')
+          ..write('radioId: $radioId, ')
+          ..write('nodeKey: $nodeKey, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$MeshDatabase extends GeneratedDatabase {
   _$MeshDatabase(QueryExecutor e) : super(e);
   $MeshDatabaseManager get managers => $MeshDatabaseManager(this);
@@ -4896,6 +5116,7 @@ abstract class _$MeshDatabase extends GeneratedDatabase {
   late final $ConversationStatesTable conversationStates =
       $ConversationStatesTable(this);
   late final $PreferencesTable preferences = $PreferencesTable(this);
+  late final $RadioContactsTable radioContacts = $RadioContactsTable(this);
   late final Index messagesByConversation = Index(
     'messages_by_conversation',
     'CREATE INDEX messages_by_conversation ON messages (conversation, id)',
@@ -4921,6 +5142,7 @@ abstract class _$MeshDatabase extends GeneratedDatabase {
     telemetryReadings,
     conversationStates,
     preferences,
+    radioContacts,
     messagesByConversation,
     messagesByNativeId,
     telemetryByNode,
@@ -7360,6 +7582,162 @@ typedef $$PreferencesTableProcessedTableManager =
       PreferenceRow,
       PrefetchHooks Function()
     >;
+typedef $$RadioContactsTableCreateCompanionBuilder =
+    RadioContactsCompanion Function({
+      required String radioId,
+      required String nodeKey,
+      Value<int> rowid,
+    });
+typedef $$RadioContactsTableUpdateCompanionBuilder =
+    RadioContactsCompanion Function({
+      Value<String> radioId,
+      Value<String> nodeKey,
+      Value<int> rowid,
+    });
+
+class $$RadioContactsTableFilterComposer
+    extends Composer<_$MeshDatabase, $RadioContactsTable> {
+  $$RadioContactsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get radioId => $composableBuilder(
+    column: $table.radioId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nodeKey => $composableBuilder(
+    column: $table.nodeKey,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$RadioContactsTableOrderingComposer
+    extends Composer<_$MeshDatabase, $RadioContactsTable> {
+  $$RadioContactsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get radioId => $composableBuilder(
+    column: $table.radioId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nodeKey => $composableBuilder(
+    column: $table.nodeKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$RadioContactsTableAnnotationComposer
+    extends Composer<_$MeshDatabase, $RadioContactsTable> {
+  $$RadioContactsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get radioId =>
+      $composableBuilder(column: $table.radioId, builder: (column) => column);
+
+  GeneratedColumn<String> get nodeKey =>
+      $composableBuilder(column: $table.nodeKey, builder: (column) => column);
+}
+
+class $$RadioContactsTableTableManager
+    extends
+        RootTableManager<
+          _$MeshDatabase,
+          $RadioContactsTable,
+          RadioContactRow,
+          $$RadioContactsTableFilterComposer,
+          $$RadioContactsTableOrderingComposer,
+          $$RadioContactsTableAnnotationComposer,
+          $$RadioContactsTableCreateCompanionBuilder,
+          $$RadioContactsTableUpdateCompanionBuilder,
+          (
+            RadioContactRow,
+            BaseReferences<
+              _$MeshDatabase,
+              $RadioContactsTable,
+              RadioContactRow
+            >,
+          ),
+          RadioContactRow,
+          PrefetchHooks Function()
+        > {
+  $$RadioContactsTableTableManager(_$MeshDatabase db, $RadioContactsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RadioContactsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RadioContactsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RadioContactsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> radioId = const Value.absent(),
+                Value<String> nodeKey = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RadioContactsCompanion(
+                radioId: radioId,
+                nodeKey: nodeKey,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String radioId,
+                required String nodeKey,
+                Value<int> rowid = const Value.absent(),
+              }) => RadioContactsCompanion.insert(
+                radioId: radioId,
+                nodeKey: nodeKey,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$RadioContactsTable, RadioContactRow>(table),
+                  BaseReferences<
+                    _$MeshDatabase,
+                    $RadioContactsTable,
+                    RadioContactRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$RadioContactsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$MeshDatabase,
+      $RadioContactsTable,
+      RadioContactRow,
+      $$RadioContactsTableFilterComposer,
+      $$RadioContactsTableOrderingComposer,
+      $$RadioContactsTableAnnotationComposer,
+      $$RadioContactsTableCreateCompanionBuilder,
+      $$RadioContactsTableUpdateCompanionBuilder,
+      (
+        RadioContactRow,
+        BaseReferences<_$MeshDatabase, $RadioContactsTable, RadioContactRow>,
+      ),
+      RadioContactRow,
+      PrefetchHooks Function()
+    >;
 
 class $MeshDatabaseManager {
   final _$MeshDatabase _db;
@@ -7380,4 +7758,6 @@ class $MeshDatabaseManager {
       $$ConversationStatesTableTableManager(_db, _db.conversationStates);
   $$PreferencesTableTableManager get preferences =>
       $$PreferencesTableTableManager(_db, _db.preferences);
+  $$RadioContactsTableTableManager get radioContacts =>
+      $$RadioContactsTableTableManager(_db, _db.radioContacts);
 }

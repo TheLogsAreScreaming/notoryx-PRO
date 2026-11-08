@@ -259,8 +259,13 @@ class MeshCoreConnection extends RadioConnection {
     final radio = MeshCoreMapper.radio(h);
     final mapper = _mapper = MeshCoreMapper(radio.id);
     await setRadio(radio);
+    maxContacts = h.device.maxContacts;
     final contacts = await session.getContacts();
     await store.upsertNodes(contacts.contacts.map(mapper.node));
+    await store.replaceRadioContacts(
+      radio.id,
+      contacts.contacts.map((c) => NodeKey.meshcore(c.keyHex)),
+    );
     final slots = h.device.maxChannels ?? 8;
     final channels = await session.getChannels(slots);
     await store.replaceChannels(
@@ -328,6 +333,12 @@ class MeshCoreConnection extends RadioConnection {
         );
       case ContactsFullPush():
         log.add('MeshCore ${link.label}', "radio's contact list is full");
+      case ContactDeletedPush(:final publicKey):
+        await store.setOnRadio(
+          radio.id,
+          NodeKey.meshcore(toHex(publicKey)),
+          false,
+        );
       default:
         break;
     }
@@ -343,6 +354,10 @@ class MeshCoreConnection extends RadioConnection {
     switch (conversation) {
       case DirectConversation(:final node):
         final key = fromHex(node.native);
+        // The radio can only message nodes in its own contact list.
+        if (await store.node(conversation.radioId, node) case final n?) {
+          await ensureOnRadio(n);
+        }
         // First attempt now (errors reach the caller); the rest run on.
         final first = await _attempt(id, key, text, sentAt, 0);
         unawaited(
@@ -482,6 +497,77 @@ class MeshCoreConnection extends RadioConnection {
     return MeshCoreSettings.from(fresh);
   }
 
+  /// How many contacts the radio can hold, from its device info.
+  int? maxContacts;
+
+  /// Puts [node] in the radio's contact list if it isn't there, so the
+  /// radio can message it. When the list is full, the least recently heard
+  /// contact that isn't a favourite (people before repeaters and rooms)
+  /// makes room; the app still keeps it.
+  Future<void> ensureOnRadio(Node node) async {
+    final radio = this.radio;
+    if (radio == null || node.radioId != radio.id) return;
+    final on = await store.radioContacts(radio.id);
+    if (on.contains(node.key)) return;
+    if (node.publicKey.length != 32) return;
+    final max = maxContacts;
+    if (max != null && max > 0 && on.length >= max) {
+      final victim = await _leastNeeded(radio.id, on, except: node.key);
+      if (victim != null) {
+        await session.removeContact(victim.publicKey);
+        await store.setOnRadio(radio.id, victim.key, false);
+        log.add(
+          'MeshCore ${link.label}',
+          'made room on the radio: removed ${victim.displayName}',
+        );
+      }
+    }
+    await session.addContact(
+      publicKey: node.publicKey,
+      type: switch (node.kind) {
+        NodeKind.person => NodeType.chat.code,
+        NodeKind.relay => NodeType.repeater.code,
+        NodeKind.room => NodeType.room.code,
+        NodeKind.sensor => NodeType.sensor.code,
+        _ => NodeType.unknown.code,
+      },
+      name: node.name,
+      flags: node.isFavorite ? 1 : 0,
+      lastAdvert: (node.lastHeard?.millisecondsSinceEpoch ?? 0) ~/ 1000,
+      latitude: node.position?.latitude,
+      longitude: node.position?.longitude,
+    );
+    await store.setOnRadio(radio.id, node.key, true);
+    log.add('MeshCore ${link.label}', 'added ${node.displayName} to the radio');
+  }
+
+  Future<Node?> _leastNeeded(
+    RadioId radio,
+    Set<NodeKey> on, {
+    required NodeKey except,
+  }) async {
+    int rank(Node n) => switch (n.kind) {
+      NodeKind.relay || NodeKind.room => 1,
+      _ => 0,
+    };
+    final candidates =
+        [
+          for (final n in await store.nodes(radio))
+            if (on.contains(n.key) &&
+                n.key != except &&
+                !n.isFavorite &&
+                n.publicKey.length == 32)
+              n,
+        ]..sort((a, b) {
+          final r = rank(a).compareTo(rank(b));
+          if (r != 0) return r;
+          final ta = a.lastHeard?.millisecondsSinceEpoch ?? 0;
+          final tb = b.lastHeard?.millisecondsSinceEpoch ?? 0;
+          return ta.compareTo(tb);
+        });
+    return candidates.firstOrNull;
+  }
+
   /// Sends this radio's advert: to neighbours, or flooded mesh-wide.
   Future<void> sendAdvert({bool flood = false}) =>
       session.sendAdvert(flood: flood);
@@ -499,12 +585,16 @@ class MeshCoreConnection extends RadioConnection {
   Future<String> runCli(String command) => session.runCli(command);
 
   /// Logs in to a repeater or room server.
-  Future<LoginResultPush> login(Node server, String password) =>
-      session.login(fromHex(server.key.native), password);
+  Future<LoginResultPush> login(Node server, String password) async {
+    await ensureOnRadio(server);
+    return session.login(fromHex(server.key.native), password);
+  }
 
   /// A repeater or room server's status.
-  Future<RepeaterStatusPush> serverStatus(Node server) =>
-      session.serverStatus(fromHex(server.key.native));
+  Future<RepeaterStatusPush> serverStatus(Node server) async {
+    await ensureOnRadio(server);
+    return session.serverStatus(fromHex(server.key.native));
+  }
 
   /// Runs a command on a repeater or room server you're logged in to.
   Future<String> serverCommand(Node server, String command) =>
