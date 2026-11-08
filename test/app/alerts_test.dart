@@ -365,11 +365,22 @@ void main() {
       await tester.pumpWidget(NotoryxProApp(app: app));
       await settle(tester);
       expect(notifier.kept, isEmpty, reason: 'nothing connected');
-      await tester.runAsync(
-        () => app.connect(
-          const TcpTarget(host: 'n', protocol: RadioProtocol.meshtastic),
-        ),
-      );
+      // Not awaited: the mounted screens' queries need pumps to finish, and
+      // connecting needs those queries out of the way.
+      var connected = false;
+      await tester.runAsync(() async {
+        unawaited(
+          app
+              .connect(
+                const TcpTarget(host: 'n', protocol: RadioProtocol.meshtastic),
+              )
+              .whenComplete(() => connected = true),
+        );
+      });
+      for (var i = 0; i < 100 && !connected; i++) {
+        await settle(tester);
+      }
+      expect(connected, isTrue);
       await settle(tester);
       expect(notifier.kept.last, (true, 'Connected to 1 radio'));
       await tester.runAsync(
