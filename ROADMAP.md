@@ -37,7 +37,7 @@ Priorities from the competitive analysis ([docs/competitive/](docs/competitive/)
 
 - Two radios connected at once in the UI (in review): up to four radios from either mesh, including several on the same mesh; the inbox says which radio a conversation is on when one mesh has more than one.
 - Foreign-traffic detection: spot a MeshCore network from the MeshCore RX log while using Meshtastic, and the reverse where the radio reports raw packets.
-- Emergency messages compatible with MECP rather than a new format.
+- Emergency messages compatible with MECP (in review): an SOS button builds a message from MECP's codes, and received ones are spelled out with severity, codes, people and position; labels are English for now.
 - Contacts beyond the radio's limit (in review): the app keeps every MeshCore node heard and tracks which are in the radio's own list; messaging, logging in to or checking a node that isn't puts it on the radio first, and a full radio drops the least recently heard non-favourite (people before repeaters and rooms).
 - MQTT observer feeds for both meshes.
 - Bridging a MeshCore channel and a Meshtastic channel when both radios are connected: opt-in, every bridged message labelled, rate-limited, and never direct messages unless the user turns that on for a contact.

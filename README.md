@@ -40,3 +40,5 @@ flutter test
 ## License
 
 NOTORYX PRO is free software under the [GNU General Public License v3.0](LICENSE). The Meshtastic protocol definitions it uses are GPL-3.0 too, so the app as a whole is GPL-3.0: anyone can use, study, share and change it, and anyone who shares a changed version must share its source under the same license.
+
+Emergency message labels come from the [MECP project](https://github.com/mecp-org/MECP)'s language files (CC BY 4.0); the MECP protocol itself is CC0.
