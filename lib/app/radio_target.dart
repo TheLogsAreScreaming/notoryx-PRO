@@ -10,6 +10,10 @@ sealed class RadioTarget {
   String get label;
 
   LinkKind get kind;
+
+  /// Where the radio is (transport and address); two targets with the
+  /// same address are the same radio.
+  String get address;
 }
 
 /// A radio found by a Bluetooth scan.
@@ -28,6 +32,9 @@ final class BleTarget extends RadioTarget {
 
   @override
   LinkKind get kind => LinkKind.bluetooth;
+
+  @override
+  String get address => 'ble:$deviceId';
 }
 
 /// A radio on the network.
@@ -46,6 +53,9 @@ final class TcpTarget extends RadioTarget {
 
   @override
   LinkKind get kind => LinkKind.tcp;
+
+  @override
+  String get address => 'tcp:$label';
 }
 
 /// A radio plugged in by USB (Android).
@@ -60,6 +70,9 @@ final class UsbTarget extends RadioTarget {
 
   @override
   LinkKind get kind => LinkKind.usb;
+
+  @override
+  String get address => 'usb:${port.id}';
 }
 
 /// Makes [RadioLink]s for targets; tests replace it.

@@ -256,7 +256,7 @@ class NodeSheet extends StatelessWidget {
 
   /// The connected radio that knows this node, if any.
   RadioConnection? _connection() {
-    final c = app.connectionFor(node.protocol);
+    final c = app.connectionForRadio(node.radioId);
     return c != null &&
             c.radio?.id == node.radioId &&
             c.status.phase == SupervisorPhase.connected

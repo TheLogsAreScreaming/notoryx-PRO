@@ -74,6 +74,12 @@ class MeshStore {
         ),
       );
 
+  /// Every saved radio, as they change.
+  Stream<List<Radio>> watchRadios() => db
+      .select(db.radios)
+      .watch()
+      .map((rows) => rows.map(_radio).nonNulls.toList());
+
   /// Every saved radio, most recently connected first.
   Future<List<Radio>> radios() async {
     final rows =

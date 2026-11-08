@@ -81,7 +81,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   /// The connected radio for this conversation, if any.
   RadioConnection? _ready() {
-    final c = app.connectionFor(conversation.radioId.protocol);
+    final c = app.connectionForRadio(conversation.radioId);
     final ready =
         c != null &&
         c.radio?.id == conversation.radioId &&

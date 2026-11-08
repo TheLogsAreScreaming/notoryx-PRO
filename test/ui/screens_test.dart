@@ -47,9 +47,7 @@ Future<void> tearDownApp(WidgetTester tester, AppController app) async {
   await tester.pumpWidget(const SizedBox());
   await tester.pump(const Duration(seconds: 1));
   await tester.runAsync(() async {
-    for (final p in RadioProtocol.values) {
-      await app.disconnect(p);
-    }
+    await app.shutdown();
   });
   final closing = app.store.close();
   await tester.pump(const Duration(seconds: 1));

@@ -198,7 +198,7 @@ void main() {
     );
     final other = ChannelConversation(RadioId.meshtastic(1), 0);
     expect(() => c.sendText(other, 'x'), throwsStateError);
-    await app.disconnect(RadioProtocol.meshtastic);
+    await app.disconnect(app.connections.single);
     expect(app.connections, isEmpty);
     expect(link.state, LinkState.disconnected);
     await app.shutdown();
