@@ -39,7 +39,7 @@ Priorities from the competitive analysis ([docs/competitive/](docs/competitive/)
 - Foreign-traffic detection (in review): a MeshCore radio's raw packet log flags Meshtastic broadcasts it happens to hear, in Diagnostics. Radios normally filter the other mesh's packets out by sync word, so this only shows what gets through. Meshtastic radios don't report raw packets to apps, so the reverse direction isn't possible without firmware changes.
 - Emergency messages compatible with MECP (in review): an SOS button builds a message from MECP's codes, and received ones are spelled out with severity, codes, people and position; labels are English for now.
 - Contacts beyond the radio's limit (in review): the app keeps every MeshCore node heard and tracks which are in the radio's own list; messaging, logging in to or checking a node that isn't puts it on the radio first, and a full radio drops the least recently heard non-favourite (people before repeaters and rooms).
-- MQTT observer feeds for both meshes.
+- MQTT observer feeds for both meshes (in review): read-only packet views from a broker of your choice, in the same log as Diagnostics. Packets are not decrypted.
 - Bridging a MeshCore channel and a Meshtastic channel when both radios are connected: opt-in, every bridged message labelled, rate-limited, and never direct messages unless the user turns that on for a contact.
 - Translations beyond English.
 

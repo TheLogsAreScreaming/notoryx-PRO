@@ -1014,5 +1014,36 @@
         "type": "int"
       }
     }
-  }
+  },
+  "feedsTitle": "MQTT feeds",
+  "feedsHelp": "Watch a mesh's packets through an internet broker. Feeds only listen: nothing from your radios is sent. Encrypted packets show who sent them, not what they say.",
+  "feedsEmpty": "No feeds yet",
+  "feedAdd": "Add feed",
+  "feedOff": "Off",
+  "feedConnecting": "Connecting…",
+  "feedConnected": "{count, plural, =1{Connected · 1 packet} other{Connected · {count} packets}}",
+  "@feedConnected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "feedFailed": "Couldn't connect: {error}",
+  "@feedFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "feedName": "Name (optional)",
+  "feedHost": "Broker address",
+  "feedPort": "Port",
+  "feedTls": "Use TLS encryption",
+  "feedUser": "Username (optional)",
+  "feedPassword": "Password (optional)",
+  "feedTopic": "Topic",
+  "feedPlainWarning": "Without TLS, this password is sent unencrypted.",
+  "feedSave": "Save"
 }
