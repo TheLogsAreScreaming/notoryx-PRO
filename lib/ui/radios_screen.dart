@@ -8,6 +8,7 @@ import '../meshtastic/firmware.dart';
 import '../radio/radio.dart';
 import 'admin_screens.dart';
 import 'common.dart';
+import 'connection_log_sheet.dart';
 import 'diagnostics_screen.dart';
 import 'verify_screen.dart';
 import 'channels_screen.dart';
@@ -72,6 +73,12 @@ class RadiosScreen extends StatelessWidget {
                     context: context,
                     builder: (_) => WifiRadioDialog(app: app),
                   ),
+          ),
+          const SizedBox(height: 8),
+          TextButton.icon(
+            icon: const Icon(Icons.receipt_long_outlined),
+            label: Text(l.logButton),
+            onPressed: () => showConnectionLog(context, app.log),
           ),
           if (app.links.usb.supported) ...[
             const SizedBox(height: 24),

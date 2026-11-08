@@ -72,6 +72,19 @@ class FakeBleBackend implements BleBackend {
   @override
   Future<List<String>> discoverServices(String deviceId) async => services;
 
+  bool? paired = true;
+  int pairCalls = 0;
+
+  @override
+  Future<bool?> isPaired(String deviceId) async => paired;
+
+  @override
+  Future<void> pair(String deviceId) async {
+    pairCalls++;
+    paired = true;
+  }
+
+  @override
   @override
   Future<int> requestMtu(String deviceId, int mtu) async {
     if (mtuError != null) throw mtuError!;

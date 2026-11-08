@@ -146,7 +146,7 @@ class NodeUpdate {
 class MeshtasticSession {
   MeshtasticSession(
     this.link, {
-    this.configTimeout = const Duration(seconds: 60),
+    this.configTimeout = const Duration(seconds: 120),
     this.heartbeatInterval = const Duration(minutes: 5),
     ConnectionLog? log,
     Random? random,

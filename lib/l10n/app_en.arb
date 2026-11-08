@@ -913,5 +913,8 @@
       }
     }
   },
-  "notifyBackground": "Stay connected in the background"
+  "notifyBackground": "Stay connected in the background",
+  "logButton": "Connection log",
+  "logTitle": "Connection log",
+  "logEmpty": "Nothing yet. Try connecting a radio."
 }
