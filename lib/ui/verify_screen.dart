@@ -69,7 +69,8 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
   Node get node => widget.node;
 
-  ContactCard? get _ownCard => widget.app.connectionFor(node.protocol)?.ownCard;
+  ContactCard? get _ownCard =>
+      widget.app.connectionForRadio(node.radioId)?.ownCard;
 
   void _say(String text) =>
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));

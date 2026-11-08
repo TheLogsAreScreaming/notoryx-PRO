@@ -39,24 +39,38 @@ class RadiosScreen extends StatelessWidget {
             ),
           for (final c in app.connections)
             _ConnectionCard(app: app, connection: c),
+          if (app.connections.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                app.canAddRadio
+                    ? l.radiosAddAnother
+                    : l.radiosFull(AppController.maxRadios),
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
           const SizedBox(height: 16),
           FilledButton.icon(
             icon: const Icon(Icons.bluetooth_searching),
             label: Text(l.radiosFindBluetooth),
-            onPressed: () => showModalBottomSheet<void>(
-              context: context,
-              isScrollControlled: true,
-              builder: (_) => BluetoothScanSheet(app: app),
-            ),
+            onPressed: !app.canAddRadio
+                ? null
+                : () => showModalBottomSheet<void>(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (_) => BluetoothScanSheet(app: app),
+                  ),
           ),
           const SizedBox(height: 8),
           OutlinedButton.icon(
             icon: const Icon(Icons.wifi),
             label: Text(l.radiosAddWifi),
-            onPressed: () => showDialog<void>(
-              context: context,
-              builder: (_) => WifiRadioDialog(app: app),
-            ),
+            onPressed: !app.canAddRadio
+                ? null
+                : () => showDialog<void>(
+                    context: context,
+                    builder: (_) => WifiRadioDialog(app: app),
+                  ),
           ),
           if (app.links.usb.supported) ...[
             const SizedBox(height: 24),
@@ -199,7 +213,7 @@ class _ConnectionCard extends StatelessWidget {
                     child: Text(l.radiosTryNow),
                   ),
                 TextButton(
-                  onPressed: () => app.disconnect(c.protocol),
+                  onPressed: () => app.disconnect(c),
                   child: Text(l.radiosDisconnect),
                 ),
               ],
@@ -459,6 +473,7 @@ class _UsbSectionState extends State<_UsbSection> {
                   ListTile(
                     leading: const Icon(Icons.usb),
                     title: Text(p.name),
+                    enabled: widget.app.canAddRadio,
                     onTap: () async {
                       final protocol = await pickProtocol(context);
                       if (protocol == null) return;

@@ -818,5 +818,22 @@
   },
   "presetsMeshtasticIntro": "The standard setup for a region: Long Fast with the slot chosen automatically, which is what most Meshtastic meshes use.",
   "presetsMeshtasticButton": "Standard setup for a region",
-  "regionUnsetWarning": "This radio has no region set, so it won't transmit. Open Settings to choose one."
+  "regionUnsetWarning": "This radio has no region set, so it won't transmit. Open Settings to choose one.",
+  "radiosAddAnother": "You can add more radios, from either mesh.",
+  "radiosFull": "Up to {max} radios at once. Disconnect one to add another.",
+  "@radiosFull": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "inboxVia": "via {radio}",
+  "@inboxVia": {
+    "placeholders": {
+      "radio": {
+        "type": "String"
+      }
+    }
+  }
 }

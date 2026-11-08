@@ -35,7 +35,7 @@ Priorities from the competitive analysis ([docs/competitive/](docs/competitive/)
 
 ## Later
 
-- Two radios connected at once in the UI (the model allows it from step 6).
+- Two radios connected at once in the UI (in review): up to four radios from either mesh, including several on the same mesh; the inbox says which radio a conversation is on when one mesh has more than one.
 - Foreign-traffic detection: spot a MeshCore network from the MeshCore RX log while using Meshtastic, and the reverse where the radio reports raw packets.
 - Emergency messages compatible with MECP rather than a new format.
 - Contacts beyond the radio's limit (app keeps everyone heard, swaps favourites onto the radio).
