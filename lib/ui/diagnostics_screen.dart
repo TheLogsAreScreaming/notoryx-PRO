@@ -64,8 +64,22 @@ class PacketLogView extends StatelessWidget {
       listenable: log,
       builder: (context, _) {
         final entries = log.entries.reversed.toList();
+        final other = log.otherMesh;
         return Column(
           children: [
+            if (other != null)
+              ListTile(
+                leading: const Icon(Icons.hub_outlined),
+                title: Text(l.otherMeshHeard),
+                subtitle: Text(
+                  [
+                    l.otherMeshCounts(other.packets, other.senders),
+                    if (other.strongestRssi != null)
+                      l.otherMeshRssi(other.strongestRssi!),
+                    ago(context, other.lastHeard),
+                  ].join(' · '),
+                ),
+              ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Row(

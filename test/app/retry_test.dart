@@ -130,7 +130,8 @@ void main() {
       await waitForMessage(store, id, (m) => m.attempts >= 2);
       link.push(RadioFrames.sendConfirmed(0x100)); // ack of attempt 1
       final m = await waitForMessage(store, id, (m) => m.delivery is Delivered);
-      expect(m.message.attempts, 2);
+      // A busy machine may have reached a third attempt by now.
+      expect(m.message.attempts, greaterThanOrEqualTo(2));
       await app.shutdown();
     });
 

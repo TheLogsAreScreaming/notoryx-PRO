@@ -277,4 +277,58 @@ void main() {
     expect(los.earthBulgeM, closeTo(1.47, 0.01));
     expect(los.clearanceM, closeTo(1.47 + 0.6 * 28.6, 0.1));
   });
+
+  group('other mesh', () {
+    Uint8List packet({int flags = 0x63, int firstByte = 0xff}) =>
+        Uint8List.fromList([
+          firstByte,
+          0xff,
+          0xff,
+          0xff,
+          0x78,
+          0x56,
+          0x34,
+          0x12,
+          1,
+          2,
+          3,
+          4,
+          flags,
+          8,
+          0,
+          0,
+          9,
+          9,
+        ]);
+
+    test('recognises a Meshtastic broadcast', () {
+      expect(meshtasticBroadcastSender(packet()), 0x12345678);
+      expect(meshtasticBroadcastSender(packet(firstByte: 0x11)), isNull);
+      expect(meshtasticBroadcastSender(packet().sublist(0, 15)), isNull);
+      // 7 hops left of 3 at the start can't happen.
+      expect(meshtasticBroadcastSender(packet(flags: 0x67)), isNull);
+    });
+
+    test('summary counts senders, keeps the strongest, survives clear', () {
+      final t = DateTime.utc(2026);
+      PacketLogEntry e(String from, int rssi) => PacketLogEntry(
+        time: t,
+        protocol: RadioProtocol.meshtastic,
+        kind: 'x',
+        from: from,
+        path: PathFacts(rssi: rssi),
+        otherMesh: true,
+      );
+      final log = PacketLog();
+      expect(log.otherMesh, isNull);
+      log
+        ..add(e('a', -90))
+        ..add(e('a', -70))
+        ..paused = true
+        ..add(e('b', -100))
+        ..clear();
+      final s = log.otherMesh!;
+      expect((s.packets, s.senders, s.strongestRssi), (3, 2, -70));
+    });
+  });
 }
