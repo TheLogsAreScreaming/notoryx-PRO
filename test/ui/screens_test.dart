@@ -513,6 +513,20 @@ void main() {
     await tearDownApp(tester, app);
   });
 
+  testWidgets('connection log can be read', (tester) async {
+    final app = AppController(store: MeshStore.memory());
+    app.log.add('BLE Base', 'connect failed: no bond');
+    await tester.pumpWidget(NotoryxProApp(app: app));
+    await settle(tester);
+    await tester.tap(find.text('Radios'));
+    await settle(tester);
+    await tester.tap(find.text('Connection log'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.textContaining('connect failed: no bond'), findsOneWidget);
+    await tearDownApp(tester, app);
+  });
+
   testWidgets('Wi-Fi dialog checks the address and port', (tester) async {
     final app = AppController(store: MeshStore.memory());
     await tester.pumpWidget(NotoryxProApp(app: app));

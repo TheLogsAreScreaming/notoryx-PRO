@@ -752,5 +752,8 @@
         "type": "String"
       }
     }
-  }
+  },
+  "logButton": "Connection log",
+  "logTitle": "Connection log",
+  "logEmpty": "Nothing yet. Try connecting a radio."
 }
