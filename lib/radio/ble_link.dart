@@ -22,6 +22,7 @@ class BleRadioLink extends BaseRadioLink {
     ConnectionLog? log,
     this.mtu = 512,
     this.maxDrainReads = 200,
+    this.pollEvery = const Duration(seconds: 2),
   }) : _backend = backend,
        _log = log;
 
@@ -40,6 +41,11 @@ class BleRadioLink extends BaseRadioLink {
   /// Safety limit on reads in one [drain], so a radio stuck returning data
   /// can't lock the app in a loop.
   final int maxDrainReads;
+
+  /// For Meshtastic: how often to look for queued packets anyway, in case
+  /// the radio's FromNum notification doesn't arrive.
+  final Duration pollEvery;
+  Timer? _poll;
 
   final BleBackend _backend;
   final ConnectionLog? _log;
@@ -86,13 +92,17 @@ class BleRadioLink extends BaseRadioLink {
         // Some platforms pick the size themselves; carry on.
         _log?.add(_source, 'packet size request skipped: $error');
       }
+      if (profile.protocol == RadioProtocol.meshtastic) await _ensurePaired();
       _subscriptions.add(
         _backend.values(deviceId, profile.notify).listen(_onNotify),
       );
       await _backend.subscribe(deviceId, profile.service, profile.notify);
       setState(LinkState.connected);
       _log?.add(_source, 'connected');
-      if (profile.pollsForData) unawaited(drain());
+      if (profile.pollsForData) {
+        unawaited(drain());
+        _poll = Timer.periodic(pollEvery, (_) => unawaited(drain()));
+      }
     } on Object catch (error) {
       _log?.add(_source, 'connect failed: $error');
       await _cancelSubscriptions();
@@ -104,6 +114,23 @@ class BleRadioLink extends BaseRadioLink {
       }
       if (error is LinkException) rethrow;
       throw LinkException('Could not connect to $name', error);
+    }
+  }
+
+  /// Meshtastic radios keep their data behind a PIN: without a bond the
+  /// reads and notifications fail, so pair first if the system can tell
+  /// there is no bond yet.
+  Future<void> _ensurePaired() async {
+    try {
+      final paired = await _backend.isPaired(deviceId);
+      if (paired == false) {
+        _log?.add(_source, 'pairing (enter the radio\'s PIN if asked)');
+        await _backend.pair(deviceId);
+        _log?.add(_source, 'paired');
+      }
+    } on Object catch (error) {
+      // Some platforms pair on first use instead; carry on and see.
+      _log?.add(_source, 'pairing skipped: $error');
     }
   }
 
@@ -179,6 +206,8 @@ class BleRadioLink extends BaseRadioLink {
   }
 
   Future<void> _cancelSubscriptions() async {
+    _poll?.cancel();
+    _poll = null;
     final subs = List.of(_subscriptions);
     _subscriptions.clear();
     for (final s in subs) {

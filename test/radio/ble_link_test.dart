@@ -120,6 +120,50 @@ void main() {
       ]);
     });
 
+    test('pairs first when the system has no bond', () async {
+      backend.paired = false;
+      final l = link(BleProfile.meshtastic);
+      await l.open();
+      expect(backend.pairCalls, 1);
+      expect(log.export(), contains('paired'));
+      await l.close();
+    });
+
+    test('already paired, or MeshCore: no pairing request', () async {
+      final l = link(BleProfile.meshtastic);
+      await l.open();
+      await l.close();
+      backend.paired = false;
+      final mc = link(BleProfile.meshcore);
+      await mc.open();
+      expect(backend.pairCalls, 0);
+      await mc.close();
+    });
+
+    test('looks for packets on its own if no notification comes', () async {
+      final l = BleRadioLink(
+        deviceId: 'dev-1',
+        name: 'Test radio',
+        profile: BleProfile.meshtastic,
+        backend: backend,
+        log: log,
+        pollEvery: const Duration(milliseconds: 20),
+      );
+      final received = <Uint8List>[];
+      l.incoming.listen(received.add);
+      await l.open();
+      await l.drain();
+      backend.readQueue.add(bytes([5]));
+      await Future<void>.delayed(const Duration(milliseconds: 80));
+      expect(received, [
+        bytes([5]),
+      ]);
+      await l.close();
+      final before = backend.reads;
+      await Future<void>.delayed(const Duration(milliseconds: 80));
+      expect(backend.reads, before, reason: 'polling stops on close');
+    });
+
     test('stops after maxDrainReads packets', () async {
       final l = BleRadioLink(
         deviceId: 'dev-1',

@@ -818,5 +818,8 @@
   },
   "presetsMeshtasticIntro": "The standard setup for a region: Long Fast with the slot chosen automatically, which is what most Meshtastic meshes use.",
   "presetsMeshtasticButton": "Standard setup for a region",
-  "regionUnsetWarning": "This radio has no region set, so it won't transmit. Open Settings to choose one."
+  "regionUnsetWarning": "This radio has no region set, so it won't transmit. Open Settings to choose one.",
+  "logButton": "Connection log",
+  "logTitle": "Connection log",
+  "logEmpty": "Nothing yet. Try connecting a radio."
 }
