@@ -8,6 +8,7 @@ import '../mesh/mesh.dart';
 import '../radio/radio.dart';
 import 'admin_screens.dart';
 import 'common.dart';
+import 'themes.dart';
 import 'conversation_screen.dart';
 import 'diagnostics_screen.dart';
 import 'verify_screen.dart';
@@ -223,7 +224,7 @@ class _NodeMarker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = protocolColor(node.protocol, Theme.of(context).colorScheme);
+    final color = meshColor(node.protocol, Theme.of(context));
     return Semantics(
       button: true,
       label: '${node.displayName}, ${protocolName(context, node.protocol)}',

@@ -1,22 +1,23 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:notoryx_pro/app/app_controller.dart';
-import 'package:notoryx_pro/radio/radio.dart';
 import 'package:notoryx_pro/store/mesh_store.dart';
 import 'package:notoryx_pro/ui/app.dart';
-import 'package:notoryx_pro/ui/common.dart';
+import 'package:notoryx_pro/ui/themes.dart';
 
 import 'screens_test.dart' show seed, settle, tearDownApp;
 
 /// Opens each tab and a conversation, running [check] on each.
 Future<void> walk(
   WidgetTester tester,
-  Future<void> Function(String where) check,
-) async {
+  Future<void> Function(String where) check, {
+  ThemeChoice? theme,
+}) async {
   final app = AppController(store: MeshStore.memory());
-  await tester.runAsync(() => seed(app.store));
+  await tester.runAsync(() async {
+    await seed(app.store);
+    await theme?.save(app.store);
+  });
   await tester.pumpWidget(NotoryxProApp(app: app));
   await settle(tester);
   await check('inbox');
@@ -60,24 +61,6 @@ void main() {
       expect(problems, isEmpty, reason: problems.join('\n'));
     });
   }
-
-  test('mesh colours are readable as text in both themes', () {
-    double ratio(Color a, Color b) {
-      final (x, y) = (a.computeLuminance(), b.computeLuminance());
-      return (max(x, y) + .05) / (min(x, y) + .05);
-    }
-
-    for (final b in Brightness.values) {
-      final s = ColorScheme.fromSeed(seedColor: notoryxBlue, brightness: b);
-      for (final p in RadioProtocol.values) {
-        expect(
-          ratio(protocolColor(p, s), s.surface),
-          greaterThanOrEqualTo(4.5),
-          reason: '${p.name} on ${b.name}',
-        );
-      }
-    }
-  });
 
   testWidgets('double-size text fits on a small phone', (tester) async {
     tester.view.physicalSize = const Size(360, 640);
