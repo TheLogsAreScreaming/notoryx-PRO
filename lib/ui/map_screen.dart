@@ -76,69 +76,72 @@ class _MapScreenState extends State<MapScreen> {
         final route = _route == null ? null : _routeLine(_route!, all);
         return Stack(
           children: [
-            FlutterMap(
-              mapController: _map,
-              options: MapOptions(
-                initialCenter: points.isEmpty
-                    ? const LatLng(39.5, -98.35)
-                    : points.first,
-                initialZoom: points.isEmpty ? 3 : 10,
-                onMapReady: () => _fit(points),
-              ),
-              children: [
-                if (widget.tiles case final tiles?)
-                  TileLayer(
-                    urlTemplate: MapTiles.urlTemplate,
-                    userAgentPackageName: MapTiles.userAgentPackageName,
-                    tileProvider: tiles.provider,
-                  ),
-                if (route != null && route.length > 1)
-                  PolylineLayer(
-                    polylines: [
-                      Polyline(
-                        points: route,
-                        strokeWidth: 4,
-                        color: Theme.of(context).colorScheme.primary,
-                        pattern: const StrokePattern.dotted(),
-                      ),
-                    ],
-                  ),
-                MarkerLayer(
-                  markers: [
-                    for (final p in own)
-                      Marker(
-                        point: _ll(p),
-                        width: 40,
-                        height: 40,
-                        child: Tooltip(
-                          message: l.mapYourRadio,
-                          child: Icon(
-                            Icons.my_location,
-                            semanticLabel: l.mapYourRadio,
-                            color: Theme.of(context).colorScheme.primary,
-                            size: 32,
+            Semantics(
+              label: l.mapDescription(placed.length),
+              child: FlutterMap(
+                mapController: _map,
+                options: MapOptions(
+                  initialCenter: points.isEmpty
+                      ? const LatLng(39.5, -98.35)
+                      : points.first,
+                  initialZoom: points.isEmpty ? 3 : 10,
+                  onMapReady: () => _fit(points),
+                ),
+                children: [
+                  if (widget.tiles case final tiles?)
+                    TileLayer(
+                      urlTemplate: MapTiles.urlTemplate,
+                      userAgentPackageName: MapTiles.userAgentPackageName,
+                      tileProvider: tiles.provider,
+                    ),
+                  if (route != null && route.length > 1)
+                    PolylineLayer(
+                      polylines: [
+                        Polyline(
+                          points: route,
+                          strokeWidth: 4,
+                          color: Theme.of(context).colorScheme.primary,
+                          pattern: const StrokePattern.dotted(),
+                        ),
+                      ],
+                    ),
+                  MarkerLayer(
+                    markers: [
+                      for (final p in own)
+                        Marker(
+                          point: _ll(p),
+                          width: 40,
+                          height: 40,
+                          child: Tooltip(
+                            message: l.mapYourRadio,
+                            child: Icon(
+                              Icons.my_location,
+                              semanticLabel: l.mapYourRadio,
+                              color: Theme.of(context).colorScheme.primary,
+                              size: 32,
+                            ),
                           ),
                         ),
-                      ),
-                    for (final n in placed)
-                      Marker(
-                        point: _ll(n.position!),
-                        width: 44,
-                        height: 44,
-                        child: _NodeMarker(
-                          node: n,
-                          onTap: () => _openNode(n, all),
+                      for (final n in placed)
+                        Marker(
+                          point: _ll(n.position!),
+                          width: 44,
+                          height: 44,
+                          child: _NodeMarker(
+                            node: n,
+                            onTap: () => _openNode(n, all),
+                          ),
                         ),
-                      ),
-                  ],
-                ),
-                if (widget.tiles != null)
-                  const RichAttributionWidget(
-                    attributions: [
-                      TextSourceAttribution('OpenStreetMap contributors'),
                     ],
                   ),
-              ],
+                  if (widget.tiles != null)
+                    const RichAttributionWidget(
+                      attributions: [
+                        TextSourceAttribution('OpenStreetMap contributors'),
+                      ],
+                    ),
+                ],
+              ),
             ),
             if (placed.isEmpty && own.isEmpty)
               Center(

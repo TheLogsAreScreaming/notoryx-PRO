@@ -12,10 +12,17 @@ extension L10nContext on BuildContext {
 
 /// Colours that tell the two meshes apart. Each badge also shows the
 /// protocol's name, so colour is never the only signal.
-Color protocolColor(RadioProtocol p, ColorScheme scheme) => switch (p) {
-  RadioProtocol.meshcore => const Color(0xFFE0782A),
-  RadioProtocol.meshtastic => const Color(0xFF67C23A),
-};
+///
+/// Light mode uses darker shades so badge text stays readable on white.
+Color protocolColor(RadioProtocol p, ColorScheme scheme) {
+  final light = scheme.brightness == Brightness.light;
+  return switch (p) {
+    RadioProtocol.meshcore =>
+      light ? const Color(0xFFA84A05) : const Color(0xFFE0782A),
+    RadioProtocol.meshtastic =>
+      light ? const Color(0xFF2F6B12) : const Color(0xFF67C23A),
+  };
+}
 
 String protocolName(BuildContext context, RadioProtocol p) => switch (p) {
   RadioProtocol.meshcore => context.l10n.protocolMeshCore,

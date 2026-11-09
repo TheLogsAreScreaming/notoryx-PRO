@@ -295,92 +295,100 @@ class MessageBubble extends StatelessWidget {
     ].join(' · ');
     return Align(
       alignment: m.outgoing ? Alignment.centerRight : Alignment.centerLeft,
-      child: GestureDetector(
-        onTap: onTap ?? () => MessagePathCard.show(context, m),
-        onLongPress: onLongPress,
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 520),
-          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          padding: const EdgeInsets.fromLTRB(12, 8, 12, 6),
-          decoration: BoxDecoration(
-            color: m.outgoing
-                ? scheme.primaryContainer
-                : scheme.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (verifiedSender || nameClash)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 2),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        verifiedSender ? Icons.verified : Icons.warning_amber,
-                        size: 14,
-                        color: verifiedSender ? scheme.primary : scheme.error,
-                      ),
-                      const SizedBox(width: 4),
-                      Flexible(
-                        child: Text(
-                          verifiedSender
-                              ? context.l10n.trustVerifiedSender
-                              : '${context.l10n.nameClash}. ${m.conversation is ChannelConversation ? context.l10n.channelNotProven : ''}',
-                          style: text.labelSmall?.copyWith(
-                            color: verifiedSender
-                                ? scheme.primary
-                                : scheme.error,
+      child: Semantics(
+        onTapHint: context.l10n.messageDetailsHint,
+        onLongPressHint: onLongPress == null
+            ? null
+            : context.l10n.messageDeleteHint,
+        child: GestureDetector(
+          onTap: onTap ?? () => MessagePathCard.show(context, m),
+          onLongPress: onLongPress,
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 520),
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 6),
+            decoration: BoxDecoration(
+              color: m.outgoing
+                  ? scheme.primaryContainer
+                  : scheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (verifiedSender || nameClash)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 2),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          verifiedSender ? Icons.verified : Icons.warning_amber,
+                          size: 14,
+                          color: verifiedSender ? scheme.primary : scheme.error,
+                        ),
+                        const SizedBox(width: 4),
+                        Flexible(
+                          child: Text(
+                            verifiedSender
+                                ? context.l10n.trustVerifiedSender
+                                : '${context.l10n.nameClash}. ${m.conversation is ChannelConversation ? context.l10n.channelNotProven : ''}',
+                            style: text.labelSmall?.copyWith(
+                              color: verifiedSender
+                                  ? scheme.primary
+                                  : scheme.error,
+                            ),
                           ),
+                        ),
+                      ],
+                    ),
+                  ),
+                if (MecpMessage.tryParse(m.text) case final mecp?)
+                  MecpCard(mecp, raw: m.text)
+                else
+                  Text(m.text),
+                const SizedBox(height: 4),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        meta,
+                        style: text.labelSmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                    if (m.outgoing) ...[
+                      const SizedBox(width: 6),
+                      Tooltip(
+                        message: label,
+                        child: Icon(
+                          icon,
+                          size: 14,
+                          semanticLabel: label,
+                          color: m.delivery is Failed
+                              ? scheme.error
+                              : scheme.onSurfaceVariant,
                         ),
                       ),
                     ],
-                  ),
-                ),
-              if (MecpMessage.tryParse(m.text) case final mecp?)
-                MecpCard(mecp, raw: m.text)
-              else
-                Text(m.text),
-              const SizedBox(height: 4),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Flexible(
-                    child: Text(
-                      meta,
-                      style: text.labelSmall?.copyWith(color: scheme.outline),
-                    ),
-                  ),
-                  if (m.outgoing) ...[
-                    const SizedBox(width: 6),
-                    Tooltip(
-                      message: label,
-                      child: Icon(
-                        icon,
-                        size: 14,
-                        semanticLabel: label,
-                        color: m.delivery is Failed
-                            ? scheme.error
-                            : scheme.outline,
-                      ),
-                    ),
                   ],
-                ],
-              ),
-              if (m.delivery case Failed(:final reason)) ...[
-                Text(
-                  context.l10n.deliveryFailed(reason),
-                  style: text.labelSmall?.copyWith(color: scheme.error),
                 ),
-                if (onResend != null)
-                  TextButton.icon(
-                    onPressed: onResend,
-                    icon: const Icon(Icons.refresh, size: 16),
-                    label: Text(context.l10n.sendAgain),
+                if (m.delivery case Failed(:final reason)) ...[
+                  Text(
+                    context.l10n.deliveryFailed(reason),
+                    style: text.labelSmall?.copyWith(color: scheme.error),
                   ),
+                  if (onResend != null)
+                    TextButton.icon(
+                      onPressed: onResend,
+                      icon: const Icon(Icons.refresh, size: 16),
+                      label: Text(context.l10n.sendAgain),
+                    ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),
