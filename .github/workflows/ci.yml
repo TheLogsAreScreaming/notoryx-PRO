@@ -80,7 +80,9 @@ jobs:
         run: flutter build ios --debug --no-codesign
 
   windows-build:
-    runs-on: windows-latest
+    # local_auth_windows 2.0.2 compiles with /await, which Visual Studio 2026
+    # (windows-latest) removed; 2022 still accepts it.
+    runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
