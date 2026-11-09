@@ -626,5 +626,18 @@
   "beaconMinutes": "{n} min",
   "beaconConfirmBody": "Todos en esta conversación la recibirán cada {every} minutos durante un máximo de {lasts} minutos.",
   "beaconNoticeBody": "Enviando cada {every} minutos. Mantén la app abierta.",
-  "beaconCount": "Enviadas {sent}, fallidas {failed}"
+  "beaconCount": "Enviadas {sent}, fallidas {failed}",
+  "forwardTitle": "Reenviar",
+  "forwardNone": "No hay otras conversaciones en una radio conectada.",
+  "messageDeleteAction": "Eliminar de este dispositivo",
+  "scheduleTitle": "Mensajes programados",
+  "scheduleHelp": "Se envían mientras la app funciona y la radio está conectada. Si la radio no está conectada, espera hasta una hora y luego aparece como perdido.",
+  "scheduleIn15": "En 15 min",
+  "scheduleIn60": "En 1 hora",
+  "scheduleIn240": "En 4 horas",
+  "schedulePick": "Elegir hora",
+  "scheduleSave": "Programar",
+  "scheduleCancel": "Cancelar este mensaje",
+  "scheduleMissed": "Perdido: {time}",
+  "scheduleFailed": "No se pudo enviar: {time}"
 }

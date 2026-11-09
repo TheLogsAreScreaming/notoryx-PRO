@@ -118,6 +118,7 @@ class _HomeShellState extends State<HomeShell> {
   void initState() {
     super.initState();
     widget.app.addListener(_syncKeepAlive);
+    widget.app.scheduler.start();
     _bgPref = widget.app.store.watchPreference(AlertPrefs.background).listen((
       v,
     ) {
@@ -134,6 +135,7 @@ class _HomeShellState extends State<HomeShell> {
   @override
   void dispose() {
     widget.app.removeListener(_syncKeepAlive);
+    widget.app.scheduler.stop();
     unawaited(_bgPref?.cancel());
     _lifecycle.dispose();
     unawaited(_taps?.cancel());

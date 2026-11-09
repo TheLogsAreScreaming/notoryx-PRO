@@ -12,7 +12,11 @@ import '../mesh/model.dart';
 import '../radio/radio.dart';
 import '../store/mesh_store.dart';
 import 'beacon_sheet.dart';
+import '../meshcore/codes.dart' show MeshCoreLimits;
+import '../meshtastic/messages.dart' show meshtasticMaxPayload;
 import 'common.dart';
+import 'forward_sheet.dart';
+import 'schedule_sheet.dart';
 import 'export_sheet.dart';
 import 'mecp_widgets.dart';
 import 'message_path_card.dart';
@@ -26,11 +30,15 @@ class ConversationScreen extends StatefulWidget {
     required this.app,
     required this.conversation,
     required this.title,
+    this.draft,
   });
 
   final AppController app;
   final Conversation conversation;
   final String title;
+
+  /// Text to start the message box with.
+  final String? draft;
 
   @override
   State<ConversationScreen> createState() => _ConversationScreenState();
@@ -111,6 +119,42 @@ class _ConversationScreenState extends State<ConversationScreen> {
     }
   }
 
+  Future<void> _messageActions(StoredMessage stored) async {
+    final l = context.l10n;
+    final forward = await showModalBottomSheet<bool>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.forward),
+              title: Text(l.forwardTitle),
+              onTap: () => Navigator.pop(context, true),
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete_outline),
+              title: Text(l.messageDeleteAction),
+              onTap: () => Navigator.pop(context, false),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (forward == null || !mounted) return;
+    if (forward) {
+      await showForwardSheet(
+        context,
+        app: app,
+        message: stored.message,
+        from: conversation,
+      );
+    } else {
+      await _deleteMessage(stored.id);
+    }
+  }
+
   Future<void> _deleteConversation() async {
     final question = context.l10n.conversationDeleteConfirm(widget.title);
     if (!await _confirmDelete(question)) return;
@@ -169,6 +213,21 @@ class _ConversationScreenState extends State<ConversationScreen> {
                   child: Text(context.l10n.beaconTitle),
                 ),
               PopupMenuItem(
+                key: const Key('schedule-menu'),
+                value: () => unawaited(
+                  showScheduleSheet(
+                    this.context,
+                    scheduler: app.scheduler,
+                    conversation: conversation,
+                    maxBytes:
+                        conversation.radioId.protocol == RadioProtocol.meshcore
+                        ? MeshCoreLimits.maxTextBytes
+                        : meshtasticMaxPayload,
+                  ),
+                ),
+                child: Text(context.l10n.scheduleTitle),
+              ),
+              PopupMenuItem(
                 value: () => unawaited(_deleteConversation()),
                 child: Text(context.l10n.conversationDelete),
               ),
@@ -214,7 +273,11 @@ class _ConversationScreenState extends State<ConversationScreen> {
           ListenableBuilder(
             listenable: app,
             builder: (context, _) {
-              return Composer(connection: _ready(), conversation: conversation);
+              return Composer(
+                connection: _ready(),
+                conversation: conversation,
+                draft: widget.draft,
+              );
             },
           ),
         ],
@@ -255,7 +318,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
             nameClash: clash,
             onResend: c == null ? null : () => c.resend(stored.id),
             onTap: () => _details(m),
-            onLongPress: () => _deleteMessage(stored.id),
+            onLongPress: () => _messageActions(stored),
           );
         },
       );
@@ -418,18 +481,22 @@ class Composer extends StatefulWidget {
     super.key,
     required this.connection,
     required this.conversation,
+    this.draft,
   });
 
   /// Null when the radio for this conversation isn't connected.
   final RadioConnection? connection;
   final Conversation conversation;
 
+  /// Text to start with.
+  final String? draft;
+
   @override
   State<Composer> createState() => _ComposerState();
 }
 
 class _ComposerState extends State<Composer> {
-  final _controller = TextEditingController();
+  late final _controller = TextEditingController(text: widget.draft);
   bool _sending = false;
 
   @override
