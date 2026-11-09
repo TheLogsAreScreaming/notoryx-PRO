@@ -1,6 +1,6 @@
 name: Release build
 
-# Builds the files for a release: Android APKs and a macOS zip, with
+# Builds the files for a release: Android APKs, a macOS zip and a Windows zip, with
 # SHA-256 checksums. Releases are published to notoryx-PRO-releases from
 # these artifacts.
 on:
@@ -135,3 +135,29 @@ jobs:
         with:
           name: macos
           path: dist/
+
+  windows:
+    # local_auth_windows still needs /await, which Visual Studio 2026 removed.
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.47.7'
+          cache: true
+      - run: flutter pub get
+      - run: flutter build windows --release
+      - name: Zip and checksum the app
+        shell: pwsh
+        run: |
+          $version = ((Select-String -Path pubspec.yaml -Pattern '^version: ').Line -split ' ')[1].Split('+')[0]
+          New-Item -ItemType Directory dist | Out-Null
+          Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath "dist/NOTORYX-PRO-$version-windows-x64.zip"
+          $hash = (Get-FileHash "dist/NOTORYX-PRO-$version-windows-x64.zip" -Algorithm SHA256).Hash.ToLower()
+          "$hash  NOTORYX-PRO-$version-windows-x64.zip" | Out-File -Encoding ascii dist/SHA256SUMS-windows.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: dist/
+

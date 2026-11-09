@@ -1624,5 +1624,6 @@
         "type": "String"
       }
     }
-  }
+  },
+  "scannerUnavailable": "Scanning codes isn't available on Windows. Use a link or file instead."
 }

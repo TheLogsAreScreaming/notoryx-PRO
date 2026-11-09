@@ -78,3 +78,18 @@ jobs:
         run: flutter build macos --debug
       - name: Build iPhone app without signing
         run: flutter build ios --debug --no-codesign
+
+  windows-build:
+    # local_auth_windows 2.0.2 compiles with /await, which Visual Studio 2026
+    # (windows-latest) removed; 2022 still accepts it.
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.47.7'
+          cache: true
+      - run: flutter pub get
+      - name: Build Windows app
+        run: flutter build windows --debug

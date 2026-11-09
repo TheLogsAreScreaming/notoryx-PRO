@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -301,9 +303,18 @@ Future<void> showMyCode(BuildContext context, ContactCard card) {
 }
 
 /// Opens the camera and returns the first QR code it reads.
-Future<String?> openScanner(BuildContext context) => Navigator.of(
-  context,
-).push<String>(MaterialPageRoute(builder: (_) => const _ScanScreen()));
+Future<String?> openScanner(BuildContext context) async {
+  // The camera scanner has no Windows version.
+  if (Platform.isWindows) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(context.l10n.scannerUnavailable)));
+    return null;
+  }
+  return Navigator.of(
+    context,
+  ).push<String>(MaterialPageRoute(builder: (_) => const _ScanScreen()));
+}
 
 class _ScanScreen extends StatefulWidget {
   const _ScanScreen();
