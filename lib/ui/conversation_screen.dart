@@ -16,6 +16,7 @@ import 'export_sheet.dart';
 import 'mecp_widgets.dart';
 import 'message_path_card.dart';
 import 'mute_menu.dart';
+import 'report_sheet.dart';
 
 /// One conversation: messages with how each arrived, and a composer.
 class ConversationScreen extends StatefulWidget {
@@ -441,6 +442,25 @@ class _ComposerState extends State<Composer> {
     if (text != null && mounted) _controller.text = text;
   }
 
+  /// Writes a SALUTE or 9-Line report into the message box.
+  Future<void> _report(RadioConnection c) async {
+    final radio = c.radio;
+    var position = radio?.position;
+    if (radio != null && position == null) {
+      position = (await c.store.node(radio.id, radio.self))?.position;
+    }
+    if (!mounted) return;
+    final text = await showReportComposer(
+      context,
+      maxBytes: c.maxTextBytes,
+      position: position == null
+          ? null
+          : '${position.latitude.toStringAsFixed(5)},'
+                '${position.longitude.toStringAsFixed(5)}',
+    );
+    if (text != null && mounted) _controller.text = text;
+  }
+
   Future<void> _send() async {
     final c = widget.connection;
     final text = _controller.text.trim();
@@ -483,6 +503,11 @@ class _ComposerState extends State<Composer> {
                   tooltip: l.mecpTitle,
                   icon: const Icon(Icons.sos),
                   onPressed: () => _emergency(c),
+                ),
+                IconButton(
+                  tooltip: l.reportTitle,
+                  icon: const Icon(Icons.assignment_outlined),
+                  onPressed: () => _report(c),
                 ),
                 Expanded(
                   child: TextField(
