@@ -228,41 +228,77 @@ class MeshStore {
               .getSingleOrNull();
       if (existing != null) return null;
     }
-    final (code, reason, roundTrip) = _deliveryParts(message.delivery);
-    final path = message.path;
-    final id = await db
-        .into(db.messages)
-        .insert(
-          MessagesCompanion.insert(
-            radioId: message.radioId.toString(),
-            conversation: message.conversation.key,
-            outgoing: message.outgoing,
-            body: message.text,
-            sentAt: message.sentAt,
-            receivedAt: message.receivedAt,
-            delivery: code.name,
-            deliveryReason: Value(reason),
-            roundTripMs: Value(roundTrip),
-            fromKey: Value(message.from?.toString()),
-            senderName: Value(message.senderName),
-            hops: Value(path.hops),
-            snr: Value(path.snr),
-            rssi: Value(path.rssi),
-            route: path.route,
-            viaMqtt: Value(path.viaMqtt),
-            nativeId: Value(message.nativeId),
-            replyTo: Value(message.replyTo),
-            isReaction: Value(message.isReaction),
-            attempts: Value(message.attempts),
-            authenticated: Value(message.authenticated),
-            dedupeKey: Value(dedupe),
-          ),
-        );
+    final id = await db.into(db.messages).insert(_row(message, dedupe));
     if (!message.outgoing && !_incoming.isClosed) {
       _incoming.add(StoredMessage(id, message));
     }
     return id;
   }
+
+  MessagesCompanion _row(Message message, String? dedupe) {
+    final (code, reason, roundTrip) = _deliveryParts(message.delivery);
+    final path = message.path;
+    return MessagesCompanion.insert(
+      radioId: message.radioId.toString(),
+      conversation: message.conversation.key,
+      outgoing: message.outgoing,
+      body: message.text,
+      sentAt: message.sentAt,
+      receivedAt: message.receivedAt,
+      delivery: code.name,
+      deliveryReason: Value(reason),
+      roundTripMs: Value(roundTrip),
+      fromKey: Value(message.from?.toString()),
+      senderName: Value(message.senderName),
+      hops: Value(path.hops),
+      snr: Value(path.snr),
+      rssi: Value(path.rssi),
+      route: path.route,
+      viaMqtt: Value(path.viaMqtt),
+      nativeId: Value(message.nativeId),
+      replyTo: Value(message.replyTo),
+      isReaction: Value(message.isReaction),
+      attempts: Value(message.attempts),
+      authenticated: Value(message.authenticated),
+      dedupeKey: Value(dedupe),
+    );
+  }
+
+  /// Adds [restored] messages from an export, skipping any already here.
+  /// All or nothing. Returns how many were added.
+  ///
+  /// Doesn't raise notifications. A conversation with nothing unread stays
+  /// that way, so old messages don't show up as new.
+  Future<int> restoreMessages(List<Message> restored) => db.transaction(
+    () async {
+      String content(String conversation, bool out, DateTime sent, String t) =>
+          '$conversation|$out|${sent.millisecondsSinceEpoch ~/ 1000}|$t';
+      final seen = <String>{};
+      final keys = <String>{};
+      for (final r in await db.select(db.messages).get()) {
+        seen.add(content(r.conversation, r.outgoing, r.sentAt, r.body));
+        if (r.dedupeKey != null) keys.add(r.dedupeKey!);
+      }
+      final unread = await _unreadQuery().get();
+      final hadUnread = {for (final r in unread) r.read<String>('c')};
+      final touched = <Conversation>{};
+      var added = 0;
+      for (final m in restored) {
+        final dedupe = m.outgoing ? null : dedupeKeyFor(m);
+        final fresh = seen.add(
+          content(m.conversation.key, m.outgoing, m.sentAt, m.text),
+        );
+        if (!fresh || (dedupe != null && !keys.add(dedupe))) continue;
+        await db.into(db.messages).insert(_row(m, dedupe));
+        touched.add(m.conversation);
+        added++;
+      }
+      for (final c in touched) {
+        if (!hadUnread.contains(c.key)) await markRead(c);
+      }
+      return added;
+    },
+  );
 
   /// Moves message [id] to [state], unless that would go backwards (a
   /// delivered message never returns to "sent" or "failed").
@@ -471,19 +507,18 @@ class MeshStore {
   // Read state and mutes
 
   /// Unread received messages per conversation key (reactions don't count).
-  Stream<Map<String, int>> watchUnread() => db
-      .customSelect(
-        'SELECT m.conversation AS c, COUNT(*) AS n FROM messages m '
-        'LEFT JOIN conversation_states s ON s.conversation = m.conversation '
-        'WHERE m.outgoing = 0 AND m.is_reaction = 0 '
-        'AND m.id > COALESCE(s.last_read_id, 0) '
-        'GROUP BY m.conversation',
-        readsFrom: {db.messages, db.conversationStates},
-      )
-      .watch()
-      .map(
-        (rows) => {for (final r in rows) r.read<String>('c'): r.read<int>('n')},
-      );
+  Stream<Map<String, int>> watchUnread() => _unreadQuery().watch().map(
+    (rows) => {for (final r in rows) r.read<String>('c'): r.read<int>('n')},
+  );
+
+  Selectable<QueryRow> _unreadQuery() => db.customSelect(
+    'SELECT m.conversation AS c, COUNT(*) AS n FROM messages m '
+    'LEFT JOIN conversation_states s ON s.conversation = m.conversation '
+    'WHERE m.outgoing = 0 AND m.is_reaction = 0 '
+    'AND m.id > COALESCE(s.last_read_id, 0) '
+    'GROUP BY m.conversation',
+    readsFrom: {db.messages, db.conversationStates},
+  );
 
   /// Marks everything in [conversation] as read.
   Future<void> markRead(Conversation conversation) => db.customUpdate(
@@ -796,17 +831,19 @@ class MeshStore {
   ) {
     final newest = db.select(db.messages)
       ..where((m) => m.conversation.equals(conversation.key))
-      ..orderBy([(m) => OrderingTerm.desc(m.id)])
+      ..orderBy([
+        (m) => OrderingTerm.desc(m.receivedAt),
+        (m) => OrderingTerm.desc(m.id),
+      ])
       ..limit(limit);
     return newest.map(_message).map((m) => m!);
   }
 
   Selectable<ConversationSummary> _conversationsQuery() {
     final query = db.customSelect(
-      'SELECT m.* FROM messages m '
-      'JOIN (SELECT conversation, MAX(id) AS id FROM messages '
-      'GROUP BY conversation) latest ON m.id = latest.id '
-      'ORDER BY m.id DESC',
+      'SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY conversation '
+      'ORDER BY received_at DESC, id DESC) AS newest FROM messages) '
+      'WHERE newest = 1 ORDER BY received_at DESC, id DESC',
       readsFrom: {db.messages},
     );
     return query.asyncMap((row) async {
@@ -940,6 +977,24 @@ class MeshStore {
 
   /// The stable name of a delivery state, as stored and exported.
   static String deliveryCode(DeliveryState s) => _deliveryParts(s).$1.name;
+
+  /// A delivery state read from an export. A message still waiting when it
+  /// was exported will never be sent, so it comes back as failed.
+  static DeliveryState deliveryFromExport(
+    String? code,
+    String? reason, {
+    required bool outgoing,
+  }) {
+    if (!outgoing) return const Received();
+    return switch (code) {
+      'sent' => const Sent(),
+      'sentFlood' => const Sent(flood: true),
+      'relayed' => const Relayed(),
+      'delivered' => const Delivered(),
+      'pending' => const Failed('Not sent before the export'),
+      _ => Failed(reason ?? 'Delivery failed'),
+    };
+  }
 
   static (DeliveryCode, String?, int?) _deliveryParts(DeliveryState s) =>
       switch (s) {

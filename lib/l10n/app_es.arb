@@ -575,5 +575,14 @@
   "themeAutumn": "Otoño",
   "themeWinter": "Invierno",
   "themeHolidays": "Colores festivos",
-  "themeHolidaysHelp": "En torno a algunas fiestas, sustituye los colores de la estación. Solo si la estación sigue la fecha."
+  "themeHolidaysHelp": "En torno a algunas fiestas, sustituye los colores de la estación. Solo si la estación sigue la fecha.",
+  "restoreTitle": "Restaurar desde exportación",
+  "restoreAction": "Restaurar",
+  "restoreNothing": "Ese archivo no tiene mensajes que restaurar.",
+  "restoreNotExport": "Eso no es una exportación JSON de NOTORYX PRO.",
+  "restoreTooNew": "Ese archivo es de una versión más reciente. Actualiza la app primero.",
+  "restoreTooBig": "Ese archivo es demasiado grande para restaurarlo.",
+  "restoreConfirm": "¿Añadir {count} mensajes de este archivo? No se sustituye nada y se omiten los que ya tienes. Las insignias de remitente verificado no se restauran.",
+  "restoreDone": "Añadidos: {added}. Ya estaban: {skipped}. Ilegibles: {unreadable}.",
+  "restoreFailed": "No se pudo restaurar: {error}"
 }
