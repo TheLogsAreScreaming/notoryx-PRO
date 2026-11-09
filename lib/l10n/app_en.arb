@@ -1313,5 +1313,27 @@
       }
     }
   },
-  "notifyMayday": "Real MAYDAY messages override mute"
+  "notifyMayday": "Real MAYDAY messages override mute",
+  "reportTitle": "Field reports",
+  "reportSalute": "SALUTE report",
+  "reportSaluteAbout": "Size, activity, location, unit, time, equipment",
+  "reportNineLine": "9-Line medical evacuation",
+  "reportNineLineAbout": "The nine-line request for a medical evacuation",
+  "reportSize": "Size",
+  "reportActivity": "Activity",
+  "reportLocation": "Location",
+  "reportUnit": "Unit",
+  "reportTime": "Time",
+  "reportEquipment": "Equipment",
+  "report9Location": "1. Pickup location",
+  "report9Radio": "2. Radio frequency and call sign",
+  "report9Precedence": "3. Patients by urgency",
+  "report9Equipment": "4. Special equipment",
+  "report9Patients": "5. Patients: litter or walking",
+  "report9Security": "6. Security at pickup",
+  "report9Marking": "7. How the site is marked",
+  "report9Nationality": "8. Patient nationality and status",
+  "report9Terrain": "9. Hazards or terrain",
+  "reportHelp": "Fills the message box. You still press Send. Leave out anything you don't know.",
+  "reportUse": "Put in message box"
 }
