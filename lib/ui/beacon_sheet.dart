@@ -204,16 +204,19 @@ class BeaconBanner extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      [
-                        if (beacon.drill)
-                          l.beaconNoticeDrill
-                        else
-                          l.beaconNoticeReal,
-                        l.beaconCount(beacon.sent, beacon.failed),
-                        if (beacon.acknowledged) l.beaconAcknowledged,
-                      ].join(' · '),
-                      style: TextStyle(color: s.onErrorContainer),
+                    Semantics(
+                      liveRegion: true,
+                      child: Text(
+                        [
+                          if (beacon.drill)
+                            l.beaconNoticeDrill
+                          else
+                            l.beaconNoticeReal,
+                          l.beaconCount(beacon.sent, beacon.failed),
+                          if (beacon.acknowledged) l.beaconAcknowledged,
+                        ].join(' · '),
+                        style: TextStyle(color: s.onErrorContainer),
+                      ),
                     ),
                     Wrap(
                       alignment: WrapAlignment.end,
