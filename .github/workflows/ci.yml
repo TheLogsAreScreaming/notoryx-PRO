@@ -78,3 +78,16 @@ jobs:
         run: flutter build macos --debug
       - name: Build iPhone app without signing
         run: flutter build ios --debug --no-codesign
+
+  windows-build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.47.7'
+          cache: true
+      - run: flutter pub get
+      - name: Build Windows app
+        run: flutter build windows --debug
