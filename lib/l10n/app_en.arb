@@ -1415,5 +1415,17 @@
         "type": "String"
       }
     }
+  },
+  "beaconShort": "Short position (Plus Code)",
+  "beaconShortHelp": "Uses less airtime, but other MECP apps may not read it.",
+  "airtimeBusyTitle": "Radio is busy on air",
+  "airtimeBusySend": "Send anyway",
+  "airtimeBusyBody": "This radio last reported {percent}% airtime used. Changing settings over the mesh adds more. Wait a while if you can.",
+  "@airtimeBusyBody": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
   }
 }

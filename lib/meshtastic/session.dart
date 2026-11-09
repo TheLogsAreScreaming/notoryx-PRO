@@ -148,6 +148,7 @@ class MeshtasticSession {
     this.link, {
     this.configTimeout = const Duration(seconds: 120),
     this.heartbeatInterval = const Duration(minutes: 5),
+    this.remoteWriteGap = const Duration(seconds: 3),
     ConnectionLog? log,
     Random? random,
   }) : _log = log,
@@ -161,6 +162,10 @@ class MeshtasticSession {
 
   /// Time between heartbeats.
   final Duration heartbeatInterval;
+
+  /// Pause between the packets of a settings change sent over the mesh, so
+  /// one change doesn't fill the channel.
+  final Duration remoteWriteGap;
 
   final ConnectionLog? _log;
   final Random _random;
@@ -453,10 +458,16 @@ class MeshtasticSession {
     ];
     if (changed.isEmpty) return;
     final key = await _passkeyFor(to, timeout);
+    Future<void> pace() async {
+      if (to != _myNode) await Future<void>.delayed(remoteWriteGap);
+    }
+
     await _sendAdmin(to, AdminMessages.beginEdit(key));
     for (final s in changed) {
+      await pace();
       await _sendAdmin(to, AdminMessages.set(s, key));
     }
+    await pace();
     await _sendAdmin(to, AdminMessages.commitEdit(key));
     _log?.add(
       _source,

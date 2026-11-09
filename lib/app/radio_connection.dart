@@ -1060,6 +1060,18 @@ class MeshtasticConnection extends RadioConnection {
     return MeshtasticSettings(sections);
   }
 
+  /// Share of airtime this radio has reported using, at or above which a
+  /// change over the mesh asks first. Well under the 10% many regions allow.
+  static const busyAirUtilTx = 8.0;
+
+  /// The airtime this radio last reported using, in percent.
+  double? get recentAirUtilTx {
+    for (final s in samples.samples.reversed) {
+      if (s.airUtilTx != null) return s.airUtilTx;
+    }
+    return null;
+  }
+
   /// Saves what changed in [settings] on [node] (this radio when null).
   /// The node restarts if a change needs it; this radio then reconnects by
   /// itself.

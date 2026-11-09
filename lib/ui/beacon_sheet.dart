@@ -43,6 +43,7 @@ class _BeaconSheetState extends State<_BeaconSheet> {
   int _every = 5;
   int _lasts = 60;
   bool _drill = false;
+  bool _short = false;
 
   @override
   void dispose() {
@@ -79,6 +80,7 @@ class _BeaconSheetState extends State<_BeaconSheet> {
       lasts: Duration(minutes: _lasts),
       note: _note.text,
       drill: _drill,
+      shortPosition: _short,
       noticeTitle: _drill ? l.beaconNoticeDrill : l.beaconNoticeReal,
       noticeBody: l.beaconNoticeBody(_every),
       noticeStop: l.beaconStop,
@@ -154,6 +156,14 @@ class _BeaconSheetState extends State<_BeaconSheet> {
                 subtitle: Text(l.beaconDrillHelp),
                 value: _drill,
                 onChanged: (v) => setState(() => _drill = v),
+              ),
+              SwitchListTile(
+                key: const Key('beacon-short'),
+                contentPadding: EdgeInsets.zero,
+                title: Text(l.beaconShort),
+                subtitle: Text(l.beaconShortHelp),
+                value: _short,
+                onChanged: (v) => setState(() => _short = v),
               ),
               FilledButton.icon(
                 key: const Key('beacon-start'),

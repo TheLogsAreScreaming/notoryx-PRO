@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 
 import '../mesh/mecp.dart';
 import '../mesh/model.dart';
+import '../mesh/plus_code.dart';
 import '../store/mesh_store.dart';
 
 /// Repeats an MECP distress beacon on one conversation until stopped.
@@ -21,6 +22,7 @@ class DistressBeacon extends ChangeNotifier {
     Duration lasts = const Duration(hours: 1),
     this.note = '',
     this.drill = false,
+    this.shortPosition = false,
   }) : _send = send,
        _position = position,
        _incoming = incoming,
@@ -53,6 +55,10 @@ class DistressBeacon extends ChangeNotifier {
   /// Marked as a practice (D01), so nobody treats it as real.
   final bool drill;
 
+  /// Sends position as a Plus Code to save airtime. Other MECP apps may
+  /// only understand `lat,lon`.
+  final bool shortPosition;
+
   /// Beacons the radio accepted.
   int sent = 0;
 
@@ -74,7 +80,10 @@ class DistressBeacon extends ChangeNotifier {
   String textFor((double, double)? at) {
     final codes = ['B01', if (drill) 'D01', if (at != null) 'P05'];
     var free = [
-      if (at != null) '${at.$1.toStringAsFixed(4)},${at.$2.toStringAsFixed(4)}',
+      if (at != null)
+        shortPosition
+            ? PlusCode.encode(at.$1, at.$2)
+            : '${at.$1.toStringAsFixed(4)},${at.$2.toStringAsFixed(4)}',
       if (note.trim().isNotEmpty) note.trim(),
     ].join(' ');
     var m = MecpMessage(

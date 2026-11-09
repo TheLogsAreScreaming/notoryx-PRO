@@ -639,5 +639,10 @@
   "scheduleSave": "Programar",
   "scheduleCancel": "Cancelar este mensaje",
   "scheduleMissed": "Perdido: {time}",
-  "scheduleFailed": "No se pudo enviar: {time}"
+  "scheduleFailed": "No se pudo enviar: {time}",
+  "beaconShort": "Posición corta (Plus Code)",
+  "beaconShortHelp": "Usa menos tiempo de aire, pero otras apps MECP podrían no leerla.",
+  "airtimeBusyTitle": "La radio está muy activa",
+  "airtimeBusySend": "Enviar de todos modos",
+  "airtimeBusyBody": "Esta radio indicó un {percent} % de tiempo de aire usado. Cambiar ajustes por la malla añade más. Espera un poco si puedes."
 }

@@ -7,6 +7,7 @@ import '../app/radio_connection.dart';
 import '../l10n/app_localizations.dart';
 import '../mesh/mesh.dart';
 import '../meshtastic/admin.dart';
+import 'airtime_warning.dart';
 import 'common.dart';
 
 typedef _Text = String Function(AppLocalizations l);
@@ -332,6 +333,11 @@ class _ModuleScreenState extends State<_ModuleScreen> {
       ),
     );
     if (ok != true || !mounted) return;
+    if (_target != null &&
+        !await okToWriteOverMesh(context, widget.connection)) {
+      return;
+    }
+    if (!mounted) return;
     setState(() => _saving = true);
     final messenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
