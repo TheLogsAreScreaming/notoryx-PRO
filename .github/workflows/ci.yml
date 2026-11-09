@@ -14,6 +14,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: '3.47.7'
           cache: true
       - run: flutter pub get
       - name: Lock file is up to date
@@ -57,6 +58,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: '3.47.7'
           cache: true
       - run: flutter pub get
       - name: Build debug APK (checks the Android project compiles)
@@ -69,6 +71,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: '3.47.7'
           cache: true
       - run: flutter pub get
       - name: Build Mac app (checks entitlements and Xcode project)
