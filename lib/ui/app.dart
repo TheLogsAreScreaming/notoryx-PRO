@@ -15,6 +15,7 @@ import 'mute_menu.dart';
 import 'nodes_screen.dart';
 import 'notification_settings.dart';
 import 'radios_screen.dart';
+import 'restore_sheet.dart';
 import 'search_screen.dart';
 import 'theme_screen.dart';
 import 'themes.dart';
@@ -60,6 +61,8 @@ class NotoryxProApp extends StatelessWidget {
     );
   }
 }
+
+enum _MenuAction { export, restore, theme }
 
 /// Inbox, nodes and radios, with a bottom navigation bar.
 class HomeShell extends StatefulWidget {
@@ -182,19 +185,35 @@ class _HomeShellState extends State<HomeShell> {
               builder: (_) => NotificationSettingsSheet(app: app),
             ),
           ),
-          PopupMenuButton<bool>(
+          PopupMenuButton<_MenuAction>(
             key: const Key('inbox-menu'),
-            onSelected: (export) => export
-                ? showExportSheet(context, store: app.store)
-                : Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => ThemeScreen(store: app.store),
-                    ),
-                  ),
+            onSelected: (action) => switch (action) {
+              _MenuAction.export => showExportSheet(context, store: app.store),
+              _MenuAction.restore => restoreFromExport(
+                context,
+                store: app.store,
+              ),
+              _MenuAction.theme => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => ThemeScreen(store: app.store),
+                ),
+              ),
+            },
             itemBuilder: (context) => [
-              if (_tab == 0)
-                PopupMenuItem(value: true, child: Text(context.l10n.exportAll)),
-              PopupMenuItem(value: false, child: Text(context.l10n.themeTitle)),
+              if (_tab == 0) ...[
+                PopupMenuItem(
+                  value: _MenuAction.export,
+                  child: Text(context.l10n.exportAll),
+                ),
+                PopupMenuItem(
+                  value: _MenuAction.restore,
+                  child: Text(context.l10n.restoreTitle),
+                ),
+              ],
+              PopupMenuItem(
+                value: _MenuAction.theme,
+                child: Text(context.l10n.themeTitle),
+              ),
             ],
           ),
         ],

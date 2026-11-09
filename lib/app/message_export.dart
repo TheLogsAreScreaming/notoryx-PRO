@@ -64,6 +64,10 @@ Map<String, Object?> _messageJson(Message m, Map<String, String> titles) => {
   'sentAtUtc': m.sentAt.toUtc().toIso8601String(),
   'receivedAtUtc': m.receivedAt.toUtc().toIso8601String(),
   'delivery': MeshStore.deliveryCode(m.delivery),
+  'deliveryReason': switch (m.delivery) {
+    Failed(:final reason) => reason,
+    _ => null,
+  },
   'from': m.from?.toString(),
   'senderName': m.senderName,
   'hops': m.path.hops,
@@ -73,4 +77,7 @@ Map<String, Object?> _messageJson(Message m, Map<String, String> titles) => {
   'viaMqtt': m.path.viaMqtt,
   'authenticated': m.authenticated,
   'isReaction': m.isReaction,
+  'nativeId': m.nativeId,
+  'replyTo': m.replyTo,
+  'attempts': m.attempts,
 };

@@ -1276,5 +1276,41 @@
   "themeAutumn": "Autumn",
   "themeWinter": "Winter",
   "themeHolidays": "Holiday colours",
-  "themeHolidaysHelp": "Around a few holidays, replaces the season's colours. Only when the season follows the date."
+  "themeHolidaysHelp": "Around a few holidays, replaces the season's colours. Only when the season follows the date.",
+  "restoreTitle": "Restore from export",
+  "restoreAction": "Restore",
+  "restoreNothing": "That file has no messages to restore.",
+  "restoreNotExport": "That isn't a NOTORYX PRO JSON export.",
+  "restoreTooNew": "That file came from a newer version. Update the app first.",
+  "restoreTooBig": "That file is too large to restore.",
+  "restoreConfirm": "Add {count} messages from this file? Nothing here is replaced, and messages you already have are skipped. Verified-sender badges aren't restored.",
+  "@restoreConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreDone": "Added {added}. Already here: {skipped}. Unreadable: {unreadable}.",
+  "@restoreDone": {
+    "placeholders": {
+      "added": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      },
+      "unreadable": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreFailed": "Couldn't restore: {error}",
+  "@restoreFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }
