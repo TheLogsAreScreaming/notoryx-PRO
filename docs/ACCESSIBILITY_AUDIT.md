@@ -42,13 +42,13 @@ The scanner matches text patterns. A flagged line is a place to look, and an unf
 - Five main screens (Inbox, Nodes, Map, Radios, a conversation): tap size, labels and contrast in light and dark, and double-size text on a small phone.
 - All eight themes across those screens: text contrast in light and dark.
 - Places, Appearance, Auto-replies and App lock: tap size, labels and contrast in light and dark, and double-size text.
+- Distress beacon, field reports, scheduled messages, MECP and Team setup: tap size, labels and contrast in light and dark, with the sheet at its opening state only.
 
 ## Known problems
 
 1. **The map is visual by nature.** It has a summary label, but the nodes on it aren't a usable list for a screen reader from that tab. The Nodes tab holds the same nodes as text.
 2. **Few live announcements.** New messages, connection changes and delivery status aren't announced automatically and need checking with a screen reader.
 3. **Long names can be cut off** at the largest text sizes in the four places above.
-4. **Some sheets have no automated accessibility test**: distress beacon, field reports, scheduled messages, team setup, restore and MECP.
 
 ## Not measured
 
@@ -60,5 +60,4 @@ The scanner matches text patterns. A flagged line is a place to look, and an unf
 ## Next steps
 
 1. Walk through with TalkBack and VoiceOver, starting with SOS and the beacon, sending a message, and connecting a radio.
-2. Add the sheets above to the automated tests.
-3. Update this page with the results, and name the device and OS versions used.
+2. Update this page with the results, and name the device and OS versions used.
