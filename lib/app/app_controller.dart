@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 
 import '../mesh/model.dart';
 import '../radio/radio.dart';
 import '../store/mesh_store.dart';
 import 'channel_bridge.dart';
+import 'distress_beacon.dart';
 import 'message_alerts.dart';
 import 'mqtt_feed.dart';
 import 'radio_connection.dart';
@@ -91,6 +94,70 @@ class AppController extends ChangeNotifier {
     return c;
   }
 
+  /// The distress beacon running now, if any.
+  final beacon = ValueNotifier<DistressBeacon?>(null);
+  RadioConnection? _beaconRadio;
+
+  /// Notification ID of a running beacon.
+  static const beaconNoticeId = 2;
+
+  /// Starts a distress beacon on [conversation]; one at a time.
+  Future<void> startBeacon(
+    RadioConnection connection,
+    Conversation conversation, {
+    required Duration every,
+    required Duration lasts,
+    required String noticeTitle,
+    required String noticeBody,
+    required String noticeStop,
+    String note = '',
+    bool drill = false,
+  }) async {
+    if (beacon.value != null) return;
+    final b = DistressBeacon(
+      conversation: conversation,
+      every: every,
+      lasts: lasts,
+      note: note,
+      drill: drill,
+      maxBytes: connection.maxTextBytes,
+      incoming: store.incoming,
+      send: (text) async {
+        if (!connections.contains(connection)) {
+          throw StateError('Radio disconnected');
+        }
+        await connection.sendText(conversation, text);
+      },
+      position: () async {
+        final radio = connection.radio;
+        final p =
+            radio?.position ??
+            (radio == null
+                ? null
+                : (await store.node(radio.id, radio.self))?.position);
+        return p == null ? null : (p.latitude, p.longitude);
+      },
+    );
+    b.addListener(() {
+      if (b.active || !identical(beacon.value, b)) return;
+      beacon.value = null;
+      _beaconRadio = null;
+      unawaited(alerts?.notifier.cancel(beaconNoticeId));
+    });
+    beacon.value = b;
+    _beaconRadio = connection;
+    unawaited(
+      alerts?.notifier.showBeacon(
+        id: beaconNoticeId,
+        title: noticeTitle,
+        body: noticeBody,
+        stopLabel: noticeStop,
+        payload: conversation.key,
+      ),
+    );
+    await b.start();
+  }
+
   /// Disconnects [connection].
   Future<void> disconnect(RadioConnection connection) async {
     final key = _connections.entries
@@ -98,6 +165,7 @@ class AppController extends ChangeNotifier {
         .map((e) => e.key)
         .firstOrNull;
     if (key == null) return;
+    if (identical(_beaconRadio, connection)) await beacon.value?.stop();
     _connections.remove(key);
     connection.removeListener(notifyListeners);
     notifyListeners();
@@ -107,6 +175,7 @@ class AppController extends ChangeNotifier {
 
   /// Disconnects every radio and waits until they have finished.
   Future<void> shutdown() async {
+    await beacon.value?.stop();
     await alerts?.dispose();
     await feeds.stopAll();
     await bridge.stop();

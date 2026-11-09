@@ -1335,5 +1335,58 @@
   "report9Nationality": "8. Patient nationality and status",
   "report9Terrain": "9. Hazards or terrain",
   "reportHelp": "Fills the message box. You still press Send. Leave out anything you don't know.",
-  "reportUse": "Put in message box"
+  "reportUse": "Put in message box",
+  "beaconTitle": "Distress beacon",
+  "beaconHelp": "Sends an automatic MAYDAY with your position on this conversation, again and again, until you stop it or the time runs out. Use it only in a real emergency, or turn on Practice.",
+  "beaconEvery": "Send every",
+  "beaconLasts": "Stop by itself after",
+  "beaconNote": "Note (optional)",
+  "beaconDrill": "Practice",
+  "beaconDrillHelp": "Marks every beacon as a drill.",
+  "beaconStart": "Start beacon",
+  "beaconConfirmReal": "Send a real MAYDAY?",
+  "beaconConfirmDrill": "Start a practice beacon?",
+  "beaconNoticeReal": "Distress beacon on",
+  "beaconNoticeDrill": "Practice beacon on",
+  "beaconStop": "Stop",
+  "beaconStopOk": "Stop and send \"I'm OK\"",
+  "beaconAcknowledged": "Someone acknowledged",
+  "beaconMinutes": "{n} min",
+  "@beaconMinutes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "beaconConfirmBody": "Everyone on this conversation will receive it every {every} minutes for up to {lasts} minutes.",
+  "@beaconConfirmBody": {
+    "placeholders": {
+      "every": {
+        "type": "int"
+      },
+      "lasts": {
+        "type": "int"
+      }
+    }
+  },
+  "beaconNoticeBody": "Sending every {every} minutes. Keep the app running.",
+  "@beaconNoticeBody": {
+    "placeholders": {
+      "every": {
+        "type": "int"
+      }
+    }
+  },
+  "beaconCount": "Sent {sent}, failed {failed}",
+  "@beaconCount": {
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "failed": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -47,6 +47,15 @@ class FakeNotifier implements Notifier {
   }) async => shown.add((id: id, title: title, body: body, payload: payload));
 
   @override
+  Future<void> showBeacon({
+    required int id,
+    required String title,
+    required String body,
+    required String stopLabel,
+    required String payload,
+  }) async => shown.add((id: id, title: title, body: body, payload: payload));
+
+  @override
   Future<void> cancel(int id) async => cancelled.add(id);
 
   @override

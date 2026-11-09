@@ -24,6 +24,16 @@ abstract interface class Notifier {
     required String payload,
   });
 
+  /// Shows a running beacon: stays up, with a stop button on Android.
+  /// Pressing it reports [stopPayload] on [taps].
+  Future<void> showBeacon({
+    required int id,
+    required String title,
+    required String body,
+    required String stopLabel,
+    required String payload,
+  });
+
   /// Removes notification [id].
   Future<void> cancel(int id);
 
@@ -35,6 +45,9 @@ abstract interface class Notifier {
   /// platform needs one; [on] false lets it stop.
   Future<void> keepAlive(bool on, {String title = '', String body = ''});
 }
+
+/// What [Notifier.taps] reports when a beacon's stop button is pressed.
+const stopPayload = 'beacon:stop';
 
 /// [Notifier] on Android, iPhone and Mac.
 class SystemNotifier implements Notifier {
@@ -72,6 +85,10 @@ class SystemNotifier implements Notifier {
         macOS: darwin,
       ),
       onDidReceiveNotificationResponse: (r) {
+        if (r.actionId == _stopAction) {
+          if (!_taps.isClosed) _taps.add(stopPayload);
+          return;
+        }
         if (r.payload case final p? when !_taps.isClosed) _taps.add(p);
       },
     );
@@ -124,6 +141,45 @@ class SystemNotifier implements Notifier {
         android: _channel,
         iOS: DarwinNotificationDetails(),
         macOS: DarwinNotificationDetails(),
+      ),
+    );
+  }
+
+  static const _stopAction = 'stop-beacon';
+
+  @override
+  Future<void> showBeacon({
+    required int id,
+    required String title,
+    required String body,
+    required String stopLabel,
+    required String payload,
+  }) async {
+    if (!_ready) return;
+    await _plugin.show(
+      id: id,
+      title: title,
+      body: body,
+      payload: payload,
+      notificationDetails: NotificationDetails(
+        android: AndroidNotificationDetails(
+          'beacon',
+          'Distress beacon',
+          channelDescription: 'Shown while a distress beacon is running',
+          importance: Importance.high,
+          priority: Priority.high,
+          ongoing: true,
+          autoCancel: false,
+          actions: [
+            AndroidNotificationAction(
+              _stopAction,
+              stopLabel,
+              showsUserInterface: true,
+            ),
+          ],
+        ),
+        iOS: const DarwinNotificationDetails(),
+        macOS: const DarwinNotificationDetails(),
       ),
     );
   }
