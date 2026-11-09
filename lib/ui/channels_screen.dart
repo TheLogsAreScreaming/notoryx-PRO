@@ -8,6 +8,7 @@ import '../app/radio_connection.dart';
 import '../mesh/mesh.dart';
 import '../radio/radio_link.dart';
 import 'common.dart';
+import 'team_pack_screen.dart';
 import 'verify_screen.dart' show openScanner;
 
 /// A radio's channels: share, leave, create and join.
@@ -141,7 +142,20 @@ class _ChannelsScreenState extends State<ChannelsScreen> {
   Widget build(BuildContext context) {
     final l = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: Text(l.channelsTitle(c.radio?.name ?? ''))),
+      appBar: AppBar(
+        title: Text(l.channelsTitle(c.radio?.name ?? '')),
+        actions: [
+          IconButton(
+            tooltip: l.teamTitle,
+            icon: const Icon(Icons.groups_outlined),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => TeamPackScreen(connection: c, store: c.store),
+              ),
+            ),
+          ),
+        ],
+      ),
       body: FutureBuilder<List<ChannelSlot>>(
         future: _slots,
         builder: (context, snap) {

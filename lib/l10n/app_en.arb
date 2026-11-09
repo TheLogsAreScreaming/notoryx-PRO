@@ -1534,5 +1534,46 @@
         "type": "String"
       }
     }
+  },
+  "teamTitle": "Team setup",
+  "teamApplyHeading": "Use a team's setup",
+  "teamScan": "Scan a code",
+  "teamOpenFile": "Open a file",
+  "teamShareHeading": "Share this radio's setup",
+  "teamName": "Team name",
+  "teamChannels": "Channels",
+  "teamRadio": "Radio settings (frequency and speed)",
+  "teamPlaces": "Places on the map",
+  "teamSecretWarning": "This includes your channel keys. Anyone who gets it can read those channels.",
+  "teamBuild": "Create",
+  "teamTooBigForCode": "Too much for a QR code. Share it as a file.",
+  "teamShareFile": "Share as a file",
+  "teamNotPack": "That isn't a team setup.",
+  "teamTooNew": "That came from a newer version. Update the app first.",
+  "teamOtherMesh": "This setup is for the other mesh, so only its places can be used here.",
+  "teamApply": "Apply",
+  "teamRadioConfirmTitle": "Change this radio's settings?",
+  "teamRadioConfirmBody": "The radio may restart. If these settings don't match your local mesh or legal band, it will stop hearing that mesh. Only apply them if you trust who sent this.",
+  "teamApplied": "Channels added: {added}. No free slot: {full}. Places added: {places}.",
+  "@teamApplied": {
+    "placeholders": {
+      "added": {
+        "type": "int"
+      },
+      "full": {
+        "type": "int"
+      },
+      "places": {
+        "type": "int"
+      }
+    }
+  },
+  "teamPlacesCount": "{count} places",
+  "@teamPlacesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }
