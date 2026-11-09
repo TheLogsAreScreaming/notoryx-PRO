@@ -155,7 +155,8 @@ jobs:
           New-Item -ItemType Directory dist | Out-Null
           Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath "dist/NOTORYX-PRO-$version-windows-x64.zip"
           $hash = (Get-FileHash "dist/NOTORYX-PRO-$version-windows-x64.zip" -Algorithm SHA256).Hash.ToLower()
-          "$hash  NOTORYX-PRO-$version-windows-x64.zip" | Out-File -Encoding ascii dist/SHA256SUMS-windows.txt
+          # Plain LF line ending, so sha256sum -c reads the file name correctly.
+          [IO.File]::WriteAllText("dist/SHA256SUMS-windows.txt", "$hash  NOTORYX-PRO-$version-windows-x64.zip`n")
       - uses: actions/upload-artifact@v4
         with:
           name: windows
