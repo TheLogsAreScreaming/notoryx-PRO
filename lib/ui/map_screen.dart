@@ -7,7 +7,9 @@ import '../app/radio_connection.dart';
 import '../mesh/mesh.dart';
 import '../radio/radio.dart';
 import 'admin_screens.dart';
+import '../mesh/places.dart';
 import 'common.dart';
+import 'places_screen.dart';
 import 'themes.dart';
 import 'conversation_screen.dart';
 import 'diagnostics_screen.dart';
@@ -35,6 +37,7 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   final _map = MapController();
   late final Stream<List<Node>> _nodes = widget.app.store.watchAllNodes();
+  late final Stream<List<Place>> _places = widget.app.store.watchPlaces();
   Node? _route;
 
   static LatLng _ll(GeoPoint p) => LatLng(p.latitude, p.longitude);
@@ -95,6 +98,7 @@ class _MapScreenState extends State<MapScreen> {
                       userAgentPackageName: MapTiles.userAgentPackageName,
                       tileProvider: tiles.provider,
                     ),
+                  _placesLayer(),
                   if (route != null && route.length > 1)
                     PolylineLayer(
                       polylines: [
@@ -167,6 +171,20 @@ class _MapScreenState extends State<MapScreen> {
               ),
             Positioned(
               right: 16,
+              bottom: 72,
+              child: FloatingActionButton.small(
+                heroTag: 'map-places',
+                tooltip: l.placesTitle,
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => PlacesScreen(app: widget.app),
+                  ),
+                ),
+                child: const Icon(Icons.bookmark_border),
+              ),
+            ),
+            Positioned(
+              right: 16,
               bottom: 16,
               child: FloatingActionButton.small(
                 heroTag: 'map-fit',
@@ -180,6 +198,67 @@ class _MapScreenState extends State<MapScreen> {
       },
     );
   }
+
+  /// Saved routes, geofences and waypoints.
+  Widget _placesLayer() => StreamBuilder<List<Place>>(
+    stream: _places,
+    builder: (context, snap) {
+      final color = Theme.of(context).colorScheme.tertiary;
+      final places = snap.data ?? const <Place>[];
+      List<Place> of(PlaceKind k) => [
+        for (final p in places)
+          if (p.kind == k) p,
+      ];
+      if (places.isEmpty) return const SizedBox.shrink();
+      return MobileLayerTransformer(
+        child: Stack(
+          children: [
+            CircleLayer(
+              circles: [
+                for (final f in of(PlaceKind.geofence))
+                  CircleMarker(
+                    point: _ll(f.points.first),
+                    radius: f.radiusM!,
+                    useRadiusInMeter: true,
+                    color: color.withValues(alpha: .15),
+                    borderColor: color,
+                    borderStrokeWidth: 2,
+                  ),
+              ],
+            ),
+            PolylineLayer(
+              polylines: [
+                for (final r in of(PlaceKind.route))
+                  Polyline(
+                    points: r.points.map(_ll).toList(),
+                    strokeWidth: 3,
+                    color: color,
+                  ),
+              ],
+            ),
+            MarkerLayer(
+              markers: [
+                for (final w in of(PlaceKind.waypoint))
+                  Marker(
+                    point: _ll(w.points.first),
+                    width: 36,
+                    height: 36,
+                    child: Tooltip(
+                      message: w.name,
+                      child: Icon(
+                        Icons.place,
+                        color: color,
+                        semanticLabel: w.name,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      );
+    },
+  );
 
   /// Our radio → known repeaters → the node; hops without a known position
   /// are skipped. Null when there is nothing to draw.

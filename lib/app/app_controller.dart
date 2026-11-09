@@ -7,6 +7,7 @@ import '../radio/radio.dart';
 import '../store/mesh_store.dart';
 import 'channel_bridge.dart';
 import 'distress_beacon.dart';
+import 'geofence_alerts.dart';
 import 'message_alerts.dart';
 import 'message_scheduler.dart';
 import 'mqtt_feed.dart';
@@ -27,10 +28,16 @@ class AppController extends ChangeNotifier {
   }) : log = log ?? ConnectionLog(),
        alerts = notifier == null
            ? null
-           : MessageAlerts(store: store, notifier: notifier);
+           : MessageAlerts(store: store, notifier: notifier),
+       geofences = notifier == null
+           ? null
+           : GeofenceAlerts(store: store, notifier: notifier);
 
   /// Message notifications; null when there is no notifier (tests).
   final MessageAlerts? alerts;
+
+  /// Geofence crossings; null when there is no notifier (tests).
+  final GeofenceAlerts? geofences;
 
   final MeshStore store;
   final LinkFactory links;

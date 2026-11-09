@@ -225,6 +225,21 @@ enum DeliveryCode {
 
 /// The app's SQLite database.
 ///
+/// Saved waypoints, routes and geofences. Schema v9.
+@DataClassName('PlaceRow')
+class Places extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  /// `PlaceKind.name`.
+  TextColumn get kind => text()();
+  TextColumn get name => text()();
+
+  /// `[[lat, lon, alt?], ...]` as JSON.
+  TextColumn get points => text()();
+  RealColumn get radiusM => real().nullable()();
+  BoolColumn get alerts => boolean().withDefault(const Constant(true))();
+}
+
 /// Schema changes bump [schemaVersion] and add a step to [migration]; each
 /// version's schema is saved in `drift_schemas/` and tested.
 @DriftDatabase(
@@ -239,13 +254,14 @@ enum DeliveryCode {
     Preferences,
     RadioContacts,
     TraceRecords,
+    Places,
   ],
 )
 class MeshDatabase extends _$MeshDatabase {
   MeshDatabase(super.e);
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -287,6 +303,10 @@ class MeshDatabase extends _$MeshDatabase {
       from7To8: (m, schema) async {
         // v8: saved trace results.
         await m.createTable(schema.traceRecords);
+      },
+      from8To9: (m, schema) async {
+        // v9: waypoints, routes and geofences.
+        await m.createTable(schema.places);
       },
     ),
   );
