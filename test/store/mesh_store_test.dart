@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:notoryx_pro/mesh/diagnostics.dart';
 import 'package:notoryx_pro/mesh/model.dart';
 import 'package:notoryx_pro/radio/radio_link.dart';
 import 'package:notoryx_pro/store/mesh_store.dart';
@@ -43,6 +44,48 @@ void main() {
 
   setUp(() => store = MeshStore.memory());
   tearDown(() => store.close());
+
+  group('saved traces', () {
+    TraceResult trace(NodeKey to, int minute) => TraceResult(
+      target: to,
+      towards: const [TraceHop('Peak', 3.5), TraceHop('b2', null)],
+      back: const [TraceHop('Ridge Base', -1)],
+      time: t0.add(Duration(minutes: minute)),
+    );
+
+    test('come back newest first, hops intact, per node and radio', () async {
+      final a = NodeKey.meshtastic(1);
+      final b = NodeKey.meshtastic(2);
+      await store.addTrace(mt, 'Old name', trace(a, 0));
+      await store.addTrace(mt, 'New name', trace(a, 5));
+      await store.addTrace(mt, 'Other', trace(b, 1));
+      final got = await store.traces(mt, a);
+      expect(got.map((t) => t.targetName), ['New name', 'Old name']);
+      final r = got.first.result;
+      expect(r.target, a);
+      expect(r.time.toUtc(), t0.add(const Duration(minutes: 5)));
+      expect(r.towards.map((h) => h.label), ['Peak', 'b2']);
+      expect(r.towards.map((h) => h.snr), [3.5, null]);
+      expect(r.back.single.snr, -1.0);
+      expect(r.weakest!.label, 'Ridge Base');
+      expect(await store.traces(mc, a), isEmpty);
+
+      await store.clearTraces(mt, a);
+      expect(await store.traces(mt, a), isEmpty);
+      expect(await store.traces(mt, b), hasLength(1));
+    });
+
+    test('only the newest for a node are kept', () async {
+      final a = NodeKey.meshtastic(1);
+      for (var i = 0; i < MeshStore.tracesKept + 3; i++) {
+        await store.addTrace(mt, 'n$i', trace(a, i));
+      }
+      final got = await store.traces(mt, a);
+      expect(got, hasLength(MeshStore.tracesKept));
+      expect(got.first.targetName, 'n${MeshStore.tracesKept + 2}');
+      expect(got.last.targetName, 'n3');
+    });
+  });
 
   test('keys parse back from their text form', () {
     final dm = DirectConversation(mt, NodeKey.meshtastic(7));

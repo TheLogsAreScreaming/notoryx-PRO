@@ -5103,6 +5103,457 @@ class RadioContactsCompanion extends UpdateCompanion<RadioContactRow> {
   }
 }
 
+class $TraceRecordsTable extends TraceRecords
+    with TableInfo<$TraceRecordsTable, TraceRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TraceRecordsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _radioIdMeta = const VerificationMeta(
+    'radioId',
+  );
+  @override
+  late final GeneratedColumn<String> radioId = GeneratedColumn<String>(
+    'radio_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nodeKeyMeta = const VerificationMeta(
+    'nodeKey',
+  );
+  @override
+  late final GeneratedColumn<String> nodeKey = GeneratedColumn<String>(
+    'node_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _targetNameMeta = const VerificationMeta(
+    'targetName',
+  );
+  @override
+  late final GeneratedColumn<String> targetName = GeneratedColumn<String>(
+    'target_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _timeMeta = const VerificationMeta('time');
+  @override
+  late final GeneratedColumn<DateTime> time = GeneratedColumn<DateTime>(
+    'time',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _towardsMeta = const VerificationMeta(
+    'towards',
+  );
+  @override
+  late final GeneratedColumn<String> towards = GeneratedColumn<String>(
+    'towards',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _backMeta = const VerificationMeta('back');
+  @override
+  late final GeneratedColumn<String> back = GeneratedColumn<String>(
+    'back',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    radioId,
+    nodeKey,
+    targetName,
+    time,
+    towards,
+    back,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'trace_records';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TraceRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('radio_id')) {
+      context.handle(
+        _radioIdMeta,
+        radioId.isAcceptableOrUnknown(data['radio_id']!, _radioIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_radioIdMeta);
+    }
+    if (data.containsKey('node_key')) {
+      context.handle(
+        _nodeKeyMeta,
+        nodeKey.isAcceptableOrUnknown(data['node_key']!, _nodeKeyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nodeKeyMeta);
+    }
+    if (data.containsKey('target_name')) {
+      context.handle(
+        _targetNameMeta,
+        targetName.isAcceptableOrUnknown(data['target_name']!, _targetNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_targetNameMeta);
+    }
+    if (data.containsKey('time')) {
+      context.handle(
+        _timeMeta,
+        time.isAcceptableOrUnknown(data['time']!, _timeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_timeMeta);
+    }
+    if (data.containsKey('towards')) {
+      context.handle(
+        _towardsMeta,
+        towards.isAcceptableOrUnknown(data['towards']!, _towardsMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_towardsMeta);
+    }
+    if (data.containsKey('back')) {
+      context.handle(
+        _backMeta,
+        back.isAcceptableOrUnknown(data['back']!, _backMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_backMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TraceRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TraceRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      radioId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}radio_id'],
+      )!,
+      nodeKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}node_key'],
+      )!,
+      targetName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}target_name'],
+      )!,
+      time: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}time'],
+      )!,
+      towards: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}towards'],
+      )!,
+      back: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}back'],
+      )!,
+    );
+  }
+
+  @override
+  $TraceRecordsTable createAlias(String alias) {
+    return $TraceRecordsTable(attachedDatabase, alias);
+  }
+}
+
+class TraceRow extends DataClass implements Insertable<TraceRow> {
+  final int id;
+  final String radioId;
+
+  /// `NodeKey.toString()`.
+  final String nodeKey;
+
+  /// The node's name at the time, as names can change.
+  final String targetName;
+  final DateTime time;
+
+  /// JSON lists of `{"label": text, "snr": number or null}`.
+  final String towards;
+  final String back;
+  const TraceRow({
+    required this.id,
+    required this.radioId,
+    required this.nodeKey,
+    required this.targetName,
+    required this.time,
+    required this.towards,
+    required this.back,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['radio_id'] = Variable<String>(radioId);
+    map['node_key'] = Variable<String>(nodeKey);
+    map['target_name'] = Variable<String>(targetName);
+    map['time'] = Variable<DateTime>(time);
+    map['towards'] = Variable<String>(towards);
+    map['back'] = Variable<String>(back);
+    return map;
+  }
+
+  TraceRecordsCompanion toCompanion(bool nullToAbsent) {
+    return TraceRecordsCompanion(
+      id: Value(id),
+      radioId: Value(radioId),
+      nodeKey: Value(nodeKey),
+      targetName: Value(targetName),
+      time: Value(time),
+      towards: Value(towards),
+      back: Value(back),
+    );
+  }
+
+  factory TraceRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TraceRow(
+      id: serializer.fromJson<int>(json['id']),
+      radioId: serializer.fromJson<String>(json['radioId']),
+      nodeKey: serializer.fromJson<String>(json['nodeKey']),
+      targetName: serializer.fromJson<String>(json['targetName']),
+      time: serializer.fromJson<DateTime>(json['time']),
+      towards: serializer.fromJson<String>(json['towards']),
+      back: serializer.fromJson<String>(json['back']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'radioId': serializer.toJson<String>(radioId),
+      'nodeKey': serializer.toJson<String>(nodeKey),
+      'targetName': serializer.toJson<String>(targetName),
+      'time': serializer.toJson<DateTime>(time),
+      'towards': serializer.toJson<String>(towards),
+      'back': serializer.toJson<String>(back),
+    };
+  }
+
+  TraceRow copyWith({
+    int? id,
+    String? radioId,
+    String? nodeKey,
+    String? targetName,
+    DateTime? time,
+    String? towards,
+    String? back,
+  }) => TraceRow(
+    id: id ?? this.id,
+    radioId: radioId ?? this.radioId,
+    nodeKey: nodeKey ?? this.nodeKey,
+    targetName: targetName ?? this.targetName,
+    time: time ?? this.time,
+    towards: towards ?? this.towards,
+    back: back ?? this.back,
+  );
+  TraceRow copyWithCompanion(TraceRecordsCompanion data) {
+    return TraceRow(
+      id: data.id.present ? data.id.value : this.id,
+      radioId: data.radioId.present ? data.radioId.value : this.radioId,
+      nodeKey: data.nodeKey.present ? data.nodeKey.value : this.nodeKey,
+      targetName: data.targetName.present
+          ? data.targetName.value
+          : this.targetName,
+      time: data.time.present ? data.time.value : this.time,
+      towards: data.towards.present ? data.towards.value : this.towards,
+      back: data.back.present ? data.back.value : this.back,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TraceRow(')
+          ..write('id: $id, ')
+          ..write('radioId: $radioId, ')
+          ..write('nodeKey: $nodeKey, ')
+          ..write('targetName: $targetName, ')
+          ..write('time: $time, ')
+          ..write('towards: $towards, ')
+          ..write('back: $back')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, radioId, nodeKey, targetName, time, towards, back);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TraceRow &&
+          other.id == this.id &&
+          other.radioId == this.radioId &&
+          other.nodeKey == this.nodeKey &&
+          other.targetName == this.targetName &&
+          other.time == this.time &&
+          other.towards == this.towards &&
+          other.back == this.back);
+}
+
+class TraceRecordsCompanion extends UpdateCompanion<TraceRow> {
+  final Value<int> id;
+  final Value<String> radioId;
+  final Value<String> nodeKey;
+  final Value<String> targetName;
+  final Value<DateTime> time;
+  final Value<String> towards;
+  final Value<String> back;
+  const TraceRecordsCompanion({
+    this.id = const Value.absent(),
+    this.radioId = const Value.absent(),
+    this.nodeKey = const Value.absent(),
+    this.targetName = const Value.absent(),
+    this.time = const Value.absent(),
+    this.towards = const Value.absent(),
+    this.back = const Value.absent(),
+  });
+  TraceRecordsCompanion.insert({
+    this.id = const Value.absent(),
+    required String radioId,
+    required String nodeKey,
+    required String targetName,
+    required DateTime time,
+    required String towards,
+    required String back,
+  }) : radioId = Value(radioId),
+       nodeKey = Value(nodeKey),
+       targetName = Value(targetName),
+       time = Value(time),
+       towards = Value(towards),
+       back = Value(back);
+  static Insertable<TraceRow> custom({
+    Expression<int>? id,
+    Expression<String>? radioId,
+    Expression<String>? nodeKey,
+    Expression<String>? targetName,
+    Expression<DateTime>? time,
+    Expression<String>? towards,
+    Expression<String>? back,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (radioId != null) 'radio_id': radioId,
+      if (nodeKey != null) 'node_key': nodeKey,
+      if (targetName != null) 'target_name': targetName,
+      if (time != null) 'time': time,
+      if (towards != null) 'towards': towards,
+      if (back != null) 'back': back,
+    });
+  }
+
+  TraceRecordsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? radioId,
+    Value<String>? nodeKey,
+    Value<String>? targetName,
+    Value<DateTime>? time,
+    Value<String>? towards,
+    Value<String>? back,
+  }) {
+    return TraceRecordsCompanion(
+      id: id ?? this.id,
+      radioId: radioId ?? this.radioId,
+      nodeKey: nodeKey ?? this.nodeKey,
+      targetName: targetName ?? this.targetName,
+      time: time ?? this.time,
+      towards: towards ?? this.towards,
+      back: back ?? this.back,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (radioId.present) {
+      map['radio_id'] = Variable<String>(radioId.value);
+    }
+    if (nodeKey.present) {
+      map['node_key'] = Variable<String>(nodeKey.value);
+    }
+    if (targetName.present) {
+      map['target_name'] = Variable<String>(targetName.value);
+    }
+    if (time.present) {
+      map['time'] = Variable<DateTime>(time.value);
+    }
+    if (towards.present) {
+      map['towards'] = Variable<String>(towards.value);
+    }
+    if (back.present) {
+      map['back'] = Variable<String>(back.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TraceRecordsCompanion(')
+          ..write('id: $id, ')
+          ..write('radioId: $radioId, ')
+          ..write('nodeKey: $nodeKey, ')
+          ..write('targetName: $targetName, ')
+          ..write('time: $time, ')
+          ..write('towards: $towards, ')
+          ..write('back: $back')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$MeshDatabase extends GeneratedDatabase {
   _$MeshDatabase(QueryExecutor e) : super(e);
   $MeshDatabaseManager get managers => $MeshDatabaseManager(this);
@@ -5117,6 +5568,7 @@ abstract class _$MeshDatabase extends GeneratedDatabase {
       $ConversationStatesTable(this);
   late final $PreferencesTable preferences = $PreferencesTable(this);
   late final $RadioContactsTable radioContacts = $RadioContactsTable(this);
+  late final $TraceRecordsTable traceRecords = $TraceRecordsTable(this);
   late final Index messagesByConversation = Index(
     'messages_by_conversation',
     'CREATE INDEX messages_by_conversation ON messages (conversation, id)',
@@ -5143,6 +5595,7 @@ abstract class _$MeshDatabase extends GeneratedDatabase {
     conversationStates,
     preferences,
     radioContacts,
+    traceRecords,
     messagesByConversation,
     messagesByNativeId,
     telemetryByNode,
@@ -7738,6 +8191,246 @@ typedef $$RadioContactsTableProcessedTableManager =
       RadioContactRow,
       PrefetchHooks Function()
     >;
+typedef $$TraceRecordsTableCreateCompanionBuilder =
+    TraceRecordsCompanion Function({
+      Value<int> id,
+      required String radioId,
+      required String nodeKey,
+      required String targetName,
+      required DateTime time,
+      required String towards,
+      required String back,
+    });
+typedef $$TraceRecordsTableUpdateCompanionBuilder =
+    TraceRecordsCompanion Function({
+      Value<int> id,
+      Value<String> radioId,
+      Value<String> nodeKey,
+      Value<String> targetName,
+      Value<DateTime> time,
+      Value<String> towards,
+      Value<String> back,
+    });
+
+class $$TraceRecordsTableFilterComposer
+    extends Composer<_$MeshDatabase, $TraceRecordsTable> {
+  $$TraceRecordsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get radioId => $composableBuilder(
+    column: $table.radioId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nodeKey => $composableBuilder(
+    column: $table.nodeKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get targetName => $composableBuilder(
+    column: $table.targetName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get time => $composableBuilder(
+    column: $table.time,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get towards => $composableBuilder(
+    column: $table.towards,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get back => $composableBuilder(
+    column: $table.back,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$TraceRecordsTableOrderingComposer
+    extends Composer<_$MeshDatabase, $TraceRecordsTable> {
+  $$TraceRecordsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get radioId => $composableBuilder(
+    column: $table.radioId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nodeKey => $composableBuilder(
+    column: $table.nodeKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get targetName => $composableBuilder(
+    column: $table.targetName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get time => $composableBuilder(
+    column: $table.time,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get towards => $composableBuilder(
+    column: $table.towards,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get back => $composableBuilder(
+    column: $table.back,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TraceRecordsTableAnnotationComposer
+    extends Composer<_$MeshDatabase, $TraceRecordsTable> {
+  $$TraceRecordsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get radioId =>
+      $composableBuilder(column: $table.radioId, builder: (column) => column);
+
+  GeneratedColumn<String> get nodeKey =>
+      $composableBuilder(column: $table.nodeKey, builder: (column) => column);
+
+  GeneratedColumn<String> get targetName => $composableBuilder(
+    column: $table.targetName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get time =>
+      $composableBuilder(column: $table.time, builder: (column) => column);
+
+  GeneratedColumn<String> get towards =>
+      $composableBuilder(column: $table.towards, builder: (column) => column);
+
+  GeneratedColumn<String> get back =>
+      $composableBuilder(column: $table.back, builder: (column) => column);
+}
+
+class $$TraceRecordsTableTableManager
+    extends
+        RootTableManager<
+          _$MeshDatabase,
+          $TraceRecordsTable,
+          TraceRow,
+          $$TraceRecordsTableFilterComposer,
+          $$TraceRecordsTableOrderingComposer,
+          $$TraceRecordsTableAnnotationComposer,
+          $$TraceRecordsTableCreateCompanionBuilder,
+          $$TraceRecordsTableUpdateCompanionBuilder,
+          (
+            TraceRow,
+            BaseReferences<_$MeshDatabase, $TraceRecordsTable, TraceRow>,
+          ),
+          TraceRow,
+          PrefetchHooks Function()
+        > {
+  $$TraceRecordsTableTableManager(_$MeshDatabase db, $TraceRecordsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TraceRecordsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TraceRecordsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TraceRecordsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> radioId = const Value.absent(),
+                Value<String> nodeKey = const Value.absent(),
+                Value<String> targetName = const Value.absent(),
+                Value<DateTime> time = const Value.absent(),
+                Value<String> towards = const Value.absent(),
+                Value<String> back = const Value.absent(),
+              }) => TraceRecordsCompanion(
+                id: id,
+                radioId: radioId,
+                nodeKey: nodeKey,
+                targetName: targetName,
+                time: time,
+                towards: towards,
+                back: back,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String radioId,
+                required String nodeKey,
+                required String targetName,
+                required DateTime time,
+                required String towards,
+                required String back,
+              }) => TraceRecordsCompanion.insert(
+                id: id,
+                radioId: radioId,
+                nodeKey: nodeKey,
+                targetName: targetName,
+                time: time,
+                towards: towards,
+                back: back,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$TraceRecordsTable, TraceRow>(table),
+                  BaseReferences<_$MeshDatabase, $TraceRecordsTable, TraceRow>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$TraceRecordsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$MeshDatabase,
+      $TraceRecordsTable,
+      TraceRow,
+      $$TraceRecordsTableFilterComposer,
+      $$TraceRecordsTableOrderingComposer,
+      $$TraceRecordsTableAnnotationComposer,
+      $$TraceRecordsTableCreateCompanionBuilder,
+      $$TraceRecordsTableUpdateCompanionBuilder,
+      (TraceRow, BaseReferences<_$MeshDatabase, $TraceRecordsTable, TraceRow>),
+      TraceRow,
+      PrefetchHooks Function()
+    >;
 
 class $MeshDatabaseManager {
   final _$MeshDatabase _db;
@@ -7760,4 +8453,6 @@ class $MeshDatabaseManager {
       $$PreferencesTableTableManager(_db, _db.preferences);
   $$RadioContactsTableTableManager get radioContacts =>
       $$RadioContactsTableTableManager(_db, _db.radioContacts);
+  $$TraceRecordsTableTableManager get traceRecords =>
+      $$TraceRecordsTableTableManager(_db, _db.traceRecords);
 }

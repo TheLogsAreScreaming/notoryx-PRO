@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 
+import '../mesh/diagnostics.dart';
 import '../mesh/identity.dart';
 import '../mesh/model.dart';
 import '../mesh/telemetry.dart';
@@ -550,6 +552,87 @@ class MeshStore {
       (db.select(db.preferences)..where((p) => p.name.equals(name)))
           .watchSingleOrNull()
           .map((r) => r?.value);
+
+  // Traces
+
+  /// How many traces are kept for each node on each radio.
+  static const tracesKept = 50;
+
+  static String _hopsJson(List<TraceHop> hops) => jsonEncode([
+    for (final h in hops) {'label': h.label, 'snr': h.snr},
+  ]);
+
+  static List<TraceHop> _hopsOf(String text) => [
+    for (final h in jsonDecode(text) as List<Object?>)
+      TraceHop(
+        (h as Map<String, Object?>)['label'] as String,
+        (h['snr'] as num?)?.toDouble(),
+      ),
+  ];
+
+  /// Saves a finished trace and drops all but the newest [tracesKept] for
+  /// that node.
+  Future<void> addTrace(RadioId radio, String targetName, TraceResult r) =>
+      db.transaction(() async {
+        await db
+            .into(db.traceRecords)
+            .insert(
+              TraceRecordsCompanion.insert(
+                radioId: radio.toString(),
+                nodeKey: r.target.toString(),
+                targetName: targetName,
+                time: r.time,
+                towards: _hopsJson(r.towards),
+                back: _hopsJson(r.back),
+              ),
+            );
+        final old = await (_tracesQuery(
+          radio,
+          r.target,
+        )..limit(1 << 31, offset: tracesKept)).get();
+        if (old.isEmpty) return;
+        await (db.delete(
+          db.traceRecords,
+        )..where((t) => t.id.isIn(old.map((o) => o.id)))).go();
+      });
+
+  SimpleSelectStatement<$TraceRecordsTable, TraceRow> _tracesQuery(
+    RadioId radio,
+    NodeKey node,
+  ) => db.select(db.traceRecords)
+    ..where(
+      (t) =>
+          t.radioId.equals(radio.toString()) &
+          t.nodeKey.equals(node.toString()),
+    )
+    ..orderBy([
+      (t) => OrderingTerm.desc(t.time),
+      (t) => OrderingTerm.desc(t.id),
+    ]);
+
+  /// A node's saved traces, newest first.
+  Future<List<SavedTrace>> traces(RadioId radio, NodeKey node) async => [
+    for (final r in await _tracesQuery(radio, node).get())
+      SavedTrace(
+        id: r.id,
+        targetName: r.targetName,
+        result: TraceResult(
+          target: node,
+          towards: _hopsOf(r.towards),
+          back: _hopsOf(r.back),
+          time: r.time,
+        ),
+      ),
+  ];
+
+  /// Deletes a node's saved traces.
+  Future<void> clearTraces(RadioId radio, NodeKey node) =>
+      (db.delete(db.traceRecords)..where(
+            (t) =>
+                t.radioId.equals(radio.toString()) &
+                t.nodeKey.equals(node.toString()),
+          ))
+          .go();
 
   // Telemetry
 

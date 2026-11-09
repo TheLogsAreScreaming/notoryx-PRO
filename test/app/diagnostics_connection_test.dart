@@ -120,6 +120,10 @@ void main() {
     expect(r.towards.map((h) => h.snr), [3.0, 1.0]);
     expect(r.back.map((h) => h.label), ['Peak', 'Ridge Base']);
     expect(r.weakest!.snr, -1.0);
+    await c.traceAndSave(routed);
+    final saved = await store.traces(routed.radioId, routed.key);
+    expect(saved.single.targetName, 'Sam');
+    expect(saved.single.result.towards.map((h) => h.label), ['Peak', 'b2']);
     await app.shutdown();
   });
 

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../app/radio_connection.dart';
 import '../mesh/mesh.dart';
 import '../radio/radio_link.dart';
+import '../store/mesh_store.dart';
 import 'common.dart';
 import 'line_chart.dart';
 
@@ -297,7 +298,9 @@ class TraceSheet extends StatefulWidget {
 }
 
 class _TraceSheetState extends State<TraceSheet> {
-  late final Future<TraceResult> _trace = widget.connection.trace(widget.node);
+  late final Future<TraceResult> _trace = widget.connection.traceAndSave(
+    widget.node,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -326,39 +329,156 @@ class _TraceSheetState extends State<TraceSheet> {
                 ],
               );
             }
-            Widget hops(List<TraceHop> list) => Column(
-              children: [
-                for (final h in list)
-                  ListTile(
-                    dense: true,
-                    leading: SignalBars(signalBars(PathFacts(snr: h.snr))),
-                    title: Text(h.label),
-                    trailing: Text(
-                      h.snr == null
-                          ? l.traceNotReported
-                          : l.pathSnr(h.snr!.toStringAsFixed(1)),
-                    ),
-                  ),
-              ],
-            );
-            final weakest = r.weakest;
+            return TraceDetails(result: r, targetName: widget.node.displayName);
+          },
+        ),
+      ),
+    );
+  }
+}
+
+/// The hops of one trace, each way, and which was weakest.
+class TraceDetails extends StatelessWidget {
+  const TraceDetails({
+    super.key,
+    required this.result,
+    required this.targetName,
+  });
+
+  final TraceResult result;
+  final String targetName;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    Widget hops(List<TraceHop> list) => Column(
+      children: [
+        for (final h in list)
+          ListTile(
+            dense: true,
+            leading: SignalBars(signalBars(PathFacts(snr: h.snr))),
+            title: Text(h.label),
+            trailing: Text(
+              h.snr == null
+                  ? l.traceNotReported
+                  : l.pathSnr(h.snr!.toStringAsFixed(1)),
+            ),
+          ),
+      ],
+    );
+    final title = Theme.of(context).textTheme.titleSmall;
+    final weakest = result.weakest;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(l.traceTowards(targetName), style: title),
+        hops(result.towards),
+        if (result.back.isNotEmpty) ...[
+          Text(l.traceBack, style: title),
+          hops(result.back),
+        ],
+        if (weakest != null) Text(l.traceWeakest(weakest.label)),
+      ],
+    );
+  }
+}
+
+/// A node's saved traces, newest first; tap one to see its hops.
+class SavedTracesSheet extends StatefulWidget {
+  const SavedTracesSheet({super.key, required this.store, required this.node});
+
+  final MeshStore store;
+  final Node node;
+
+  @override
+  State<SavedTracesSheet> createState() => _SavedTracesSheetState();
+}
+
+class _SavedTracesSheetState extends State<SavedTracesSheet> {
+  late Future<List<SavedTrace>> _traces = _load();
+
+  Future<List<SavedTrace>> _load() =>
+      widget.store.traces(widget.node.radioId, widget.node.key);
+
+  Future<void> _clear() async {
+    final l = context.l10n;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text(l.traceClearConfirm(widget.node.displayName)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l.radiosCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l.traceClear),
+          ),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    await widget.store.clearTraces(widget.node.radioId, widget.node.key);
+    if (!mounted) return;
+    final next = _load();
+    setState(() {
+      _traces = next;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final m = MaterialLocalizations.of(context);
+    String when(DateTime t) {
+      final local = t.toLocal();
+      return '${m.formatShortDate(local)} '
+          '${m.formatTimeOfDay(TimeOfDay.fromDateTime(local))}';
+    }
+
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        child: FutureBuilder<List<SavedTrace>>(
+          future: _traces,
+          builder: (context, snap) {
+            if (snap.hasError) {
+              return Text(l.traceHistoryFailed);
+            }
+            final list = snap.data;
+            if (list == null) {
+              return const Center(child: CircularProgressIndicator());
+            }
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  l.traceTowards(widget.node.displayName),
-                  style: Theme.of(context).textTheme.titleSmall,
+                  l.traceHistoryTitle(widget.node.displayName),
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
-                hops(r.towards),
-                if (r.back.isNotEmpty) ...[
-                  Text(
-                    l.traceBack,
-                    style: Theme.of(context).textTheme.titleSmall,
+                if (list.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Text(l.traceHistoryEmpty),
                   ),
-                  hops(r.back),
-                ],
-                if (weakest != null) Text(l.traceWeakest(weakest.label)),
+                for (final t in list)
+                  ExpansionTile(
+                    tilePadding: EdgeInsets.zero,
+                    title: Text(when(t.result.time)),
+                    subtitle: Text(l.traceHopCount(t.result.towards.length)),
+                    children: [
+                      TraceDetails(result: t.result, targetName: t.targetName),
+                    ],
+                  ),
+                if (list.isNotEmpty)
+                  TextButton.icon(
+                    icon: const Icon(Icons.delete_outline),
+                    label: Text(l.traceClear),
+                    onPressed: _clear,
+                  ),
               ],
             );
           },

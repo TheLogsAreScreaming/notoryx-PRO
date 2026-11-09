@@ -194,6 +194,24 @@ class RadioContacts extends Table {
   Set<Column<Object>> get primaryKey => {radioId, nodeKey};
 }
 
+/// Finished traces, newest kept per node. Schema v8.
+@DataClassName('TraceRow')
+class TraceRecords extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get radioId => text()();
+
+  /// `NodeKey.toString()`.
+  TextColumn get nodeKey => text()();
+
+  /// The node's name at the time, as names can change.
+  TextColumn get targetName => text()();
+  DateTimeColumn get time => dateTime()();
+
+  /// JSON lists of `{"label": text, "snr": number or null}`.
+  TextColumn get towards => text()();
+  TextColumn get back => text()();
+}
+
 /// How delivery states are stored.
 enum DeliveryCode {
   pending,
@@ -220,13 +238,14 @@ enum DeliveryCode {
     ConversationStates,
     Preferences,
     RadioContacts,
+    TraceRecords,
   ],
 )
 class MeshDatabase extends _$MeshDatabase {
   MeshDatabase(super.e);
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -264,6 +283,10 @@ class MeshDatabase extends _$MeshDatabase {
       from6To7: (m, schema) async {
         // v7: which nodes are on each MeshCore radio; filled on connect.
         await m.createTable(schema.radioContacts);
+      },
+      from7To8: (m, schema) async {
+        // v8: saved trace results.
+        await m.createTable(schema.traceRecords);
       },
     ),
   );

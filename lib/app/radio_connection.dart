@@ -120,6 +120,18 @@ abstract class RadioConnection extends ChangeNotifier {
   /// Traces the route to [node] and reports each hop's signal.
   Future<TraceResult> trace(Node node);
 
+  /// Runs [trace] and saves a successful result. A failed save still
+  /// returns the result, as the trace itself worked.
+  Future<TraceResult> traceAndSave(Node node) async {
+    final r = await trace(node);
+    try {
+      await store.addTrace(node.radioId, node.displayName, r);
+    } on Object catch (e) {
+      debugPrint('Could not save the trace: $e');
+    }
+    return r;
+  }
+
   /// Display names for this radio's nodes, for labelling hops.
   Future<Map<NodeKey, Node>> knownNodes() async {
     final r = _radio;
