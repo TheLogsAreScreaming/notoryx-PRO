@@ -4,24 +4,11 @@ import '../l10n/app_localizations.dart';
 import '../mesh/diagnostics.dart';
 import '../mesh/model.dart';
 import '../radio/radio.dart';
+import 'themes.dart';
 
 /// Shortcut to the generated strings.
 extension L10nContext on BuildContext {
   AppLocalizations get l10n => AppLocalizations.of(this);
-}
-
-/// Colours that tell the two meshes apart. Each badge also shows the
-/// protocol's name, so colour is never the only signal.
-///
-/// Light mode uses darker shades so badge text stays readable on white.
-Color protocolColor(RadioProtocol p, ColorScheme scheme) {
-  final light = scheme.brightness == Brightness.light;
-  return switch (p) {
-    RadioProtocol.meshcore =>
-      light ? const Color(0xFFA84A05) : const Color(0xFFE0782A),
-    RadioProtocol.meshtastic =>
-      light ? const Color(0xFF2F6B12) : const Color(0xFF67C23A),
-  };
 }
 
 String protocolName(BuildContext context, RadioProtocol p) => switch (p) {
@@ -37,7 +24,7 @@ class ProtocolBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = protocolColor(protocol, Theme.of(context).colorScheme);
+    final color = meshColor(protocol, Theme.of(context));
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(

@@ -16,13 +16,17 @@ import 'nodes_screen.dart';
 import 'notification_settings.dart';
 import 'radios_screen.dart';
 import 'search_screen.dart';
-
-/// Blue from the NOTORYX PRO icon.
-const notoryxBlue = Color(0xFF2AA7E0);
+import 'theme_screen.dart';
+import 'themes.dart';
 
 /// The app: localisation, theme and the three tabs.
 class NotoryxProApp extends StatelessWidget {
-  NotoryxProApp({super.key, required this.app, this.tiles});
+  NotoryxProApp({
+    super.key,
+    required this.app,
+    this.tiles,
+    this.initialTheme = const ThemeChoice(),
+  });
 
   final AppController app;
 
@@ -32,21 +36,26 @@ class NotoryxProApp extends StatelessWidget {
   /// Map tiles; null leaves the map without a background (tests).
   final MapTiles? tiles;
 
+  /// The saved theme, read before the first frame so it doesn't flash.
+  final ThemeChoice initialTheme;
+
   @override
   Widget build(BuildContext context) {
+    return StreamBuilder<String?>(
+      stream: app.store.watchPreference(ThemeChoice.prefName),
+      builder: (context, snap) =>
+          _build(snap.hasData ? ThemeChoice.decode(snap.data) : initialTheme),
+    );
+  }
+
+  Widget _build(ThemeChoice choice) {
     return MaterialApp(
       navigatorKey: navigatorKey,
       onGenerateTitle: (context) => context.l10n.appTitle,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      theme: ThemeData(
-        colorSchemeSeed: notoryxBlue,
-        brightness: Brightness.light,
-      ),
-      darkTheme: ThemeData(
-        colorSchemeSeed: notoryxBlue,
-        brightness: Brightness.dark,
-      ),
+      theme: buildTheme(choice, Brightness.light),
+      darkTheme: buildTheme(choice, Brightness.dark),
       home: HomeShell(app: app, tiles: tiles, navigatorKey: navigatorKey),
     );
   }
@@ -173,14 +182,21 @@ class _HomeShellState extends State<HomeShell> {
               builder: (_) => NotificationSettingsSheet(app: app),
             ),
           ),
-          if (_tab == 0)
-            PopupMenuButton<bool>(
-              key: const Key('inbox-menu'),
-              onSelected: (_) => showExportSheet(context, store: app.store),
-              itemBuilder: (context) => [
+          PopupMenuButton<bool>(
+            key: const Key('inbox-menu'),
+            onSelected: (export) => export
+                ? showExportSheet(context, store: app.store)
+                : Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => ThemeScreen(store: app.store),
+                    ),
+                  ),
+            itemBuilder: (context) => [
+              if (_tab == 0)
                 PopupMenuItem(value: true, child: Text(context.l10n.exportAll)),
-              ],
-            ),
+              PopupMenuItem(value: false, child: Text(context.l10n.themeTitle)),
+            ],
+          ),
         ],
       ),
       body: switch (_tab) {
