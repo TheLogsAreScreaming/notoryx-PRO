@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'mecp_codes.dart';
+import 'plus_code.dart';
 
 /// MECP severities, most serious first; `index` is the digit on the air.
 enum MecpSeverity { mayday, urgent, safety, routine }
@@ -69,7 +70,7 @@ class MecpMessage {
     return null;
   }
 
-  /// Coordinates, from `lat,lon`, if they are on Earth.
+  /// Coordinates, from `lat,lon` or a Plus Code, if they are on Earth.
   (double, double)? get position {
     for (final w in _words) {
       final m = _gps.firstMatch(w);
@@ -77,6 +78,10 @@ class MecpMessage {
       final lat = double.parse(m[1]!);
       final lon = double.parse(m[2]!);
       if (lat.abs() <= 90 && lon.abs() <= 180) return (lat, lon);
+    }
+    for (final w in _words) {
+      final p = PlusCode.decode(w);
+      if (p != null) return p;
     }
     return null;
   }
@@ -98,6 +103,7 @@ class MecpMessage {
         (w) =>
             !_pax.hasMatch(w) &&
             !_gps.hasMatch(w) &&
+            PlusCode.decode(w) == null &&
             !_time.hasMatch(w) &&
             !_language.hasMatch(w),
       )

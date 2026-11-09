@@ -125,6 +125,7 @@ class AppController extends ChangeNotifier {
     required String noticeStop,
     String note = '',
     bool drill = false,
+    bool shortPosition = false,
   }) async {
     if (beacon.value != null) return;
     final b = DistressBeacon(
@@ -133,6 +134,7 @@ class AppController extends ChangeNotifier {
       lasts: lasts,
       note: note,
       drill: drill,
+      shortPosition: shortPosition,
       maxBytes: connection.maxTextBytes,
       incoming: store.incoming,
       send: (text) async {

@@ -7,6 +7,7 @@ import '../app/meshtastic_settings.dart';
 import '../app/radio_connection.dart';
 import '../mesh/mesh.dart';
 import '../meshtastic/admin.dart';
+import 'airtime_warning.dart';
 import 'common.dart';
 import 'fixed_position_dialog.dart';
 import 'meshtastic_modules_screen.dart';
@@ -134,6 +135,11 @@ class _MeshtasticSettingsScreenState extends State<MeshtasticSettingsScreen> {
       ),
     );
     if (ok != true || !mounted) return;
+    if (_target != null &&
+        !await okToWriteOverMesh(context, widget.connection)) {
+      return;
+    }
+    if (!mounted) return;
     setState(() => _saving = true);
     final messenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);

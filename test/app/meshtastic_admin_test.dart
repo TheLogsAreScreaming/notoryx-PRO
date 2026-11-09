@@ -151,9 +151,15 @@ void main() {
     test('administers another node over the mesh', () async {
       final s = await c.loadSettings(node: remoteNum);
       expect(bench.remote.packets.every((p) => p.pkiEncrypted), isTrue);
+      final timer = Stopwatch()..start();
       await c.saveSettings(
         s.withValue(SectionKind.lora, LoraField.hopLimit, 4),
         node: remoteNum,
+      );
+      expect(
+        timer.elapsed,
+        greaterThan(const Duration(milliseconds: 5900)),
+        reason: 'packets are spaced out',
       );
       await pumpEventQueue();
       expect(
