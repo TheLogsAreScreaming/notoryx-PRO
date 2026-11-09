@@ -119,6 +119,7 @@ class _HomeShellState extends State<HomeShell> {
     super.initState();
     widget.app.addListener(_syncKeepAlive);
     widget.app.scheduler.start();
+    widget.app.responder.start();
     widget.app.geofences?.start();
     _bgPref = widget.app.store.watchPreference(AlertPrefs.background).listen((
       v,
@@ -137,6 +138,7 @@ class _HomeShellState extends State<HomeShell> {
   void dispose() {
     widget.app.removeListener(_syncKeepAlive);
     widget.app.scheduler.stop();
+    widget.app.responder.stop();
     widget.app.geofences?.stop();
     unawaited(_bgPref?.cancel());
     _lifecycle.dispose();

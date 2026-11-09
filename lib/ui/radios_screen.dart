@@ -9,6 +9,7 @@ import '../radio/radio.dart';
 import 'admin_screens.dart';
 import 'bridge_screen.dart';
 import 'feeds_screen.dart';
+import 'auto_reply_screen.dart';
 import 'common.dart';
 import 'connection_log_sheet.dart';
 import 'diagnostics_screen.dart';
@@ -87,6 +88,16 @@ class RadiosScreen extends StatelessWidget {
             label: Text(l.feedsTitle),
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute<void>(builder: (_) => FeedsScreen(app: app)),
+            ),
+          ),
+          TextButton.icon(
+            key: const Key('auto-reply-open'),
+            icon: const Icon(Icons.smart_toy_outlined),
+            label: Text(l.autoTitle),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => AutoReplyScreen(store: app.store),
+              ),
             ),
           ),
           TextButton.icon(
