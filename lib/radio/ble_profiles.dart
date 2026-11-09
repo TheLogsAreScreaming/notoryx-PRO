@@ -47,7 +47,7 @@ class BleProfile {
     protocol: RadioProtocol.meshtastic,
     service: '6ba1b218-15a8-461f-9fa8-5dcae273eafd',
     write: 'f75c76d2-129e-4dad-a1dd-7866124401e7',
-    notify: 'ed9da18b-a800-4f66-a670-aa7547e34453',
+    notify: 'ed9da18c-a800-4f66-a670-aa7547e34453',
     read: '2c55e69e-4993-11ed-b878-0242ac120002',
   );
 
