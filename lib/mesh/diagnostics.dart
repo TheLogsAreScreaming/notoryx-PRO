@@ -227,6 +227,23 @@ class TraceResult {
   }
 }
 
+/// A finished trace kept in the database.
+class SavedTrace {
+  const SavedTrace({
+    required this.id,
+    required this.targetName,
+    required this.result,
+  });
+
+  final int id;
+
+  /// What the node was called when it was traced.
+  final String targetName;
+
+  /// The trace; its hops keep their names and SNR but not their [Node]s.
+  final TraceResult result;
+}
+
 /// A likely reason a message didn't arrive, with what to try.
 enum DeliveryHint {
   /// The recipient hasn't been heard for a long time.

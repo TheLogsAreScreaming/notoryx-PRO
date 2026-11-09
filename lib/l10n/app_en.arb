@@ -1211,5 +1211,33 @@
         "type": "int"
       }
     }
+  },
+  "traceHistory": "Saved traces",
+  "traceHistoryTitle": "Saved traces to {name}",
+  "@traceHistoryTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "traceHistoryEmpty": "No saved traces yet. A trace that comes back is saved here.",
+  "traceHistoryFailed": "Couldn't open the saved traces.",
+  "traceHopCount": "{count, plural, =1{1 hop} other{{count} hops}}",
+  "@traceHopCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "traceClear": "Clear saved traces",
+  "traceClearConfirm": "Delete all saved traces to {name}?",
+  "@traceClearConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

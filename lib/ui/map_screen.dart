@@ -414,6 +414,16 @@ class NodeSheet extends StatelessWidget {
                       builder: (_) => TraceSheet(connection: c, node: n),
                     ),
                   ),
+                OutlinedButton.icon(
+                  icon: const Icon(Icons.history),
+                  label: Text(l.traceHistory),
+                  onPressed: () => showModalBottomSheet<void>(
+                    context: context,
+                    showDragHandle: true,
+                    isScrollControlled: true,
+                    builder: (_) => SavedTracesSheet(store: app.store, node: n),
+                  ),
+                ),
                 if ((_connection()?.radio?.position, n.position) case (
                   final from?,
                   final to?,

@@ -538,5 +538,12 @@
   "mtFixedRemoved": "Posición fija quitada.",
   "settingsPathHash": "Tamaño del ID de salto",
   "settingsPathHashHelp": "Cuántos bytes identifican a cada repetidor en una ruta. Más bytes evitan confusiones en mallas con mucho tráfico, pero dejan sitio para menos saltos. Usa lo mismo que tu malla local.",
-  "settingsPathHashValue": "{count, plural, =1{1 byte} other{{count} bytes}}"
+  "settingsPathHashValue": "{count, plural, =1{1 byte} other{{count} bytes}}",
+  "traceHistory": "Trazas guardadas",
+  "traceHistoryTitle": "Trazas guardadas hacia {name}",
+  "traceHistoryEmpty": "Aún no hay trazas guardadas. Las trazas que regresan se guardan aquí.",
+  "traceHistoryFailed": "No se pudieron abrir las trazas guardadas.",
+  "traceHopCount": "{count, plural, =1{1 salto} other{{count} saltos}}",
+  "traceClear": "Borrar trazas guardadas",
+  "traceClearConfirm": "¿Borrar todas las trazas guardadas hacia {name}?"
 }
