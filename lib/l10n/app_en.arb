@@ -1388,5 +1388,32 @@
         "type": "int"
       }
     }
+  },
+  "forwardTitle": "Forward",
+  "forwardNone": "No other conversations on a connected radio.",
+  "messageDeleteAction": "Delete from this device",
+  "scheduleTitle": "Scheduled messages",
+  "scheduleHelp": "Sent while the app is running and the radio is connected. If the radio isn't connected, it waits up to an hour, then shows as missed.",
+  "scheduleIn15": "In 15 min",
+  "scheduleIn60": "In 1 hour",
+  "scheduleIn240": "In 4 hours",
+  "schedulePick": "Pick a time",
+  "scheduleSave": "Schedule",
+  "scheduleCancel": "Cancel this message",
+  "scheduleMissed": "Missed: {time}",
+  "@scheduleMissed": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "scheduleFailed": "Couldn't send: {time}",
+  "@scheduleFailed": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
   }
 }

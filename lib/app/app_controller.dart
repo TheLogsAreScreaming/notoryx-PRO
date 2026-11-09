@@ -8,6 +8,7 @@ import '../store/mesh_store.dart';
 import 'channel_bridge.dart';
 import 'distress_beacon.dart';
 import 'message_alerts.dart';
+import 'message_scheduler.dart';
 import 'mqtt_feed.dart';
 import 'radio_connection.dart';
 import 'radio_target.dart';
@@ -94,6 +95,18 @@ class AppController extends ChangeNotifier {
     return c;
   }
 
+  /// Messages to send later.
+  late final scheduler = MessageScheduler(store: store, send: _sendScheduled);
+
+  Future<bool> _sendScheduled(Conversation c, String text) async {
+    final radio = connectionForRadio(c.radioId);
+    if (radio == null || radio.status.phase != SupervisorPhase.connected) {
+      return false;
+    }
+    await radio.sendText(c, text);
+    return true;
+  }
+
   /// The distress beacon running now, if any.
   final beacon = ValueNotifier<DistressBeacon?>(null);
   RadioConnection? _beaconRadio;
@@ -175,6 +188,7 @@ class AppController extends ChangeNotifier {
 
   /// Disconnects every radio and waits until they have finished.
   Future<void> shutdown() async {
+    scheduler.stop();
     await beacon.value?.stop();
     await alerts?.dispose();
     await feeds.stopAll();
