@@ -36,8 +36,15 @@ class MeshStore {
   MeshStore(this.db);
 
   /// Opens (or creates) the database file at [file], off the UI thread.
-  factory MeshStore.open(File file) =>
-      MeshStore(MeshDatabase(NativeDatabase.createInBackground(file)));
+  /// [key] is needed if the file is encrypted.
+  factory MeshStore.open(File file, {String? key}) => MeshStore(
+    MeshDatabase(
+      NativeDatabase.createInBackground(
+        file,
+        setup: key == null ? null : (db) => db.execute("PRAGMA key = '$key'"),
+      ),
+    ),
+  );
 
   /// An in-memory database, for tests.
   factory MeshStore.memory() =>

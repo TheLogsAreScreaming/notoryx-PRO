@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../app/app_controller.dart';
 import '../app/app_lock.dart';
+import '../store/database_vault.dart';
 import '../app/message_alerts.dart';
 import '../l10n/app_localizations.dart';
 import 'beacon_sheet.dart';
@@ -31,6 +32,7 @@ class NotoryxProApp extends StatelessWidget {
     this.tiles,
     this.initialTheme = const ThemeChoice(),
     this.auth,
+    this.vault,
     this.startLocked = false,
   });
 
@@ -47,6 +49,9 @@ class NotoryxProApp extends StatelessWidget {
 
   /// The phone's unlock check; null leaves the lock out (tests).
   final DeviceAuth? auth;
+
+  /// Saved-message encryption; null leaves it out (tests).
+  final DatabaseVault? vault;
 
   /// Whether to open locked, read before the first frame.
   final bool startLocked;
@@ -81,6 +86,7 @@ class NotoryxProApp extends StatelessWidget {
         tiles: tiles,
         navigatorKey: navigatorKey,
         auth: auth,
+        vault: vault,
       ),
     );
   }
@@ -96,12 +102,14 @@ class HomeShell extends StatefulWidget {
     this.tiles,
     this.navigatorKey,
     this.auth,
+    this.vault,
   });
 
   final AppController app;
   final MapTiles? tiles;
   final GlobalKey<NavigatorState>? navigatorKey;
   final DeviceAuth? auth;
+  final DatabaseVault? vault;
 
   @override
   State<HomeShell> createState() => _HomeShellState();
@@ -234,8 +242,11 @@ class _HomeShellState extends State<HomeShell> {
               ),
               _MenuAction.lock => Navigator.of(context).push(
                 MaterialPageRoute<void>(
-                  builder: (_) =>
-                      LockSettingsScreen(store: app.store, auth: widget.auth!),
+                  builder: (_) => LockSettingsScreen(
+                    store: app.store,
+                    auth: widget.auth!,
+                    vault: widget.vault,
+                  ),
                 ),
               ),
               _MenuAction.theme => Navigator.of(context).push(

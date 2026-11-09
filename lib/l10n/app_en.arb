@@ -1605,5 +1605,24 @@
   "lockUnavailable": "Set a screen lock on this device first.",
   "lockAtOnce": "Lock at once",
   "lockAfter1": "After 1 min",
-  "lockAfter5": "After 5 min"
+  "lockAfter5": "After 5 min",
+  "encryptTitle": "Encrypt saved messages",
+  "encryptOff": "Off. Tap to set up.",
+  "encryptOn": "On. Saved messages are encrypted on this device.",
+  "encryptPending": "Close the app fully and reopen it to finish.",
+  "encryptConfirmTitle": "Encrypt saved messages?",
+  "encryptConfirmBody": "Export your messages first if you want a backup. Encryption happens the next time the app opens and can't be turned off afterwards. The key stays on this phone, so if the phone's secure storage is reset, the messages can't be recovered.",
+  "encryptAction": "Encrypt",
+  "encryptUnavailable": "This device can't store the key safely, so nothing was changed.",
+  "keyMissingBody": "Your saved messages are encrypted, but the key on this device is gone, so they can't be opened. Nothing has been deleted.",
+  "keyMissingFresh": "Start with empty history",
+  "keyMissingDone": "Done. The old file was kept. Close and reopen the app.",
+  "encryptFailed": "The last attempt failed and nothing changed: {reason}. Tap to try again.",
+  "@encryptFailed": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  }
 }

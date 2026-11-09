@@ -719,5 +719,17 @@
   "lockUnavailable": "Primero configura un bloqueo de pantalla en este dispositivo.",
   "lockAtOnce": "Bloquear al instante",
   "lockAfter1": "Tras 1 min",
-  "lockAfter5": "Tras 5 min"
+  "lockAfter5": "Tras 5 min",
+  "encryptTitle": "Cifrar los mensajes guardados",
+  "encryptOff": "Desactivado. Toca para configurarlo.",
+  "encryptOn": "Activado. Los mensajes guardados están cifrados en este dispositivo.",
+  "encryptPending": "Cierra la app por completo y ábrela de nuevo para terminar.",
+  "encryptConfirmTitle": "¿Cifrar los mensajes guardados?",
+  "encryptConfirmBody": "Exporta primero tus mensajes si quieres una copia. El cifrado se hace la próxima vez que se abra la app y luego no se puede desactivar. La clave se queda en este teléfono, así que si se restablece su almacenamiento seguro, los mensajes no se podrán recuperar.",
+  "encryptAction": "Cifrar",
+  "encryptUnavailable": "Este dispositivo no puede guardar la clave de forma segura, así que no se ha cambiado nada.",
+  "keyMissingBody": "Tus mensajes guardados están cifrados, pero la clave de este dispositivo ya no está, así que no se pueden abrir. No se ha borrado nada.",
+  "keyMissingFresh": "Empezar con el historial vacío",
+  "keyMissingDone": "Hecho. El archivo antiguo se ha conservado. Cierra y vuelve a abrir la app.",
+  "encryptFailed": "El último intento falló y no cambió nada: {reason}. Toca para reintentar."
 }
