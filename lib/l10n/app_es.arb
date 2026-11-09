@@ -696,5 +696,18 @@
   "teamRadioConfirmTitle": "¿Cambiar los ajustes de esta radio?",
   "teamRadioConfirmBody": "La radio puede reiniciarse. Si estos ajustes no coinciden con tu malla local o la banda legal, dejará de oír esa malla. Aplícalos solo si confías en quien lo envió.",
   "teamApplied": "Canales añadidos: {added}. Sin hueco: {full}. Lugares añadidos: {places}.",
-  "teamPlacesCount": "{count} lugares"
+  "teamPlacesCount": "{count} lugares",
+  "autoTitle": "Respuestas automáticas",
+  "autoOn": "Responder automáticamente",
+  "autoHelp": "Tu radio las transmite sola mientras la app funciona. Nunca responde a mensajes de emergencia. Máximo 10 respuestas por hora, y cada una va marcada con [auto].",
+  "autoEmpty": "Aún no hay reglas.",
+  "autoAdd": "Nueva regla",
+  "autoAway": "Mensaje de ausencia",
+  "autoAwayHelp": "Responde a cualquier mensaje directo, una vez por hora y persona.",
+  "autoKeyword": "Cuando el mensaje completo sea",
+  "autoOnChannels": "También en canales",
+  "autoChannelsHelp": "Cualquiera en el canal puede activarla. Usa tiempo de aire compartido.",
+  "autoReply": "Respuesta",
+  "autoReplyHelp": "Puedes usar {name}, {time}, {hops} y {snr}.",
+  "autoDelete": "Eliminar {rule}"
 }

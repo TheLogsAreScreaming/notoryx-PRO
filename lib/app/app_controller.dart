@@ -6,6 +6,7 @@ import '../mesh/model.dart';
 import '../radio/radio.dart';
 import '../store/mesh_store.dart';
 import 'channel_bridge.dart';
+import 'auto_responder.dart';
 import 'distress_beacon.dart';
 import 'geofence_alerts.dart';
 import 'message_alerts.dart';
@@ -101,6 +102,9 @@ class AppController extends ChangeNotifier {
     await c.start();
     return c;
   }
+
+  /// Automatic replies.
+  late final responder = AutoResponder(store: store, send: _sendScheduled);
 
   /// Messages to send later.
   late final scheduler = MessageScheduler(store: store, send: _sendScheduled);
@@ -198,6 +202,7 @@ class AppController extends ChangeNotifier {
   /// Disconnects every radio and waits until they have finished.
   Future<void> shutdown() async {
     scheduler.stop();
+    responder.stop();
     await beacon.value?.stop();
     await alerts?.dispose();
     await feeds.stopAll();

@@ -1575,5 +1575,25 @@
         "type": "int"
       }
     }
+  },
+  "autoTitle": "Auto-replies",
+  "autoOn": "Answer automatically",
+  "autoHelp": "Your radio transmits these by itself while the app runs. Never answers emergency messages. At most 10 replies an hour, and each is marked [auto].",
+  "autoEmpty": "No rules yet.",
+  "autoAdd": "New rule",
+  "autoAway": "Away message",
+  "autoAwayHelp": "Answers any direct message, once an hour per person.",
+  "autoKeyword": "When the whole message is",
+  "autoOnChannels": "Also on channels",
+  "autoChannelsHelp": "Everyone on the channel can trigger it. Uses shared airtime.",
+  "autoReply": "Reply",
+  "autoReplyHelp": "You can use {name}, {time}, {hops} and {snr}.",
+  "autoDelete": "Delete {rule}",
+  "@autoDelete": {
+    "placeholders": {
+      "rule": {
+        "type": "String"
+      }
+    }
   }
 }
