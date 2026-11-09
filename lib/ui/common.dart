@@ -6,6 +6,12 @@ import '../mesh/model.dart';
 import '../radio/radio.dart';
 import 'themes.dart';
 
+/// The app's language setup, for screens outside the main app.
+abstract final class L10nDelegates {
+  static const all = AppLocalizations.localizationsDelegates;
+  static const locales = AppLocalizations.supportedLocales;
+}
+
 /// Shortcut to the generated strings.
 extension L10nContext on BuildContext {
   AppLocalizations get l10n => AppLocalizations.of(this);

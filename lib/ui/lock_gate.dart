@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../app/app_lock.dart';
+import '../store/database_vault.dart';
 import '../store/mesh_store.dart';
 import 'common.dart';
+import 'encryption_tile.dart';
 
 /// Covers the app while locked.
 ///
@@ -127,10 +129,12 @@ class LockSettingsScreen extends StatelessWidget {
     super.key,
     required this.store,
     required this.auth,
+    this.vault,
   });
 
   final MeshStore store;
   final DeviceAuth auth;
+  final DatabaseVault? vault;
 
   Future<void> _toggle(BuildContext context, LockSettings s, bool on) async {
     final l = context.l10n;
@@ -183,6 +187,10 @@ class LockSettingsScreen extends StatelessWidget {
                     ],
                   ),
                 ),
+              if (vault case final v?) ...[
+                const Divider(),
+                EncryptionTile(vault: v),
+              ],
             ],
           );
         },
