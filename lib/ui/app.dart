@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../app/app_controller.dart';
 import '../app/message_alerts.dart';
 import '../l10n/app_localizations.dart';
+import 'beacon_sheet.dart';
 import 'common.dart';
 import 'conversation_screen.dart';
 import 'export_sheet.dart';
@@ -140,6 +141,10 @@ class _HomeShellState extends State<HomeShell> {
   }
 
   Future<void> _openFromNotification(String payload) async {
+    if (payload == stopPayload) {
+      await widget.app.beacon.value?.stop();
+      return;
+    }
     final c = MessageAlerts.conversationFor(payload);
     if (c == null) return;
     final title = await widget.app.store.conversationTitle(c);
@@ -218,12 +223,19 @@ class _HomeShellState extends State<HomeShell> {
           ),
         ],
       ),
-      body: switch (_tab) {
-        0 => InboxScreen(app: app),
-        1 => NodesScreen(app: app),
-        2 => MapScreen(app: app, tiles: widget.tiles),
-        _ => RadiosScreen(app: app),
-      },
+      body: Column(
+        children: [
+          BeaconBanner(app: app),
+          Expanded(
+            child: switch (_tab) {
+              0 => InboxScreen(app: app),
+              1 => NodesScreen(app: app),
+              2 => MapScreen(app: app, tiles: widget.tiles),
+              _ => RadiosScreen(app: app),
+            },
+          ),
+        ],
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _tab,
         onDestinationSelected: (i) => setState(() => _tab = i),

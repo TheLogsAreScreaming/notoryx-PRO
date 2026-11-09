@@ -11,6 +11,7 @@ import '../mesh/mecp.dart';
 import '../mesh/model.dart';
 import '../radio/radio.dart';
 import '../store/mesh_store.dart';
+import 'beacon_sheet.dart';
 import 'common.dart';
 import 'export_sheet.dart';
 import 'mecp_widgets.dart';
@@ -154,6 +155,19 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 ),
                 child: Text(context.l10n.exportTitle),
               ),
+              if (_ready() case final radio? when app.beacon.value == null)
+                PopupMenuItem(
+                  key: const Key('beacon-menu'),
+                  value: () => unawaited(
+                    showBeaconSheet(
+                      this.context,
+                      app: app,
+                      connection: radio,
+                      conversation: conversation,
+                    ),
+                  ),
+                  child: Text(context.l10n.beaconTitle),
+                ),
               PopupMenuItem(
                 value: () => unawaited(_deleteConversation()),
                 child: Text(context.l10n.conversationDelete),
@@ -164,6 +178,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
       ),
       body: Column(
         children: [
+          BeaconBanner(app: app),
           Expanded(
             child: StreamBuilder<List<StoredMessage>>(
               stream: _messages,
