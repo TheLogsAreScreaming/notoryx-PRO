@@ -1595,5 +1595,15 @@
         "type": "String"
       }
     }
-  }
+  },
+  "lockTitle": "App lock",
+  "lockOn": "Require fingerprint, face or passcode",
+  "lockHelp": "Covers the app until you unlock it. Radios, beacons and scheduled messages keep running. Notifications can still show message text on your lock screen, and saved messages aren't encrypted yet.",
+  "lockReason": "Unlock NOTORYX PRO",
+  "lockLocked": "NOTORYX PRO is locked",
+  "lockUnlock": "Unlock",
+  "lockUnavailable": "Set a screen lock on this device first.",
+  "lockAtOnce": "Lock at once",
+  "lockAfter1": "After 1 min",
+  "lockAfter5": "After 5 min"
 }
