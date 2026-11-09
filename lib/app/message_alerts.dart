@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'
     hide Message;
 
+import '../mesh/mecp.dart';
 import '../mesh/model.dart';
 import '../store/mesh_store.dart';
 
@@ -185,6 +186,9 @@ abstract final class AlertPrefs {
 
   /// Keep radios connected in the background (Android); on unless off.
   static const background = 'notify.background';
+
+  /// Let a real MAYDAY through a muted conversation; on unless off.
+  static const mayday = 'notify.mayday';
 }
 
 /// Turns newly received messages into notifications: one per
@@ -192,7 +196,8 @@ abstract final class AlertPrefs {
 ///
 /// Nothing is shown for muted conversations, for reactions, for the
 /// conversation on screen while the app is in front, or for kinds of
-/// conversation the person turned off.
+/// conversation the person turned off. The one exception to muting is a
+/// real MAYDAY ([breaksMute]).
 class MessageAlerts {
   MessageAlerts({
     required this.store,
@@ -212,6 +217,11 @@ class MessageAlerts {
 
   /// Whether the app is in front.
   bool foreground = true;
+
+  /// Anyone on a channel can send a MAYDAY, so one conversation can only
+  /// break through mute this often.
+  static const maydayGap = Duration(minutes: 10);
+  final Map<String, DateTime> _lastBreak = {};
 
   /// Unread counts per conversation since its last notification was
   /// cleared.
@@ -238,15 +248,33 @@ class MessageAlerts {
     return await store.preference(name) != 'off';
   }
 
+  /// Whether [m] is a real MAYDAY allowed through mute right now. Drills
+  /// aren't; the person can turn this off; and it's limited by [maydayGap].
+  Future<bool> breaksMute(Message m) async {
+    final mecp = MecpMessage.tryParse(m.text);
+    if (mecp == null || mecp.severity != MecpSeverity.mayday || mecp.isDrill) {
+      return false;
+    }
+    if (await store.preference(AlertPrefs.mayday) == 'off') return false;
+    final key = m.conversation.key;
+    final last = _lastBreak[key];
+    final now = _now();
+    if (last != null && now.difference(last) < maydayGap) return false;
+    _lastBreak[key] = now;
+    return true;
+  }
+
   Future<void> _onMessage(StoredMessage stored) async {
     final m = stored.message;
     final c = m.conversation;
     if (m.isReaction) return;
     if (foreground && open == c) return;
     if (!await enabled(c)) return;
-    if (await store.isMuted(c, _now())) return;
+    final muted = await store.isMuted(c, _now());
+    if (muted && !await breaksMute(m)) return;
     final count = _counts[c.key] = (_counts[c.key] ?? 0) + 1;
-    final title = await _title(c, m);
+    var title = await _title(c, m);
+    if (muted) title = 'MAYDAY: $title';
     final text = c is ChannelConversation && m.senderName != null
         ? '${m.senderName}: ${m.text}'
         : m.text;

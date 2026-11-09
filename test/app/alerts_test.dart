@@ -229,6 +229,50 @@ void main() {
       expect(notifier.shown, hasLength(1));
     });
 
+    group('MAYDAY through mute', () {
+      const real = 'MECP/0/R01 2pax';
+      setUp(() async {
+        await store.setMuted(dm, DateTime.now().add(const Duration(hours: 1)));
+      });
+
+      test('a real one gets through, marked', () async {
+        await store.addMessage(received(dm, real, id: 1));
+        await drain();
+        expect(notifier.shown.single.title, 'MAYDAY: Ridge Relay');
+      });
+
+      test('drills, lower severities and plain text stay muted', () async {
+        await store.addMessage(received(dm, 'MECP/0/D01 R01', id: 1));
+        await store.addMessage(received(dm, 'MECP/1/R01', id: 2));
+        await store.addMessage(received(dm, 'MAYDAY help', id: 3));
+        await drain();
+        expect(notifier.shown, isEmpty);
+      });
+
+      test('can be turned off', () async {
+        await store.setPreference(AlertPrefs.mayday, 'off');
+        await store.addMessage(received(dm, real, id: 1));
+        await drain();
+        expect(notifier.shown, isEmpty);
+      });
+
+      test('repeats within 10 minutes stay muted', () async {
+        var now = DateTime.now();
+        final timed = MessageAlerts(
+          store: store,
+          notifier: notifier,
+          now: () => now,
+        );
+        await alerts.dispose();
+        Message m(int id) => received(dm, '$real n$id', id: id);
+        await timed.breaksMute(m(1));
+        expect(await timed.breaksMute(m(2)), isFalse);
+        now = now.add(const Duration(minutes: 11));
+        expect(await timed.breaksMute(m(3)), isTrue);
+        await timed.dispose();
+      });
+    });
+
     test('a tapped notification names its conversation', () {
       expect(MessageAlerts.conversationFor(dm.key), dm);
       expect(MessageAlerts.conversationFor('nonsense'), isNull);
