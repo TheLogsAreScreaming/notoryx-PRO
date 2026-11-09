@@ -94,7 +94,7 @@ class MessagePathCard extends StatelessWidget {
                       child: Text(
                         label,
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.outline,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ),

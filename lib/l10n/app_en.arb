@@ -1239,5 +1239,16 @@
         "type": "String"
       }
     }
-  }
+  },
+  "mapDescription": "{count, plural, =1{Map with 1 node. The Nodes tab lists every node.} other{Map with {count} nodes. The Nodes tab lists every node.}}",
+  "@mapDescription": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageDetailsHint": "see how it travelled",
+  "messageDeleteHint": "delete",
+  "nodeFavorite": "Favorite"
 }

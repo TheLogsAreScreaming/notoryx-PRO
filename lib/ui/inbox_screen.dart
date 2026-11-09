@@ -176,65 +176,55 @@ class _ConversationTile extends StatelessWidget {
         : m.outgoing
         ? l.youPrefix(m.text)
         : (m.senderName != null ? '${m.senderName}: ${m.text}' : m.text);
+    // Large text needs the row's full width, so the time joins the preview.
+    final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.3;
     final bold = unread > 0
         ? const TextStyle(fontWeight: FontWeight.bold)
         : null;
     return ListTile(
       leading: Icon(icon),
-      title: Row(
+      title: Wrap(
+        spacing: 6,
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          Flexible(
-            child: Text(title, overflow: TextOverflow.ellipsis, style: bold),
-          ),
-          const SizedBox(width: 8),
+          Text(title, style: bold),
           ProtocolBadge(conversation.radioId.protocol),
-          if (via case final name?) ...[
-            const SizedBox(width: 4),
-            Flexible(
-              child: Text(
-                l.inboxVia(name),
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
+          if (via case final name?)
+            Text(
+              l.inboxVia(name),
+              style: Theme.of(context).textTheme.bodySmall,
             ),
-          ],
-          if (muted) ...[
-            const SizedBox(width: 4),
+          if (muted)
             Icon(
               Icons.notifications_off_outlined,
               size: 16,
               semanticLabel: l.mutedLabel,
             ),
-          ],
+          if (unread > 0)
+            Semantics(
+              label: l.unreadCount(unread),
+              child: ExcludeSemantics(
+                child: Badge(
+                  label: Text(unread > 99 ? '99+' : '$unread'),
+                  backgroundColor: muted
+                      ? Theme.of(context).colorScheme.onSurfaceVariant
+                      : null,
+                ),
+              ),
+            ),
         ],
       ),
       subtitle: Text(
-        preview,
-        maxLines: 1,
+        m != null && largeText
+            ? '${ago(context, m.receivedAt)} · $preview'
+            : preview,
+        maxLines: largeText ? 2 : 1,
         overflow: TextOverflow.ellipsis,
         style: bold,
       ),
-      trailing: m == null
+      trailing: m == null || largeText
           ? null
-          : Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(ago(context, m.receivedAt)),
-                if (unread > 0)
-                  Semantics(
-                    label: l.unreadCount(unread),
-                    child: ExcludeSemantics(
-                      child: Badge(
-                        label: Text(unread > 99 ? '99+' : '$unread'),
-                        backgroundColor: muted
-                            ? Theme.of(context).colorScheme.outline
-                            : null,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
+          : Text(ago(context, m.receivedAt)),
       onLongPress: () => showConversationOptions(
         context,
         store: app.store,

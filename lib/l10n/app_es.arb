@@ -545,5 +545,9 @@
   "traceHistoryFailed": "No se pudieron abrir las trazas guardadas.",
   "traceHopCount": "{count, plural, =1{1 salto} other{{count} saltos}}",
   "traceClear": "Borrar trazas guardadas",
-  "traceClearConfirm": "¿Borrar todas las trazas guardadas hacia {name}?"
+  "traceClearConfirm": "¿Borrar todas las trazas guardadas hacia {name}?",
+  "mapDescription": "{count, plural, =1{Mapa con 1 nodo. La pestaña Nodos muestra todos los nodos.} other{Mapa con {count} nodos. La pestaña Nodos muestra todos los nodos.}}",
+  "messageDetailsHint": "ver cómo viajó",
+  "messageDeleteHint": "borrar",
+  "nodeFavorite": "Favorito"
 }

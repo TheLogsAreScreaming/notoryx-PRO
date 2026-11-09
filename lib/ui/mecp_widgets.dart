@@ -80,7 +80,10 @@ class MecpCard extends StatelessWidget {
         if (m.time != null) Text(l.mecpTime(m.time!)),
         if (m.note.isNotEmpty) Text(m.note),
         const SizedBox(height: 2),
-        Text(raw, style: text.labelSmall?.copyWith(color: scheme.outline)),
+        Text(
+          raw,
+          style: text.labelSmall?.copyWith(color: scheme.onSurfaceVariant),
+        ),
       ],
     );
   }

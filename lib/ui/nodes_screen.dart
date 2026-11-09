@@ -85,23 +85,24 @@ class NodeTile extends StatelessWidget {
         nodeKindIcon(n.kind),
         semanticLabel: nodeKindName(context, n.kind),
       ),
-      title: Row(
+      title: Wrap(
+        spacing: 6,
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          Flexible(child: Text(n.displayName, overflow: TextOverflow.ellipsis)),
-          if (n.shortName.isNotEmpty) ...[
-            const SizedBox(width: 6),
-            Text('(${n.shortName})'),
-          ],
-          const SizedBox(width: 8),
+          Text(n.displayName),
+          if (n.shortName.isNotEmpty) Text('(${n.shortName})'),
           ProtocolBadge(n.protocol),
-          const SizedBox(width: 4),
           TrustBadge(trust),
-          if (n.isFavorite) const Icon(Icons.star, size: 16),
-          const SizedBox(width: 8),
+          if (n.isFavorite)
+            Icon(
+              Icons.star,
+              size: 16,
+              semanticLabel: context.l10n.nodeFavorite,
+            ),
           SignalBars(signalBars(n.path)),
         ],
       ),
-      subtitle: Text(details, maxLines: 2, overflow: TextOverflow.ellipsis),
+      subtitle: Text(details),
       onTap: n.canMessage && n.kind != NodeKind.relay
           ? () => Navigator.of(context).push(
               MaterialPageRoute<void>(
