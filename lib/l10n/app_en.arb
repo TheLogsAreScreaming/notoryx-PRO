@@ -1427,5 +1427,112 @@
         "type": "String"
       }
     }
+  },
+  "placesTitle": "Places",
+  "placesImport": "Import GPX file",
+  "placesExport": "Export all as GPX",
+  "placesAddGeofence": "New geofence",
+  "placesPlanner": "Plan a link",
+  "placesPlannerNeed": "Needs two places or nodes with positions.",
+  "placesEmpty": "Nothing saved yet.",
+  "placesWaypoint": "Waypoint",
+  "placesNotGpx": "That isn't a GPX file.",
+  "placesName": "Name",
+  "placesCentre": "Centre (latitude,longitude)",
+  "placesBadCentre": "Enter latitude,longitude",
+  "placesRadius": "Radius in metres",
+  "placesBadRadius": "10 to 100000 metres",
+  "placesFrom": "From",
+  "placesTo": "To",
+  "placesFreq": "Frequency (MHz)",
+  "placesTx": "Transmit power (dBm)",
+  "placesGain": "Total antenna gain (dB)",
+  "placesSens": "Receiver sensitivity (dBm)",
+  "placesPlannerWarning": "Open-ground estimate only. Hills, trees and buildings aren't included, so real range is usually less.",
+  "placesImported": "Added {count} places.",
+  "@placesImported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "placesRoute": "Route, {count} points",
+  "@placesRoute": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "placesGeofence": "Geofence, {metres} m",
+  "@placesGeofence": {
+    "placeholders": {
+      "metres": {
+        "type": "int"
+      }
+    }
+  },
+  "placesDelete": "Delete {name}",
+  "@placesDelete": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "placesDistance": "Distance: {km} km",
+  "@placesDistance": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "placesLoss": "Free-space loss: {db} dB",
+  "@placesLoss": {
+    "placeholders": {
+      "db": {
+        "type": "String"
+      }
+    }
+  },
+  "placesReceived": "Expected signal: {dbm} dBm",
+  "@placesReceived": {
+    "placeholders": {
+      "dbm": {
+        "type": "String"
+      }
+    }
+  },
+  "placesMargin": "Margin: {db} dB",
+  "@placesMargin": {
+    "placeholders": {
+      "db": {
+        "type": "String"
+      }
+    }
+  },
+  "geofenceEntered": "{node} entered {fence}",
+  "@geofenceEntered": {
+    "placeholders": {
+      "node": {
+        "type": "String"
+      },
+      "fence": {
+        "type": "String"
+      }
+    }
+  },
+  "geofenceLeft": "{node} left {fence}",
+  "@geofenceLeft": {
+    "placeholders": {
+      "node": {
+        "type": "String"
+      },
+      "fence": {
+        "type": "String"
+      }
+    }
   }
 }

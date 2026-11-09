@@ -119,6 +119,7 @@ class _HomeShellState extends State<HomeShell> {
     super.initState();
     widget.app.addListener(_syncKeepAlive);
     widget.app.scheduler.start();
+    widget.app.geofences?.start();
     _bgPref = widget.app.store.watchPreference(AlertPrefs.background).listen((
       v,
     ) {
@@ -136,6 +137,7 @@ class _HomeShellState extends State<HomeShell> {
   void dispose() {
     widget.app.removeListener(_syncKeepAlive);
     widget.app.scheduler.stop();
+    widget.app.geofences?.stop();
     unawaited(_bgPref?.cancel());
     _lifecycle.dispose();
     unawaited(_taps?.cancel());
@@ -143,6 +145,7 @@ class _HomeShellState extends State<HomeShell> {
   }
 
   Future<void> _openFromNotification(String payload) async {
+    if (payload == 'geofence') return;
     if (payload == stopPayload) {
       await widget.app.beacon.value?.stop();
       return;
@@ -165,6 +168,8 @@ class _HomeShellState extends State<HomeShell> {
   Widget build(BuildContext context) {
     final l = context.l10n;
     final app = widget.app;
+    app.geofences?.describe = (node, fence, entered) =>
+        entered ? l.geofenceEntered(node, fence) : l.geofenceLeft(node, fence);
     return Scaffold(
       appBar: AppBar(
         title: Text(l.appTitle),

@@ -8,6 +8,7 @@ import 'package:drift/native.dart';
 import '../mesh/diagnostics.dart';
 import '../mesh/identity.dart';
 import '../mesh/model.dart';
+import '../mesh/places.dart';
 import '../mesh/telemetry.dart';
 import 'database.dart';
 
@@ -442,6 +443,60 @@ class MeshStore {
         }
         return '#$index';
     }
+  }
+
+  // Places
+
+  /// Saves [items], all or nothing.
+  Future<void> addPlaces(List<Place> items) => db.batch(
+    (b) => b.insertAll(db.places, [
+      for (final p in items)
+        PlacesCompanion.insert(
+          kind: p.kind.name,
+          name: p.name,
+          points: jsonEncode([
+            for (final x in p.points)
+              [x.latitude, x.longitude, if (x.altitude != null) x.altitude],
+          ]),
+          radiusM: Value(p.radiusM),
+          alerts: Value(p.alerts),
+        ),
+    ]),
+  );
+
+  /// Saved places as they change.
+  Stream<List<Place>> watchPlaces() =>
+      (db.select(db.places)..orderBy([(p) => OrderingTerm.asc(p.name)]))
+          .watch()
+          .map((rows) => [for (final r in rows) ?_place(r)]);
+
+  /// Forgets a place.
+  Future<void> deletePlace(int id) =>
+      (db.delete(db.places)..where((p) => p.id.equals(id))).go();
+
+  Place? _place(PlaceRow r) {
+    final kind = PlaceKind.values.asNameMap()[r.kind];
+    if (kind == null) return null;
+    final points = <GeoPoint>[];
+    for (final raw in jsonDecode(r.points) as List<Object?>) {
+      final x = (raw! as List<Object?>).cast<num>();
+      points.add(
+        GeoPoint(
+          x[0].toDouble(),
+          x[1].toDouble(),
+          altitude: x.length > 2 ? x[2].toInt() : null,
+        ),
+      );
+    }
+    if (points.isEmpty) return null;
+    return Place(
+      id: r.id,
+      kind: kind,
+      name: r.name,
+      points: points,
+      radiusM: r.radiusM,
+      alerts: r.alerts,
+    );
   }
 
   // MeshCore radio contacts

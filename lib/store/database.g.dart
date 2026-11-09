@@ -5554,6 +5554,402 @@ class TraceRecordsCompanion extends UpdateCompanion<TraceRow> {
   }
 }
 
+class $PlacesTable extends Places with TableInfo<$PlacesTable, PlaceRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PlacesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _pointsMeta = const VerificationMeta('points');
+  @override
+  late final GeneratedColumn<String> points = GeneratedColumn<String>(
+    'points',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _radiusMMeta = const VerificationMeta(
+    'radiusM',
+  );
+  @override
+  late final GeneratedColumn<double> radiusM = GeneratedColumn<double>(
+    'radius_m',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _alertsMeta = const VerificationMeta('alerts');
+  @override
+  late final GeneratedColumn<bool> alerts = GeneratedColumn<bool>(
+    'alerts',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("alerts" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    kind,
+    name,
+    points,
+    radiusM,
+    alerts,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'places';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PlaceRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('points')) {
+      context.handle(
+        _pointsMeta,
+        points.isAcceptableOrUnknown(data['points']!, _pointsMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_pointsMeta);
+    }
+    if (data.containsKey('radius_m')) {
+      context.handle(
+        _radiusMMeta,
+        radiusM.isAcceptableOrUnknown(data['radius_m']!, _radiusMMeta),
+      );
+    }
+    if (data.containsKey('alerts')) {
+      context.handle(
+        _alertsMeta,
+        alerts.isAcceptableOrUnknown(data['alerts']!, _alertsMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PlaceRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PlaceRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      points: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}points'],
+      )!,
+      radiusM: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}radius_m'],
+      ),
+      alerts: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}alerts'],
+      )!,
+    );
+  }
+
+  @override
+  $PlacesTable createAlias(String alias) {
+    return $PlacesTable(attachedDatabase, alias);
+  }
+}
+
+class PlaceRow extends DataClass implements Insertable<PlaceRow> {
+  final int id;
+
+  /// `PlaceKind.name`.
+  final String kind;
+  final String name;
+
+  /// `[[lat, lon, alt?], ...]` as JSON.
+  final String points;
+  final double? radiusM;
+  final bool alerts;
+  const PlaceRow({
+    required this.id,
+    required this.kind,
+    required this.name,
+    required this.points,
+    this.radiusM,
+    required this.alerts,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['kind'] = Variable<String>(kind);
+    map['name'] = Variable<String>(name);
+    map['points'] = Variable<String>(points);
+    if (!nullToAbsent || radiusM != null) {
+      map['radius_m'] = Variable<double>(radiusM);
+    }
+    map['alerts'] = Variable<bool>(alerts);
+    return map;
+  }
+
+  PlacesCompanion toCompanion(bool nullToAbsent) {
+    return PlacesCompanion(
+      id: Value(id),
+      kind: Value(kind),
+      name: Value(name),
+      points: Value(points),
+      radiusM: radiusM == null && nullToAbsent
+          ? const Value.absent()
+          : Value(radiusM),
+      alerts: Value(alerts),
+    );
+  }
+
+  factory PlaceRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PlaceRow(
+      id: serializer.fromJson<int>(json['id']),
+      kind: serializer.fromJson<String>(json['kind']),
+      name: serializer.fromJson<String>(json['name']),
+      points: serializer.fromJson<String>(json['points']),
+      radiusM: serializer.fromJson<double?>(json['radiusM']),
+      alerts: serializer.fromJson<bool>(json['alerts']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'kind': serializer.toJson<String>(kind),
+      'name': serializer.toJson<String>(name),
+      'points': serializer.toJson<String>(points),
+      'radiusM': serializer.toJson<double?>(radiusM),
+      'alerts': serializer.toJson<bool>(alerts),
+    };
+  }
+
+  PlaceRow copyWith({
+    int? id,
+    String? kind,
+    String? name,
+    String? points,
+    Value<double?> radiusM = const Value.absent(),
+    bool? alerts,
+  }) => PlaceRow(
+    id: id ?? this.id,
+    kind: kind ?? this.kind,
+    name: name ?? this.name,
+    points: points ?? this.points,
+    radiusM: radiusM.present ? radiusM.value : this.radiusM,
+    alerts: alerts ?? this.alerts,
+  );
+  PlaceRow copyWithCompanion(PlacesCompanion data) {
+    return PlaceRow(
+      id: data.id.present ? data.id.value : this.id,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      name: data.name.present ? data.name.value : this.name,
+      points: data.points.present ? data.points.value : this.points,
+      radiusM: data.radiusM.present ? data.radiusM.value : this.radiusM,
+      alerts: data.alerts.present ? data.alerts.value : this.alerts,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PlaceRow(')
+          ..write('id: $id, ')
+          ..write('kind: $kind, ')
+          ..write('name: $name, ')
+          ..write('points: $points, ')
+          ..write('radiusM: $radiusM, ')
+          ..write('alerts: $alerts')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, kind, name, points, radiusM, alerts);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PlaceRow &&
+          other.id == this.id &&
+          other.kind == this.kind &&
+          other.name == this.name &&
+          other.points == this.points &&
+          other.radiusM == this.radiusM &&
+          other.alerts == this.alerts);
+}
+
+class PlacesCompanion extends UpdateCompanion<PlaceRow> {
+  final Value<int> id;
+  final Value<String> kind;
+  final Value<String> name;
+  final Value<String> points;
+  final Value<double?> radiusM;
+  final Value<bool> alerts;
+  const PlacesCompanion({
+    this.id = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.name = const Value.absent(),
+    this.points = const Value.absent(),
+    this.radiusM = const Value.absent(),
+    this.alerts = const Value.absent(),
+  });
+  PlacesCompanion.insert({
+    this.id = const Value.absent(),
+    required String kind,
+    required String name,
+    required String points,
+    this.radiusM = const Value.absent(),
+    this.alerts = const Value.absent(),
+  }) : kind = Value(kind),
+       name = Value(name),
+       points = Value(points);
+  static Insertable<PlaceRow> custom({
+    Expression<int>? id,
+    Expression<String>? kind,
+    Expression<String>? name,
+    Expression<String>? points,
+    Expression<double>? radiusM,
+    Expression<bool>? alerts,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (kind != null) 'kind': kind,
+      if (name != null) 'name': name,
+      if (points != null) 'points': points,
+      if (radiusM != null) 'radius_m': radiusM,
+      if (alerts != null) 'alerts': alerts,
+    });
+  }
+
+  PlacesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? kind,
+    Value<String>? name,
+    Value<String>? points,
+    Value<double?>? radiusM,
+    Value<bool>? alerts,
+  }) {
+    return PlacesCompanion(
+      id: id ?? this.id,
+      kind: kind ?? this.kind,
+      name: name ?? this.name,
+      points: points ?? this.points,
+      radiusM: radiusM ?? this.radiusM,
+      alerts: alerts ?? this.alerts,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (points.present) {
+      map['points'] = Variable<String>(points.value);
+    }
+    if (radiusM.present) {
+      map['radius_m'] = Variable<double>(radiusM.value);
+    }
+    if (alerts.present) {
+      map['alerts'] = Variable<bool>(alerts.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PlacesCompanion(')
+          ..write('id: $id, ')
+          ..write('kind: $kind, ')
+          ..write('name: $name, ')
+          ..write('points: $points, ')
+          ..write('radiusM: $radiusM, ')
+          ..write('alerts: $alerts')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$MeshDatabase extends GeneratedDatabase {
   _$MeshDatabase(QueryExecutor e) : super(e);
   $MeshDatabaseManager get managers => $MeshDatabaseManager(this);
@@ -5569,6 +5965,7 @@ abstract class _$MeshDatabase extends GeneratedDatabase {
   late final $PreferencesTable preferences = $PreferencesTable(this);
   late final $RadioContactsTable radioContacts = $RadioContactsTable(this);
   late final $TraceRecordsTable traceRecords = $TraceRecordsTable(this);
+  late final $PlacesTable places = $PlacesTable(this);
   late final Index messagesByConversation = Index(
     'messages_by_conversation',
     'CREATE INDEX messages_by_conversation ON messages (conversation, id)',
@@ -5596,6 +5993,7 @@ abstract class _$MeshDatabase extends GeneratedDatabase {
     preferences,
     radioContacts,
     traceRecords,
+    places,
     messagesByConversation,
     messagesByNativeId,
     telemetryByNode,
@@ -8431,6 +8829,222 @@ typedef $$TraceRecordsTableProcessedTableManager =
       TraceRow,
       PrefetchHooks Function()
     >;
+typedef $$PlacesTableCreateCompanionBuilder =
+    PlacesCompanion Function({
+      Value<int> id,
+      required String kind,
+      required String name,
+      required String points,
+      Value<double?> radiusM,
+      Value<bool> alerts,
+    });
+typedef $$PlacesTableUpdateCompanionBuilder =
+    PlacesCompanion Function({
+      Value<int> id,
+      Value<String> kind,
+      Value<String> name,
+      Value<String> points,
+      Value<double?> radiusM,
+      Value<bool> alerts,
+    });
+
+class $$PlacesTableFilterComposer
+    extends Composer<_$MeshDatabase, $PlacesTable> {
+  $$PlacesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get points => $composableBuilder(
+    column: $table.points,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get radiusM => $composableBuilder(
+    column: $table.radiusM,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get alerts => $composableBuilder(
+    column: $table.alerts,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PlacesTableOrderingComposer
+    extends Composer<_$MeshDatabase, $PlacesTable> {
+  $$PlacesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get points => $composableBuilder(
+    column: $table.points,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get radiusM => $composableBuilder(
+    column: $table.radiusM,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get alerts => $composableBuilder(
+    column: $table.alerts,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PlacesTableAnnotationComposer
+    extends Composer<_$MeshDatabase, $PlacesTable> {
+  $$PlacesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get points =>
+      $composableBuilder(column: $table.points, builder: (column) => column);
+
+  GeneratedColumn<double> get radiusM =>
+      $composableBuilder(column: $table.radiusM, builder: (column) => column);
+
+  GeneratedColumn<bool> get alerts =>
+      $composableBuilder(column: $table.alerts, builder: (column) => column);
+}
+
+class $$PlacesTableTableManager
+    extends
+        RootTableManager<
+          _$MeshDatabase,
+          $PlacesTable,
+          PlaceRow,
+          $$PlacesTableFilterComposer,
+          $$PlacesTableOrderingComposer,
+          $$PlacesTableAnnotationComposer,
+          $$PlacesTableCreateCompanionBuilder,
+          $$PlacesTableUpdateCompanionBuilder,
+          (PlaceRow, BaseReferences<_$MeshDatabase, $PlacesTable, PlaceRow>),
+          PlaceRow,
+          PrefetchHooks Function()
+        > {
+  $$PlacesTableTableManager(_$MeshDatabase db, $PlacesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PlacesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PlacesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PlacesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> points = const Value.absent(),
+                Value<double?> radiusM = const Value.absent(),
+                Value<bool> alerts = const Value.absent(),
+              }) => PlacesCompanion(
+                id: id,
+                kind: kind,
+                name: name,
+                points: points,
+                radiusM: radiusM,
+                alerts: alerts,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String kind,
+                required String name,
+                required String points,
+                Value<double?> radiusM = const Value.absent(),
+                Value<bool> alerts = const Value.absent(),
+              }) => PlacesCompanion.insert(
+                id: id,
+                kind: kind,
+                name: name,
+                points: points,
+                radiusM: radiusM,
+                alerts: alerts,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$PlacesTable, PlaceRow>(table),
+                  BaseReferences<_$MeshDatabase, $PlacesTable, PlaceRow>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PlacesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$MeshDatabase,
+      $PlacesTable,
+      PlaceRow,
+      $$PlacesTableFilterComposer,
+      $$PlacesTableOrderingComposer,
+      $$PlacesTableAnnotationComposer,
+      $$PlacesTableCreateCompanionBuilder,
+      $$PlacesTableUpdateCompanionBuilder,
+      (PlaceRow, BaseReferences<_$MeshDatabase, $PlacesTable, PlaceRow>),
+      PlaceRow,
+      PrefetchHooks Function()
+    >;
 
 class $MeshDatabaseManager {
   final _$MeshDatabase _db;
@@ -8455,4 +9069,6 @@ class $MeshDatabaseManager {
       $$RadioContactsTableTableManager(_db, _db.radioContacts);
   $$TraceRecordsTableTableManager get traceRecords =>
       $$TraceRecordsTableTableManager(_db, _db.traceRecords);
+  $$PlacesTableTableManager get places =>
+      $$PlacesTableTableManager(_db, _db.places);
 }

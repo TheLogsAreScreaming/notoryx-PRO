@@ -16,11 +16,12 @@ class RestoreFileTooBig implements Exception {
   const RestoreFileTooBig();
 }
 
-/// Asks for a JSON export and returns its text, or null if cancelled.
-Future<String?> pickExportFile() async {
+/// Asks for a file with one of [extensions] and returns its text, or null
+/// if cancelled.
+Future<String?> pickTextFile(List<String> extensions) async {
   final picked = await FilePicker.pickFiles(
     type: FileType.custom,
-    allowedExtensions: const ['json'],
+    allowedExtensions: extensions,
   );
   final path = picked.firstOrNull?.path;
   if (path == null) return null;
@@ -28,6 +29,9 @@ Future<String?> pickExportFile() async {
   if (await file.length() > maxRestoreBytes) throw const RestoreFileTooBig();
   return file.readAsString();
 }
+
+/// Asks for a JSON export and returns its text, or null if cancelled.
+Future<String?> pickExportFile() => pickTextFile(const ['json']);
 
 /// Top-level on purpose: a closure inside [restoreFromExport] would drag
 /// its screen objects along, and those can't cross to another isolate.

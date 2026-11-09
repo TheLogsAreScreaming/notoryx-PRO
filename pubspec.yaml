@@ -30,6 +30,7 @@ dependencies:
   share_plus: ^13.3.1
   mqtt_client: ^10.14.0
   file_picker: ^13.3.2
+  xml: ^7.1.0
 
 dev_dependencies:
   flutter_test:
