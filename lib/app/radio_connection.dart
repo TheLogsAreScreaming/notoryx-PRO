@@ -260,6 +260,7 @@ class MeshCoreConnection extends RadioConnection {
   @override
   Future<void> setUp() async {
     final h = await session.handshake();
+    _notePathHash(h.device);
     selfInfo = h.self;
     frequencyMHz = h.self.frequencyMHz;
     ownCard = ContactCard(
@@ -475,7 +476,26 @@ class MeshCoreConnection extends RadioConnection {
 
   /// Sends only what changed from the radio's current settings, then reads
   /// them back so the screen shows what the radio really accepted.
-  Future<MeshCoreSettings> applySettings(MeshCoreSettings wanted) async {
+  /// The radio's hop ID size in bytes; null if its firmware can't set it.
+  int? get pathHashBytes => _pathHashBytes;
+  int? _pathHashBytes;
+
+  void _notePathHash(DeviceInfoFrame device) {
+    final mode = device.pathHashMode;
+    _pathHashBytes =
+        mode != null &&
+            MeshCoreFirmware.supports(
+              device.firmwareCode,
+              MeshCoreFeature.pathHashMode,
+            )
+        ? mode + 1
+        : null;
+  }
+
+  Future<MeshCoreSettings> applySettings(
+    MeshCoreSettings wanted, {
+    int? pathHashBytes,
+  }) async {
     final now = settings;
     if (now == null) throw StateError('Not connected');
     if (wanted.name.trim() != now.name) {
@@ -502,6 +522,10 @@ class MeshCoreConnection extends RadioConnection {
         advertLocationPolicy: wanted.shareLocationInAdverts ? 1 : 0,
         multiAcks: wanted.multiAcks,
       );
+    }
+    if (pathHashBytes != null && pathHashBytes != _pathHashBytes) {
+      await session.setPathHashMode(pathHashBytes - 1);
+      _notePathHash(await session.deviceQuery());
     }
     final fresh = selfInfo = await session.appStart();
     frequencyMHz = fresh.frequencyMHz;

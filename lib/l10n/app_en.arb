@@ -1201,5 +1201,15 @@
   "mtFixedHelp": "For a node that never moves. It stops using GPS for its position, and other nodes can see these coordinates.",
   "mtFixedAltitude": "Altitude in metres (optional)",
   "mtFixedSaved": "Fixed position sent.",
-  "mtFixedRemoved": "Fixed position removed."
+  "mtFixedRemoved": "Fixed position removed.",
+  "settingsPathHash": "Hop ID size",
+  "settingsPathHashHelp": "How many bytes identify each repeater in a route. Bigger avoids mix-ups on busy meshes, but leaves room for fewer hops. Use what your local mesh uses.",
+  "settingsPathHashValue": "{count, plural, =1{1 byte} other{{count} bytes}}",
+  "@settingsPathHashValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }
