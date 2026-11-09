@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../app/app_controller.dart';
+import '../app/app_lock.dart';
 import '../app/message_alerts.dart';
 import '../l10n/app_localizations.dart';
 import 'beacon_sheet.dart';
@@ -10,6 +11,7 @@ import 'common.dart';
 import 'conversation_screen.dart';
 import 'export_sheet.dart';
 import 'inbox_screen.dart';
+import 'lock_gate.dart';
 import 'map_screen.dart';
 import 'map_tiles.dart';
 import 'mute_menu.dart';
@@ -28,6 +30,8 @@ class NotoryxProApp extends StatelessWidget {
     required this.app,
     this.tiles,
     this.initialTheme = const ThemeChoice(),
+    this.auth,
+    this.startLocked = false,
   });
 
   final AppController app;
@@ -41,6 +45,12 @@ class NotoryxProApp extends StatelessWidget {
   /// The saved theme, read before the first frame so it doesn't flash.
   final ThemeChoice initialTheme;
 
+  /// The phone's unlock check; null leaves the lock out (tests).
+  final DeviceAuth? auth;
+
+  /// Whether to open locked, read before the first frame.
+  final bool startLocked;
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<String?>(
@@ -53,17 +63,30 @@ class NotoryxProApp extends StatelessWidget {
   Widget _build(ThemeChoice choice) {
     return MaterialApp(
       navigatorKey: navigatorKey,
+      builder: auth == null
+          ? null
+          : (context, child) => LockGate(
+              store: app.store,
+              auth: auth!,
+              startLocked: startLocked,
+              child: child!,
+            ),
       onGenerateTitle: (context) => context.l10n.appTitle,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       theme: buildTheme(choice, Brightness.light),
       darkTheme: buildTheme(choice, Brightness.dark),
-      home: HomeShell(app: app, tiles: tiles, navigatorKey: navigatorKey),
+      home: HomeShell(
+        app: app,
+        tiles: tiles,
+        navigatorKey: navigatorKey,
+        auth: auth,
+      ),
     );
   }
 }
 
-enum _MenuAction { export, restore, theme }
+enum _MenuAction { export, restore, theme, lock }
 
 /// Inbox, nodes and radios, with a bottom navigation bar.
 class HomeShell extends StatefulWidget {
@@ -72,11 +95,13 @@ class HomeShell extends StatefulWidget {
     required this.app,
     this.tiles,
     this.navigatorKey,
+    this.auth,
   });
 
   final AppController app;
   final MapTiles? tiles;
   final GlobalKey<NavigatorState>? navigatorKey;
+  final DeviceAuth? auth;
 
   @override
   State<HomeShell> createState() => _HomeShellState();
@@ -207,6 +232,12 @@ class _HomeShellState extends State<HomeShell> {
                 context,
                 store: app.store,
               ),
+              _MenuAction.lock => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) =>
+                      LockSettingsScreen(store: app.store, auth: widget.auth!),
+                ),
+              ),
               _MenuAction.theme => Navigator.of(context).push(
                 MaterialPageRoute<void>(
                   builder: (_) => ThemeScreen(store: app.store),
@@ -228,6 +259,11 @@ class _HomeShellState extends State<HomeShell> {
                 value: _MenuAction.theme,
                 child: Text(context.l10n.themeTitle),
               ),
+              if (widget.auth != null)
+                PopupMenuItem(
+                  value: _MenuAction.lock,
+                  child: Text(context.l10n.lockTitle),
+                ),
             ],
           ),
         ],

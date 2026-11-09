@@ -709,5 +709,15 @@
   "autoChannelsHelp": "Cualquiera en el canal puede activarla. Usa tiempo de aire compartido.",
   "autoReply": "Respuesta",
   "autoReplyHelp": "Puedes usar {name}, {time}, {hops} y {snr}.",
-  "autoDelete": "Eliminar {rule}"
+  "autoDelete": "Eliminar {rule}",
+  "lockTitle": "Bloqueo de la app",
+  "lockOn": "Pedir huella, rostro o código",
+  "lockHelp": "Cubre la app hasta que la desbloquees. Las radios, balizas y mensajes programados siguen funcionando. Las notificaciones aún pueden mostrar texto en la pantalla de bloqueo y los mensajes guardados todavía no están cifrados.",
+  "lockReason": "Desbloquear NOTORYX PRO",
+  "lockLocked": "NOTORYX PRO está bloqueada",
+  "lockUnlock": "Desbloquear",
+  "lockUnavailable": "Primero configura un bloqueo de pantalla en este dispositivo.",
+  "lockAtOnce": "Bloquear al instante",
+  "lockAfter1": "Tras 1 min",
+  "lockAfter5": "Tras 5 min"
 }

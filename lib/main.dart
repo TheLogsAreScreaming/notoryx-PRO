@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'app/app_controller.dart';
+import 'app/app_lock.dart';
 import 'app/message_alerts.dart';
 import 'store/mesh_store.dart';
 import 'ui/app.dart';
@@ -18,11 +19,14 @@ Future<void> main() async {
   final notifier = SystemNotifier();
   await notifier.init();
   final theme = await ThemeChoice.load(store);
+  final lock = await LockSettings.load(store);
   runApp(
     NotoryxProApp(
       app: AppController(store: store, notifier: notifier),
       tiles: tiles,
       initialTheme: theme,
+      auth: SystemDeviceAuth(),
+      startLocked: lock.on,
     ),
   );
 }
