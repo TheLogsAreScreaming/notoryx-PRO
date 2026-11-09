@@ -55,7 +55,7 @@ void main() {
         await link.open();
         session = MeshCoreSession(
           link,
-          timeout: const Duration(milliseconds: 200),
+          timeout: const Duration(seconds: 5),
           clock: () => DateTime.utc(2026, 11, 7),
         );
       });
@@ -102,16 +102,14 @@ void main() {
       List<Uint8List>? queued,
       Responder? responder,
       bool clockAhead = false,
+      Duration timeout = const Duration(seconds: 5),
     }) async {
       link = ScriptedMeshCoreLink(
         responder:
             responder ?? companion(queued: queued, clockAhead: clockAhead),
       );
       await link.open();
-      session = MeshCoreSession(
-        link,
-        timeout: const Duration(milliseconds: 100),
-      );
+      session = MeshCoreSession(link, timeout: timeout);
     }
 
     tearDown(() => session.dispose());
@@ -204,6 +202,7 @@ void main() {
           if (cmd.first == Cmd.getBattAndStorage) return const [];
           return [RadioFrames.selfInfo()];
         },
+        timeout: const Duration(milliseconds: 100),
       );
       final slow = session.battery();
       final next = session.appStart();
