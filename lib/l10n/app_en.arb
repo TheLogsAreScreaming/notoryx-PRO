@@ -773,7 +773,7 @@
   "notifyTitle": "Notifications",
   "notifyDirect": "Direct messages",
   "notifyChannels": "Channel messages",
-  "notifyHelp": "Muted conversations never notify. With \"Stay connected in the background\" on, Android keeps your radios connected and shows a small ongoing notification; iPhone keeps Bluetooth radios connected.",
+  "notifyHelp": "Muted conversations stay quiet, except a real MECP MAYDAY if you leave that on (at most once every 10 minutes per conversation; anyone on a channel can send one). With \"Stay connected in the background\" on, Android keeps your radios connected and shows a small ongoing notification; iPhone keeps Bluetooth radios connected.",
   "notifyAllow": "Allow notifications",
   "notifyAllowed": "Notifications are on.",
   "notifyDenied": "Notifications are off. You can turn them on in the system settings.",
@@ -1312,5 +1312,6 @@
         "type": "String"
       }
     }
-  }
+  },
+  "notifyMayday": "Real MAYDAY messages override mute"
 }

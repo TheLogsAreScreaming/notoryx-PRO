@@ -339,7 +339,7 @@
   "notifyTitle": "Notificaciones",
   "notifyDirect": "Mensajes directos",
   "notifyChannels": "Mensajes de canal",
-  "notifyHelp": "Las conversaciones silenciadas nunca avisan. Con «Seguir conectado en segundo plano» activado, Android mantiene tus radios conectadas y muestra una pequeña notificación continua; el iPhone mantiene conectadas las radios Bluetooth.",
+  "notifyHelp": "Las conversaciones silenciadas no avisan, salvo un MAYDAY MECP real si lo dejas activado (como máximo una vez cada 10 minutos por conversación; cualquiera en un canal puede enviarlo). Con «Seguir conectado en segundo plano» activado, Android mantiene tus radios conectadas y muestra una pequeña notificación continua; el iPhone mantiene conectadas las radios Bluetooth.",
   "notifyAllow": "Permitir notificaciones",
   "notifyAllowed": "Las notificaciones están activadas.",
   "notifyDenied": "Las notificaciones están desactivadas. Puedes activarlas en los ajustes del sistema.",
@@ -584,5 +584,6 @@
   "restoreTooBig": "Ese archivo es demasiado grande para restaurarlo.",
   "restoreConfirm": "¿Añadir {count} mensajes de este archivo? No se sustituye nada y se omiten los que ya tienes. Las insignias de remitente verificado no se restauran.",
   "restoreDone": "Añadidos: {added}. Ya estaban: {skipped}. Ilegibles: {unreadable}.",
-  "restoreFailed": "No se pudo restaurar: {error}"
+  "restoreFailed": "No se pudo restaurar: {error}",
+  "notifyMayday": "Los MAYDAY reales ignoran el silencio"
 }
