@@ -802,5 +802,15 @@
   "passwordMismatch": "Les mots de passe ne correspondent pas",
   "passwordOk": "OK",
   "restorePasswordTitle": "Cette sauvegarde est protégée par mot de passe",
-  "restoreWrongPassword": "Mot de passe incorrect, ou le fichier a été modifié. Rien n'a été restauré."
+  "restoreWrongPassword": "Mot de passe incorrect, ou le fichier a été modifié. Rien n'a été restauré.",
+  "topologyTitle": "Schéma du réseau",
+  "topologyEmpty": "Rien à dessiner pour l'instant. Les nœuds apparaissent ici dès que vos radios savent à combien de sauts ils se trouvent.",
+  "topologyHint": "Vous êtes au centre et chaque anneau est un saut de plus. Les lignes sont les routes MeshCore connues et les nœuds entendus directement ; les plus épaisses portent plus de routes. Meshtastic n'indique pas qui a relayé, donc les nœuds Meshtastic éloignés n'ont pas de ligne.",
+  "topologyYou": "Vous",
+  "topologyUnknownHop": "Répéteur absent de vos contacts",
+  "topologyHops": "{count, plural, =0{Entendu directement} =1{1 saut} other{{count} sauts}}",
+  "topologyRing": "{count, plural, =0{Entendus directement} =1{À 1 saut} other{À {count} sauts}}",
+  "topologyRoutes": "{count, plural, =1{Sur 1 route} other{Sur {count} routes}}",
+  "topologyMessage": "Message",
+  "topologySemantics": "Schéma du réseau : {nodes} nœuds sur {rings} anneaux autour de vous."
 }

@@ -23,6 +23,7 @@ import 'radios_screen.dart';
 import 'restore_sheet.dart';
 import 'search_screen.dart';
 import 'sentinel_screen.dart';
+import 'topology_screen.dart';
 import 'theme_screen.dart';
 import 'themes.dart';
 
@@ -213,6 +214,17 @@ class _HomeShellState extends State<HomeShell> {
       appBar: AppBar(
         title: Text(l.appTitle),
         actions: [
+          if (_tab == 1)
+            IconButton(
+              key: const Key('open-topology'),
+              tooltip: l.topologyTitle,
+              icon: const Icon(Icons.hub_outlined),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => TopologyScreen(app: app),
+                ),
+              ),
+            ),
           if (_tab == 0)
             IconButton(
               tooltip: l.searchTitle,

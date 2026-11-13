@@ -802,5 +802,15 @@
   "passwordMismatch": "Las contraseñas no coinciden",
   "passwordOk": "Aceptar",
   "restorePasswordTitle": "Esta copia está protegida con contraseña",
-  "restoreWrongPassword": "Contraseña incorrecta, o el archivo fue modificado. No se restauró nada."
+  "restoreWrongPassword": "Contraseña incorrecta, o el archivo fue modificado. No se restauró nada.",
+  "topologyTitle": "Diagrama de red",
+  "topologyEmpty": "Aún no hay nada que dibujar. Los nodos aparecen aquí cuando tus radios saben a cuántos saltos están.",
+  "topologyHint": "Tú estás en el centro y cada anillo es un salto más. Las líneas son rutas MeshCore conocidas y nodos oídos directamente; las más gruesas llevan más rutas. Meshtastic no indica quién retransmitió, así que los nodos Meshtastic lejanos no tienen líneas.",
+  "topologyYou": "Tú",
+  "topologyUnknownHop": "Repetidor que no está en tus contactos",
+  "topologyHops": "{count, plural, =0{Oído directamente} =1{1 salto} other{{count} saltos}}",
+  "topologyRing": "{count, plural, =0{Oídos directamente} =1{A 1 salto} other{A {count} saltos}}",
+  "topologyRoutes": "{count, plural, =1{En 1 ruta} other{En {count} rutas}}",
+  "topologyMessage": "Mensaje",
+  "topologySemantics": "Diagrama de red: {nodes} nodos en {rings} anillos a tu alrededor."
 }
