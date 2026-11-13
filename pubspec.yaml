@@ -33,6 +33,7 @@ dependencies:
   xml: ^7.1.0
   local_auth: ^3.0.2
   flutter_secure_storage: ^11.2.0
+  flutter_libserialport: ^0.6.0
 
 dev_dependencies:
   flutter_test:

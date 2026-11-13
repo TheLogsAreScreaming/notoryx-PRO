@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:usb_serial/usb_serial.dart';
 
 import 'connection_log.dart';
@@ -163,9 +164,8 @@ T? matchUsbDevice<T>(
   return same.length == 1 ? same.single.value : null;
 }
 
-/// USB serial ports on Android, through the vendored usb_serial plugin.
-///
-/// Other platforms report no ports for now; Mac USB support comes later.
+/// USB serial ports: on Android through the vendored usb_serial plugin, and
+/// on Windows and Mac through libserialport.
 class UsbSerialPorts {
   const UsbSerialPorts();
 
@@ -173,11 +173,14 @@ class UsbSerialPorts {
   static const baudRate = 115200;
 
   /// Whether this platform has USB radio support.
-  bool get supported => Platform.isAndroid;
+  bool get supported => Platform.isAndroid || _desktop;
+
+  static bool get _desktop => Platform.isWindows || Platform.isMacOS;
 
   /// Ports plugged in now.
   Future<List<SerialPortInfo>> list() async {
     if (!supported) return const [];
+    if (_desktop) return _desktopPorts();
     final devices = await UsbSerial.listDevices();
     return [
       for (final d in devices)
@@ -195,6 +198,7 @@ class UsbSerialPorts {
   /// Android gives a replugged device a new ID, so if the old ID is gone the
   /// port is found again by its USB vendor and product IDs.
   Future<SerialPortHandle> open(SerialPortInfo port) async {
+    if (_desktop) return _openDesktop(port);
     final devices = await UsbSerial.listDevices();
     final device = matchUsbDevice(port, [
       for (final d in devices)
@@ -216,6 +220,91 @@ class UsbSerialPorts {
       UsbPort.PARITY_NONE,
     );
     return UsbSerialPortHandle(usb);
+  }
+}
+
+/// USB ports the desktop can see. Ports without a USB vendor ID (Bluetooth
+/// serial, built-in modems) aren't radios, so they're left out.
+List<SerialPortInfo> _desktopPorts() {
+  final out = <SerialPortInfo>[];
+  for (final name in SerialPort.availablePorts) {
+    final p = SerialPort(name);
+    try {
+      final vid = p.vendorId;
+      if (vid == null) continue;
+      out.add(
+        SerialPortInfo(
+          id: name,
+          name: '${p.description ?? name} ($name)',
+          vendorId: vid,
+          productId: p.productId,
+        ),
+      );
+    } on Object {
+      // A port that can't be described isn't one we can use.
+    } finally {
+      p.dispose();
+    }
+  }
+  return out;
+}
+
+/// Opens a desktop port by name; after a replug Windows may give it a new
+/// name, so it is found again by vendor and product ID.
+SerialPortHandle _openDesktop(SerialPortInfo port) {
+  final ports = _desktopPorts();
+  final match = matchUsbDevice(port, [
+    for (final p in ports)
+      (id: p.id, vendorId: p.vendorId, productId: p.productId, value: p.id),
+  ]);
+  if (match == null) throw const LinkException('The radio was unplugged');
+  final sp = SerialPort(match);
+  if (!sp.openReadWrite()) {
+    final error = SerialPort.lastError;
+    sp.dispose();
+    throw LinkException('Could not open $match', error);
+  }
+  final config = SerialPortConfig()
+    ..baudRate = UsbSerialPorts.baudRate
+    ..bits = 8
+    ..stopBits = 1
+    ..parity = SerialPortParity.none
+    // DTR on and RTS off, as on Android: some boards reset otherwise.
+    ..dtr = SerialPortDtr.on
+    ..rts = SerialPortRts.off;
+  try {
+    sp.config = config;
+  } finally {
+    config.dispose();
+  }
+  return DesktopSerialPortHandle(sp);
+}
+
+/// [SerialPortHandle] for a port opened with libserialport.
+class DesktopSerialPortHandle implements SerialPortHandle {
+  DesktopSerialPortHandle(this._port) : _reader = SerialPortReader(_port);
+
+  final SerialPort _port;
+  final SerialPortReader _reader;
+
+  @override
+  Stream<Uint8List> get input => _reader.stream;
+
+  @override
+  Future<void> write(Uint8List data) async {
+    var sent = 0;
+    while (sent < data.length) {
+      final n = _port.write(Uint8List.sublistView(data, sent), timeout: 2000);
+      if (n <= 0) throw const LinkException('Could not write to the radio');
+      sent += n;
+    }
+  }
+
+  @override
+  Future<void> close() async {
+    _reader.close();
+    _port.close();
+    _port.dispose();
   }
 }
 
