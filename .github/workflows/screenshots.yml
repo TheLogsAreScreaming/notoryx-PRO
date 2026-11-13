@@ -1,0 +1,27 @@
+name: Store screenshots
+
+# Renders the store screenshots from demo mode, in every store size and
+# language, with real fonts. Run it by hand from the Actions tab; the PNGs
+# are attached to the run as the "store-screenshots" artifact.
+on:
+  workflow_dispatch:
+
+jobs:
+  screenshots:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.47.7'
+          cache: true
+      - run: flutter pub get
+      - run: flutter precache --no-android --no-ios
+      - name: Render screenshots
+        run: SCREENSHOTS=1 flutter test test/screenshots
+      - uses: actions/upload-artifact@v4
+        with:
+          name: store-screenshots
+          retention-days: 30
+          path: build/screenshots/
