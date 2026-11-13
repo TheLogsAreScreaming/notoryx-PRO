@@ -215,6 +215,133 @@
     }
   },
   "signalUnknown": "Signal unknown",
+  "rpButton": "Routes",
+  "rpTitle": "Route to {name}",
+  "@rpTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "rpCurrent": "Current route",
+  "rpFlooding": "No fixed route: messages flood and the mesh finds a way.",
+  "rpDirectLink": "Heard directly: no repeaters needed.",
+  "rpYou": "Your radio",
+  "rpLastHeard": "Last heard at your radio: {signal}",
+  "@rpLastHeard": {
+    "placeholders": {
+      "signal": {
+        "type": "String"
+      }
+    }
+  },
+  "rpTrace": "Trace this route",
+  "rpBuild": "Build a route",
+  "rpFlood": "Let the mesh find a route",
+  "rpOthers": "Other routes seen in traces",
+  "rpNoOthers": "No other routes yet. Every trace you run is kept and compared here.",
+  "rpSuggested": "Suggested: more reliable than the current route",
+  "rpUse": "Use this route",
+  "rpSet": "Route saved on the radio",
+  "rpFloodSet": "Route cleared. The next message floods.",
+  "rpFailed": "Couldn't change the route: {error}",
+  "@rpFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "rpHopCount": "{count, plural, =0{direct link} =1{1 hop} other{{count} hops}}",
+  "@rpHopCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rpWeakest": "weakest link {snr} dB",
+  "@rpWeakest": {
+    "placeholders": {
+      "snr": {
+        "type": "String"
+      }
+    }
+  },
+  "rpMeasured": "measured {when}",
+  "@rpMeasured": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "rpNeverMeasured": "not measured yet: run a trace to check it",
+  "rpSnrOut": "out {snr} dB",
+  "@rpSnrOut": {
+    "placeholders": {
+      "snr": {
+        "type": "String"
+      }
+    }
+  },
+  "rpSnrBack": "back {snr} dB",
+  "@rpSnrBack": {
+    "placeholders": {
+      "snr": {
+        "type": "String"
+      }
+    }
+  },
+  "rpNotMeasured": "link not measured",
+  "rpHopName": "{number}. {name}",
+  "@rpHopName": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "rpHopLabel": "Hop {number}, {name}: {quality}",
+  "@rpHopLabel": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      },
+      "quality": {
+        "type": "String"
+      }
+    }
+  },
+  "rpHelp": "Link quality comes from saved traces: SNR in dB as each repeater heard the packet, out and back. Higher is better; LoRa still decodes down to about -10 dB. Signal strength in dBm is only reported for the last hop into your radio.",
+  "rpEditorTitle": "Build a route",
+  "rpEditorHelp": "Pick repeaters in order, starting with the one nearest your radio.",
+  "rpEditorEmpty": "No repeaters picked yet.",
+  "rpEditorAdd": "Add repeater",
+  "rpEditorNoRepeaters": "No other repeaters with a known key on this radio.",
+  "rpRemoveHop": "Remove {name}",
+  "@rpRemoveHop": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "rpMoveUp": "Move {name} up",
+  "@rpMoveUp": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "mapLastHop": "Signal is from the last repeater",
   "diagnostics": "Diagnostics",
   "diagPackets": "Packets heard",

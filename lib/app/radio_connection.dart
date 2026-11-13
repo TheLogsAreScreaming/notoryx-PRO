@@ -462,7 +462,7 @@ class MeshCoreConnection extends RadioConnection {
           if (n.key.native.startsWith(prefix)) n,
       ];
       final n = matches.length == 1 ? matches.single : null;
-      return TraceHop(n?.displayName ?? prefix, snr, node: n);
+      return TraceHop(n?.displayName ?? prefix, snr, node: n, hash: prefix);
     }
 
     final all = [
@@ -641,13 +641,7 @@ class MeshCoreConnection extends RadioConnection {
     }
     await session.addContact(
       publicKey: node.publicKey,
-      type: switch (node.kind) {
-        NodeKind.person => NodeType.chat.code,
-        NodeKind.relay => NodeType.repeater.code,
-        NodeKind.room => NodeType.room.code,
-        NodeKind.sensor => NodeType.sensor.code,
-        _ => NodeType.unknown.code,
-      },
+      type: _typeCode(node.kind),
       name: node.name,
       flags: node.isFavorite ? 1 : 0,
       lastAdvert: (node.lastHeard?.millisecondsSinceEpoch ?? 0) ~/ 1000,
@@ -656,6 +650,91 @@ class MeshCoreConnection extends RadioConnection {
     );
     await store.setOnRadio(radio.id, node.key, true);
     log.add('MeshCore ${link.label}', 'added ${node.displayName} to the radio');
+  }
+
+  static int _typeCode(NodeKind kind) => switch (kind) {
+    NodeKind.person => NodeType.chat.code,
+    NodeKind.relay => NodeType.repeater.code,
+    NodeKind.room => NodeType.room.code,
+    NodeKind.sensor => NodeType.sensor.code,
+    _ => NodeType.unknown.code,
+  };
+
+  /// Tells the radio to reach [node] through [hops] (repeater hash
+  /// prefixes as hex, in order from our radio, all the same size). An
+  /// empty list forgets the route, so the next message floods and the
+  /// mesh finds a new one. The stored node is updated to match.
+  Future<Node> setRoute(Node node, List<String> hops) async {
+    final radio = this.radio;
+    if (radio == null || node.radioId != radio.id) {
+      throw StateError('That node belongs to another radio');
+    }
+    if (node.publicKey.length != 32) {
+      throw StateError('The node has no full public key yet');
+    }
+    final route = validRoute(hops);
+    await ensureOnRadio(node);
+    if (route.isEmpty) {
+      await session.resetPath(node.publicKey);
+      final updated = node.copyWith(
+        route: const [],
+        path: PathFacts(
+          route: RouteKind.flood,
+          snr: node.path.snr,
+          rssi: node.path.rssi,
+        ),
+      );
+      await store.upsertNode(updated);
+      log.add('MeshCore ${link.label}', 'route to ${node.displayName} reset');
+      return updated;
+    }
+    final size = route.first.length;
+    await session.addContact(
+      publicKey: node.publicKey,
+      type: _typeCode(node.kind),
+      name: node.name,
+      flags: node.isFavorite ? 1 : 0,
+      pathLength: ((size - 1) << 6) | route.length,
+      path: [for (final h in route) ...h],
+      lastAdvert: (node.lastHeard?.millisecondsSinceEpoch ?? 0) ~/ 1000,
+      latitude: node.position?.latitude,
+      longitude: node.position?.longitude,
+    );
+    final updated = node.copyWith(
+      route: [for (final h in route) ...h],
+      path: PathFacts(
+        route: RouteKind.direct,
+        hops: route.length,
+        snr: node.path.snr,
+        rssi: node.path.rssi,
+      ),
+    );
+    await store.upsertNode(updated);
+    log.add(
+      'MeshCore ${link.label}',
+      'route to ${node.displayName} set: ${hops.join(',')}',
+    );
+    return updated;
+  }
+
+  /// [hops] as bytes, checked: 1–3 bytes each, all one size, at most 63
+  /// hops and 64 bytes in all.
+  static List<List<int>> validRoute(List<String> hops) {
+    final out = <List<int>>[];
+    for (final h in hops) {
+      if (!RegExp(r'^([0-9a-fA-F]{2}){1,3}$').hasMatch(h)) {
+        throw ArgumentError.value(h, 'hops', 'not a 1–3 byte hex prefix');
+      }
+      out.add(fromHex(h.toLowerCase()));
+    }
+    if (out.isEmpty) return out;
+    if (out.any((h) => h.length != out.first.length)) {
+      throw ArgumentError.value(hops, 'hops', 'hops differ in size');
+    }
+    if (out.length > 63 || out.length * out.first.length > 64) {
+      throw ArgumentError.value(hops, 'hops', 'route too long');
+    }
+    return out;
   }
 
   Future<Node?> _leastNeeded(
