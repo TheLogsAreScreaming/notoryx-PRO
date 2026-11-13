@@ -817,5 +817,12 @@
   "topologyRing": "{count, plural, =0{Ouvidos diretamente} =1{A 1 salto} other{A {count} saltos}}",
   "topologyRoutes": "{count, plural, =1{Em 1 rota} other{Em {count} rotas}}",
   "topologyMessage": "Mensagem",
-  "topologySemantics": "Diagrama da rede: {nodes} nós em {rings} anéis à sua volta."
+  "topologySemantics": "Diagrama da rede: {nodes} nós em {rings} anéis à sua volta.",
+  "routeAlertTitle": "Alerta de saída da rota",
+  "routeAlertOn": "Avisar quando alguém sair desta rota",
+  "routeAlertLimit": "A mais de {metres} m da rota",
+  "routeAlertHint": "Quem os seus rádios ouvirem, que tenha estado na rota e depois se afaste mais do que o limite, gera um alerta. Volta a ficar ativo quando regressa à rota.",
+  "routeAlertSave": "Guardar",
+  "placesRouteWatched": "Rota, {count} pontos · alerta a mais de {metres} m",
+  "offRouteAlert": "{node} está a {metres} m fora de {route}"
 }

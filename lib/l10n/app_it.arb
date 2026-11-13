@@ -817,5 +817,12 @@
   "topologyRing": "{count, plural, =0{Sentiti direttamente} =1{A 1 salto} other{A {count} salti}}",
   "topologyRoutes": "{count, plural, =1{Su 1 percorso} other{Su {count} percorsi}}",
   "topologyMessage": "Messaggio",
-  "topologySemantics": "Diagramma di rete: {nodes} nodi su {rings} anelli intorno a te."
+  "topologySemantics": "Diagramma di rete: {nodes} nodi su {rings} anelli intorno a te.",
+  "routeAlertTitle": "Avviso fuori percorso",
+  "routeAlertOn": "Avvisa quando qualcuno lascia questo percorso",
+  "routeAlertLimit": "A più di {metres} m dal percorso",
+  "routeAlertHint": "Chiunque le tue radio sentano, che sia stato sul percorso e poi se ne allontani oltre il limite, genera un avviso. Si riattiva quando torna sul percorso.",
+  "routeAlertSave": "Salva",
+  "placesRouteWatched": "Percorso, {count} punti · avviso oltre {metres} m",
+  "offRouteAlert": "{node} è a {metres} m da {route}"
 }

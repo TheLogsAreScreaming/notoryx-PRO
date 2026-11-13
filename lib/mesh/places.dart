@@ -23,11 +23,43 @@ class Place {
   /// One point, or the whole line for a route.
   final List<GeoPoint> points;
 
-  /// Size of a geofence, in metres.
+  /// Size of a geofence, in metres. For a route: how far off it someone
+  /// can go before an off-route alert; null when the route isn't watched.
   final double? radiusM;
 
-  /// Whether a geofence notifies.
+  /// Whether a geofence (or a watched route) notifies.
   final bool alerts;
+
+  /// A route with an off-route alert set.
+  bool get watchesRoute =>
+      kind == PlaceKind.route && alerts && radiusM != null && points.length > 1;
+}
+
+/// Shortest distance from [p] to the line through [line], in metres.
+///
+/// Each segment is flattened around [p], accurate to well under a metre at
+/// trail scales. Null for an empty line.
+double? metresFromLine(GeoPoint p, List<GeoPoint> line) {
+  if (line.isEmpty) return null;
+  const earth = 6371008.8;
+  double rad(double d) => d * math.pi / 180;
+  final k = math.cos(rad(p.latitude));
+  ({double x, double y}) local(GeoPoint q) => (
+    x: rad(q.longitude - p.longitude) * k * earth,
+    y: rad(q.latitude - p.latitude) * earth,
+  );
+  var a = local(line.first);
+  var best = math.sqrt(a.x * a.x + a.y * a.y);
+  for (var i = 1; i < line.length; i++) {
+    final b = local(line[i]);
+    final dx = b.x - a.x, dy = b.y - a.y;
+    final len2 = dx * dx + dy * dy;
+    final t = len2 == 0 ? 0.0 : (-(a.x * dx + a.y * dy) / len2).clamp(0.0, 1.0);
+    final px = a.x + t * dx, py = a.y + t * dy;
+    best = math.min(best, math.sqrt(px * px + py * py));
+    a = b;
+  }
+  return best;
 }
 
 /// A rough radio link estimate between two points on open ground.

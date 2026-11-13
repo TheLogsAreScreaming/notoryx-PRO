@@ -1811,5 +1811,42 @@
         "type": "int"
       }
     }
+  },
+  "routeAlertTitle": "Off-route alert",
+  "routeAlertOn": "Alert when someone leaves this route",
+  "routeAlertLimit": "Farther than {metres} m from the route",
+  "@routeAlertLimit": {
+    "placeholders": {
+      "metres": {
+        "type": "int"
+      }
+    }
+  },
+  "routeAlertHint": "Anyone your radios hear who has been on the route and then goes farther than the limit gets one alert. It re-arms when they're back on the route.",
+  "routeAlertSave": "Save",
+  "placesRouteWatched": "Route, {count} points · alert past {metres} m",
+  "@placesRouteWatched": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "metres": {
+        "type": "int"
+      }
+    }
+  },
+  "offRouteAlert": "{node} is {metres} m off {route}",
+  "@offRouteAlert": {
+    "placeholders": {
+      "node": {
+        "type": "String"
+      },
+      "route": {
+        "type": "String"
+      },
+      "metres": {
+        "type": "int"
+      }
+    }
   }
 }

@@ -817,5 +817,12 @@
   "topologyRing": "{count, plural, =0{Direkt gehört} =1{1 Sprung entfernt} other{{count} Sprünge entfernt}}",
   "topologyRoutes": "{count, plural, =1{Auf 1 Route} other{Auf {count} Routen}}",
   "topologyMessage": "Nachricht",
-  "topologySemantics": "Netzdiagramm: {nodes} Knoten auf {rings} Ringen um dich."
+  "topologySemantics": "Netzdiagramm: {nodes} Knoten auf {rings} Ringen um dich.",
+  "routeAlertTitle": "Abseits-der-Route-Alarm",
+  "routeAlertOn": "Alarm, wenn jemand diese Route verlässt",
+  "routeAlertLimit": "Weiter als {metres} m von der Route",
+  "routeAlertHint": "Wer von deinen Funkgeräten gehört wird, auf der Route war und sich dann weiter als das Limit entfernt, löst einen Alarm aus. Er wird wieder scharf, sobald die Person zurück auf der Route ist.",
+  "routeAlertSave": "Speichern",
+  "placesRouteWatched": "Route, {count} Punkte · Alarm ab {metres} m",
+  "offRouteAlert": "{node} ist {metres} m abseits von {route}"
 }
