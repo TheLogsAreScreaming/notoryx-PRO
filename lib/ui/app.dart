@@ -6,6 +6,7 @@ import '../app/app_controller.dart';
 import '../app/app_lock.dart';
 import '../store/database_vault.dart';
 import '../app/message_alerts.dart';
+import '../app/trusted_nodes.dart';
 import '../l10n/app_localizations.dart';
 import 'about_screen.dart';
 import 'beacon_sheet.dart';
@@ -119,6 +120,9 @@ class HomeShell extends StatefulWidget {
 }
 
 class _HomeShellState extends State<HomeShell> {
+  late final Stream<String?> _trustedOnly = widget.app.store.watchPreference(
+    TrustedNodes.onlyPref,
+  );
   int _tab = 0;
   StreamSubscription<String>? _taps;
   late final AppLifecycleListener _lifecycle;
@@ -213,6 +217,21 @@ class _HomeShellState extends State<HomeShell> {
       appBar: AppBar(
         title: Text(l.appTitle),
         actions: [
+          if (_tab == 1 || _tab == 2)
+            StreamBuilder<String?>(
+              stream: _trustedOnly,
+              builder: (context, snap) {
+                final on = snap.data == '1';
+                return IconButton(
+                  key: const Key('trusted-only'),
+                  tooltip: on ? l.trustedShowAll : l.trustedOnly,
+                  isSelected: on,
+                  icon: const Icon(Icons.star_border),
+                  selectedIcon: const Icon(Icons.star),
+                  onPressed: () => TrustedNodes.setOnlyTrusted(app.store, !on),
+                );
+              },
+            ),
           if (_tab == 0)
             IconButton(
               tooltip: l.searchTitle,

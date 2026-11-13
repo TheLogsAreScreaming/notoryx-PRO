@@ -802,5 +802,10 @@
   "passwordMismatch": "Las contraseñas no coinciden",
   "passwordOk": "Aceptar",
   "restorePasswordTitle": "Esta copia está protegida con contraseña",
-  "restoreWrongPassword": "Contraseña incorrecta, o el archivo fue modificado. No se restauró nada."
+  "restoreWrongPassword": "Contraseña incorrecta, o el archivo fue modificado. No se restauró nada.",
+  "trustedMark": "Confiar",
+  "trustedUnmark": "Dejar de confiar",
+  "trustedOnly": "Solo de confianza",
+  "trustedShowAll": "Mostrar todos los nodos",
+  "trustedEmpty": "Aún no hay nodos de confianza. Toca la estrella de un nodo para confiar en él. Los favoritos de la radio y los nodos verificados también cuentan."
 }

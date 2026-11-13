@@ -226,6 +226,31 @@ void main() {
     await tearDownApp(tester, app);
   });
 
+  testWidgets('trusted only shows the nodes you trust', (tester) async {
+    final app = AppController(store: MeshStore.memory());
+    await tester.runAsync(() => seed(app.store));
+    await tester.pumpWidget(NotoryxProApp(app: app));
+    await settle(tester);
+    await tester.tap(find.text('Nodes'));
+    await settle(tester);
+
+    // Trusted only with nothing trusted: explains how to trust.
+    await tester.tap(find.byKey(const Key('trusted-only')));
+    await settle(tester);
+    expect(find.text('Ridge Relay'), findsNothing);
+    expect(find.textContaining('No trusted nodes yet'), findsOneWidget);
+
+    // Show all, trust Ridge Relay, then trusted only keeps it.
+    await tester.tap(find.byKey(const Key('trusted-only')));
+    await settle(tester);
+    await tester.tap(find.byKey(Key('trust-$relayKey')));
+    await settle(tester);
+    await tester.tap(find.byKey(const Key('trusted-only')));
+    await settle(tester);
+    expect(find.text('Ridge Relay'), findsOneWidget);
+    await tearDownApp(tester, app);
+  });
+
   testWidgets('map without positions explains why it is empty', (tester) async {
     final app = AppController(store: MeshStore.memory());
     await tester.pumpWidget(NotoryxProApp(app: app));
