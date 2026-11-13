@@ -242,6 +242,24 @@ class Places extends Table {
 
 /// Schema changes bump [schemaVersion] and add a step to [migration]; each
 /// version's schema is saved in `drift_schemas/` and tested.
+/// Where nodes were over time, for replaying a day on the map. Kept for
+/// [MeshStore.positionsKept]. Schema v10.
+@DataClassName('PositionRow')
+@TableIndex(name: 'positions_by_node', columns: {#radioId, #nodeKey, #time})
+@TableIndex(name: 'positions_by_time', columns: {#time})
+class PositionReports extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get radioId => text()();
+
+  /// [NodeKey] as text.
+  TextColumn get nodeKey => text()();
+
+  /// When the node was at this position (when it was heard).
+  DateTimeColumn get time => dateTime()();
+  RealColumn get latitude => real()();
+  RealColumn get longitude => real()();
+}
+
 @DriftDatabase(
   tables: [
     Radios,
@@ -255,13 +273,14 @@ class Places extends Table {
     RadioContacts,
     TraceRecords,
     Places,
+    PositionReports,
   ],
 )
 class MeshDatabase extends _$MeshDatabase {
   MeshDatabase(super.e);
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -307,6 +326,12 @@ class MeshDatabase extends _$MeshDatabase {
       from8To9: (m, schema) async {
         // v9: waypoints, routes and geofences.
         await m.createTable(schema.places);
+      },
+      from9To10: (m, schema) async {
+        // v10: position history for replaying a day.
+        await m.createTable(schema.positionReports);
+        await m.createIndex(schema.positionsByNode);
+        await m.createIndex(schema.positionsByTime);
       },
     ),
   );

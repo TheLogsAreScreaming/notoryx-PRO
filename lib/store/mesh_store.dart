@@ -9,6 +9,7 @@ import '../mesh/diagnostics.dart';
 import '../mesh/identity.dart';
 import '../mesh/model.dart';
 import '../mesh/places.dart';
+import '../mesh/replay.dart';
 import '../mesh/telemetry.dart';
 import 'database.dart';
 
@@ -106,13 +107,19 @@ class MeshStore {
 
   // Nodes
 
-  /// Saves or replaces [node].
-  Future<void> upsertNode(Node node) =>
-      db.into(db.nodes).insertOnConflictUpdate(_nodeCompanion(node));
+  /// Saves or replaces [node], noting its position in the history.
+  Future<void> upsertNode(Node node) => db.transaction(() async {
+    await db.into(db.nodes).insertOnConflictUpdate(_nodeCompanion(node));
+    await _notePositions([node]);
+  });
 
   /// Saves many nodes in one transaction (the start-up sync).
-  Future<void> upsertNodes(Iterable<Node> nodes) => db.batch((b) {
-    b.insertAllOnConflictUpdate(db.nodes, nodes.map(_nodeCompanion).toList());
+  Future<void> upsertNodes(Iterable<Node> nodes) => db.transaction(() async {
+    final list = nodes.toList();
+    await db.batch((b) {
+      b.insertAllOnConflictUpdate(db.nodes, list.map(_nodeCompanion).toList());
+    });
+    await _notePositions(list);
   });
 
   /// The nodes [radio] knows, most recently heard first.
@@ -737,6 +744,107 @@ class MeshStore {
                 t.nodeKey.equals(node.toString()),
           ))
           .go();
+
+  // Position history
+
+  /// How long the position history is kept.
+  static const positionsKept = Duration(days: 30);
+
+  /// A node staying put is noted again after this long, so a replay shows
+  /// it was still there.
+  static const positionRepeat = Duration(minutes: 10);
+
+  int _positionWrites = 0;
+
+  /// Adds the positions of [nodes] that are new: heard later than the last
+  /// report and either somewhere else or [positionRepeat] later.
+  Future<void> _notePositions(List<Node> nodes) async {
+    for (final n in nodes) {
+      final p = n.position;
+      final t = n.lastHeard;
+      if (p == null || t == null || n.path.viaMqtt) continue;
+      final last =
+          await (db.select(db.positionReports)
+                ..where(
+                  (r) =>
+                      r.radioId.equals(n.radioId.toString()) &
+                      r.nodeKey.equals(n.key.toString()),
+                )
+                ..orderBy([(r) => OrderingTerm.desc(r.time)])
+                ..limit(1))
+              .getSingleOrNull();
+      if (last != null) {
+        if (!t.isAfter(last.time)) continue;
+        final moved =
+            last.latitude != p.latitude || last.longitude != p.longitude;
+        if (!moved && t.difference(last.time) < positionRepeat) continue;
+      }
+      await db
+          .into(db.positionReports)
+          .insert(
+            PositionReportsCompanion.insert(
+              radioId: n.radioId.toString(),
+              nodeKey: n.key.toString(),
+              time: t,
+              latitude: p.latitude,
+              longitude: p.longitude,
+            ),
+          );
+      _positionWrites++;
+    }
+    if (_positionWrites >= 500) {
+      _positionWrites = 0;
+      await prunePositions(DateTime.now());
+    }
+  }
+
+  /// Drops position history older than [positionsKept] before [now].
+  Future<int> prunePositions(DateTime now) => (db.delete(
+    db.positionReports,
+  )..where((r) => r.time.isSmallerThanValue(now.subtract(positionsKept)))).go();
+
+  /// Every node's recorded positions from [from] up to (not including)
+  /// [to], oldest first.
+  Future<List<Track>> tracks(DateTime from, DateTime to) async {
+    final rows =
+        await (db.select(db.positionReports)
+              ..where(
+                (r) =>
+                    r.time.isBiggerOrEqualValue(from) &
+                    r.time.isSmallerThanValue(to),
+              )
+              ..orderBy([(r) => OrderingTerm.asc(r.time)]))
+            .get();
+    final byNode = <String, Track>{};
+    for (final r in rows) {
+      final radio = RadioId.tryParse(r.radioId);
+      final node = NodeKey.tryParse(r.nodeKey);
+      if (radio == null || node == null) continue;
+      byNode
+          .putIfAbsent(
+            '${r.radioId}/${r.nodeKey}',
+            () => Track(radio: radio, node: node, points: []),
+          )
+          .points
+          .add(TrackPoint(r.time, GeoPoint(r.latitude, r.longitude)));
+    }
+    return byNode.values.toList();
+  }
+
+  /// Days (local midnight) with any position history, newest first.
+  Future<List<DateTime>> daysWithPositions() async {
+    final rows = await db
+        .customSelect(
+          'SELECT DISTINCT date(time, \'unixepoch\', \'localtime\') AS d '
+          'FROM position_reports ORDER BY d DESC',
+          readsFrom: {db.positionReports},
+        )
+        .get();
+    return [for (final r in rows) ?DateTime.tryParse(r.read<String>('d'))];
+  }
+
+  /// Forgets all position history.
+  Future<void> clearPositions() => db.delete(db.positionReports).go();
 
   // Telemetry
 

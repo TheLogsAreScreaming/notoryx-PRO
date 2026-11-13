@@ -1328,6 +1328,61 @@
   "report9Location": "1. Pickup location",
   "report9Radio": "2. Radio frequency and call sign",
   "report9Precedence": "3. Patients by urgency",
+  "drTitle": "Replay a day",
+  "drTeam": "Team",
+  "drAll": "Everyone",
+  "drEmpty": "No positions were recorded on this day. Positions are kept for 30 days from when this version is installed.",
+  "drNoTeam": "None of your team moved on this day. Your team is the nodes you trust (marked, favourite or verified). Switch to Everyone to see all nodes.",
+  "drFailed": "Couldn't load the day: {error}",
+  "@drFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "drMapLabel": "Map at {time}: {count, plural, =0{nobody shown} =1{1 node shown} other{{count} nodes shown}}. Their positions are listed below.",
+  "@drMapLabel": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "drPlay": "Play",
+  "drPause": "Pause",
+  "drSpeed": "Speed",
+  "drSpeedValue": "{minutes} min/s",
+  "@drSpeedValue": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "drSpeedHelp": "{minutes, plural, =1{One minute of the day per second} other{{minutes} minutes of the day per second}}",
+  "@drSpeedHelp": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "drNotYet": "Not seen yet at this time",
+  "drSeenAt": "Last seen {time} at {where}",
+  "@drSeenAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "where": {
+        "type": "String"
+      }
+    }
+  },
   "report9Equipment": "4. Special equipment",
   "report9Patients": "5. Patients: litter or walking",
   "report9Security": "6. Security at pickup",
