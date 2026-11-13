@@ -86,6 +86,8 @@
 	<array>
 		<string>en</string>
 		<string>es</string>
+		<string>fr</string>
+		<string>de</string>
 	</array>
 </dict>
 </plist>
