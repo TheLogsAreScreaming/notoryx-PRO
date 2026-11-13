@@ -8,7 +8,7 @@ Downloads are published in **[notoryx-PRO-releases](https://github.com/TheLogsAr
 
 ## Status: just started
 
-There's no test build yet. See [ROADMAP.md](ROADMAP.md) for the build order and [docs/research.md](docs/research.md) for what other MeshCore and Meshtastic apps do and where this one aims to do better.
+There's no test build yet. See [ROADMAP.md](ROADMAP.md) for the build order.
 
 ## What makes it different
 
