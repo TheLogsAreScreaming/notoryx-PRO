@@ -10,7 +10,7 @@ Messages, contacts, channels, node details, telemetry, saved places and settings
 - **Map tiles:** when you view the map, the app downloads tiles from OpenStreetMap's servers, which receive your IP address and the areas requested.
 - **Radio over Wi-Fi:** if you connect to a radio by address, the app talks directly to that address.
 - **MQTT feeds:** only if you add a broker, the app connects to the broker you chose and it receives your IP address and connection details.
-- **Sharing and export:** files and text leave the app only when you share or save them yourself. Exports aren't encrypted, and a team setup includes your channel keys.
+- **Sharing and export:** files and text leave the app only when you share or save them yourself. Exports aren't encrypted unless you choose a password-protected backup, and a team setup includes your channel keys.
 - **Community moderation:** off unless you turn it on (menu → Community moderation). While it is on, the app downloads the moderators' advisory ban lists (node IDs and case numbers only) from sentinel-relay.meshmayhem.org every few hours. When you report a node, it sends that node's ID and name, the reason you pick, your optional note and, if you leave it ticked, the one message you reported (at most 280 characters). An appeal sends the case number, your statement and any contact you give. NOTORYX moderators read reports and appeals; your own name, node ID and location are not sent with a report, but the relay receives your IP address. Turning it off deletes the downloaded lists and any unsent reports.
 - **Automatic sending:** only if you turn them on, auto-replies and a distress beacon send messages through your radio by themselves. A beacon includes your radio's position when known.
 

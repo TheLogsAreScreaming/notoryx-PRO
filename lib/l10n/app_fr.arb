@@ -792,5 +792,15 @@
   "sntAppealUnknown": "Aucun dossier de ce réseau ne porte ce numéro.",
   "sntAppealNotOpen": "Ce dossier n'a pas de bannissement actif, ou un appel est déjà en attente.",
   "sntAppealTooMany": "Trop d'appels. Réessayez dans une minute.",
-  "sntFailed": "Impossible de joindre le service de modération. Réessayez plus tard."
+  "sntFailed": "Impossible de joindre le service de modération. Réessayez plus tard.",
+  "exportProtected": "Sauvegarde protégée par mot de passe",
+  "exportProtectedHelp": "Chiffrée. Seul NOTORYX PRO peut la restaurer, et seulement avec le mot de passe. Si vous l'oubliez, la sauvegarde ne pourra pas être ouverte.",
+  "exportProtecting": "Chiffrement…",
+  "passwordLabel": "Mot de passe",
+  "passwordRepeat": "Répétez le mot de passe",
+  "passwordTooShort": "Au moins 8 caractères",
+  "passwordMismatch": "Les mots de passe ne correspondent pas",
+  "passwordOk": "OK",
+  "restorePasswordTitle": "Cette sauvegarde est protégée par mot de passe",
+  "restoreWrongPassword": "Mot de passe incorrect, ou le fichier a été modifié. Rien n'a été restauré."
 }

@@ -792,5 +792,15 @@
   "sntAppealUnknown": "Nenhum caso nessa malha tem esse número.",
   "sntAppealNotOpen": "Esse caso não tem banimento ativo, ou já há um recurso aguardando.",
   "sntAppealTooMany": "Recursos demais. Tente de novo em um minuto.",
-  "sntFailed": "Não foi possível acessar o serviço de moderação. Tente mais tarde."
+  "sntFailed": "Não foi possível acessar o serviço de moderação. Tente mais tarde.",
+  "exportProtected": "Backup protegido por senha",
+  "exportProtectedHelp": "Criptografado. Só o NOTORYX PRO pode restaurá-lo, e só com a senha. Se você esquecer a senha, o backup não poderá ser aberto.",
+  "exportProtecting": "Criptografando…",
+  "passwordLabel": "Senha",
+  "passwordRepeat": "Repita a senha",
+  "passwordTooShort": "Pelo menos 8 caracteres",
+  "passwordMismatch": "As senhas não coincidem",
+  "passwordOk": "OK",
+  "restorePasswordTitle": "Este backup é protegido por senha",
+  "restoreWrongPassword": "Senha errada, ou o arquivo foi alterado. Nada foi restaurado."
 }

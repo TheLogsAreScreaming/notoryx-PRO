@@ -792,5 +792,15 @@
   "sntAppealUnknown": "Kein Fall in diesem Mesh hat diese Nummer.",
   "sntAppealNotOpen": "Für diesen Fall gibt es keine aktive Sperre oder schon einen offenen Einspruch.",
   "sntAppealTooMany": "Zu viele Einsprüche. Versuche es in einer Minute erneut.",
-  "sntFailed": "Moderationsdienst nicht erreichbar. Versuche es später erneut."
+  "sntFailed": "Moderationsdienst nicht erreichbar. Versuche es später erneut.",
+  "exportProtected": "Passwortgeschützte Sicherung",
+  "exportProtectedHelp": "Verschlüsselt. Nur NOTORYX PRO kann sie wiederherstellen, und nur mit dem Passwort. Wenn du es vergisst, lässt sich die Sicherung nicht öffnen.",
+  "exportProtecting": "Verschlüssele…",
+  "passwordLabel": "Passwort",
+  "passwordRepeat": "Passwort wiederholen",
+  "passwordTooShort": "Mindestens 8 Zeichen",
+  "passwordMismatch": "Die Passwörter stimmen nicht überein",
+  "passwordOk": "OK",
+  "restorePasswordTitle": "Diese Sicherung ist passwortgeschützt",
+  "restoreWrongPassword": "Falsches Passwort, oder die Datei wurde verändert. Nichts wurde wiederhergestellt."
 }

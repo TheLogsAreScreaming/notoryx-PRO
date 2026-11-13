@@ -38,6 +38,7 @@ dependencies:
   # Vendored, Windows only: see third_party/flutter_libserialport/NOTORYX.md.
   flutter_libserialport:
     path: third_party/flutter_libserialport
+  cryptography: ^2.9.0
 
 dev_dependencies:
   flutter_test:

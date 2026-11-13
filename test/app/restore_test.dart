@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:notoryx_pro/app/export_crypto.dart';
 import 'package:notoryx_pro/app/message_export.dart';
 import 'package:notoryx_pro/app/message_import.dart';
 import 'package:notoryx_pro/l10n/app_localizations.dart';
@@ -188,6 +189,68 @@ void main() {
     await t.tap(find.text('go'));
     await settle();
     await t.pump(const Duration(milliseconds: 300));
+    await t.tap(find.text('Restore'));
+    await settle();
+    expect(find.textContaining('Added 1'), findsOneWidget);
+    await t.pumpWidget(const SizedBox());
+    final closing = store.close();
+    await t.pump(const Duration(seconds: 1));
+    await t.runAsync(() => closing);
+  });
+
+  testWidgets('screen: a protected backup asks for its password', (t) async {
+    final (store, file) = (await t.runAsync(() async {
+      final a = MeshStore.memory();
+      await a.addMessage(msg('hello', 1));
+      final f = await encryptExport(
+        await exported(a),
+        'trailhead42',
+        iterations: 1000,
+      );
+      await a.close();
+      return (MeshStore.memory(), f);
+    }))!;
+    await t.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: Builder(
+            builder: (context) => TextButton(
+              onPressed: () => restoreFromExport(
+                context,
+                store: store,
+                pick: () async => file,
+              ),
+              child: const Text('go'),
+            ),
+          ),
+        ),
+      ),
+    );
+    Future<void> settle() async {
+      for (var i = 0; i < 12; i++) {
+        await t.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 50)),
+        );
+        await t.pump(const Duration(milliseconds: 100));
+      }
+    }
+
+    await t.tap(find.text('go'));
+    await settle();
+    await t.enterText(find.byKey(const Key('password-1')), 'wrong');
+    await t.pump();
+    await t.tap(find.byKey(const Key('password-ok')));
+    await settle();
+    expect(find.textContaining('Wrong password'), findsOneWidget);
+
+    await t.tap(find.text('go'));
+    await settle();
+    await t.enterText(find.byKey(const Key('password-1')), 'trailhead42');
+    await t.pump();
+    await t.tap(find.byKey(const Key('password-ok')));
+    await settle();
     await t.tap(find.text('Restore'));
     await settle();
     expect(find.textContaining('Added 1'), findsOneWidget);

@@ -792,5 +792,15 @@
   "sntAppealUnknown": "Nessun caso su quella rete ha quel numero.",
   "sntAppealNotOpen": "Quel caso non ha un ban attivo, oppure c'è già un ricorso in attesa.",
   "sntAppealTooMany": "Troppi ricorsi. Riprova tra un minuto.",
-  "sntFailed": "Impossibile raggiungere il servizio di moderazione. Riprova più tardi."
+  "sntFailed": "Impossibile raggiungere il servizio di moderazione. Riprova più tardi.",
+  "exportProtected": "Backup protetto da password",
+  "exportProtectedHelp": "Cifrato. Solo NOTORYX PRO può ripristinarlo, e solo con la password. Se dimentichi la password, il backup non potrà essere aperto.",
+  "exportProtecting": "Cifratura…",
+  "passwordLabel": "Password",
+  "passwordRepeat": "Ripeti la password",
+  "passwordTooShort": "Almeno 8 caratteri",
+  "passwordMismatch": "Le password non coincidono",
+  "passwordOk": "OK",
+  "restorePasswordTitle": "Questo backup è protetto da password",
+  "restoreWrongPassword": "Password errata, oppure il file è stato modificato. Non è stato ripristinato nulla."
 }
