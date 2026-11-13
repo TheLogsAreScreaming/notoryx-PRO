@@ -50,6 +50,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 SQLite itself is in the public domain.''',
       ),
       const LicenseEntryWithLineBreaks(
+        ['libserialport'],
+        '''
+Used for USB radios on Windows. Copyright (C) 2010-2012 Bert Vermeulen, (C) 2010-2015 Uwe Hermann, (C) 2013-2015 Martin Ling and others.
+
+libserialport is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+Source: https://sigrok.org/wiki/Libserialport''',
+      ),
+      const LicenseEntryWithLineBreaks(
         ['OpenStreetMap'],
         '''
 Map data (c) OpenStreetMap contributors, available under the Open Database License (https://www.openstreetmap.org/copyright).''',

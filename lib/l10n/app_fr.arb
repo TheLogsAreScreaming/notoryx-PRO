@@ -732,5 +732,18 @@
   "keyMissingFresh": "Repartir avec un historique vide",
   "keyMissingDone": "C'est fait. L'ancien fichier a été conservé. Fermez et rouvrez l'appli.",
   "encryptFailed": "La dernière tentative a échoué et rien n'a changé : {reason}. Touchez pour réessayer.",
-  "scannerUnavailable": "Le scan de codes n'est pas disponible sous Windows. Utilisez plutôt un lien ou un fichier."
+  "scannerUnavailable": "Le scan de codes n'est pas disponible sous Windows. Utilisez plutôt un lien ou un fichier.",
+  "aboutTitle": "À propos",
+  "aboutDisclaimerTitle": "Pas un service d'urgence",
+  "aboutDisclaimer": "NOTORYX PRO, ses outils MAYDAY et sa balise de détresse ne remplacent pas le 112 ni les autres services d'urgence. Les messages par radio maillée peuvent être retardés ou perdus, et personne n'écoute peut-être.",
+  "aboutSource": "Code source",
+  "aboutSourceHelp": "Logiciel libre sous licence GNU GPL version 3",
+  "aboutPrivacy": "Politique de confidentialité",
+  "aboutLicences": "Licences open source",
+  "aboutLegalese": "Licence publique générale GNU v3.0. Sans garantie.",
+  "aboutVersion": "Version {version}",
+  "demoOpen": "Essayer une démo sans radio",
+  "demoBanner": "Démo : une radio simulée. Rien n'est envoyé et rien n'est enregistré ici.",
+  "demoExit": "Quitter la démo",
+  "nodeHeardBy": "Entendu par {count} de vos radios"
 }

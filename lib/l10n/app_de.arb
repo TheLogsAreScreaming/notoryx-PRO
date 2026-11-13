@@ -732,5 +732,18 @@
   "keyMissingFresh": "Mit leerem Verlauf beginnen",
   "keyMissingDone": "Erledigt. Die alte Datei wurde behalten. Schließ die App und öffne sie erneut.",
   "encryptFailed": "Der letzte Versuch ist fehlgeschlagen und nichts wurde geändert: {reason}. Tippe, um es erneut zu versuchen.",
-  "scannerUnavailable": "Codes scannen ist unter Windows nicht verfügbar. Nutze stattdessen einen Link oder eine Datei."
+  "scannerUnavailable": "Codes scannen ist unter Windows nicht verfügbar. Nutze stattdessen einen Link oder eine Datei.",
+  "aboutTitle": "Über",
+  "aboutDisclaimerTitle": "Kein Notdienst",
+  "aboutDisclaimer": "NOTORYX PRO, seine MAYDAY-Werkzeuge und sein Notsignal ersetzen nicht den Notruf 112 oder andere Notdienste. Funknachrichten im Mesh können sich verzögern oder verloren gehen, und vielleicht hört niemand zu.",
+  "aboutSource": "Quellcode",
+  "aboutSourceHelp": "Freie Software unter der GNU GPL Version 3",
+  "aboutPrivacy": "Datenschutzerklärung",
+  "aboutLicences": "Open-Source-Lizenzen",
+  "aboutLegalese": "GNU General Public License v3.0. Keine Gewährleistung.",
+  "aboutVersion": "Version {version}",
+  "demoOpen": "Demo ohne Funkgerät ausprobieren",
+  "demoBanner": "Demo: ein simuliertes Funkgerät. Nichts wird gesendet und nichts hier wird gespeichert.",
+  "demoExit": "Demo beenden",
+  "nodeHeardBy": "Von {count} deiner Funkgeräte gehört"
 }
