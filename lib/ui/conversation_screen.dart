@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../app/app_controller.dart';
 import '../app/radio_connection.dart';
+import '../app/sentinel.dart';
 import '../mesh/diagnostics.dart';
 import '../mesh/identity.dart';
 import '../mesh/mecp.dart';
@@ -12,6 +13,7 @@ import '../mesh/model.dart';
 import '../radio/radio.dart';
 import '../store/mesh_store.dart';
 import 'beacon_sheet.dart';
+import 'sentinel_screen.dart';
 import '../meshcore/codes.dart' show MeshCoreLimits;
 import '../meshtastic/messages.dart' show meshtasticMaxPayload;
 import 'common.dart';
@@ -121,7 +123,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   Future<void> _messageActions(StoredMessage stored) async {
     final l = context.l10n;
-    final forward = await showModalBottomSheet<bool>(
+    final m = stored.message;
+    final canReport = !m.outgoing && (m.from != null || (m.senderName ?? '').trim().isNotEmpty);
+    final choice = await showModalBottomSheet<String>(
       context: context,
       showDragHandle: true,
       builder: (context) => SafeArea(
@@ -131,19 +135,39 @@ class _ConversationScreenState extends State<ConversationScreen> {
             ListTile(
               leading: const Icon(Icons.forward),
               title: Text(l.forwardTitle),
-              onTap: () => Navigator.pop(context, true),
+              onTap: () => Navigator.pop(context, 'forward'),
             ),
+            if (canReport)
+              ListTile(
+                key: const Key('message-sentinel-report'),
+                leading: const Icon(Icons.flag_outlined),
+                title: Text(l.sntReport),
+                onTap: () => Navigator.pop(context, 'report'),
+              ),
             ListTile(
               leading: const Icon(Icons.delete_outline),
               title: Text(l.messageDeleteAction),
-              onTap: () => Navigator.pop(context, false),
+              onTap: () => Navigator.pop(context, 'delete'),
             ),
           ],
         ),
       ),
     );
-    if (forward == null || !mounted) return;
-    if (forward) {
+    if (choice == null || !mounted) return;
+    if (choice == 'report') {
+      final from = m.from;
+      final name = (m.senderName ?? '').trim();
+      await showSentinelReportSheet(
+        context,
+        sentinel: app.sentinel,
+        network: conversation.radioId.protocol,
+        nodeId: from != null ? sentinelNodeId(from) : sentinelNameId(name),
+        nodeName: name.isNotEmpty ? name : (from?.native ?? ''),
+        messageExcerpt: m.text,
+      );
+      return;
+    }
+    if (choice == 'forward') {
       await showForwardSheet(
         context,
         app: app,
@@ -263,7 +287,18 @@ class _ConversationScreenState extends State<ConversationScreen> {
                               nameClashes(nodes.values)[conversation.radioId] ??
                               const <String>{};
                           final verified = vSnap.data ?? const {};
-                          return _list(messages, nodes, clashes, verified);
+                          return ListenableBuilder(
+                            listenable: app.sentinel,
+                            builder: (context, _) => _list(
+                              [
+                                for (final s in messages)
+                                  if (!app.sentinel.hides(s.message)) s,
+                              ],
+                              nodes,
+                              clashes,
+                              verified,
+                            ),
+                          );
                         },
                       ),
                 );
@@ -314,6 +349,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
           return MessageBubble(
             message: m,
             senderLabel: label,
+            flagged: app.sentinel.banForMessage(m),
             verifiedSender: verifiedSender,
             nameClash: clash,
             onResend: c == null ? null : () => c.resend(stored.id),
@@ -335,6 +371,7 @@ class MessageBubble extends StatelessWidget {
     this.onTap,
     this.onLongPress,
     this.senderLabel,
+    this.flagged,
     this.verifiedSender = false,
     this.nameClash = false,
   });
@@ -343,6 +380,9 @@ class MessageBubble extends StatelessWidget {
 
   /// Who sent it, for incoming messages (name, or node name).
   final String? senderLabel;
+
+  /// The moderators' ban on the sender, shown as a label (advisory).
+  final SentinelBan? flagged;
 
   /// Proven by encryption to come from a node you verified.
   final bool verifiedSender;
@@ -395,6 +435,11 @@ class MessageBubble extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (flagged case final ban?)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 2),
+                    child: SentinelFlag(ban),
+                  ),
                 if (verifiedSender || nameClash)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 2),

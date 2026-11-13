@@ -5,7 +5,9 @@ import '../mesh/mesh.dart';
 import '../radio/radio_link.dart';
 import '../mesh/node_merge.dart';
 import 'common.dart';
+import '../app/sentinel.dart';
 import 'conversation_screen.dart';
+import 'sentinel_screen.dart';
 import 'verify_screen.dart';
 
 /// Every node both radios have heard, most recent first.
@@ -101,6 +103,7 @@ class NodeTile extends StatelessWidget {
           if (n.shortName.isNotEmpty) Text('(${n.shortName})'),
           ProtocolBadge(n.protocol),
           TrustBadge(trust),
+          if (app.sentinel.banFor(n.key) case final ban?) SentinelFlag(ban),
           if (n.isFavorite)
             Icon(
               Icons.star,
@@ -111,6 +114,13 @@ class NodeTile extends StatelessWidget {
         ],
       ),
       subtitle: Text(details),
+      onLongPress: () => showSentinelReportSheet(
+        context,
+        sentinel: app.sentinel,
+        network: n.protocol,
+        nodeId: sentinelNodeId(n.key),
+        nodeName: n.displayName,
+      ),
       onTap: n.canMessage && n.kind != NodeKind.relay
           ? () => Navigator.of(context).push(
               MaterialPageRoute<void>(
