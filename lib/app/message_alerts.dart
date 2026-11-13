@@ -68,7 +68,8 @@ class SystemNotifier implements Notifier {
       !kIsWeb &&
       (defaultTargetPlatform == TargetPlatform.android ||
           defaultTargetPlatform == TargetPlatform.iOS ||
-          defaultTargetPlatform == TargetPlatform.macOS);
+          defaultTargetPlatform == TargetPlatform.macOS ||
+          defaultTargetPlatform == TargetPlatform.windows);
 
   @override
   Future<bool> init() async {
@@ -83,6 +84,12 @@ class SystemNotifier implements Notifier {
         android: AndroidInitializationSettings('@mipmap/ic_launcher'),
         iOS: darwin,
         macOS: darwin,
+        windows: WindowsInitializationSettings(
+          appName: 'NOTORYX PRO',
+          appUserModelId: 'BastionMesh.NotoryxPro',
+          // Fixed for this app, so Windows keeps one notification identity.
+          guid: '6f1d2b3c-8a4e-4c55-9b7d-2e1f0a9c4d63',
+        ),
       ),
       onDidReceiveNotificationResponse: (r) {
         if (r.actionId == _stopAction) {
@@ -103,6 +110,9 @@ class SystemNotifier implements Notifier {
   @override
   Future<bool> requestPermission() async {
     if (!_ready) return false;
+    // Windows has no permission prompt; the person controls this in
+    // Windows' notification settings.
+    if (defaultTargetPlatform == TargetPlatform.windows) return true;
     final android = _plugin
         .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin
@@ -141,6 +151,7 @@ class SystemNotifier implements Notifier {
         android: _channel,
         iOS: DarwinNotificationDetails(),
         macOS: DarwinNotificationDetails(),
+        windows: WindowsNotificationDetails(),
       ),
     );
   }
@@ -180,6 +191,7 @@ class SystemNotifier implements Notifier {
         ),
         iOS: const DarwinNotificationDetails(),
         macOS: const DarwinNotificationDetails(),
+        windows: const WindowsNotificationDetails(),
       ),
     );
   }
