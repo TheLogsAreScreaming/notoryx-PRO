@@ -5950,6 +5950,408 @@ class PlacesCompanion extends UpdateCompanion<PlaceRow> {
   }
 }
 
+class $PositionReportsTable extends PositionReports
+    with TableInfo<$PositionReportsTable, PositionRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PositionReportsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _radioIdMeta = const VerificationMeta(
+    'radioId',
+  );
+  @override
+  late final GeneratedColumn<String> radioId = GeneratedColumn<String>(
+    'radio_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nodeKeyMeta = const VerificationMeta(
+    'nodeKey',
+  );
+  @override
+  late final GeneratedColumn<String> nodeKey = GeneratedColumn<String>(
+    'node_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _timeMeta = const VerificationMeta('time');
+  @override
+  late final GeneratedColumn<DateTime> time = GeneratedColumn<DateTime>(
+    'time',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _latitudeMeta = const VerificationMeta(
+    'latitude',
+  );
+  @override
+  late final GeneratedColumn<double> latitude = GeneratedColumn<double>(
+    'latitude',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _longitudeMeta = const VerificationMeta(
+    'longitude',
+  );
+  @override
+  late final GeneratedColumn<double> longitude = GeneratedColumn<double>(
+    'longitude',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    radioId,
+    nodeKey,
+    time,
+    latitude,
+    longitude,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'position_reports';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PositionRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('radio_id')) {
+      context.handle(
+        _radioIdMeta,
+        radioId.isAcceptableOrUnknown(data['radio_id']!, _radioIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_radioIdMeta);
+    }
+    if (data.containsKey('node_key')) {
+      context.handle(
+        _nodeKeyMeta,
+        nodeKey.isAcceptableOrUnknown(data['node_key']!, _nodeKeyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nodeKeyMeta);
+    }
+    if (data.containsKey('time')) {
+      context.handle(
+        _timeMeta,
+        time.isAcceptableOrUnknown(data['time']!, _timeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_timeMeta);
+    }
+    if (data.containsKey('latitude')) {
+      context.handle(
+        _latitudeMeta,
+        latitude.isAcceptableOrUnknown(data['latitude']!, _latitudeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_latitudeMeta);
+    }
+    if (data.containsKey('longitude')) {
+      context.handle(
+        _longitudeMeta,
+        longitude.isAcceptableOrUnknown(data['longitude']!, _longitudeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_longitudeMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PositionRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PositionRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      radioId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}radio_id'],
+      )!,
+      nodeKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}node_key'],
+      )!,
+      time: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}time'],
+      )!,
+      latitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}latitude'],
+      )!,
+      longitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}longitude'],
+      )!,
+    );
+  }
+
+  @override
+  $PositionReportsTable createAlias(String alias) {
+    return $PositionReportsTable(attachedDatabase, alias);
+  }
+}
+
+class PositionRow extends DataClass implements Insertable<PositionRow> {
+  final int id;
+  final String radioId;
+
+  /// [NodeKey] as text.
+  final String nodeKey;
+
+  /// When the node was at this position (when it was heard).
+  final DateTime time;
+  final double latitude;
+  final double longitude;
+  const PositionRow({
+    required this.id,
+    required this.radioId,
+    required this.nodeKey,
+    required this.time,
+    required this.latitude,
+    required this.longitude,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['radio_id'] = Variable<String>(radioId);
+    map['node_key'] = Variable<String>(nodeKey);
+    map['time'] = Variable<DateTime>(time);
+    map['latitude'] = Variable<double>(latitude);
+    map['longitude'] = Variable<double>(longitude);
+    return map;
+  }
+
+  PositionReportsCompanion toCompanion(bool nullToAbsent) {
+    return PositionReportsCompanion(
+      id: Value(id),
+      radioId: Value(radioId),
+      nodeKey: Value(nodeKey),
+      time: Value(time),
+      latitude: Value(latitude),
+      longitude: Value(longitude),
+    );
+  }
+
+  factory PositionRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PositionRow(
+      id: serializer.fromJson<int>(json['id']),
+      radioId: serializer.fromJson<String>(json['radioId']),
+      nodeKey: serializer.fromJson<String>(json['nodeKey']),
+      time: serializer.fromJson<DateTime>(json['time']),
+      latitude: serializer.fromJson<double>(json['latitude']),
+      longitude: serializer.fromJson<double>(json['longitude']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'radioId': serializer.toJson<String>(radioId),
+      'nodeKey': serializer.toJson<String>(nodeKey),
+      'time': serializer.toJson<DateTime>(time),
+      'latitude': serializer.toJson<double>(latitude),
+      'longitude': serializer.toJson<double>(longitude),
+    };
+  }
+
+  PositionRow copyWith({
+    int? id,
+    String? radioId,
+    String? nodeKey,
+    DateTime? time,
+    double? latitude,
+    double? longitude,
+  }) => PositionRow(
+    id: id ?? this.id,
+    radioId: radioId ?? this.radioId,
+    nodeKey: nodeKey ?? this.nodeKey,
+    time: time ?? this.time,
+    latitude: latitude ?? this.latitude,
+    longitude: longitude ?? this.longitude,
+  );
+  PositionRow copyWithCompanion(PositionReportsCompanion data) {
+    return PositionRow(
+      id: data.id.present ? data.id.value : this.id,
+      radioId: data.radioId.present ? data.radioId.value : this.radioId,
+      nodeKey: data.nodeKey.present ? data.nodeKey.value : this.nodeKey,
+      time: data.time.present ? data.time.value : this.time,
+      latitude: data.latitude.present ? data.latitude.value : this.latitude,
+      longitude: data.longitude.present ? data.longitude.value : this.longitude,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PositionRow(')
+          ..write('id: $id, ')
+          ..write('radioId: $radioId, ')
+          ..write('nodeKey: $nodeKey, ')
+          ..write('time: $time, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, radioId, nodeKey, time, latitude, longitude);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PositionRow &&
+          other.id == this.id &&
+          other.radioId == this.radioId &&
+          other.nodeKey == this.nodeKey &&
+          other.time == this.time &&
+          other.latitude == this.latitude &&
+          other.longitude == this.longitude);
+}
+
+class PositionReportsCompanion extends UpdateCompanion<PositionRow> {
+  final Value<int> id;
+  final Value<String> radioId;
+  final Value<String> nodeKey;
+  final Value<DateTime> time;
+  final Value<double> latitude;
+  final Value<double> longitude;
+  const PositionReportsCompanion({
+    this.id = const Value.absent(),
+    this.radioId = const Value.absent(),
+    this.nodeKey = const Value.absent(),
+    this.time = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+  });
+  PositionReportsCompanion.insert({
+    this.id = const Value.absent(),
+    required String radioId,
+    required String nodeKey,
+    required DateTime time,
+    required double latitude,
+    required double longitude,
+  }) : radioId = Value(radioId),
+       nodeKey = Value(nodeKey),
+       time = Value(time),
+       latitude = Value(latitude),
+       longitude = Value(longitude);
+  static Insertable<PositionRow> custom({
+    Expression<int>? id,
+    Expression<String>? radioId,
+    Expression<String>? nodeKey,
+    Expression<DateTime>? time,
+    Expression<double>? latitude,
+    Expression<double>? longitude,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (radioId != null) 'radio_id': radioId,
+      if (nodeKey != null) 'node_key': nodeKey,
+      if (time != null) 'time': time,
+      if (latitude != null) 'latitude': latitude,
+      if (longitude != null) 'longitude': longitude,
+    });
+  }
+
+  PositionReportsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? radioId,
+    Value<String>? nodeKey,
+    Value<DateTime>? time,
+    Value<double>? latitude,
+    Value<double>? longitude,
+  }) {
+    return PositionReportsCompanion(
+      id: id ?? this.id,
+      radioId: radioId ?? this.radioId,
+      nodeKey: nodeKey ?? this.nodeKey,
+      time: time ?? this.time,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (radioId.present) {
+      map['radio_id'] = Variable<String>(radioId.value);
+    }
+    if (nodeKey.present) {
+      map['node_key'] = Variable<String>(nodeKey.value);
+    }
+    if (time.present) {
+      map['time'] = Variable<DateTime>(time.value);
+    }
+    if (latitude.present) {
+      map['latitude'] = Variable<double>(latitude.value);
+    }
+    if (longitude.present) {
+      map['longitude'] = Variable<double>(longitude.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PositionReportsCompanion(')
+          ..write('id: $id, ')
+          ..write('radioId: $radioId, ')
+          ..write('nodeKey: $nodeKey, ')
+          ..write('time: $time, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$MeshDatabase extends GeneratedDatabase {
   _$MeshDatabase(QueryExecutor e) : super(e);
   $MeshDatabaseManager get managers => $MeshDatabaseManager(this);
@@ -5966,6 +6368,9 @@ abstract class _$MeshDatabase extends GeneratedDatabase {
   late final $RadioContactsTable radioContacts = $RadioContactsTable(this);
   late final $TraceRecordsTable traceRecords = $TraceRecordsTable(this);
   late final $PlacesTable places = $PlacesTable(this);
+  late final $PositionReportsTable positionReports = $PositionReportsTable(
+    this,
+  );
   late final Index messagesByConversation = Index(
     'messages_by_conversation',
     'CREATE INDEX messages_by_conversation ON messages (conversation, id)',
@@ -5977,6 +6382,14 @@ abstract class _$MeshDatabase extends GeneratedDatabase {
   late final Index telemetryByNode = Index(
     'telemetry_by_node',
     'CREATE INDEX telemetry_by_node ON telemetry_readings (radio_id, node_key, time)',
+  );
+  late final Index positionsByNode = Index(
+    'positions_by_node',
+    'CREATE INDEX positions_by_node ON position_reports (radio_id, node_key, time)',
+  );
+  late final Index positionsByTime = Index(
+    'positions_by_time',
+    'CREATE INDEX positions_by_time ON position_reports (time)',
   );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
@@ -5994,9 +6407,12 @@ abstract class _$MeshDatabase extends GeneratedDatabase {
     radioContacts,
     traceRecords,
     places,
+    positionReports,
     messagesByConversation,
     messagesByNativeId,
     telemetryByNode,
+    positionsByNode,
+    positionsByTime,
   ];
 }
 
@@ -9045,6 +9461,230 @@ typedef $$PlacesTableProcessedTableManager =
       PlaceRow,
       PrefetchHooks Function()
     >;
+typedef $$PositionReportsTableCreateCompanionBuilder =
+    PositionReportsCompanion Function({
+      Value<int> id,
+      required String radioId,
+      required String nodeKey,
+      required DateTime time,
+      required double latitude,
+      required double longitude,
+    });
+typedef $$PositionReportsTableUpdateCompanionBuilder =
+    PositionReportsCompanion Function({
+      Value<int> id,
+      Value<String> radioId,
+      Value<String> nodeKey,
+      Value<DateTime> time,
+      Value<double> latitude,
+      Value<double> longitude,
+    });
+
+class $$PositionReportsTableFilterComposer
+    extends Composer<_$MeshDatabase, $PositionReportsTable> {
+  $$PositionReportsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get radioId => $composableBuilder(
+    column: $table.radioId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nodeKey => $composableBuilder(
+    column: $table.nodeKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get time => $composableBuilder(
+    column: $table.time,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PositionReportsTableOrderingComposer
+    extends Composer<_$MeshDatabase, $PositionReportsTable> {
+  $$PositionReportsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get radioId => $composableBuilder(
+    column: $table.radioId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nodeKey => $composableBuilder(
+    column: $table.nodeKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get time => $composableBuilder(
+    column: $table.time,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PositionReportsTableAnnotationComposer
+    extends Composer<_$MeshDatabase, $PositionReportsTable> {
+  $$PositionReportsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get radioId =>
+      $composableBuilder(column: $table.radioId, builder: (column) => column);
+
+  GeneratedColumn<String> get nodeKey =>
+      $composableBuilder(column: $table.nodeKey, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get time =>
+      $composableBuilder(column: $table.time, builder: (column) => column);
+
+  GeneratedColumn<double> get latitude =>
+      $composableBuilder(column: $table.latitude, builder: (column) => column);
+
+  GeneratedColumn<double> get longitude =>
+      $composableBuilder(column: $table.longitude, builder: (column) => column);
+}
+
+class $$PositionReportsTableTableManager
+    extends
+        RootTableManager<
+          _$MeshDatabase,
+          $PositionReportsTable,
+          PositionRow,
+          $$PositionReportsTableFilterComposer,
+          $$PositionReportsTableOrderingComposer,
+          $$PositionReportsTableAnnotationComposer,
+          $$PositionReportsTableCreateCompanionBuilder,
+          $$PositionReportsTableUpdateCompanionBuilder,
+          (
+            PositionRow,
+            BaseReferences<_$MeshDatabase, $PositionReportsTable, PositionRow>,
+          ),
+          PositionRow,
+          PrefetchHooks Function()
+        > {
+  $$PositionReportsTableTableManager(
+    _$MeshDatabase db,
+    $PositionReportsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PositionReportsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PositionReportsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PositionReportsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> radioId = const Value.absent(),
+                Value<String> nodeKey = const Value.absent(),
+                Value<DateTime> time = const Value.absent(),
+                Value<double> latitude = const Value.absent(),
+                Value<double> longitude = const Value.absent(),
+              }) => PositionReportsCompanion(
+                id: id,
+                radioId: radioId,
+                nodeKey: nodeKey,
+                time: time,
+                latitude: latitude,
+                longitude: longitude,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String radioId,
+                required String nodeKey,
+                required DateTime time,
+                required double latitude,
+                required double longitude,
+              }) => PositionReportsCompanion.insert(
+                id: id,
+                radioId: radioId,
+                nodeKey: nodeKey,
+                time: time,
+                latitude: latitude,
+                longitude: longitude,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$PositionReportsTable, PositionRow>(table),
+                  BaseReferences<
+                    _$MeshDatabase,
+                    $PositionReportsTable,
+                    PositionRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PositionReportsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$MeshDatabase,
+      $PositionReportsTable,
+      PositionRow,
+      $$PositionReportsTableFilterComposer,
+      $$PositionReportsTableOrderingComposer,
+      $$PositionReportsTableAnnotationComposer,
+      $$PositionReportsTableCreateCompanionBuilder,
+      $$PositionReportsTableUpdateCompanionBuilder,
+      (
+        PositionRow,
+        BaseReferences<_$MeshDatabase, $PositionReportsTable, PositionRow>,
+      ),
+      PositionRow,
+      PrefetchHooks Function()
+    >;
 
 class $MeshDatabaseManager {
   final _$MeshDatabase _db;
@@ -9071,4 +9711,6 @@ class $MeshDatabaseManager {
       $$TraceRecordsTableTableManager(_db, _db.traceRecords);
   $$PlacesTableTableManager get places =>
       $$PlacesTableTableManager(_db, _db.places);
+  $$PositionReportsTableTableManager get positionReports =>
+      $$PositionReportsTableTableManager(_db, _db.positionReports);
 }

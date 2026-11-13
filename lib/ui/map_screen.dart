@@ -20,6 +20,7 @@ import 'verify_screen.dart';
 import 'map_tiles.dart';
 import 'meshtastic_admin_screen.dart';
 import 'telemetry_screen.dart';
+import 'replay_screen.dart';
 
 /// Every node with a position, from both meshes, on one map.
 ///
@@ -184,6 +185,21 @@ class _MapScreenState extends State<MapScreen> {
                     ),
                   ),
                 ),
+              Positioned(
+                right: 16,
+                bottom: 128,
+                child: FloatingActionButton.small(
+                  heroTag: 'map-replay',
+                  tooltip: l.drTitle,
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) =>
+                          ReplayScreen(app: widget.app, tiles: widget.tiles),
+                    ),
+                  ),
+                  child: const Icon(Icons.history),
+                ),
+              ),
               Positioned(
                 right: 16,
                 bottom: 72,
