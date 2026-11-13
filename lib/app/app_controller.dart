@@ -12,6 +12,7 @@ import 'geofence_alerts.dart';
 import 'message_alerts.dart';
 import 'message_scheduler.dart';
 import 'sentinel.dart';
+import 'timeline.dart';
 import 'mqtt_feed.dart';
 import 'radio_connection.dart';
 import 'radio_target.dart';
@@ -106,6 +107,9 @@ class AppController extends ChangeNotifier {
 
   /// Automatic replies.
   late final responder = AutoResponder(store: store, send: _sendScheduled);
+
+  /// New nodes, signal changes and new places, for the timeline.
+  late final timeline = TimelineRecorder(store);
 
   /// Messages to send later.
   late final scheduler = MessageScheduler(store: store, send: _sendScheduled);
@@ -210,6 +214,7 @@ class AppController extends ChangeNotifier {
   Future<void> shutdown() async {
     scheduler.stop();
     responder.stop();
+    await timeline.stop();
     await beacon.value?.stop();
     await alerts?.dispose();
     await feeds.stopAll();

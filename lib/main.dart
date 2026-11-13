@@ -31,9 +31,12 @@ Future<void> main() async {
   await notifier.init();
   final theme = await ThemeChoice.load(store);
   final lock = await LockSettings.load(store);
+  final app = AppController(store: store, notifier: notifier);
+  // Started here rather than by a screen, so it records from launch.
+  await app.timeline.start();
   runApp(
     NotoryxProApp(
-      app: AppController(store: store, notifier: notifier),
+      app: app,
       tiles: tiles,
       initialTheme: theme,
       auth: SystemDeviceAuth(),
