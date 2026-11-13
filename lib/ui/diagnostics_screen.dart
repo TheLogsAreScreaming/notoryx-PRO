@@ -7,6 +7,8 @@ import '../mesh/mesh.dart';
 import '../radio/radio_link.dart';
 import '../store/mesh_store.dart';
 import 'common.dart';
+import 'map_tiles.dart';
+import 'trace_card.dart';
 import 'line_chart.dart';
 
 /// Live packet log and radio readings for one connected radio.
@@ -288,10 +290,18 @@ class _Stat extends StatelessWidget {
 
 /// Runs a trace to [node] and shows each hop's signal.
 class TraceSheet extends StatefulWidget {
-  const TraceSheet({super.key, required this.connection, required this.node});
+  const TraceSheet({
+    super.key,
+    required this.connection,
+    required this.node,
+    this.tiles,
+  });
 
   final RadioConnection connection;
   final Node node;
+
+  /// Map background for the shareable card.
+  final MapTiles? tiles;
 
   @override
   State<TraceSheet> createState() => _TraceSheetState();
@@ -329,7 +339,20 @@ class _TraceSheetState extends State<TraceSheet> {
                 ],
               );
             }
-            return TraceDetails(result: r, targetName: widget.node.displayName);
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TraceDetails(result: r, targetName: widget.node.displayName),
+                _ShareCardButton(
+                  store: widget.connection.store,
+                  radio: widget.node.radioId,
+                  result: r,
+                  targetName: widget.node.displayName,
+                  tiles: widget.tiles,
+                ),
+              ],
+            );
           },
         ),
       ),
@@ -384,12 +407,54 @@ class TraceDetails extends StatelessWidget {
   }
 }
 
+/// Opens the shareable card for one trace.
+class _ShareCardButton extends StatelessWidget {
+  const _ShareCardButton({
+    required this.store,
+    required this.radio,
+    required this.result,
+    required this.targetName,
+    this.tiles,
+  });
+
+  final MeshStore store;
+  final RadioId radio;
+  final TraceResult result;
+  final String targetName;
+  final MapTiles? tiles;
+
+  @override
+  Widget build(BuildContext context) => Align(
+    alignment: AlignmentDirectional.centerStart,
+    child: TextButton.icon(
+      icon: const Icon(Icons.ios_share),
+      label: Text(context.l10n.tcButton),
+      onPressed: () => openTraceCard(
+        context,
+        store: store,
+        radio: radio,
+        result: result,
+        targetName: targetName,
+        tiles: tiles,
+      ),
+    ),
+  );
+}
+
 /// A node's saved traces, newest first; tap one to see its hops.
 class SavedTracesSheet extends StatefulWidget {
-  const SavedTracesSheet({super.key, required this.store, required this.node});
+  const SavedTracesSheet({
+    super.key,
+    required this.store,
+    required this.node,
+    this.tiles,
+  });
 
   final MeshStore store;
   final Node node;
+
+  /// Map background for the shareable card.
+  final MapTiles? tiles;
 
   @override
   State<SavedTracesSheet> createState() => _SavedTracesSheetState();
@@ -471,6 +536,13 @@ class _SavedTracesSheetState extends State<SavedTracesSheet> {
                     subtitle: Text(l.traceHopCount(t.result.towards.length)),
                     children: [
                       TraceDetails(result: t.result, targetName: t.targetName),
+                      _ShareCardButton(
+                        store: widget.store,
+                        radio: widget.node.radioId,
+                        result: t.result,
+                        targetName: t.targetName,
+                        tiles: widget.tiles,
+                      ),
                     ],
                   ),
                 if (list.isNotEmpty)

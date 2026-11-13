@@ -304,6 +304,7 @@ class _MapScreenState extends State<MapScreen> {
         node: n,
         hops: resolveRoute(n, all),
         routeShown: _route?.key == n.key,
+        tiles: widget.tiles,
       ),
     );
     if (showRoute == null || !mounted) return;
@@ -346,12 +347,16 @@ class NodeSheet extends StatelessWidget {
     required this.node,
     required this.hops,
     required this.routeShown,
+    this.tiles,
   });
 
   final AppController app;
   final Node node;
   final List<RouteHop> hops;
   final bool routeShown;
+
+  /// Map background for trace cards.
+  final MapTiles? tiles;
 
   /// The connected radio that knows this node, if any.
   RadioConnection? _connection() {
@@ -541,7 +546,8 @@ class NodeSheet extends StatelessWidget {
                       context: context,
                       showDragHandle: true,
                       isScrollControlled: true,
-                      builder: (_) => TraceSheet(connection: c, node: n),
+                      builder: (_) =>
+                          TraceSheet(connection: c, node: n, tiles: tiles),
                     ),
                   ),
                 OutlinedButton.icon(
@@ -551,7 +557,11 @@ class NodeSheet extends StatelessWidget {
                     context: context,
                     showDragHandle: true,
                     isScrollControlled: true,
-                    builder: (_) => SavedTracesSheet(store: app.store, node: n),
+                    builder: (_) => SavedTracesSheet(
+                      store: app.store,
+                      node: n,
+                      tiles: tiles,
+                    ),
                   ),
                 ),
                 if ((_connection()?.radio?.position, n.position) case (

@@ -211,6 +211,7 @@ class TraceResult {
     required this.towards,
     this.back = const [],
     required this.time,
+    this.roundTrip,
   });
 
   final NodeKey target;
@@ -222,6 +223,9 @@ class TraceResult {
   /// Hops on the way back, when the protocol reports them.
   final List<TraceHop> back;
   final DateTime time;
+
+  /// From sending the trace to its answer arriving; null for saved traces.
+  final Duration? roundTrip;
 
   /// The weakest hop, if any SNR was reported.
   TraceHop? get weakest {
