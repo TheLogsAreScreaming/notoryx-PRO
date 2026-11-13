@@ -165,7 +165,7 @@ T? matchUsbDevice<T>(
 }
 
 /// USB serial ports: on Android through the vendored usb_serial plugin, and
-/// on Windows and Mac through libserialport.
+/// on Windows through libserialport.
 class UsbSerialPorts {
   const UsbSerialPorts();
 
@@ -175,7 +175,7 @@ class UsbSerialPorts {
   /// Whether this platform has USB radio support.
   bool get supported => Platform.isAndroid || _desktop;
 
-  static bool get _desktop => Platform.isWindows || Platform.isMacOS;
+  static bool get _desktop => Platform.isWindows;
 
   /// Ports plugged in now.
   Future<List<SerialPortInfo>> list() async {

@@ -33,7 +33,9 @@ dependencies:
   xml: ^7.1.0
   local_auth: ^3.0.2
   flutter_secure_storage: ^11.2.0
-  flutter_libserialport: ^0.6.0
+  # Vendored, Windows only: see third_party/flutter_libserialport/NOTORYX.md.
+  flutter_libserialport:
+    path: third_party/flutter_libserialport
 
 dev_dependencies:
   flutter_test:
