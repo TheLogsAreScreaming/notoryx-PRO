@@ -732,5 +732,8 @@
   "keyMissingFresh": "Empezar con el historial vacío",
   "keyMissingDone": "Hecho. El archivo antiguo se ha conservado. Cierra y vuelve a abrir la app.",
   "encryptFailed": "El último intento falló y no cambió nada: {reason}. Toca para reintentar.",
-  "scannerUnavailable": "Escanear códigos no está disponible en Windows. Usa un enlace o un archivo."
+  "scannerUnavailable": "Escanear códigos no está disponible en Windows. Usa un enlace o un archivo.",
+  "demoOpen": "Probar una demostración sin radio",
+  "demoBanner": "Demostración: una radio simulada. No se envía nada y no se guarda nada.",
+  "demoExit": "Salir de la demo"
 }
