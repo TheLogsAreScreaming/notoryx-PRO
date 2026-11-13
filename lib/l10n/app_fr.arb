@@ -745,5 +745,15 @@
   "demoOpen": "Essayer une démo sans radio",
   "demoBanner": "Démo : une radio simulée. Rien n'est envoyé et rien n'est enregistré ici.",
   "demoExit": "Quitter la démo",
-  "nodeHeardBy": "Entendu par {count} de vos radios"
+  "nodeHeardBy": "Entendu par {count} de vos radios",
+  "exportProtected": "Sauvegarde protégée par mot de passe",
+  "exportProtectedHelp": "Chiffrée. Seul NOTORYX PRO peut la restaurer, et seulement avec le mot de passe. Si vous l'oubliez, la sauvegarde ne pourra pas être ouverte.",
+  "exportProtecting": "Chiffrement…",
+  "passwordLabel": "Mot de passe",
+  "passwordRepeat": "Répétez le mot de passe",
+  "passwordTooShort": "Au moins 8 caractères",
+  "passwordMismatch": "Les mots de passe ne correspondent pas",
+  "passwordOk": "OK",
+  "restorePasswordTitle": "Cette sauvegarde est protégée par mot de passe",
+  "restoreWrongPassword": "Mot de passe incorrect, ou le fichier a été modifié. Rien n'a été restauré."
 }

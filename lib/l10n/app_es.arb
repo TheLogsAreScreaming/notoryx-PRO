@@ -745,5 +745,15 @@
   "demoOpen": "Probar una demostración sin radio",
   "demoBanner": "Demostración: una radio simulada. No se envía nada y no se guarda nada.",
   "demoExit": "Salir de la demo",
-  "nodeHeardBy": "Oído por {count} de tus radios"
+  "nodeHeardBy": "Oído por {count} de tus radios",
+  "exportProtected": "Copia protegida con contraseña",
+  "exportProtectedHelp": "Cifrada. Solo NOTORYX PRO puede restaurarla, y solo con la contraseña. Si la olvidas, no se podrá abrir.",
+  "exportProtecting": "Cifrando…",
+  "passwordLabel": "Contraseña",
+  "passwordRepeat": "Repite la contraseña",
+  "passwordTooShort": "Al menos 8 caracteres",
+  "passwordMismatch": "Las contraseñas no coinciden",
+  "passwordOk": "Aceptar",
+  "restorePasswordTitle": "Esta copia está protegida con contraseña",
+  "restoreWrongPassword": "Contraseña incorrecta, o el archivo fue modificado. No se restauró nada."
 }

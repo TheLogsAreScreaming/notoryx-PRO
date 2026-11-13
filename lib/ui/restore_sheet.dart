@@ -4,9 +4,11 @@ import 'dart:isolate';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
+import '../app/export_crypto.dart';
 import '../app/message_import.dart';
 import '../store/mesh_store.dart';
 import 'common.dart';
+import 'password_prompt.dart';
 
 /// Larger files are refused rather than risk running out of memory.
 const maxRestoreBytes = 64 * 1024 * 1024;
@@ -38,6 +40,10 @@ Future<String?> pickExportFile() => pickTextFile(const ['json']);
 Future<ParsedExport> _parseInBackground(String text) =>
     Isolate.run(() => parseExport(text));
 
+/// Decrypts off the UI thread, for the same reason as parsing.
+Future<String> _openInBackground(String text, String password) =>
+    Isolate.run(() => decryptExport(text, password));
+
 /// Reads an export, confirms, and adds its messages to this device.
 Future<void> restoreFromExport(
   BuildContext context, {
@@ -49,8 +55,17 @@ Future<void> restoreFromExport(
   void say(String text) =>
       messenger.showSnackBar(SnackBar(content: Text(text)));
   try {
-    final text = await pick();
+    var text = await pick();
     if (text == null) return;
+    if (isEncryptedExport(text)) {
+      if (!context.mounted) return;
+      final password = await askPassword(
+        context,
+        title: l.restorePasswordTitle,
+      );
+      if (password == null) return;
+      text = await _openInBackground(text, password);
+    }
     final parsed = await _parseInBackground(text);
     if (!context.mounted) return;
     if (parsed.messages.isEmpty) {
@@ -84,6 +99,8 @@ Future<void> restoreFromExport(
       RestoreProblem.notAnExport => l.restoreNotExport,
       RestoreProblem.tooNew => l.restoreTooNew,
     });
+  } on WrongPassword {
+    say(l.restoreWrongPassword);
   } on RestoreFileTooBig {
     say(l.restoreTooBig);
   } on Object catch (e) {

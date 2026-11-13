@@ -10,7 +10,7 @@ Messages, contacts, channels, node details, telemetry, saved places and settings
 - **Map tiles:** when you view the map, the app downloads tiles from OpenStreetMap's servers, which receive your IP address and the areas requested.
 - **Radio over Wi-Fi:** if you connect to a radio by address, the app talks directly to that address.
 - **MQTT feeds:** only if you add a broker, the app connects to the broker you chose and it receives your IP address and connection details.
-- **Sharing and export:** files and text leave the app only when you share or save them yourself. Exports aren't encrypted, and a team setup includes your channel keys.
+- **Sharing and export:** files and text leave the app only when you share or save them yourself. Exports aren't encrypted unless you choose a password-protected backup, and a team setup includes your channel keys.
 - **Automatic sending:** only if you turn them on, auto-replies and a distress beacon send messages through your radio by themselves. A beacon includes your radio's position when known.
 
 ## Permissions

@@ -1652,5 +1652,15 @@
         "type": "int"
       }
     }
-  }
+  },
+  "exportProtected": "Password-protected backup",
+  "exportProtectedHelp": "Encrypted. Only NOTORYX PRO can restore it, and only with the password. If you forget the password, the backup can't be opened.",
+  "exportProtecting": "Encrypting…",
+  "passwordLabel": "Password",
+  "passwordRepeat": "Repeat password",
+  "passwordTooShort": "At least 8 characters",
+  "passwordMismatch": "The passwords don't match",
+  "passwordOk": "OK",
+  "restorePasswordTitle": "This backup is password-protected",
+  "restoreWrongPassword": "Wrong password, or the file was changed. Nothing was restored."
 }
