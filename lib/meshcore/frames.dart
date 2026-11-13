@@ -351,6 +351,68 @@ final class RxLogPush extends MeshCoreFrame {
   bool get isPush => true;
 }
 
+/// Zero-hop control data another node sent (push, protocol 8+).
+final class ControlDataPush extends MeshCoreFrame {
+  const ControlDataPush({
+    required this.snr,
+    required this.rssi,
+    required this.pathLength,
+    required this.payload,
+  });
+
+  /// How our radio heard it: SNR in dB and RSSI in dBm.
+  final double snr;
+  final int rssi;
+  final int pathLength;
+  final Uint8List payload;
+
+  @override
+  bool get isPush => true;
+
+  /// The node-discover answer this carries, or null.
+  DiscoverAnswer? get discoverAnswer {
+    final p = payload;
+    if (p.length < 6 + 8 || p[0] & 0xf0 != MeshCoreCommands.discoverAnswer) {
+      return null;
+    }
+    final d = ByteData.sublistView(p);
+    return DiscoverAnswer(
+      nodeType: p[0] & 0x0f,
+      heardUsSnr: d.getInt8(1) / 4.0,
+      tag: d.getUint32(2, Endian.little),
+      key: Uint8List.fromList(p.sublist(6)),
+      snr: snr,
+      rssi: rssi,
+    );
+  }
+}
+
+/// A node in direct range answered a discover request.
+class DiscoverAnswer {
+  const DiscoverAnswer({
+    required this.nodeType,
+    required this.heardUsSnr,
+    required this.tag,
+    required this.key,
+    required this.snr,
+    required this.rssi,
+  });
+
+  /// MeshCore node type code (2 = repeater, 3 = room).
+  final int nodeType;
+
+  /// SNR in dB at which the answering node heard our request.
+  final double heardUsSnr;
+  final int tag;
+
+  /// Its public key: all 32 bytes, or an 8-byte prefix.
+  final Uint8List key;
+
+  /// SNR (dB) and RSSI (dBm) at which our radio heard the answer.
+  final double snr;
+  final int rssi;
+}
+
 /// The radio dropped a contact to make room (push).
 final class ContactDeletedPush extends MeshCoreFrame {
   const ContactDeletedPush(this.publicKey);
@@ -638,6 +700,13 @@ MeshCoreFrame _decode(int code, ByteReader r, Uint8List data) {
       return const MessagesWaitingPush();
     case Push.rxLog:
       return RxLogPush(snr: _snr(r.i8()), rssi: r.i8(), raw: r.rest());
+    case Push.controlData:
+      return ControlDataPush(
+        snr: _snr(r.i8()),
+        rssi: r.i8(),
+        pathLength: r.u8(),
+        payload: r.rest(),
+      );
     case Push.contactDeleted:
       return ContactDeletedPush(r.bytes(MeshCoreLimits.publicKey));
     case Push.contactsFull:

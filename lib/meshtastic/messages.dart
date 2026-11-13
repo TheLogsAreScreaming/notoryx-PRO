@@ -335,6 +335,20 @@ class MeshUser {
   final Uint8List? publicKey;
   final bool isUnmessagable;
 
+  /// Encodes the fields [decode] reads.
+  Uint8List encode() {
+    final w = ProtoWriter()
+      ..string(1, id)
+      ..string(2, longName)
+      ..string(3, shortName)
+      ..uint(5, hwModel)
+      ..boolean(6, isLicensed)
+      ..uint(7, role);
+    if (publicKey case final k? when k.isNotEmpty) w.bytes(8, k);
+    w.boolean(9, isUnmessagable);
+    return w.toBytes();
+  }
+
   static MeshUser decode(Uint8List data) {
     var id = '', longName = '', shortName = '';
     var hw = 0, role = 0;

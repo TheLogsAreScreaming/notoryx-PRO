@@ -14,6 +14,7 @@ import 'common.dart';
 import 'demo_screen.dart';
 import 'connection_log_sheet.dart';
 import 'diagnostics_screen.dart';
+import 'nearby_sheet.dart';
 import 'verify_screen.dart';
 import 'channels_screen.dart';
 import 'meshtastic_admin_screen.dart';
@@ -250,6 +251,12 @@ class _ConnectionCard extends StatelessWidget {
                     icon: const Icon(Icons.qr_code),
                     label: Text(l.myCode),
                     onPressed: () => showMyCode(context, card),
+                  ),
+                if (phase == SupervisorPhase.connected && radio != null)
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.radar),
+                    label: Text(l.nearbyButton),
+                    onPressed: () => NearbySheet.show(context, c),
                   ),
                 if (radio != null)
                   OutlinedButton.icon(
