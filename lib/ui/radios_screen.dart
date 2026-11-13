@@ -11,6 +11,7 @@ import 'bridge_screen.dart';
 import 'feeds_screen.dart';
 import 'auto_reply_screen.dart';
 import 'common.dart';
+import 'demo_screen.dart';
 import 'connection_log_sheet.dart';
 import 'diagnostics_screen.dart';
 import 'verify_screen.dart';
@@ -89,6 +90,14 @@ class RadiosScreen extends StatelessWidget {
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute<void>(builder: (_) => FeedsScreen(app: app)),
             ),
+          ),
+          TextButton.icon(
+            key: const Key('demo-open'),
+            icon: const Icon(Icons.play_circle_outline),
+            label: Text(l.demoOpen),
+            onPressed: () => Navigator.of(
+              context,
+            ).push(MaterialPageRoute<void>(builder: (_) => const DemoScreen())),
           ),
           TextButton.icon(
             key: const Key('auto-reply-open'),
