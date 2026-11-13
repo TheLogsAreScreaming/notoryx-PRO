@@ -1626,6 +1626,22 @@
     }
   },
   "scannerUnavailable": "Scanning codes isn't available on Windows. Use a link or file instead.",
+  "aboutTitle": "About",
+  "aboutDisclaimerTitle": "Not an emergency service",
+  "aboutDisclaimer": "NOTORYX PRO, its MAYDAY tools and distress beacon don't replace 911 or other emergency services. Mesh radio messages can be delayed or lost, and nobody may be listening.",
+  "aboutSource": "Source code",
+  "aboutSourceHelp": "Free software under the GNU GPL version 3",
+  "aboutPrivacy": "Privacy policy",
+  "aboutLicences": "Open-source licences",
+  "aboutLegalese": "GNU General Public License v3.0. No warranty.",
+  "aboutVersion": "Version {version}",
+  "@aboutVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
   "demoOpen": "Try a demo without a radio",
   "demoBanner": "Demo: a pretend radio. Nothing is sent, and nothing here is saved.",
   "demoExit": "Exit demo"
