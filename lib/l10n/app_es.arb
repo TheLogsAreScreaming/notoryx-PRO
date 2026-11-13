@@ -742,5 +742,8 @@
   "aboutLicences": "Licencias de código abierto",
   "aboutLegalese": "Licencia Pública General de GNU v3.0. Sin garantía.",
   "aboutVersion": "Versión {version}",
+  "demoOpen": "Probar una demostración sin radio",
+  "demoBanner": "Demostración: una radio simulada. No se envía nada y no se guarda nada.",
+  "demoExit": "Salir de la demo",
   "nodeHeardBy": "Oído por {count} de tus radios"
 }

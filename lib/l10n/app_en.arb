@@ -1642,6 +1642,9 @@
       }
     }
   },
+  "demoOpen": "Try a demo without a radio",
+  "demoBanner": "Demo: a pretend radio. Nothing is sent, and nothing here is saved.",
+  "demoExit": "Exit demo",
   "nodeHeardBy": "Heard by {count} of your radios",
   "@nodeHeardBy": {
     "placeholders": {
