@@ -2,7 +2,6 @@
 
 One pull request per step. Each step lands with tests and a green CI before the next starts. Steps 1–9 get to a first test build that connects both radio types.
 
-Priorities from the competitive analysis ([docs/competitive/](docs/competitive/), PR #4) are marked **P0**–**P2** where they change a step.
 
 ## Phase 1: foundations
 
