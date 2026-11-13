@@ -11,6 +11,7 @@ import 'package:notoryx_pro/store/mesh_store.dart';
 import 'package:notoryx_pro/ui/app.dart';
 import 'package:notoryx_pro/ui/conversation_screen.dart';
 import 'package:notoryx_pro/ui/diagnostics_screen.dart';
+import 'package:notoryx_pro/ui/topology_screen.dart';
 import 'package:notoryx_pro/ui/verify_screen.dart';
 import 'package:notoryx_pro/mesh/identity.dart';
 import 'package:notoryx_pro/mesh/diagnostics.dart';
@@ -248,6 +249,35 @@ void main() {
     await tester.tap(find.byKey(const Key('trusted-only')));
     await settle(tester);
     expect(find.text('Ridge Relay'), findsOneWidget);
+    await tearDownApp(tester, app);
+  });
+
+  testWidgets('the nodes tab opens the network diagram', (tester) async {
+    final app = AppController(store: MeshStore.memory());
+    await tester.runAsync(() => seed(app.store));
+    await tester.pumpWidget(NotoryxProApp(app: app));
+    await settle(tester);
+    await tester.tap(find.text('Nodes'));
+    await settle(tester);
+    await tester.tap(find.byKey(const Key('open-topology')));
+    await settle(tester);
+    expect(find.text('Network diagram'), findsOneWidget);
+    expect(find.byKey(const Key('topology')), findsOneWidget);
+    // Ridge Relay was heard 2 hops out.
+    await tester.scrollUntilVisible(
+      find.byKey(Key('topo-$relayKey')),
+      200,
+      scrollable: find
+          .descendant(
+            of: find.byType(TopologyScreen),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    expect(find.text('2 hops away'), findsOneWidget);
+    await tester.tap(find.byKey(Key('topo-$relayKey')));
+    await settle(tester);
+    expect(find.textContaining('2 hops'), findsWidgets);
     await tearDownApp(tester, app);
   });
 

@@ -1,3 +1,4 @@
+import 'topology_screen.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -217,6 +218,17 @@ class _HomeShellState extends State<HomeShell> {
       appBar: AppBar(
         title: Text(l.appTitle),
         actions: [
+          if (_tab == 1)
+            IconButton(
+              key: const Key('open-topology'),
+              tooltip: l.topologyTitle,
+              icon: const Icon(Icons.hub_outlined),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => TopologyScreen(app: app),
+                ),
+              ),
+            ),
           if (_tab == 1 || _tab == 2)
             StreamBuilder<String?>(
               stream: _trustedOnly,
