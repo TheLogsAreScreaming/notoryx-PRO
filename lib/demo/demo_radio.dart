@@ -9,12 +9,19 @@ import '../meshcore/bytes.dart';
 import '../meshcore/codes.dart';
 import '../radio/connection_log.dart';
 import '../radio/radio_link.dart';
+import 'demo_meshtastic.dart';
 
 /// Address the demo radio is "connected" at. Never contacted.
 const demoHost = 'demo.notoryx';
 
-/// The target that opens the demo radio.
+/// The target that opens the demo MeshCore radio.
 const demoTarget = TcpTarget(host: demoHost, protocol: RadioProtocol.meshcore);
+
+/// The target that opens the demo Meshtastic radio.
+const demoMeshtasticTarget = TcpTarget(
+  host: 'meshtastic.$demoHost',
+  protocol: RadioProtocol.meshtastic,
+);
 
 /// Hands out the demo radio instead of a real link. Nothing here can reach
 /// Bluetooth, USB or the network.
@@ -26,7 +33,16 @@ class DemoLinks extends LinkFactory {
 
   @override
   RadioLink create(RadioTarget target, {ConnectionLog? log}) =>
-      DemoMeshCoreLink(chatter: chatter, random: random);
+      switch (target.protocol) {
+        RadioProtocol.meshcore => DemoMeshCoreLink(
+          chatter: chatter,
+          random: random,
+        ),
+        RadioProtocol.meshtastic => DemoMeshtasticLink(
+          chatter: chatter,
+          random: random,
+        ),
+      };
 }
 
 class _Peer {
