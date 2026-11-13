@@ -28,4 +28,4 @@ The app is not directed at children under 13.
 
 Questions or requests: bastionappsupport@gmail.com
 
-Effective date: November 12, 2026
+Effective date: November 13, 2026
