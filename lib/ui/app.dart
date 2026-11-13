@@ -22,6 +22,7 @@ import 'notification_settings.dart';
 import 'radios_screen.dart';
 import 'restore_sheet.dart';
 import 'search_screen.dart';
+import 'sentinel_screen.dart';
 import 'theme_screen.dart';
 import 'themes.dart';
 
@@ -69,6 +70,7 @@ class NotoryxProApp extends StatelessWidget {
   Widget _build(ThemeChoice choice) {
     return MaterialApp(
       navigatorKey: navigatorKey,
+      debugShowCheckedModeBanner: false,
       builder: auth == null
           ? null
           : (context, child) => LockGate(
@@ -93,7 +95,7 @@ class NotoryxProApp extends StatelessWidget {
   }
 }
 
-enum _MenuAction { export, restore, theme, lock, about }
+enum _MenuAction { markRead, export, restore, theme, lock, moderation, about }
 
 /// Inbox, nodes and radios, with a bottom navigation bar.
 class HomeShell extends StatefulWidget {
@@ -154,6 +156,7 @@ class _HomeShellState extends State<HomeShell> {
     widget.app.addListener(_syncKeepAlive);
     widget.app.scheduler.start();
     widget.app.responder.start();
+    unawaited(widget.app.sentinel.start());
     widget.app.geofences?.start();
     _bgPref = widget.app.store.watchPreference(AlertPrefs.background).listen((
       v,
@@ -218,12 +221,6 @@ class _HomeShellState extends State<HomeShell> {
                 MaterialPageRoute<void>(builder: (_) => SearchScreen(app: app)),
               ),
             ),
-          if (_tab == 0)
-            IconButton(
-              tooltip: l.markAllRead,
-              icon: const Icon(Icons.done_all),
-              onPressed: () => app.store.markAllRead(),
-            ),
           IconButton(
             tooltip: l.notifyTitle,
             icon: const Icon(Icons.notifications_outlined),
@@ -236,6 +233,7 @@ class _HomeShellState extends State<HomeShell> {
           PopupMenuButton<_MenuAction>(
             key: const Key('inbox-menu'),
             onSelected: (action) => switch (action) {
+              _MenuAction.markRead => app.store.markAllRead(),
               _MenuAction.export => showExportSheet(context, store: app.store),
               _MenuAction.restore => restoreFromExport(
                 context,
@@ -250,6 +248,14 @@ class _HomeShellState extends State<HomeShell> {
                   ),
                 ),
               ),
+              _MenuAction.moderation => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => SentinelPage(
+                    sentinel: app.sentinel,
+                    ownRadios: [for (final c in app.connections) ?c.radio?.id],
+                  ),
+                ),
+              ),
               _MenuAction.about => Navigator.of(context).push(
                 MaterialPageRoute<void>(builder: (_) => const AboutScreen()),
               ),
@@ -261,6 +267,10 @@ class _HomeShellState extends State<HomeShell> {
             },
             itemBuilder: (context) => [
               if (_tab == 0) ...[
+                PopupMenuItem(
+                  value: _MenuAction.markRead,
+                  child: Text(context.l10n.markAllRead),
+                ),
                 PopupMenuItem(
                   value: _MenuAction.export,
                   child: Text(context.l10n.exportAll),
@@ -279,6 +289,11 @@ class _HomeShellState extends State<HomeShell> {
                   value: _MenuAction.lock,
                   child: Text(context.l10n.lockTitle),
                 ),
+              PopupMenuItem(
+                key: const Key('menu-moderation'),
+                value: _MenuAction.moderation,
+                child: Text(context.l10n.sntTitle),
+              ),
               PopupMenuItem(
                 value: _MenuAction.about,
                 child: Text(context.l10n.aboutTitle),

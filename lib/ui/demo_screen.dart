@@ -29,7 +29,9 @@ class _DemoScreenState extends State<DemoScreen> {
   @override
   void initState() {
     super.initState();
+    // One pretend radio of each kind, so both meshes can be tried.
     unawaited(_app.connect(demoTarget));
+    unawaited(_app.connect(demoMeshtasticTarget));
   }
 
   @override
