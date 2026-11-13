@@ -29,7 +29,7 @@ const sizes = [
   ('iphone-6.9', Size(440, 956), 3.0), // 1320x2868
 ];
 
-const languages = ['en', 'es', 'fr', 'de'];
+const languages = ['en', 'es', 'fr', 'de', 'pt', 'it'];
 
 Future<void> loadFonts() async {
   final root = Platform.environment['FLUTTER_ROOT'] ?? '';
