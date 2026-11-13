@@ -31,17 +31,46 @@ Priorities from the competitive analysis ([docs/competitive/](docs/competitive/)
 13. **Radio and node admin**, split in two because each half is large:
     - **13a. MeshCore** (done): radio settings (name, power, frequency/bandwidth/SF/CR, position, auto-add, sharing position), adverts, restart, the radio's own command line (protocol 14), repeater and room server login, status and command line. Telemetry history with battery charge estimates comes later.
     - **13b. Meshtastic** (done): your radio's names, role, LoRa (region, preset, slot, hops, power, MQTT), position and telemetry settings, saved as one batch with the session passkey and only what changed; the same screen for another node over the mesh (public-key admin; the node must list your key); restart; telemetry history (battery, voltage, channel and airtime load, temperature, humidity, pressure) kept 14 days for every Meshtastic node, with charts.
-14. **Unread counts, notifications, mute**, and regional presets for both protocols (in review): unread counts per conversation and on the Inbox tab, mark read / mark all read, mute for an hour, 8 hours, a week or until unmuted, one notification per conversation (direct and channel messages can be turned off separately; tapping opens the conversation), MeshCore presets (27 suggested by the MeshCore project, 27 local meshes with nearby ones first), Meshtastic standard setup per region, and a warning when a Meshtastic radio has no region.
+14. **Unread counts, notifications, mute**, and regional presets for both protocols (done): unread counts per conversation and on the Inbox tab, mark read / mark all read, mute for an hour, 8 hours, a week or until unmuted, one notification per conversation (direct and channel messages can be turned off separately; tapping opens the conversation), MeshCore presets (27 suggested by the MeshCore project, 27 local meshes with nearby ones first), Meshtastic standard setup per region, and a warning when a Meshtastic radio has no region.
+
+## Phase 5: done since the first test builds
+
+Everything here is merged and in a published test build, but none of it has been tried on real radios yet except where noted.
+
+15. **Several radios at once** (done, #19): up to four radios from either mesh.
+16. **Contacts beyond the radio's limit** (done, #20), **channels** (done, #21: create, join, leave and share by QR code or link) and the **Meshtastic Bluetooth fix** (#22; confirmed on a real radio with test 3.1).
+17. **Background connection, search, delete and export** (done, #23 and #24).
+18. **MECP emergency messages** (done, #25), with labels in 20 languages (#29).
+19. **Other-mesh traffic, MQTT feeds and channel bridging** (done, #26–#28): bridging is opt-in, labelled and rate-limited.
+20. **Spanish** (done, #29; machine-written, needs a native speaker's review).
+21. **Meshtastic module settings, fixed position, MeshCore path-hash setting and saved traces** (done, #30–#33).
+22. **Accessibility** (done, #34 and #50–#51): contrast, labels and large text checks, and a published first-pass audit in [docs/ACCESSIBILITY_AUDIT.md](docs/ACCESSIBILITY_AUDIT.md). No screen reader walk-through yet.
+23. **Meshtastic FromNum ID fix** (done, #36): test 4 couldn't connect over Bluetooth because of a typo in one ID. Not yet confirmed on a real radio.
+24. **Eight themes** (done, #37), **restore from export** (#38) and a **real MAYDAY through mute** (#39).
+25. **SALUTE and 9-Line reports** (done, #40), a **manually started distress beacon** (#41), **forwarding and scheduled messages** (#42) and **airtime savers** (#43: Plus Codes, paced remote settings).
+26. **Places** (done, #44: GPX, geofences, link planner), **team setup sharing** (#45), **auto-replies** (#46) and **App lock** (#47).
+27. **Optional encryption of saved messages** (done, #49), with Android cloud backup turned off.
+28. **Google Play groundwork** (done, #48: signed, obfuscated bundle, API 36, privacy policy) and a **Windows build** (#52; compiles, never run).
+
+## Phase 6: now
+
+29. **About screen** with licences and the source link (#55).
+30. **Demo mode** with a pretend radio, for store reviewers, screenshots and people without a radio yet.
+31. **Windows notifications** and **USB radios on Windows**.
+32. **More languages** (machine-written, each needing a native speaker's review).
+33. **Multi-radio polish** from testing.
+
+## Waiting on the owner
+
+- Real-radio tests of everything above, on Android first, then Mac and Windows.
+- Google Play account and its 14-day closed test.
+- Apple developer enrollment, then a notarized Mac download and TestFlight on iPhone. The app has never run on a real iPhone.
+- A decision on the GPL licence before any App Store submission: the Meshtastic protocol definitions are GPL-3.0.
 
 ## Later
 
-- Two radios connected at once in the UI (in review): up to four radios from either mesh, including several on the same mesh; the inbox says which radio a conversation is on when one mesh has more than one.
-- Foreign-traffic detection (in review): a MeshCore radio's raw packet log flags Meshtastic broadcasts it happens to hear, in Diagnostics. Radios normally filter the other mesh's packets out by sync word, so this only shows what gets through. Meshtastic radios don't report raw packets to apps, so the reverse direction isn't possible without firmware changes.
-- Emergency messages compatible with MECP (in review): an SOS button builds a message from MECP's codes, and received ones are spelled out with severity, codes, people and position; labels are English for now.
-- Contacts beyond the radio's limit (in review): the app keeps every MeshCore node heard and tracks which are in the radio's own list; messaging, logging in to or checking a node that isn't puts it on the radio first, and a full radio drops the least recently heard non-favourite (people before repeaters and rooms).
-- MQTT observer feeds for both meshes (in review): read-only packet views from a broker of your choice, in the same log as Diagnostics. Packets are not decrypted.
-- Bridging a MeshCore channel and a Meshtastic channel when both radios are connected: opt-in, every bridged message labelled, rate-limited, and never direct messages unless the user turns that on for a contact.
-- Translations beyond English.
+- Firmware updating, after 1.0.
+- Code signing for the Windows download.
 
 ## Won't build
 
