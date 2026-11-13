@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:notoryx_pro/l10n/app_localizations.dart';
 import 'package:notoryx_pro/ui/demo_screen.dart';
 import 'package:notoryx_pro/app/app_controller.dart';
+import 'package:notoryx_pro/app/radio_connection.dart';
 import 'package:notoryx_pro/demo/demo_radio.dart';
 import 'package:notoryx_pro/mesh/mesh.dart';
 import 'package:notoryx_pro/store/mesh_store.dart';
@@ -27,6 +28,31 @@ void main() {
     final camp = nodes.firstWhere((n) => n.name == 'Camp North');
     final dm = DirectConversation(c.radio!.id, camp.key);
     final id = await c.sendText(dm, 'hello from the demo');
+    await Future<void>.delayed(const Duration(seconds: 9));
+    final msgs = await store.messages(dm);
+    expect(
+      msgs.firstWhere((m) => m.id == id).message.delivery,
+      isA<Delivered>(),
+    );
+    expect(msgs.where((m) => !m.message.outgoing), hasLength(1));
+    await app.shutdown();
+    await store.close();
+  }, timeout: const Timeout(Duration(seconds: 30)));
+
+  test('the Meshtastic demo connects, acknowledges and replies', () async {
+    final store = MeshStore.memory();
+    final app = AppController(
+      store: store,
+      links: DemoLinks(chatter: const Duration(hours: 1), random: Random(2)),
+    );
+    final c = await app.connect(demoMeshtasticTarget);
+    expect(c.radio!.name, 'Demo Base');
+    expect((c as MeshtasticConnection).regionUnset, isFalse);
+    final nodes = await store.nodes(c.radio!.id);
+    final hut = nodes.firstWhere((n) => n.name == 'Summit Hut');
+    expect(hut.position, isNotNull);
+    final dm = DirectConversation(c.radio!.id, hut.key);
+    final id = await c.sendText(dm, 'hello mesh');
     await Future<void>.delayed(const Duration(seconds: 9));
     final msgs = await store.messages(dm);
     expect(
