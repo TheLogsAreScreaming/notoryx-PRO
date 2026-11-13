@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../app/app_controller.dart';
 import '../app/radio_connection.dart';
+import '../app/trusted_nodes.dart';
 import '../mesh/mesh.dart';
 import '../radio/radio.dart';
 import 'admin_screens.dart';
@@ -39,6 +40,7 @@ class _MapScreenState extends State<MapScreen> {
   final _map = MapController();
   late final Stream<List<Node>> _nodes = widget.app.store.watchAllNodes();
   late final Stream<List<Place>> _places = widget.app.store.watchPlaces();
+  late final Stream<TrustState> _trust = TrustedNodes.watch(widget.app.store);
   Node? _route;
 
   static LatLng _ll(GeoPoint p) => LatLng(p.latitude, p.longitude);
@@ -65,139 +67,150 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
-    return StreamBuilder<List<Node>>(
-      stream: _nodes,
-      builder: (context, snap) {
-        final all = snap.data ?? const <Node>[];
-        // One pin per node, even when several of your radios hear it.
-        final placed = [
-          for (final m in mergeAcrossRadios(all))
-            if (m.node.position != null) m.node,
-        ];
-        final own = _ownPositions();
-        final points = [
-          ...placed.map((n) => _ll(n.position!)),
-          ...own.map(_ll),
-        ];
-        final route = _route == null ? null : _routeLine(_route!, all);
-        return Stack(
-          children: [
-            Semantics(
-              label: l.mapDescription(placed.length),
-              child: FlutterMap(
-                mapController: _map,
-                options: MapOptions(
-                  initialCenter: points.isEmpty
-                      ? const LatLng(39.5, -98.35)
-                      : points.first,
-                  initialZoom: points.isEmpty ? 3 : 10,
-                  onMapReady: () => _fit(points),
-                ),
-                children: [
-                  if (widget.tiles case final tiles?)
-                    TileLayer(
-                      urlTemplate: MapTiles.urlTemplate,
-                      userAgentPackageName: MapTiles.userAgentPackageName,
-                      tileProvider: tiles.provider,
-                    ),
-                  _placesLayer(),
-                  if (route != null && route.length > 1)
-                    PolylineLayer(
-                      polylines: [
-                        Polyline(
-                          points: route,
-                          strokeWidth: 4,
-                          color: Theme.of(context).colorScheme.primary,
-                          pattern: const StrokePattern.dotted(),
-                        ),
-                      ],
-                    ),
-                  MarkerLayer(
-                    markers: [
-                      for (final p in own)
-                        Marker(
-                          point: _ll(p),
-                          width: 40,
-                          height: 40,
-                          child: Tooltip(
-                            message: l.mapYourRadio,
-                            child: Icon(
-                              Icons.my_location,
-                              semanticLabel: l.mapYourRadio,
-                              color: Theme.of(context).colorScheme.primary,
-                              size: 32,
+    return StreamBuilder<TrustState>(
+      stream: _trust,
+      builder: (context, tSnap) => StreamBuilder<List<Node>>(
+        stream: _nodes,
+        builder: (context, snap) {
+          final all = snap.data ?? const <Node>[];
+          final trust = tSnap.data ?? const TrustState();
+          final favorites = favoriteKeys(all);
+          // One pin per node, even when several of your radios hear it.
+          final placed = [
+            for (final m in mergeAcrossRadios(all))
+              if (m.node.position != null &&
+                  (!trust.onlyTrusted ||
+                      trust.trusts(m.node, favorites: favorites)))
+                m.node,
+          ];
+          final own = _ownPositions();
+          final points = [
+            ...placed.map((n) => _ll(n.position!)),
+            ...own.map(_ll),
+          ];
+          final route = _route == null ? null : _routeLine(_route!, all);
+          return Stack(
+            children: [
+              Semantics(
+                label: l.mapDescription(placed.length),
+                child: FlutterMap(
+                  mapController: _map,
+                  options: MapOptions(
+                    initialCenter: points.isEmpty
+                        ? const LatLng(39.5, -98.35)
+                        : points.first,
+                    initialZoom: points.isEmpty ? 3 : 10,
+                    onMapReady: () => _fit(points),
+                  ),
+                  children: [
+                    if (widget.tiles case final tiles?)
+                      TileLayer(
+                        urlTemplate: MapTiles.urlTemplate,
+                        userAgentPackageName: MapTiles.userAgentPackageName,
+                        tileProvider: tiles.provider,
+                      ),
+                    _placesLayer(),
+                    if (route != null && route.length > 1)
+                      PolylineLayer(
+                        polylines: [
+                          Polyline(
+                            points: route,
+                            strokeWidth: 4,
+                            color: Theme.of(context).colorScheme.primary,
+                            pattern: const StrokePattern.dotted(),
+                          ),
+                        ],
+                      ),
+                    MarkerLayer(
+                      markers: [
+                        for (final p in own)
+                          Marker(
+                            point: _ll(p),
+                            width: 40,
+                            height: 40,
+                            child: Tooltip(
+                              message: l.mapYourRadio,
+                              child: Icon(
+                                Icons.my_location,
+                                semanticLabel: l.mapYourRadio,
+                                color: Theme.of(context).colorScheme.primary,
+                                size: 32,
+                              ),
                             ),
                           ),
-                        ),
-                      for (final n in placed)
-                        Marker(
-                          point: _ll(n.position!),
-                          width: 44,
-                          height: 44,
-                          child: _NodeMarker(
-                            node: n,
-                            onTap: () => _openNode(n, all),
+                        for (final n in placed)
+                          Marker(
+                            point: _ll(n.position!),
+                            width: 44,
+                            height: 44,
+                            child: _NodeMarker(
+                              node: n,
+                              onTap: () => _openNode(n, all),
+                            ),
                           ),
-                        ),
-                    ],
-                  ),
-                  if (widget.tiles != null)
-                    const RichAttributionWidget(
-                      attributions: [
-                        TextSourceAttribution('OpenStreetMap contributors'),
                       ],
                     ),
-                ],
-              ),
-            ),
-            if (placed.isEmpty && own.isEmpty)
-              Center(
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(l.mapNoPositions, textAlign: TextAlign.center),
-                  ),
+                    if (widget.tiles != null)
+                      const RichAttributionWidget(
+                        attributions: [
+                          TextSourceAttribution('OpenStreetMap contributors'),
+                        ],
+                      ),
+                  ],
                 ),
               ),
-            if (widget.tiles?.status.offline ?? false)
+              if (placed.isEmpty && own.isEmpty)
+                Center(
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        l.mapNoPositions,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ),
+              if (widget.tiles?.status.offline ?? false)
+                Positioned(
+                  top: 8,
+                  left: 8,
+                  right: 8,
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Text(l.mapOffline, textAlign: TextAlign.center),
+                    ),
+                  ),
+                ),
               Positioned(
-                top: 8,
-                left: 8,
-                right: 8,
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Text(l.mapOffline, textAlign: TextAlign.center),
+                right: 16,
+                bottom: 72,
+                child: FloatingActionButton.small(
+                  heroTag: 'map-places',
+                  tooltip: l.placesTitle,
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => PlacesScreen(app: widget.app),
+                    ),
                   ),
+                  child: const Icon(Icons.bookmark_border),
                 ),
               ),
-            Positioned(
-              right: 16,
-              bottom: 72,
-              child: FloatingActionButton.small(
-                heroTag: 'map-places',
-                tooltip: l.placesTitle,
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => PlacesScreen(app: widget.app),
-                  ),
+              Positioned(
+                right: 16,
+                bottom: 16,
+                child: FloatingActionButton.small(
+                  heroTag: 'map-fit',
+                  tooltip: l.mapFitAll,
+                  onPressed: () => _fit(points),
+                  child: const Icon(Icons.fit_screen),
                 ),
-                child: const Icon(Icons.bookmark_border),
               ),
-            ),
-            Positioned(
-              right: 16,
-              bottom: 16,
-              child: FloatingActionButton.small(
-                heroTag: 'map-fit',
-                tooltip: l.mapFitAll,
-                onPressed: () => _fit(points),
-                child: const Icon(Icons.fit_screen),
-              ),
-            ),
-          ],
-        );
-      },
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -453,6 +466,22 @@ class NodeSheet extends StatelessWidget {
                       );
                     },
                   ),
+                StreamBuilder<TrustState>(
+                  stream: TrustedNodes.watch(app.store),
+                  builder: (context, t) {
+                    final marked = t.data?.isMarked(n.key) ?? false;
+                    return OutlinedButton.icon(
+                      key: const Key('sheet-trust'),
+                      icon: Icon(marked ? Icons.star : Icons.star_border),
+                      label: Text(marked ? l.trustedUnmark : l.trustedMark),
+                      onPressed: () => TrustedNodes.setMarked(
+                        app.store,
+                        n.key,
+                        trusted: !marked,
+                      ),
+                    );
+                  },
+                ),
                 OutlinedButton.icon(
                   icon: const Icon(Icons.verified_user_outlined),
                   label: Text(l.verify),
