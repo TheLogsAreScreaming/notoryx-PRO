@@ -712,7 +712,7 @@
   "autoDelete": "Eliminar {rule}",
   "lockTitle": "Bloqueo de la app",
   "lockOn": "Pedir huella, rostro o código",
-  "lockHelp": "Cubre la app hasta que la desbloquees. Las radios, balizas y mensajes programados siguen funcionando. Las notificaciones aún pueden mostrar texto en la pantalla de bloqueo y los mensajes guardados todavía no están cifrados.",
+  "lockHelp": "Cubre la app hasta que la desbloquees. Las radios, balizas y mensajes programados siguen funcionando. Las notificaciones aún pueden mostrar texto en la pantalla de bloqueo. Los mensajes guardados solo se cifran si lo activas abajo.",
   "lockReason": "Desbloquear NOTORYX PRO",
   "lockLocked": "NOTORYX PRO está bloqueada",
   "lockUnlock": "Desbloquear",

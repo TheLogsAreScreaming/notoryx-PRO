@@ -35,7 +35,12 @@ void main() {
       }
       expect(
         names,
-        containsAll(['NOTORYX PRO', 'MECP labels', 'SQLite3MultipleCiphers']),
+        containsAll([
+          'NOTORYX PRO',
+          'MECP labels',
+          'SQLite3MultipleCiphers',
+          'libserialport',
+        ]),
       );
       expect(names.where((n) => n == 'NOTORYX PRO'), hasLength(1));
     },
