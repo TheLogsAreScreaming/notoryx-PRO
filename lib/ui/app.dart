@@ -7,6 +7,7 @@ import '../app/app_lock.dart';
 import '../store/database_vault.dart';
 import '../app/message_alerts.dart';
 import '../l10n/app_localizations.dart';
+import 'about_screen.dart';
 import 'beacon_sheet.dart';
 import 'common.dart';
 import 'conversation_screen.dart';
@@ -92,7 +93,7 @@ class NotoryxProApp extends StatelessWidget {
   }
 }
 
-enum _MenuAction { export, restore, theme, lock }
+enum _MenuAction { export, restore, theme, lock, about }
 
 /// Inbox, nodes and radios, with a bottom navigation bar.
 class HomeShell extends StatefulWidget {
@@ -249,6 +250,9 @@ class _HomeShellState extends State<HomeShell> {
                   ),
                 ),
               ),
+              _MenuAction.about => Navigator.of(context).push(
+                MaterialPageRoute<void>(builder: (_) => const AboutScreen()),
+              ),
               _MenuAction.theme => Navigator.of(context).push(
                 MaterialPageRoute<void>(
                   builder: (_) => ThemeScreen(store: app.store),
@@ -275,6 +279,10 @@ class _HomeShellState extends State<HomeShell> {
                   value: _MenuAction.lock,
                   child: Text(context.l10n.lockTitle),
                 ),
+              PopupMenuItem(
+                value: _MenuAction.about,
+                child: Text(context.l10n.aboutTitle),
+              ),
             ],
           ),
         ],
