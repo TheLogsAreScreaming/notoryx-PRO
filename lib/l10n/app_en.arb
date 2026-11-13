@@ -1519,6 +1519,222 @@
   "modStoreRecords": "Messages to keep",
   "modStoreMax": "Most messages to replay",
   "modStoreWindow": "Replay window (minutes)",
+  "auTitle": "Automations",
+  "auHelp": "When something happens (a battery runs low, a time comes, a node enters a geofence, a message arrives, a node comes or goes), do something: send a message, show an alert, change channel, play a sound or call a webhook.",
+  "auWebhooksAllow": "Allow web requests (webhooks)",
+  "auWebhooksHelp": "Off by default. Needs internet: webhooks send what happened (rule, time, node, battery, place, message text) to a web address, and only work while this device is online. Everything else works over radio alone.",
+  "auEmpty": "No automations yet.",
+  "auUnnamed": "Unnamed automation",
+  "auWhenAny": "When any of: {triggers}",
+  "@auWhenAny": {
+    "placeholders": {
+      "triggers": {
+        "type": "String"
+      }
+    }
+  },
+  "auWhenAll": "When all of: {triggers}",
+  "@auWhenAll": {
+    "placeholders": {
+      "triggers": {
+        "type": "String"
+      }
+    }
+  },
+  "auThen": "Then: {actions}",
+  "@auThen": {
+    "placeholders": {
+      "actions": {
+        "type": "String"
+      }
+    }
+  },
+  "auRecent": "Recent runs",
+  "auRunOk": "Done",
+  "auRunFailed": "Didn't work",
+  "auAdd": "New automation",
+  "auEdit": "Edit automation",
+  "auDelete": "Delete automation",
+  "auSave": "Save",
+  "auName": "Name",
+  "auWhen": "When",
+  "auAny": "Any trigger (OR)",
+  "auAll": "All triggers (AND)",
+  "auDo": "Do",
+  "auAddTrigger": "Add trigger",
+  "auAddAction": "Add action",
+  "auRemove": "Remove {item}",
+  "@auRemove": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
+  "auNeedsInternet": "Needs internet",
+  "auCooldown": "Run at most once every",
+  "auMinutes": "{count, plural, =1{1 minute} other{{count} minutes}}",
+  "@auMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "auLimits": "To keep things calm, all automations together run at most 30 times an hour. Messages from other bots, emergency messages and old messages arriving after a reconnect never trigger anything.",
+  "auTBattery": "Battery low",
+  "auTTime": "Time of day",
+  "auTFence": "Geofence enter or leave",
+  "auTMessage": "Message received",
+  "auTPresence": "Node online or offline",
+  "auBatteryDesc": "Battery of {name} below {percent}%",
+  "@auBatteryDesc": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "auTimeDesc": "At {time}",
+  "@auTimeDesc": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "auEnterDesc": "{node} enters {place}",
+  "@auEnterDesc": {
+    "placeholders": {
+      "node": {
+        "type": "String"
+      },
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "auLeaveDesc": "{node} leaves {place}",
+  "@auLeaveDesc": {
+    "placeholders": {
+      "node": {
+        "type": "String"
+      },
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "auAnyNode": "Any node",
+  "auMessageAny": "Any message",
+  "auMessageHas": "Message containing “{text}”",
+  "@auMessageHas": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "auDirectOnly": "Direct messages only",
+  "auOnlineDesc": "{node} heard again after {minutes} min quiet",
+  "@auOnlineDesc": {
+    "placeholders": {
+      "node": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "auOfflineDesc": "{node} not heard for {minutes} min",
+  "@auOfflineDesc": {
+    "placeholders": {
+      "node": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "auSendDesc": "Send “{text}” to {conversation}",
+  "@auSendDesc": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      },
+      "conversation": {
+        "type": "String"
+      }
+    }
+  },
+  "auAlertDesc": "Alert: {text}",
+  "@auAlertDesc": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "auChannelDesc": "Join a channel on {radio}",
+  "@auChannelDesc": {
+    "placeholders": {
+      "radio": {
+        "type": "String"
+      }
+    }
+  },
+  "auSound": "Play a sound",
+  "auWebhookDesc": "Call webhook at {host}",
+  "@auWebhookDesc": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
+  "auASend": "Send a message",
+  "auAAlert": "Show an alert",
+  "auAChannel": "Change channel",
+  "auAWebhook": "Call a webhook (needs internet)",
+  "auNode": "Node",
+  "auBelowPercent": "Below {percent}%",
+  "@auBelowPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "auDaysHelp": "On these days (none picked = every day):",
+  "auFence": "Geofence",
+  "auEnters": "Enters",
+  "auLeaves": "Leaves",
+  "auContains": "Containing (optional)",
+  "auContainsHelp": "Ignores upper and lower case. Leave empty for any message.",
+  "auConversation": "Conversation",
+  "auAnyConversation": "Any conversation",
+  "auComesOnline": "Comes back",
+  "auGoesOffline": "Goes quiet",
+  "auQuietFor": "Quiet for",
+  "auText": "Text",
+  "auPlaceholders": "You can use {list}.",
+  "@auPlaceholders": {
+    "placeholders": {
+      "list": {
+        "type": "String"
+      }
+    }
+  },
+  "auChannelHelp": "Paste a channel link. The radio joins that channel in a free slot (nothing changes if it's already there).",
+  "auRadio": "Radio",
+  "auChannelLink": "Channel link",
+  "auWebhookHelp": "Needs internet. Posts JSON describing what happened to this address. Only runs while web requests are allowed on the Automations screen.",
+  "auUrl": "Web address",
   "modStoreServer": "Act as a server",
   "modRange": "Range test",
   "modRangeHelp": "Sends numbered test messages. Use it briefly: it takes up airtime for everyone.",

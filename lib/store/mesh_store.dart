@@ -491,6 +491,14 @@ class MeshStore {
           .watch()
           .map((rows) => [for (final r in rows) ?_place(r)]);
 
+  /// Every saved place, by name.
+  Future<List<Place>> places() async => [
+    for (final r in await (db.select(
+      db.places,
+    )..orderBy([(p) => OrderingTerm.asc(p.name)])).get())
+      ?_place(r),
+  ];
+
   /// Turns a place's alert on or off; for a route, [radiusM] is how far off
   /// it someone can go before an alert.
   Future<void> setPlaceAlert(int id, {required bool alerts, double? radiusM}) =>
