@@ -1625,5 +1625,13 @@
       }
     }
   },
-  "scannerUnavailable": "Scanning codes isn't available on Windows. Use a link or file instead."
+  "scannerUnavailable": "Scanning codes isn't available on Windows. Use a link or file instead.",
+  "nodeHeardBy": "Heard by {count} of your radios",
+  "@nodeHeardBy": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

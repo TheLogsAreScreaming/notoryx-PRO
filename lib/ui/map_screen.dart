@@ -7,6 +7,7 @@ import '../app/radio_connection.dart';
 import '../mesh/mesh.dart';
 import '../radio/radio.dart';
 import 'admin_screens.dart';
+import '../mesh/node_merge.dart';
 import '../mesh/places.dart';
 import 'common.dart';
 import 'places_screen.dart';
@@ -68,9 +69,10 @@ class _MapScreenState extends State<MapScreen> {
       stream: _nodes,
       builder: (context, snap) {
         final all = snap.data ?? const <Node>[];
+        // One pin per node, even when several of your radios hear it.
         final placed = [
-          for (final n in all)
-            if (n.position != null) n,
+          for (final m in mergeAcrossRadios(all))
+            if (m.node.position != null) m.node,
         ];
         final own = _ownPositions();
         final points = [

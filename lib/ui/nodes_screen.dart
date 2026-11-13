@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../app/app_controller.dart';
 import '../mesh/mesh.dart';
 import '../radio/radio_link.dart';
+import '../mesh/node_merge.dart';
 import 'common.dart';
 import 'conversation_screen.dart';
 import 'verify_screen.dart';
@@ -22,8 +23,8 @@ class NodesScreen extends StatelessWidget {
         builder: (context, cSnap) => StreamBuilder<List<Node>>(
           stream: app.store.watchAllNodes(),
           builder: (context, snap) {
-            final nodes = snap.data ?? const <Node>[];
-            if (nodes.isEmpty) {
+            final merged = mergeAcrossRadios(snap.data ?? const <Node>[]);
+            if (merged.isEmpty) {
               return EmptyState(
                 context.l10n.nodesEmpty,
                 icon: Icons.hub_outlined,
@@ -31,18 +32,20 @@ class NodesScreen extends StatelessWidget {
             }
             final verified = vSnap.data ?? const {};
             return ListView.builder(
-              itemCount: nodes.length,
-              itemBuilder: (context, i) => NodeTile(
-                app: app,
-                node: nodes[i],
-                trust: trustOf(nodes[i], verified[nodes[i].key]),
-                appOnly:
-                    cSnap.hasData &&
-                    nodes[i].protocol == RadioProtocol.meshcore &&
-                    !cSnap.data!.contains(
-                      '${nodes[i].radioId}|${nodes[i].key}',
-                    ),
-              ),
+              itemCount: merged.length,
+              itemBuilder: (context, i) {
+                final n = merged[i].node;
+                return NodeTile(
+                  app: app,
+                  node: n,
+                  radios: merged[i].radios,
+                  trust: trustOf(n, verified[n.key]),
+                  appOnly:
+                      cSnap.hasData &&
+                      n.protocol == RadioProtocol.meshcore &&
+                      !cSnap.data!.contains('${n.radioId}|${n.key}'),
+                );
+              },
             );
           },
         ),
@@ -59,6 +62,7 @@ class NodeTile extends StatelessWidget {
     required this.node,
     this.trust = TrustStatus.unverified,
     this.appOnly = false,
+    this.radios = 1,
   });
 
   final AppController app;
@@ -68,6 +72,9 @@ class NodeTile extends StatelessWidget {
   /// A MeshCore node the app keeps but the radio's contact list doesn't
   /// hold; it is added when messaged.
   final bool appOnly;
+
+  /// How many of your radios hear this node.
+  final int radios;
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +86,7 @@ class NodeTile extends StatelessWidget {
       if (pathSummary(context, n.path) case final p when p.isNotEmpty) p,
       if (!n.canMessage) l.nodeCannotMessage,
       if (appOnly) l.nodeAppOnly,
+      if (radios > 1) l.nodeHeardBy(radios),
     ].join(' · ');
     return ListTile(
       leading: Icon(
