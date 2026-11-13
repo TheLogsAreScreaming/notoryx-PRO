@@ -124,7 +124,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
   Future<void> _messageActions(StoredMessage stored) async {
     final l = context.l10n;
     final m = stored.message;
-    final canReport = !m.outgoing && (m.from != null || (m.senderName ?? '').trim().isNotEmpty);
+    final canReport =
+        !m.outgoing &&
+        (m.from != null || (m.senderName ?? '').trim().isNotEmpty);
     final choice = await showModalBottomSheet<String>(
       context: context,
       showDragHandle: true,

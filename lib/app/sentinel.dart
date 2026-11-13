@@ -237,7 +237,8 @@ class SentinelService extends ChangeNotifier {
       List.unmodifiable(_sent);
 
   /// The ban on [key], if any.
-  SentinelBan? banFor(NodeKey key) => _lookup(key.protocol, sentinelNodeId(key));
+  SentinelBan? banFor(NodeKey key) =>
+      _lookup(key.protocol, sentinelNodeId(key));
 
   SentinelBan? _lookup(RadioProtocol network, String id) {
     if (!_enabled) return null;
@@ -262,7 +263,9 @@ class SentinelService extends ChangeNotifier {
       if (ban != null) return ban;
     }
     final name = m.senderName;
-    return name == null ? null : banForName(m.conversation.radioId.protocol, name);
+    return name == null
+        ? null
+        : banForName(m.conversation.radioId.protocol, name);
   }
 
   /// Whether [m] is hidden because the user chose to hide flagged senders.
@@ -345,7 +348,9 @@ class SentinelService extends ChangeNotifier {
               DateTime.tryParse('${j['at']}') != null)
             (
               caseRef: j['caseRef'] as String,
-              nodeName: j['nodeName'] is String ? j['nodeName'] as String : null,
+              nodeName: j['nodeName'] is String
+                  ? j['nodeName'] as String
+                  : null,
               at: DateTime.parse('${j['at']}'),
             ),
       ];

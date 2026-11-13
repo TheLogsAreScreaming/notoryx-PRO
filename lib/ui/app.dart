@@ -256,9 +256,7 @@ class _HomeShellState extends State<HomeShell> {
                 MaterialPageRoute<void>(
                   builder: (_) => SentinelPage(
                     sentinel: app.sentinel,
-                    ownRadios: [
-                      for (final c in app.connections) ?c.radio?.id,
-                    ],
+                    ownRadios: [for (final c in app.connections) ?c.radio?.id],
                   ),
                 ),
               ),
