@@ -802,5 +802,12 @@
   "passwordMismatch": "Le password non coincidono",
   "passwordOk": "OK",
   "restorePasswordTitle": "Questo backup è protetto da password",
-  "restoreWrongPassword": "Password errata, oppure il file è stato modificato. Non è stato ripristinato nulla."
+  "restoreWrongPassword": "Password errata, oppure il file è stato modificato. Non è stato ripristinato nulla.",
+  "routeAlertTitle": "Avviso fuori percorso",
+  "routeAlertOn": "Avvisa quando qualcuno lascia questo percorso",
+  "routeAlertLimit": "A più di {metres} m dal percorso",
+  "routeAlertHint": "Chiunque le tue radio sentano, che sia stato sul percorso e poi se ne allontani oltre il limite, genera un avviso. Si riattiva quando torna sul percorso.",
+  "routeAlertSave": "Salva",
+  "placesRouteWatched": "Percorso, {count} punti · avviso oltre {metres} m",
+  "offRouteAlert": "{node} è a {metres} m da {route}"
 }

@@ -802,5 +802,12 @@
   "passwordMismatch": "Les mots de passe ne correspondent pas",
   "passwordOk": "OK",
   "restorePasswordTitle": "Cette sauvegarde est protégée par mot de passe",
-  "restoreWrongPassword": "Mot de passe incorrect, ou le fichier a été modifié. Rien n'a été restauré."
+  "restoreWrongPassword": "Mot de passe incorrect, ou le fichier a été modifié. Rien n'a été restauré.",
+  "routeAlertTitle": "Alerte hors itinéraire",
+  "routeAlertOn": "Alerter quand quelqu'un quitte cet itinéraire",
+  "routeAlertLimit": "À plus de {metres} m de l'itinéraire",
+  "routeAlertHint": "Toute personne captée par vos radios qui était sur l'itinéraire puis s'en éloigne au-delà de la limite déclenche une alerte. Elle se réarme quand la personne revient sur l'itinéraire.",
+  "routeAlertSave": "Enregistrer",
+  "placesRouteWatched": "Itinéraire, {count} points · alerte au-delà de {metres} m",
+  "offRouteAlert": "{node} est à {metres} m de {route}"
 }

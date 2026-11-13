@@ -136,6 +136,122 @@ void main() {
     });
   });
 
+  group('off-route alerts', () {
+    late MeshStore store;
+    late FakeNotifier n;
+    late GeofenceAlerts g;
+    late DateTime now;
+    // A route east along the equator, about 2.2 km long.
+    const line = [GeoPoint(0, 0), GeoPoint(0, .02)];
+    Node at(double lat) => Node(
+      key: NodeKey.meshtastic(1),
+      radioId: RadioId.meshtastic(2),
+      name: 'Ann',
+      position: GeoPoint(lat, .01),
+    );
+
+    setUp(() async {
+      store = MeshStore.memory();
+      await store.addPlaces(const [
+        Place(kind: PlaceKind.route, name: 'Ridge', points: line),
+      ]);
+      final id = (await store.watchPlaces().first).single.id;
+      await store.setPlaceAlert(id, alerts: true, radiusM: 100);
+      n = FakeNotifier();
+      now = DateTime(2026);
+      g = GeofenceAlerts(store: store, notifier: n, now: () => now)..start();
+      await pumpEventQueue(times: 200);
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+    });
+    tearDown(() async {
+      g.stop();
+      await store.close();
+    });
+
+    test('distance to a line is to the nearest segment', () {
+      expect(metresFromLine(const GeoPoint(.001, .01), line), closeTo(111, 1));
+      expect(metresFromLine(const GeoPoint(0, .021), line), closeTo(111, 1));
+      expect(metresFromLine(const GeoPoint(0, 0), const []), isNull);
+    });
+
+    test('alerts once on leaving, re-arms on coming back', () {
+      g.check([at(0)]);
+      g.check([at(.0015)]); // ~167 m off
+      expect(n.shown.single.body, 'Ann is 167 m off Ridge');
+      g.check([at(.002)]);
+      expect(n.shown, hasLength(1));
+      now = now.add(const Duration(minutes: 6));
+      g.check([at(.0002)]); // back on
+      g.check([at(.0015)]);
+      expect(n.shown, hasLength(2));
+    });
+
+    test('someone first seen off the route never alerts', () {
+      g.check([at(.01)]);
+      g.check([at(.02)]);
+      expect(n.shown, isEmpty);
+    });
+
+    test('a route without a limit is not watched', () async {
+      final id = (await store.watchPlaces().first).single.id;
+      await store.setPlaceAlert(id, alerts: false);
+      await pumpEventQueue(times: 200);
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+      g.check([at(0)]);
+      g.check([at(.01)]);
+      expect(n.shown, isEmpty);
+      final back = (await store.watchPlaces().first).single;
+      expect(back.watchesRoute, isFalse);
+      expect(back.radiusM, isNull);
+    });
+  });
+
+  testWidgets('screen: set an off-route alert on a route', (t) async {
+    t.view.physicalSize = const Size(420, 1000);
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.reset);
+    final store = MeshStore.memory();
+    final app = AppController(store: store);
+    Future<void> settle() async {
+      for (var i = 0; i < 8; i++) {
+        await t.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 20)),
+        );
+        await t.pump(const Duration(milliseconds: 100));
+      }
+    }
+
+    await t.runAsync(
+      () => store.addPlaces(const [
+        Place(
+          kind: PlaceKind.route,
+          name: 'Ridge',
+          points: [GeoPoint(0, 0), GeoPoint(0, .02)],
+        ),
+      ]),
+    );
+    await t.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: PlacesScreen(app: app),
+      ),
+    );
+    await settle();
+    expect(find.text('Route, 2 points'), findsOneWidget);
+    await t.tap(find.text('Ridge'));
+    await settle();
+    await t.tap(find.byKey(const Key('route-alert-on')));
+    await settle();
+    await t.tap(find.byKey(const Key('route-alert-save')));
+    await settle();
+    expect(find.text('Route, 2 points · alert past 100 m'), findsOneWidget);
+    await t.pumpWidget(const SizedBox());
+    final closing = store.close();
+    await t.pump(const Duration(seconds: 1));
+    await t.runAsync(() => closing);
+  });
+
   testWidgets('screen: import a file, delete a place', (t) async {
     t.view.physicalSize = const Size(420, 1000);
     t.view.devicePixelRatio = 1;

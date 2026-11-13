@@ -802,5 +802,12 @@
   "passwordMismatch": "Las contraseñas no coinciden",
   "passwordOk": "Aceptar",
   "restorePasswordTitle": "Esta copia está protegida con contraseña",
-  "restoreWrongPassword": "Contraseña incorrecta, o el archivo fue modificado. No se restauró nada."
+  "restoreWrongPassword": "Contraseña incorrecta, o el archivo fue modificado. No se restauró nada.",
+  "routeAlertTitle": "Alerta de salida de ruta",
+  "routeAlertOn": "Avisar cuando alguien salga de esta ruta",
+  "routeAlertLimit": "A más de {metres} m de la ruta",
+  "routeAlertHint": "Cualquier persona que oigan tus radios, que haya estado en la ruta y luego se aleje más del límite, genera una alerta. Se reactiva cuando vuelve a la ruta.",
+  "routeAlertSave": "Guardar",
+  "placesRouteWatched": "Ruta, {count} puntos · alerta a más de {metres} m",
+  "offRouteAlert": "{node} está a {metres} m fuera de {route}"
 }

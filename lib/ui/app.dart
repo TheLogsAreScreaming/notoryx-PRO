@@ -207,8 +207,13 @@ class _HomeShellState extends State<HomeShell> {
   Widget build(BuildContext context) {
     final l = context.l10n;
     final app = widget.app;
-    app.geofences?.describe = (node, fence, entered) =>
-        entered ? l.geofenceEntered(node, fence) : l.geofenceLeft(node, fence);
+    if (app.geofences case final g?) {
+      g.describe = (node, fence, entered) => entered
+          ? l.geofenceEntered(node, fence)
+          : l.geofenceLeft(node, fence);
+      g.describeOffRoute = (node, route, metres) =>
+          l.offRouteAlert(node, route, metres);
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text(l.appTitle),

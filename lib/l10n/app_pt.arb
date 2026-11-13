@@ -802,5 +802,12 @@
   "passwordMismatch": "As senhas não coincidem",
   "passwordOk": "OK",
   "restorePasswordTitle": "Este backup é protegido por senha",
-  "restoreWrongPassword": "Senha errada, ou o arquivo foi alterado. Nada foi restaurado."
+  "restoreWrongPassword": "Senha errada, ou o arquivo foi alterado. Nada foi restaurado.",
+  "routeAlertTitle": "Alerta de saída da rota",
+  "routeAlertOn": "Avisar quando alguém sair desta rota",
+  "routeAlertLimit": "A mais de {metres} m da rota",
+  "routeAlertHint": "Quem os seus rádios ouvirem, que tenha estado na rota e depois se afaste mais do que o limite, gera um alerta. Volta a ficar ativo quando regressa à rota.",
+  "routeAlertSave": "Guardar",
+  "placesRouteWatched": "Rota, {count} pontos · alerta a mais de {metres} m",
+  "offRouteAlert": "{node} está a {metres} m fora de {route}"
 }

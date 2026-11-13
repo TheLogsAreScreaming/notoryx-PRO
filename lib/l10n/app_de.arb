@@ -802,5 +802,12 @@
   "passwordMismatch": "Die Passwörter stimmen nicht überein",
   "passwordOk": "OK",
   "restorePasswordTitle": "Diese Sicherung ist passwortgeschützt",
-  "restoreWrongPassword": "Falsches Passwort, oder die Datei wurde verändert. Nichts wurde wiederhergestellt."
+  "restoreWrongPassword": "Falsches Passwort, oder die Datei wurde verändert. Nichts wurde wiederhergestellt.",
+  "routeAlertTitle": "Abseits-der-Route-Alarm",
+  "routeAlertOn": "Alarm, wenn jemand diese Route verlässt",
+  "routeAlertLimit": "Weiter als {metres} m von der Route",
+  "routeAlertHint": "Wer von deinen Funkgeräten gehört wird, auf der Route war und sich dann weiter als das Limit entfernt, löst einen Alarm aus. Er wird wieder scharf, sobald die Person zurück auf der Route ist.",
+  "routeAlertSave": "Speichern",
+  "placesRouteWatched": "Route, {count} Punkte · Alarm ab {metres} m",
+  "offRouteAlert": "{node} ist {metres} m abseits von {route}"
 }
