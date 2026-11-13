@@ -156,6 +156,7 @@ class _HomeShellState extends State<HomeShell> {
     widget.app.addListener(_syncKeepAlive);
     widget.app.scheduler.start();
     widget.app.responder.start();
+    widget.app.automations.start();
     unawaited(widget.app.sentinel.start());
     widget.app.geofences?.start();
     _bgPref = widget.app.store.watchPreference(AlertPrefs.background).listen((

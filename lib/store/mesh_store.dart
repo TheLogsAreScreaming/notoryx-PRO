@@ -477,6 +477,14 @@ class MeshStore {
           .watch()
           .map((rows) => [for (final r in rows) ?_place(r)]);
 
+  /// Every saved place, by name.
+  Future<List<Place>> places() async => [
+    for (final r in await (db.select(
+      db.places,
+    )..orderBy([(p) => OrderingTerm.asc(p.name)])).get())
+      ?_place(r),
+  ];
+
   /// Forgets a place.
   Future<void> deletePlace(int id) =>
       (db.delete(db.places)..where((p) => p.id.equals(id))).go();

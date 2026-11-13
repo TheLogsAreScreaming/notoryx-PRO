@@ -1,12 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 
+import '../mesh/channel_links.dart';
 import '../mesh/model.dart';
 import '../radio/radio.dart';
 import '../store/mesh_store.dart';
 import 'channel_bridge.dart';
 import 'auto_responder.dart';
+import 'automations.dart';
 import 'distress_beacon.dart';
 import 'geofence_alerts.dart';
 import 'message_alerts.dart';
@@ -106,6 +110,44 @@ class AppController extends ChangeNotifier {
 
   /// Automatic replies.
   late final responder = AutoResponder(store: store, send: _sendScheduled);
+
+  /// Rules with triggers and actions (off until the person adds some).
+  late final automations = AutomationEngine(
+    store: store,
+    hooks: AutomationHooks(
+      send: _sendScheduled,
+      alert: (title, body) async => alerts?.notifier.show(
+        id: 0x30000000 | (title.hashCode & 0xfffffff),
+        title: title,
+        body: body,
+        payload: 'automation',
+      ),
+      playSound: () => SystemSound.play(SystemSoundType.alert),
+      joinChannel: (radio, link) async {
+        final c = connectionForRadio(radio);
+        if (c == null || c.status.phase != SupervisorPhase.connected) {
+          return false;
+        }
+        final invite = ChannelInvite.parse(
+          link,
+        ).where((i) => i.protocol == c.protocol).firstOrNull;
+        if (invite == null) {
+          throw const FormatException('No channel for this radio in the link');
+        }
+        await c.addChannel(invite);
+        return true;
+      },
+      post: (url, json) async =>
+          (await http
+                  .post(
+                    url,
+                    headers: const {'content-type': 'application/json'},
+                    body: json,
+                  )
+                  .timeout(const Duration(seconds: 10)))
+              .statusCode,
+    ),
+  );
 
   /// Messages to send later.
   late final scheduler = MessageScheduler(store: store, send: _sendScheduled);
@@ -210,6 +252,7 @@ class AppController extends ChangeNotifier {
   Future<void> shutdown() async {
     scheduler.stop();
     responder.stop();
+    automations.stop();
     await beacon.value?.stop();
     await alerts?.dispose();
     await feeds.stopAll();

@@ -10,6 +10,7 @@ import 'admin_screens.dart';
 import 'bridge_screen.dart';
 import 'feeds_screen.dart';
 import 'auto_reply_screen.dart';
+import 'automations_screen.dart';
 import 'common.dart';
 import 'demo_screen.dart';
 import 'connection_log_sheet.dart';
@@ -106,6 +107,16 @@ class RadiosScreen extends StatelessWidget {
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
                 builder: (_) => AutoReplyScreen(store: app.store),
+              ),
+            ),
+          ),
+          TextButton.icon(
+            key: const Key('automations-open'),
+            icon: const Icon(Icons.auto_mode),
+            label: Text(l.auTitle),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => AutomationsScreen(app: app),
               ),
             ),
           ),
