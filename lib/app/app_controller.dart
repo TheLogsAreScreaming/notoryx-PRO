@@ -108,9 +108,6 @@ class AppController extends ChangeNotifier {
     return c;
   }
 
-  /// Automatic replies.
-  late final responder = AutoResponder(store: store, send: _sendScheduled);
-
   /// Rules with triggers and actions (off until the person adds some).
   late final automations = AutomationEngine(
     store: store,
@@ -148,6 +145,9 @@ class AppController extends ChangeNotifier {
               .statusCode,
     ),
   );
+
+  /// Automatic replies.
+  late final responder = AutoResponder(store: store, send: _sendScheduled);
 
   /// Messages to send later.
   late final scheduler = MessageScheduler(store: store, send: _sendScheduled);
@@ -250,9 +250,9 @@ class AppController extends ChangeNotifier {
 
   /// Disconnects every radio and waits until they have finished.
   Future<void> shutdown() async {
+    automations.stop();
     scheduler.stop();
     responder.stop();
-    automations.stop();
     await beacon.value?.stop();
     await alerts?.dispose();
     await feeds.stopAll();
