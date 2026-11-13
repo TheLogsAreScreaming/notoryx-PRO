@@ -35,6 +35,9 @@ dependencies:
   flutter_secure_storage: ^11.2.0
   package_info_plus: ^10.2.2
   url_launcher: ^6.3.3
+  # Vendored, Windows only: see third_party/flutter_libserialport/NOTORYX.md.
+  flutter_libserialport:
+    path: third_party/flutter_libserialport
 
 dev_dependencies:
   flutter_test:
