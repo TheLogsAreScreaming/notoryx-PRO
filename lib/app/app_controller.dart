@@ -11,6 +11,7 @@ import 'distress_beacon.dart';
 import 'geofence_alerts.dart';
 import 'message_alerts.dart';
 import 'message_scheduler.dart';
+import 'sentinel.dart';
 import 'mqtt_feed.dart';
 import 'radio_connection.dart';
 import 'radio_target.dart';
@@ -108,6 +109,12 @@ class AppController extends ChangeNotifier {
 
   /// Messages to send later.
   late final scheduler = MessageScheduler(store: store, send: _sendScheduled);
+
+  /// Opt-in community moderation (off until the user turns it on).
+  late final sentinel = SentinelService(
+    read: store.preference,
+    write: store.setPreference,
+  );
 
   Future<bool> _sendScheduled(Conversation c, String text) async {
     final radio = connectionForRadio(c.radioId);
@@ -217,6 +224,7 @@ class AppController extends ChangeNotifier {
     for (final c in [..._connections.values]) {
       disconnect(c);
     }
+    sentinel.dispose();
     super.dispose();
   }
 }
