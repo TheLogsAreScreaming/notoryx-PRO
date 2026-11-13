@@ -377,6 +377,20 @@ class MeshStore {
     limit,
   ).watch().map((rows) => rows.reversed.toList());
 
+  /// The newest [limit] messages of every conversation, newest first,
+  /// without reactions; for the timeline.
+  Stream<List<StoredMessage>> watchRecentMessages({int limit = 300}) =>
+      (db.select(db.messages)
+            ..where((m) => m.isReaction.equals(false))
+            ..orderBy([
+              (m) => OrderingTerm.desc(m.receivedAt),
+              (m) => OrderingTerm.desc(m.id),
+            ])
+            ..limit(limit))
+          .map(_message)
+          .watch()
+          .map((rows) => rows.nonNulls.toList());
+
   /// Messages containing [query] (ignoring case for plain letters), newest
   /// first. Reactions aren't messages anyone would look for.
   Future<List<StoredMessage>> searchMessages(

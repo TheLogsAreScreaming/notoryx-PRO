@@ -934,6 +934,78 @@
   "exportTitle": "Export messages",
   "exportAll": "Export all messages",
   "exportHelp": "The file contains the message text. Anyone you share it with can read it.",
+  "tlTitle": "Timeline",
+  "tlMessages": "Messages",
+  "tlNewNodes": "New nodes",
+  "tlSignal": "Signal changes",
+  "tlWaypoints": "Waypoints",
+  "tlEmpty": "Nothing here yet. Messages, newly heard nodes, signal changes and new waypoints appear here as they happen.",
+  "tlClear": "Clear timeline",
+  "tlClearConfirm": "Clear new-node, signal and waypoint entries? Messages stay in their conversations.",
+  "tlYou": "You",
+  "tlSomeone": "Someone",
+  "tlMessageIn": "{who} in {where}",
+  "@tlMessageIn": {
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "where": {
+        "type": "String"
+      }
+    }
+  },
+  "tlNodeJoined": "{name} heard for the first time",
+  "@tlNodeJoined": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tlSignalChanged": "{name}: signal changed",
+  "@tlSignalChanged": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tlBars": "{before} → {after} of 4 bars",
+  "@tlBars": {
+    "placeholders": {
+      "before": {
+        "type": "int"
+      },
+      "after": {
+        "type": "int"
+      }
+    }
+  },
+  "tlWaypointAdded": "Waypoint added: {name}",
+  "@tlWaypointAdded": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tlRouteAdded": "Route added: {name}",
+  "@tlRouteAdded": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tlGeofenceAdded": "Geofence added: {name}",
+  "@tlGeofenceAdded": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "exportCsv": "Spreadsheet (CSV)",
   "exportJson": "Data file (JSON)",
   "exportNothing": "No messages to export",

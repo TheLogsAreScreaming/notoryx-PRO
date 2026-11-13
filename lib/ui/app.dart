@@ -25,6 +25,7 @@ import 'search_screen.dart';
 import 'sentinel_screen.dart';
 import 'theme_screen.dart';
 import 'themes.dart';
+import 'timeline_screen.dart';
 
 /// The app: localisation, theme and the three tabs.
 class NotoryxProApp extends StatelessWidget {
@@ -95,7 +96,16 @@ class NotoryxProApp extends StatelessWidget {
   }
 }
 
-enum _MenuAction { markRead, export, restore, theme, lock, moderation, about }
+enum _MenuAction {
+  markRead,
+  timeline,
+  export,
+  restore,
+  theme,
+  lock,
+  moderation,
+  about,
+}
 
 /// Inbox, nodes and radios, with a bottom navigation bar.
 class HomeShell extends StatefulWidget {
@@ -234,6 +244,11 @@ class _HomeShellState extends State<HomeShell> {
             key: const Key('inbox-menu'),
             onSelected: (action) => switch (action) {
               _MenuAction.markRead => app.store.markAllRead(),
+              _MenuAction.timeline => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => TimelineScreen(app: app),
+                ),
+              ),
               _MenuAction.export => showExportSheet(context, store: app.store),
               _MenuAction.restore => restoreFromExport(
                 context,
@@ -280,6 +295,10 @@ class _HomeShellState extends State<HomeShell> {
                   child: Text(context.l10n.restoreTitle),
                 ),
               ],
+              PopupMenuItem(
+                value: _MenuAction.timeline,
+                child: Text(context.l10n.tlTitle),
+              ),
               PopupMenuItem(
                 value: _MenuAction.theme,
                 child: Text(context.l10n.themeTitle),
