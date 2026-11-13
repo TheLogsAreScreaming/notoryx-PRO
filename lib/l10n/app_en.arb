@@ -1765,5 +1765,69 @@
   "passwordMismatch": "The passwords don't match",
   "passwordOk": "OK",
   "restorePasswordTitle": "This backup is password-protected",
-  "restoreWrongPassword": "Wrong password, or the file was changed. Nothing was restored."
+  "restoreWrongPassword": "Wrong password, or the file was changed. Nothing was restored.",
+  "nearbyButton": "Nearby repeaters",
+  "nearbyTitle": "Nearby repeater test",
+  "nearbyHelpMeshCore": "Sends one request that only reaches repeaters in direct range (it is not passed on). Each repeater that hears it answers with how well it heard you.",
+  "nearbyHelpMeshtastic": "Sends your node info with no hops, asking every node in direct range to answer. Nodes skip the answer if they answered you in the last 12 hours or the channel is busy, so nodes heard directly in the last 30 minutes are listed too.",
+  "nearbyRun": "Test now",
+  "nearbyRunAgain": "Test again",
+  "nearbyWait": "Wait {seconds} s",
+  "@nearbyWait": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "nearbyListening": "Listening for answers for {seconds} seconds…",
+  "@nearbyListening": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "nearbyDone": "{count, plural, =0{No answers} =1{1 answer} other{{count} answers}}",
+  "@nearbyDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "nearbyNone": "Nothing in direct range answered. Repeaters answer at most a few tests every 2 minutes; try again shortly, or from higher ground.",
+  "nearbyFailed": "The test didn't run: {error}",
+  "@nearbyFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "nearbyInfraOnly": "Only repeaters and routers",
+  "nearbyYouHear": "you hear it: {signal}",
+  "@nearbyYouHear": {
+    "placeholders": {
+      "signal": {
+        "type": "String"
+      }
+    }
+  },
+  "nearbyHearsYou": "it hears you: SNR {snr} dB",
+  "@nearbyHearsYou": {
+    "placeholders": {
+      "snr": {
+        "type": "String"
+      }
+    }
+  },
+  "nearbyQuiet": "didn't answer, heard directly {when}",
+  "@nearbyQuiet": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  }
 }

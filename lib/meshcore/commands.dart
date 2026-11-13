@@ -170,6 +170,32 @@ abstract final class MeshCoreCommands {
     return _checked(w);
   }
 
+  /// `SEND_CONTROL_DATA` carrying a node-discover request (protocol 8+):
+  /// sent zero-hop, so only nodes in direct range hear it. Nodes whose
+  /// type bit is set in [types] (bit 2 = repeaters) answer with [tag].
+  /// [prefixOnly] asks for 8-byte key prefixes instead of full keys.
+  static Uint8List discoverNodes({
+    required int tag,
+    int types = 1 << 2,
+    bool prefixOnly = false,
+    int since = 0,
+  }) {
+    final w = ByteWriter()
+      ..u8(Cmd.sendControlData)
+      ..u8(discoverRequest | (prefixOnly ? 1 : 0))
+      ..u8(types)
+      ..u32(tag)
+      ..u32(since);
+    return _checked(w);
+  }
+
+  /// Control-data type of a node-discover request (upper 4 bits).
+  static const discoverRequest = 0x80;
+
+  /// Control-data type of a node-discover answer (upper 4 bits; the lower
+  /// 4 are the answering node's type).
+  static const discoverAnswer = 0x90;
+
   /// `SET_RADIO_PARAMS`: frequency in MHz, bandwidth in kHz, spreading
   /// factor 5–12, coding rate 5–8 (as the firmware checks them).
   static Uint8List setRadioParams({

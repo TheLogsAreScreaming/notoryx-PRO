@@ -802,5 +802,20 @@
   "passwordMismatch": "Les mots de passe ne correspondent pas",
   "passwordOk": "OK",
   "restorePasswordTitle": "Cette sauvegarde est protégée par mot de passe",
-  "restoreWrongPassword": "Mot de passe incorrect, ou le fichier a été modifié. Rien n'a été restauré."
+  "restoreWrongPassword": "Mot de passe incorrect, ou le fichier a été modifié. Rien n'a été restauré.",
+  "nearbyButton": "Relais à proximité",
+  "nearbyTitle": "Test des relais à proximité",
+  "nearbyHelpMeshCore": "Envoie une seule requête qui n'atteint que les relais à portée directe (elle n'est pas retransmise). Chaque relais qui l'entend répond en indiquant comment il vous a reçu.",
+  "nearbyHelpMeshtastic": "Envoie les infos de votre nœud sans saut, en demandant à chaque nœud à portée directe de répondre. Un nœud ne répond pas s'il vous a déjà répondu dans les 12 dernières heures ou si le canal est chargé ; les nœuds entendus directement dans les 30 dernières minutes sont donc aussi listés.",
+  "nearbyRun": "Tester maintenant",
+  "nearbyRunAgain": "Tester à nouveau",
+  "nearbyWait": "Attendez {seconds} s",
+  "nearbyListening": "Écoute des réponses pendant {seconds} secondes…",
+  "nearbyDone": "{count, plural, =0{Aucune réponse} =1{1 réponse} other{{count} réponses}}",
+  "nearbyNone": "Rien à portée directe n'a répondu. Les relais ne répondent qu'à quelques tests toutes les 2 minutes ; réessayez bientôt, ou depuis un point plus haut.",
+  "nearbyFailed": "Le test n'a pas pu être lancé : {error}",
+  "nearbyInfraOnly": "Seulement relais et routeurs",
+  "nearbyYouHear": "vous le recevez : {signal}",
+  "nearbyHearsYou": "il vous reçoit : SNR {snr} dB",
+  "nearbyQuiet": "n'a pas répondu, entendu directement {when}"
 }

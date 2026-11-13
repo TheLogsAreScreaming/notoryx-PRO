@@ -802,5 +802,20 @@
   "passwordMismatch": "Le password non coincidono",
   "passwordOk": "OK",
   "restorePasswordTitle": "Questo backup è protetto da password",
-  "restoreWrongPassword": "Password errata, oppure il file è stato modificato. Non è stato ripristinato nulla."
+  "restoreWrongPassword": "Password errata, oppure il file è stato modificato. Non è stato ripristinato nulla.",
+  "nearbyButton": "Ripetitori vicini",
+  "nearbyTitle": "Test dei ripetitori vicini",
+  "nearbyHelpMeshCore": "Invia una richiesta che raggiunge solo i ripetitori a portata diretta (non viene inoltrata). Ogni ripetitore che la sente risponde dicendo quanto bene ti ha ricevuto.",
+  "nearbyHelpMeshtastic": "Invia le info del tuo nodo senza salti, chiedendo a ogni nodo a portata diretta di rispondere. I nodi non rispondono se ti hanno già risposto nelle ultime 12 ore o se il canale è occupato, quindi vengono elencati anche i nodi ricevuti direttamente negli ultimi 30 minuti.",
+  "nearbyRun": "Prova ora",
+  "nearbyRunAgain": "Prova di nuovo",
+  "nearbyWait": "Attendi {seconds} s",
+  "nearbyListening": "In ascolto delle risposte per {seconds} secondi…",
+  "nearbyDone": "{count, plural, =0{Nessuna risposta} =1{1 risposta} other{{count} risposte}}",
+  "nearbyNone": "Nulla a portata diretta ha risposto. I ripetitori rispondono al massimo a pochi test ogni 2 minuti; riprova tra poco o da un punto più alto.",
+  "nearbyFailed": "Il test non è partito: {error}",
+  "nearbyInfraOnly": "Solo ripetitori e router",
+  "nearbyYouHear": "lo ricevi: {signal}",
+  "nearbyHearsYou": "ti riceve: SNR {snr} dB",
+  "nearbyQuiet": "non ha risposto, ricevuto direttamente {when}"
 }

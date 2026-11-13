@@ -381,6 +381,45 @@ class MeshCoreSession {
     );
   }
 
+  /// Asks every repeater in direct range to answer (protocol 8+) and
+  /// collects the answers that arrive within [listen].
+  ///
+  /// Repeaters answer at most 4 such requests every 2 minutes, after a
+  /// random delay, so a quiet result doesn't prove nobody is there.
+  Future<List<DiscoverAnswer>> discoverNearby({
+    Duration listen = const Duration(seconds: 12),
+    int types = 1 << 2,
+    Random? random,
+  }) async {
+    requireFeature(MeshCoreFeature.stats);
+    final tag = (random ?? Random()).nextInt(0x7fffffff) + 1;
+    final answers = <DiscoverAnswer>[];
+    final sub = pushes.listen((f) {
+      if (f is! ControlDataPush) return;
+      final a = f.discoverAnswer;
+      if (a == null || a.tag != tag) return;
+      if (answers.any((x) => _sameKey(x.key, a.key))) return;
+      answers.add(a);
+    });
+    try {
+      await _expect<OkFrame>(
+        MeshCoreCommands.discoverNodes(tag: tag, types: types),
+      );
+      await Future<void>.delayed(listen);
+    } finally {
+      await sub.cancel();
+    }
+    return answers;
+  }
+
+  static bool _sameKey(List<int> a, List<int> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
+
   /// Renames the radio (what others see in its adverts).
   Future<void> setName(String name) =>
       _expect<OkFrame>(MeshCoreCommands.setAdvertName(name));

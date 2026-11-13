@@ -10,6 +10,7 @@ import '../radio/radio.dart';
 import '../store/mesh_store.dart';
 import 'meshcore_settings.dart';
 import 'meshtastic_settings.dart';
+import 'nearby_probe.dart';
 import 'radio_target.dart';
 import 'retry_policy.dart';
 
@@ -119,6 +120,13 @@ abstract class RadioConnection extends ChangeNotifier {
 
   /// Traces the route to [node] and reports each hop's signal.
   Future<TraceResult> trace(Node node);
+
+  /// Asks nodes in direct range to answer and returns those that did
+  /// within [listen]. MeshCore asks repeaters only; Meshtastic asks every
+  /// node, with no hops, for its info.
+  Future<List<NearbyNode>> probeNearby({
+    Duration listen = const Duration(seconds: 12),
+  });
 
   /// Runs [trace] and saves a successful result. A failed save still
   /// returns the result, as the trace itself worked.
@@ -435,6 +443,40 @@ class MeshCoreConnection extends RadioConnection {
   @override
   bool canTrace(Node node) =>
       node.radioId == radio?.id && node.route.isNotEmpty;
+
+  @override
+  Future<List<NearbyNode>> probeNearby({
+    Duration listen = const Duration(seconds: 12),
+  }) async {
+    final answers = await session.discoverNearby(listen: listen);
+    final known = (await knownNodes()).values.toList();
+    return [
+      for (final a in answers)
+        () {
+          final hex = toHex(a.key);
+          final matches = [
+            for (final n in known)
+              if (n.key.native.startsWith(hex)) n,
+          ];
+          final n = matches.length == 1 ? matches.single : null;
+          return NearbyNode(
+            id: n?.key.native ?? hex,
+            name: n?.displayName ?? hex.substring(0, 8),
+            kind: switch (a.nodeType) {
+              2 => NodeKind.relay,
+              3 => NodeKind.room,
+              4 => NodeKind.sensor,
+              1 => NodeKind.person,
+              _ => NodeKind.unknown,
+            },
+            snr: a.snr,
+            rssi: a.rssi,
+            heardUsSnr: a.heardUsSnr,
+            node: n,
+          );
+        }(),
+    ];
+  }
 
   /// Out along the route and back to us: hops h0…hk-1 then hk-2…h0.
   static List<int> tracePath(Node node) {
@@ -1151,6 +1193,47 @@ class MeshtasticConnection extends RadioConnection {
 
   @override
   bool canTrace(Node node) => node.radioId == radio?.id;
+
+  @override
+  Future<List<NearbyNode>> probeNearby({
+    Duration listen = const Duration(seconds: 12),
+  }) async {
+    final me = session.myNodeNum;
+    final found = <int, NearbyNode>{};
+    final known = await knownNodes();
+    final sub = session.events.listen((e) {
+      if (e is! PacketFromRadio) return;
+      final p = e.packet;
+      final data = p.decoded;
+      if (data == null || data.portnum != PortNum.nodeInfo) return;
+      if (p.from == me || p.viaMqtt || p.hopsTaken != 0) return;
+      MeshUser? user;
+      try {
+        user = MeshUser.decode(data.payload);
+      } on ProtobufException {
+        return;
+      }
+      final key = NodeKey.meshtastic(p.from);
+      final n = known[key];
+      found[p.from] = NearbyNode(
+        id: key.native,
+        name: user.longName.isNotEmpty
+            ? user.longName
+            : n?.displayName ?? meshtasticNodeId(p.from),
+        kind: MeshtasticMapper.kindForRole(user.role),
+        snr: p.rxSnr,
+        rssi: p.rxRssi,
+        node: n,
+      );
+    });
+    try {
+      await session.askNeighbours();
+      await Future<void>.delayed(listen);
+    } finally {
+      await sub.cancel();
+    }
+    return found.values.toList();
+  }
 
   @override
   Future<TraceResult> trace(Node node) async {

@@ -296,6 +296,7 @@ class MeshtasticSession {
       throw UnsupportedMeshtasticFirmware(version);
     }
     _myNode = info.nodeNum;
+    myUser = nodes[info.nodeNum]?.user;
     channels.sort((a, b) => a.index.compareTo(b.index));
     _log?.add(
       _source,
@@ -344,6 +345,42 @@ class MeshtasticSession {
     _sent[id] = to;
     if (_sent.length > 500) _sent.remove(_sent.keys.first);
     await _write(ToRadio.packet(packet));
+    return id;
+  }
+
+  /// This node's own user record, from the handshake; null if it sent none.
+  MeshUser? myUser;
+
+  /// Broadcasts this node's info with no hops left, asking every node that
+  /// hears it directly to answer with its own. Returns the packet ID.
+  ///
+  /// Nodes skip the answer if they answered us in the last 12 hours, sent
+  /// their info in the last half hour, or the channel is busy, so silence
+  /// doesn't prove nobody is in range.
+  Future<int> askNeighbours({int channel = 0}) async {
+    final me = myUser;
+    if (me == null) {
+      throw StateError('The node has not said who it is yet');
+    }
+    final id = _nonZeroId();
+    await _write(
+      ToRadio.packet(
+        MeshPacket(
+          from: 0,
+          to: broadcastNode,
+          id: id,
+          channel: channel,
+          // Zero (and no ack request) means zero: the firmware keeps it,
+          // so nothing repeats the packet.
+          hopLimit: 0,
+          decoded: DataPayload(
+            portnum: PortNum.nodeInfo,
+            payload: me.encode(),
+            wantResponse: true,
+          ),
+        ),
+      ),
+    );
     return id;
   }
 

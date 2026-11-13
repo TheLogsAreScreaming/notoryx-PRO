@@ -802,5 +802,20 @@
   "passwordMismatch": "Die Passwörter stimmen nicht überein",
   "passwordOk": "OK",
   "restorePasswordTitle": "Diese Sicherung ist passwortgeschützt",
-  "restoreWrongPassword": "Falsches Passwort, oder die Datei wurde verändert. Nichts wurde wiederhergestellt."
+  "restoreWrongPassword": "Falsches Passwort, oder die Datei wurde verändert. Nichts wurde wiederhergestellt.",
+  "nearbyButton": "Repeater in der Nähe",
+  "nearbyTitle": "Test: Repeater in der Nähe",
+  "nearbyHelpMeshCore": "Sendet eine Anfrage, die nur Repeater in direkter Reichweite erreicht (sie wird nicht weitergeleitet). Jeder Repeater, der sie hört, antwortet, wie gut er Sie empfangen hat.",
+  "nearbyHelpMeshtastic": "Sendet Ihre Knoteninfo ohne Hops und bittet jeden Knoten in direkter Reichweite um Antwort. Knoten antworten nicht, wenn sie Ihnen in den letzten 12 Stunden schon geantwortet haben oder der Kanal ausgelastet ist; daher werden auch Knoten aufgeführt, die in den letzten 30 Minuten direkt empfangen wurden.",
+  "nearbyRun": "Jetzt testen",
+  "nearbyRunAgain": "Erneut testen",
+  "nearbyWait": "{seconds} s warten",
+  "nearbyListening": "Warte {seconds} Sekunden auf Antworten…",
+  "nearbyDone": "{count, plural, =0{Keine Antworten} =1{1 Antwort} other{{count} Antworten}}",
+  "nearbyNone": "Nichts in direkter Reichweite hat geantwortet. Repeater beantworten höchstens einige Tests alle 2 Minuten; versuchen Sie es gleich noch einmal oder von höher gelegenem Ort.",
+  "nearbyFailed": "Der Test lief nicht: {error}",
+  "nearbyInfraOnly": "Nur Repeater und Router",
+  "nearbyYouHear": "Sie empfangen ihn: {signal}",
+  "nearbyHearsYou": "er empfängt Sie: SNR {snr} dB",
+  "nearbyQuiet": "keine Antwort, direkt empfangen {when}"
 }
