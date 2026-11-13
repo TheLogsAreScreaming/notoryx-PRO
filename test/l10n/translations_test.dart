@@ -20,7 +20,7 @@ Set<String> placeholders(String s) =>
 
 void main() {
   final en = strings('en');
-  for (final lang in ['es', 'fr', 'de']) {
+  for (final lang in ['es', 'fr', 'de', 'pt', 'it']) {
     test('$lang has every string, with the same placeholders', () {
       final tr = strings(lang);
       expect(tr.keys.toSet(), en.keys.toSet());
