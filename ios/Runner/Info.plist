@@ -82,6 +82,11 @@
 	<array>
 		<string>bluetooth-central</string>
 	</array>
+	<!-- Encryption here is standard (AES and public-key encryption on the mesh,
+	     SQLite encryption on the device), which is exempt under US export
+	     rules (EAR 740.17(b)(1)). See docs/STORE_LISTING.md. -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>en</string>
