@@ -666,6 +666,96 @@
       }
     }
   },
+  "tcButton": "Share card",
+  "tcScreenTitle": "Trace card",
+  "tcHeading": "NOTORYX PRO trace · {mesh}",
+  "@tcHeading": {
+    "placeholders": {
+      "mesh": {
+        "type": "String"
+      }
+    }
+  },
+  "tcTitle": "{from} → {to}",
+  "@tcTitle": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "tcHops": "{count, plural, =0{no repeaters} =1{1 hop} other{{count} hops}}",
+  "@tcHops": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tcRoundTrip": "round trip {seconds} s",
+  "@tcRoundTrip": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "tcOut": "Out",
+  "tcBack": "Back",
+  "tcOutLine": "Out: {stops}",
+  "@tcOutLine": {
+    "placeholders": {
+      "stops": {
+        "type": "String"
+      }
+    }
+  },
+  "tcBackLine": "Back: {stops}",
+  "@tcBackLine": {
+    "placeholders": {
+      "stops": {
+        "type": "String"
+      }
+    }
+  },
+  "tcStart": "start",
+  "tcYou": "Your radio",
+  "tcLegendOut": "out (solid)",
+  "tcLegendBack": "back (dashed)",
+  "tcMapLabel": "Map of the trace: {placed} of {total} radios have a known position",
+  "@tcMapLabel": {
+    "placeholders": {
+      "placed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "tcUnplaced": "{count, plural, =1{1 radio has no known position and isn't drawn.} other{{count} radios have no known position and aren't drawn.}}",
+  "@tcUnplaced": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tcNoPositions": "None of these radios has shared a position, so there's nothing to draw.",
+  "tcAttribution": "Map © OpenStreetMap contributors",
+  "tcShareImage": "Share as image",
+  "tcShareText": "Share as text",
+  "tcShareFailed": "Couldn't share the card: {error}",
+  "@tcShareFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "mtNoChanges": "Nothing changed",
   "mtConfirmTitle": "Save these changes?",
   "mtConfirmRadio": "The region, preset or slot changes. This node will only hear nodes set the same way.",

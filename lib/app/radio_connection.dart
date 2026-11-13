@@ -453,7 +453,9 @@ class MeshCoreConnection extends RadioConnection {
   Future<TraceResult> trace(Node node) async {
     final size = node.routeHashSize;
     final hopCount = node.route.length ~/ size;
+    final clock = Stopwatch()..start();
     final push = await session.trace(tracePath(node), hashSize: size);
+    clock.stop();
     final known = (await knownNodes()).values.toList();
     TraceHop hop(int i, double snr) {
       final prefix = toHex(push.hashes.sublist(i * size, (i + 1) * size));
@@ -474,6 +476,7 @@ class MeshCoreConnection extends RadioConnection {
       towards: all.take(hopCount).toList(),
       back: all.skip(hopCount).toList(),
       time: DateTime.now(),
+      roundTrip: clock.elapsed,
     );
   }
 
@@ -1154,7 +1157,9 @@ class MeshtasticConnection extends RadioConnection {
 
   @override
   Future<TraceResult> trace(Node node) async {
+    final clock = Stopwatch()..start();
     final r = await session.traceroute(node.key.meshtasticNum!);
+    clock.stop();
     final known = await knownNodes();
     TraceHop hop(int num, double? snr) {
       final n = known[NodeKey.meshtastic(num)];
@@ -1177,6 +1182,7 @@ class MeshtasticConnection extends RadioConnection {
                 hop(backNums[i], at(r.snrBack, i)),
             ],
       time: DateTime.now(),
+      roundTrip: clock.elapsed,
     );
   }
 

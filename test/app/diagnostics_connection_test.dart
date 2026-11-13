@@ -120,6 +120,7 @@ void main() {
     expect(r.towards.map((h) => h.snr), [3.0, 1.0]);
     expect(r.back.map((h) => h.label), ['Peak', 'Ridge Base']);
     expect(r.weakest!.snr, -1.0);
+    expect(r.roundTrip, isNotNull, reason: 'the card shows the timing');
     await c.traceAndSave(routed);
     final saved = await store.traces(routed.radioId, routed.key);
     expect(saved.single.targetName, 'Sam');
@@ -188,6 +189,7 @@ void main() {
     expect(r.towards.map((h) => h.label), ['Ridge Relay', '!00000033']);
     expect(r.towards.map((h) => h.snr), [6.0, 4.0]);
     expect(r.back, isEmpty);
+    expect(r.roundTrip, isNotNull);
     await app.shutdown();
   });
 
