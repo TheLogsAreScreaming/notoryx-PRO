@@ -802,5 +802,10 @@
   "passwordMismatch": "Die Passwörter stimmen nicht überein",
   "passwordOk": "OK",
   "restorePasswordTitle": "Diese Sicherung ist passwortgeschützt",
-  "restoreWrongPassword": "Falsches Passwort, oder die Datei wurde verändert. Nichts wurde wiederhergestellt."
+  "restoreWrongPassword": "Falsches Passwort, oder die Datei wurde verändert. Nichts wurde wiederhergestellt.",
+  "trustedMark": "Vertrauen",
+  "trustedUnmark": "Nicht mehr vertrauen",
+  "trustedOnly": "Nur vertrauenswürdige",
+  "trustedShowAll": "Alle Knoten zeigen",
+  "trustedEmpty": "Noch keine vertrauenswürdigen Knoten. Tippe auf den Stern eines Knotens, um ihm zu vertrauen. Favoriten des Funkgeräts und verifizierte Knoten zählen auch."
 }

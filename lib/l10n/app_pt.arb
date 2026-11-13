@@ -802,5 +802,10 @@
   "passwordMismatch": "As senhas não coincidem",
   "passwordOk": "OK",
   "restorePasswordTitle": "Este backup é protegido por senha",
-  "restoreWrongPassword": "Senha errada, ou o arquivo foi alterado. Nada foi restaurado."
+  "restoreWrongPassword": "Senha errada, ou o arquivo foi alterado. Nada foi restaurado.",
+  "trustedMark": "Confiar",
+  "trustedUnmark": "Deixar de confiar",
+  "trustedOnly": "Só de confiança",
+  "trustedShowAll": "Mostrar todos os nós",
+  "trustedEmpty": "Ainda sem nós de confiança. Toque na estrela de um nó para confiar nele. Os favoritos do rádio e os nós verificados também contam."
 }

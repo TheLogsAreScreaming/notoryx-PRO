@@ -1765,5 +1765,10 @@
   "passwordMismatch": "The passwords don't match",
   "passwordOk": "OK",
   "restorePasswordTitle": "This backup is password-protected",
-  "restoreWrongPassword": "Wrong password, or the file was changed. Nothing was restored."
+  "restoreWrongPassword": "Wrong password, or the file was changed. Nothing was restored.",
+  "trustedMark": "Trust",
+  "trustedUnmark": "Stop trusting",
+  "trustedOnly": "Trusted only",
+  "trustedShowAll": "Show all nodes",
+  "trustedEmpty": "No trusted nodes yet. Tap the star on a node to trust it. Radio favorites and verified nodes count too."
 }

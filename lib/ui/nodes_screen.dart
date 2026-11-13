@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../app/app_controller.dart';
+import '../app/trusted_nodes.dart';
 import '../mesh/mesh.dart';
 import '../radio/radio_link.dart';
 import '../mesh/node_merge.dart';
@@ -18,21 +19,36 @@ class NodesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<Map<NodeKey, Verification>>(
-      stream: app.store.watchVerifications(),
-      builder: (context, vSnap) => StreamBuilder<Set<String>>(
+    return StreamBuilder<TrustState>(
+      stream: TrustedNodes.watch(app.store),
+      builder: (context, tSnap) => StreamBuilder<Set<String>>(
         stream: app.store.watchAllRadioContacts(),
         builder: (context, cSnap) => StreamBuilder<List<Node>>(
           stream: app.store.watchAllNodes(),
           builder: (context, snap) {
-            final merged = mergeAcrossRadios(snap.data ?? const <Node>[]);
+            final all = snap.data ?? const <Node>[];
+            final trust = tSnap.data ?? const TrustState();
+            final favorites = favoriteKeys(all);
+            var merged = mergeAcrossRadios(all);
+            if (trust.onlyTrusted && merged.isNotEmpty) {
+              merged = [
+                for (final m in merged)
+                  if (trust.trusts(m.node, favorites: favorites)) m,
+              ];
+              if (merged.isEmpty) {
+                return EmptyState(
+                  context.l10n.trustedEmpty,
+                  icon: Icons.star_outline,
+                );
+              }
+            }
             if (merged.isEmpty) {
               return EmptyState(
                 context.l10n.nodesEmpty,
                 icon: Icons.hub_outlined,
               );
             }
-            final verified = vSnap.data ?? const {};
+            final verified = trust.verifications;
             return ListView.builder(
               itemCount: merged.length,
               itemBuilder: (context, i) {
@@ -42,6 +58,8 @@ class NodesScreen extends StatelessWidget {
                   node: n,
                   radios: merged[i].radios,
                   trust: trustOf(n, verified[n.key]),
+                  marked: trust.isMarked(n.key),
+                  trusted: trust.trusts(n, favorites: favorites),
                   appOnly:
                       cSnap.hasData &&
                       n.protocol == RadioProtocol.meshcore &&
@@ -65,7 +83,15 @@ class NodeTile extends StatelessWidget {
     this.trust = TrustStatus.unverified,
     this.appOnly = false,
     this.radios = 1,
+    this.marked = false,
+    this.trusted = false,
   });
+
+  /// Marked trusted in the app (the star button's state).
+  final bool marked;
+
+  /// Trusted for any reason: marked, a radio favourite, or verified.
+  final bool trusted;
 
   final AppController app;
   final Node node;
@@ -114,6 +140,15 @@ class NodeTile extends StatelessWidget {
         ],
       ),
       subtitle: Text(details),
+      trailing: IconButton(
+        key: Key('trust-${n.key}'),
+        tooltip: marked ? l.trustedUnmark : l.trustedMark,
+        isSelected: marked,
+        icon: Icon(trusted ? Icons.star_half : Icons.star_border),
+        selectedIcon: const Icon(Icons.star),
+        onPressed: () =>
+            TrustedNodes.setMarked(app.store, n.key, trusted: !marked),
+      ),
       onLongPress: () => showSentinelReportSheet(
         context,
         sentinel: app.sentinel,

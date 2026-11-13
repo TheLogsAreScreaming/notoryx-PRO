@@ -802,5 +802,10 @@
   "passwordMismatch": "Le password non coincidono",
   "passwordOk": "OK",
   "restorePasswordTitle": "Questo backup è protetto da password",
-  "restoreWrongPassword": "Password errata, oppure il file è stato modificato. Non è stato ripristinato nulla."
+  "restoreWrongPassword": "Password errata, oppure il file è stato modificato. Non è stato ripristinato nulla.",
+  "trustedMark": "Fidati",
+  "trustedUnmark": "Non fidarti più",
+  "trustedOnly": "Solo fidati",
+  "trustedShowAll": "Mostra tutti i nodi",
+  "trustedEmpty": "Ancora nessun nodo fidato. Tocca la stella di un nodo per fidarti. Contano anche i preferiti della radio e i nodi verificati."
 }

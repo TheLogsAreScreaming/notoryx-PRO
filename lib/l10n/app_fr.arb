@@ -802,5 +802,10 @@
   "passwordMismatch": "Les mots de passe ne correspondent pas",
   "passwordOk": "OK",
   "restorePasswordTitle": "Cette sauvegarde est protégée par mot de passe",
-  "restoreWrongPassword": "Mot de passe incorrect, ou le fichier a été modifié. Rien n'a été restauré."
+  "restoreWrongPassword": "Mot de passe incorrect, ou le fichier a été modifié. Rien n'a été restauré.",
+  "trustedMark": "Faire confiance",
+  "trustedUnmark": "Ne plus faire confiance",
+  "trustedOnly": "De confiance uniquement",
+  "trustedShowAll": "Afficher tous les nœuds",
+  "trustedEmpty": "Aucun nœud de confiance. Touchez l'étoile d'un nœud pour lui faire confiance. Les favoris de la radio et les nœuds vérifiés comptent aussi."
 }
