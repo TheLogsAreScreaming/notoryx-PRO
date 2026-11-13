@@ -11,6 +11,7 @@ import '../mesh/node_merge.dart';
 import '../mesh/places.dart';
 import 'common.dart';
 import 'places_screen.dart';
+import 'route_screen.dart';
 import 'themes.dart';
 import 'conversation_screen.dart';
 import 'diagnostics_screen.dart';
@@ -487,6 +488,21 @@ class NodeSheet extends StatelessWidget {
                     icon: const Icon(Icons.route),
                     label: Text(routeShown ? l.mapHideRoute : l.mapShowRoute),
                     onPressed: () => Navigator.pop(context, !routeShown),
+                  ),
+                if (_connection() case final MeshCoreConnection c
+                    when n.protocol == RadioProtocol.meshcore &&
+                        n.publicKey.length == 32)
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.alt_route),
+                    label: Text(l.rpButton),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => RouteScreen(connection: c, node: n),
+                        ),
+                      );
+                    },
                   ),
                 if (_connection() case final c? when c.canTrace(n))
                   OutlinedButton.icon(

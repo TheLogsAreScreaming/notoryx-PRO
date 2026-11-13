@@ -656,7 +656,8 @@ class MeshStore {
   static const tracesKept = 50;
 
   static String _hopsJson(List<TraceHop> hops) => jsonEncode([
-    for (final h in hops) {'label': h.label, 'snr': h.snr},
+    for (final h in hops)
+      {'label': h.label, 'snr': h.snr, if (h.hash != null) 'hash': h.hash},
   ]);
 
   static List<TraceHop> _hopsOf(String text) => [
@@ -664,6 +665,7 @@ class MeshStore {
       TraceHop(
         (h as Map<String, Object?>)['label'] as String,
         (h['snr'] as num?)?.toDouble(),
+        hash: h['hash'] as String?,
       ),
   ];
 

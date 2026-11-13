@@ -189,7 +189,7 @@ class RadioSamples extends ChangeNotifier {
 
 /// One hop of a trace: who, and how well they heard it.
 class TraceHop {
-  const TraceHop(this.label, this.snr, {this.node});
+  const TraceHop(this.label, this.snr, {this.node, this.hash});
 
   /// Node name, or its ID/hash when unknown.
   final String label;
@@ -197,6 +197,11 @@ class TraceHop {
   /// SNR in dB at the receiving end of this hop; null when not reported.
   final double? snr;
   final Node? node;
+
+  /// MeshCore: the repeater's hash prefix as hex, so a saved trace can be
+  /// reused as a route. Null for Meshtastic, for our own radio and for
+  /// traces saved before this was kept.
+  final String? hash;
 }
 
 /// The result of a trace path / traceroute, protocol-neutral.
