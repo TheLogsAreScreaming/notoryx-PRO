@@ -133,8 +133,19 @@ class PlacesScreen extends StatelessWidget {
                     PlaceKind.geofence => Icons.radar,
                   }),
                   title: Text(p.name),
+                  key: Key('place-${p.id}'),
+                  onTap: p.kind == PlaceKind.route && p.points.length > 1
+                      ? () => showDialog<void>(
+                          context: context,
+                          builder: (_) => _RouteAlertDialog(app: app, route: p),
+                        )
+                      : null,
                   subtitle: Text(switch (p.kind) {
                     PlaceKind.waypoint => l.placesWaypoint,
+                    PlaceKind.route when p.watchesRoute => l.placesRouteWatched(
+                      p.points.length,
+                      p.radiusM!.round(),
+                    ),
                     PlaceKind.route => l.placesRoute(p.points.length),
                     PlaceKind.geofence => l.placesGeofence(p.radiusM!.round()),
                   }),
@@ -148,6 +159,89 @@ class PlacesScreen extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+/// Off-route limits offered, in metres.
+const _routeLimits = <double>[25, 50, 75, 100, 150, 200, 300, 500, 1000];
+
+/// Turns a route's off-route alert on or off and sets how far is too far.
+class _RouteAlertDialog extends StatefulWidget {
+  const _RouteAlertDialog({required this.app, required this.route});
+
+  final AppController app;
+  final Place route;
+
+  @override
+  State<_RouteAlertDialog> createState() => _RouteAlertDialogState();
+}
+
+class _RouteAlertDialogState extends State<_RouteAlertDialog> {
+  late bool _on = widget.route.watchesRoute;
+  late int _limit = () {
+    final r = widget.route.radiusM ?? 100;
+    var best = 0;
+    for (var i = 1; i < _routeLimits.length; i++) {
+      if ((_routeLimits[i] - r).abs() < (_routeLimits[best] - r).abs()) {
+        best = i;
+      }
+    }
+    return best;
+  }();
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    return AlertDialog(
+      title: Text(l.routeAlertTitle),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            widget.route.name,
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          SwitchListTile(
+            key: const Key('route-alert-on'),
+            contentPadding: EdgeInsets.zero,
+            title: Text(l.routeAlertOn),
+            value: _on,
+            onChanged: (v) => setState(() => _on = v),
+          ),
+          if (_on) ...[
+            Text(l.routeAlertLimit(_routeLimits[_limit].round())),
+            Slider(
+              value: _limit.toDouble(),
+              max: (_routeLimits.length - 1).toDouble(),
+              divisions: _routeLimits.length - 1,
+              label: '${_routeLimits[_limit].round()} m',
+              onChanged: (v) => setState(() => _limit = v.round()),
+            ),
+          ],
+          Text(l.routeAlertHint, style: Theme.of(context).textTheme.bodySmall),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(l.radiosCancel),
+        ),
+        FilledButton(
+          key: const Key('route-alert-save'),
+          onPressed: () async {
+            final navigator = Navigator.of(context);
+            await widget.app.store.setPlaceAlert(
+              widget.route.id,
+              alerts: _on,
+              radiusM: _on ? _routeLimits[_limit] : null,
+            );
+            navigator.pop();
+          },
+          child: Text(l.routeAlertSave),
+        ),
+      ],
     );
   }
 }

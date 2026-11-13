@@ -485,6 +485,13 @@ class MeshStore {
       ?_place(r),
   ];
 
+  /// Turns a place's alert on or off; for a route, [radiusM] is how far off
+  /// it someone can go before an alert.
+  Future<void> setPlaceAlert(int id, {required bool alerts, double? radiusM}) =>
+      (db.update(db.places)..where((p) => p.id.equals(id))).write(
+        PlacesCompanion(alerts: Value(alerts), radiusM: Value(radiusM)),
+      );
+
   /// Forgets a place.
   Future<void> deletePlace(int id) =>
       (db.delete(db.places)..where((p) => p.id.equals(id))).go();
