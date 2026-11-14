@@ -1225,6 +1225,151 @@
   "tlClearConfirm": "Clear new-node, signal and waypoint entries? Messages stay in their conversations.",
   "tlYou": "You",
   "tlSomeone": "Someone",
+  "njTitle": "Node journal",
+  "njEmpty": "No nodes yet. Every node your radios hear on either mesh is logged here automatically.",
+  "njNoMatch": "No nodes match.",
+  "njGone": "This node is no longer in the journal.",
+  "njSearch": "Search names, IDs, tags and notes",
+  "njAll": "All",
+  "njLabelAlwaysOnRelay": "Always-on relay",
+  "njLabelRoamer": "Roamer",
+  "njLabelFixedSite": "Fixed site",
+  "njLabelRegular": "Regular",
+  "njLabelRarelyHeard": "Rarely heard",
+  "njLabelNewArrival": "New arrival",
+  "njLabelNearby": "Nearby",
+  "njConfidence": "{percent}% sure",
+  "@njConfidence": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "njEvHours": "Heard during {hours} of the 24 hours of the day",
+  "@njEvHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "njEvDays": "Heard on {days} of the last {window} days",
+  "@njEvDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "window": {
+        "type": "int"
+      }
+    }
+  },
+  "njEvRelay": "Says it is a repeater or router",
+  "njEvArea": "Positions spread over {km} km",
+  "@njEvArea": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "njEvSamePlace": "Same spot on {days} days",
+  "@njEvSamePlace": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "njEvDirect": "{percent}% of {reports} reports heard directly",
+  "@njEvDirect": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "reports": {
+        "type": "int"
+      }
+    }
+  },
+  "njEvFirst": "First heard {hours} h ago",
+  "@njEvFirst": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "njSeemsHeader": "What it seems to be",
+  "njNoLabels": "Not enough history to say what this node is yet.",
+  "njAbout": "Labels are guesses from the last 30 days, each with how sure it is and why.",
+  "njHistoryHeader": "History",
+  "njFirstHeard": "First heard {when}",
+  "@njFirstHeard": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "njLastHeard": "Last heard {when}",
+  "@njLastHeard": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "njHeardCount": "Times heard: {count}",
+  "@njHeardCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "njTagsHeader": "Tags",
+  "njTagged": "Tags: {tags}",
+  "@njTagged": {
+    "placeholders": {
+      "tags": {
+        "type": "String"
+      }
+    }
+  },
+  "njAddTag": "Add tag",
+  "njRemoveTag": "Remove tag {tag}",
+  "@njRemoveTag": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "njTagHint": "For example: ridge, club, friend",
+  "njNoteHeader": "Note",
+  "njNoteHint": "Anything you want to remember about this node",
+  "njSaveNote": "Save note",
+  "njNoteSaved": "Note saved",
+  "njForget": "Forget this node",
+  "njForgetConfirm": "Remove this node, its history, tags and note from the journal? It comes back as a new arrival if it is heard again.",
+  "njMarkLabel": "Generated mark for {id}",
+  "@njMarkLabel": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "njNodeId": "ID {id}",
+  "@njNodeId": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
   "tlMessageIn": "{who} in {where}",
   "@tlMessageIn": {
     "placeholders": {

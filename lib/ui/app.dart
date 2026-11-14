@@ -20,6 +20,7 @@ import 'lock_gate.dart';
 import 'map_screen.dart';
 import 'map_tiles.dart';
 import 'mute_menu.dart';
+import 'node_journal_screen.dart';
 import 'nodes_screen.dart';
 import 'notification_settings.dart';
 import 'radios_screen.dart';
@@ -102,6 +103,7 @@ class NotoryxProApp extends StatelessWidget {
 enum _MenuAction {
   markRead,
   timeline,
+  journal,
   checklists,
   export,
   restore,
@@ -288,6 +290,11 @@ class _HomeShellState extends State<HomeShell> {
                   builder: (_) => TimelineScreen(app: app),
                 ),
               ),
+              _MenuAction.journal => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => JournalScreen(app: app),
+                ),
+              ),
               _MenuAction.checklists => Navigator.of(context).push(
                 MaterialPageRoute<void>(
                   builder: (_) => ChecklistsScreen(book: app.checklists),
@@ -342,6 +349,11 @@ class _HomeShellState extends State<HomeShell> {
               PopupMenuItem(
                 value: _MenuAction.timeline,
                 child: Text(context.l10n.tlTitle),
+              ),
+              PopupMenuItem(
+                key: const Key('menu-journal'),
+                value: _MenuAction.journal,
+                child: Text(context.l10n.njTitle),
               ),
               PopupMenuItem(
                 key: const Key('menu-checklists'),
