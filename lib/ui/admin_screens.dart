@@ -7,6 +7,7 @@ import '../app/radio_connection.dart';
 import '../mesh/mesh.dart';
 import '../meshcore/frames.dart';
 import 'common.dart';
+import 'identity_key_screen.dart';
 import 'preset_sheet.dart';
 
 /// A MeshCore companion's own settings.
@@ -318,6 +319,19 @@ class _MeshCoreSettingsScreenState extends State<MeshCoreSettingsScreen> {
                       ),
                     ),
                   ),
+                OutlinedButton.icon(
+                  key: const ValueKey('identity-key'),
+                  icon: const Icon(Icons.key),
+                  label: Text(l.identityKeyTitle),
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => IdentityKeyScreen(
+                        export: c.exportPrivateKey,
+                        import: c.importPrivateKey,
+                      ),
+                    ),
+                  ),
+                ),
                 TextButton(onPressed: _reboot, child: Text(l.settingsReboot)),
               ],
             ),

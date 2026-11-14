@@ -2472,5 +2472,26 @@
         "type": "int"
       }
     }
-  }
+  },
+  "identityKeyTitle": "Identity key",
+  "identityKeyIntro": "This radio's identity is its private key. Keep a copy to move the identity to another radio, or to get it back after a reset. Contacts keep recognising you.",
+  "identityKeyBackUp": "Back up",
+  "identityKeyShow": "Show private key",
+  "identityKeyShowTitle": "Show private key?",
+  "identityKeyShowBody": "Anyone who sees this key can read your direct messages and send as you. Only show it somewhere private.",
+  "identityKeyShowYes": "Show",
+  "identityKeyCopy": "Copy key",
+  "identityKeyCopied": "Key copied. Store it somewhere safe, then clear your clipboard.",
+  "identityKeyRestore": "Restore",
+  "identityKeyPasteHint": "Paste a 128-character hex private key",
+  "identityKeyFormat": "A key is exactly 128 hex characters (0–9, a–f).",
+  "identityKeyReplace": "Replace identity",
+  "identityKeyReplaceTitle": "Replace this radio's identity?",
+  "identityKeyReplaceBody": "The radio takes on the identity in this key. Its current key is gone for good unless you backed it up. Reconnect the radio afterwards so the app files everything under the new identity.",
+  "identityKeyReplaced": "Identity replaced. Reconnect the radio to finish.",
+  "identityKeyNeverShare": "Never share this key. Anyone who has it can read your direct messages and pretend to be you.",
+  "identityKeyOff": "This radio's firmware has key backup turned off.",
+  "identityKeyNoAnswer": "The radio didn't answer. Try again.",
+  "identityKeyRefused": "The radio refused. Check the key and try again.",
+  "identityKeyFailed": "That didn't work. Check the radio is connected."
 }

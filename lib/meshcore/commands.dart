@@ -263,6 +263,18 @@ abstract final class MeshCoreCommands {
       Uint8List.fromList([Cmd.setPathHashMode, 0, mode]);
 
   /// `REBOOT`: the radio restarts without replying.
+  /// `EXPORT_PRIVATE_KEY`: the radio replies with its 64-byte identity key.
+  static Uint8List exportPrivateKey() =>
+      Uint8List.fromList([Cmd.exportPrivateKey]);
+
+  /// `IMPORT_PRIVATE_KEY`: gives the radio the identity in [key] (64 bytes).
+  static Uint8List importPrivateKey(List<int> key) {
+    if (key.length != 64) {
+      throw ArgumentError.value(key.length, 'key', 'must be 64 bytes');
+    }
+    return Uint8List.fromList([Cmd.importPrivateKey, ...key]);
+  }
+
   static Uint8List reboot() =>
       Uint8List.fromList([Cmd.reboot, ...utf8.encode('reboot')]);
 

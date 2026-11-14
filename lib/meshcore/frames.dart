@@ -24,6 +24,12 @@ final class ErrorFrame extends MeshCoreFrame {
   final MeshCoreErrorCode code;
 }
 
+/// `PRIVATE_KEY`: the radio's 64-byte identity key.
+final class PrivateKeyFrame extends MeshCoreFrame {
+  const PrivateKeyFrame(this.key);
+  final Uint8List key;
+}
+
 /// `DISABLED`: the feature is turned off on the radio.
 final class DisabledFrame extends MeshCoreFrame {
   const DisabledFrame();
@@ -618,6 +624,8 @@ MeshCoreFrame _decode(int code, ByteReader r, Uint8List data) {
       return ErrorFrame(MeshCoreErrorCode.of(r.remaining >= 1 ? r.u8() : null));
     case Resp.disabled:
       return const DisabledFrame();
+    case Resp.privateKey:
+      return PrivateKeyFrame(r.bytes(64));
     case Resp.contactsStart:
       return ContactsStartFrame(r.u32());
     case Resp.contact:

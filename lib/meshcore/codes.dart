@@ -19,6 +19,8 @@ abstract final class Cmd {
   static const setAdvertLatLon = 14;
   static const removeContact = 15;
   static const reboot = 19;
+  static const exportPrivateKey = 23;
+  static const importPrivateKey = 24;
   static const getBattAndStorage = 20;
   static const deviceQuery = 22;
   static const sendLogin = 26;
@@ -48,6 +50,7 @@ abstract final class Resp {
   static const noMoreMessages = 10;
   static const battAndStorage = 12;
   static const deviceInfo = 13;
+  static const privateKey = 14;
   static const disabled = 15;
   static const contactMsgV3 = 16;
   static const channelMsgV3 = 17;
