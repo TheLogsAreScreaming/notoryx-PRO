@@ -5,6 +5,7 @@ import '../app/distress_beacon.dart';
 import '../app/radio_connection.dart';
 import '../mesh/model.dart';
 import 'common.dart';
+import 'themes.dart';
 
 /// Sets up a distress beacon and, after a second confirmation, starts it.
 Future<void> showBeaconSheet(
@@ -167,6 +168,10 @@ class _BeaconSheetState extends State<_BeaconSheet> {
               ),
               FilledButton.icon(
                 key: const Key('beacon-start'),
+                style: FilledButton.styleFrom(
+                  backgroundColor: meshColors(Theme.of(context)).sosContainer,
+                  foregroundColor: meshColors(Theme.of(context)).onSosContainer,
+                ),
                 icon: const Icon(Icons.sos),
                 label: Text(l.beaconStart),
                 onPressed: _start,
@@ -194,9 +199,9 @@ class BeaconBanner extends StatelessWidget {
         listenable: beacon,
         builder: (context, _) {
           final l = context.l10n;
-          final s = Theme.of(context).colorScheme;
+          final g = meshColors(Theme.of(context));
           return Material(
-            color: s.errorContainer,
+            color: g.sosContainer,
             child: SafeArea(
               bottom: false,
               child: Padding(
@@ -215,7 +220,7 @@ class BeaconBanner extends StatelessWidget {
                           l.beaconCount(beacon.sent, beacon.failed),
                           if (beacon.acknowledged) l.beaconAcknowledged,
                         ].join(' · '),
-                        style: TextStyle(color: s.onErrorContainer),
+                        style: TextStyle(color: g.onSosContainer),
                       ),
                     ),
                     Wrap(
@@ -224,13 +229,17 @@ class BeaconBanner extends StatelessWidget {
                         TextButton(
                           key: const Key('beacon-ok'),
                           style: TextButton.styleFrom(
-                            foregroundColor: s.onErrorContainer,
+                            foregroundColor: g.onSosContainer,
                           ),
                           onPressed: () => beacon.stop(imOk: true),
                           child: Text(l.beaconStopOk),
                         ),
                         FilledButton(
                           key: const Key('beacon-stop'),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: g.onSosContainer,
+                            foregroundColor: g.sosContainer,
+                          ),
                           onPressed: beacon.stop,
                           child: Text(l.beaconStop),
                         ),
