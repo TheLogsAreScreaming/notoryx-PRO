@@ -8,6 +8,7 @@ import 'package:drift/native.dart';
 import '../mesh/diagnostics.dart';
 import '../mesh/identity.dart';
 import '../mesh/model.dart';
+import '../mesh/node_journal.dart';
 import '../mesh/places.dart';
 import '../mesh/replay.dart';
 import '../mesh/telemetry.dart';
@@ -111,6 +112,7 @@ class MeshStore {
   Future<void> upsertNode(Node node) => db.transaction(() async {
     await db.into(db.nodes).insertOnConflictUpdate(_nodeCompanion(node));
     await _notePositions([node]);
+    await _noteJournal([node]);
   });
 
   /// Saves many nodes in one transaction (the start-up sync).
@@ -120,6 +122,7 @@ class MeshStore {
       b.insertAllOnConflictUpdate(db.nodes, list.map(_nodeCompanion).toList());
     });
     await _notePositions(list);
+    await _noteJournal(list);
   });
 
   /// The nodes [radio] knows, most recently heard first.
@@ -869,6 +872,220 @@ class MeshStore {
 
   /// Forgets all position history.
   Future<void> clearPositions() => db.delete(db.positionReports).go();
+
+  // Node journal
+
+  /// How long the per-day journal history is kept. Entries, tags and notes
+  /// are kept until you forget the node.
+  static const journalDaysKept = Duration(days: 90);
+
+  int _journalWrites = 0;
+
+  /// Adds newer reports in [nodes] to the journal. A report counts once:
+  /// the same node synced again, or heard by a second radio with the same
+  /// time, changes nothing.
+  Future<void> _noteJournal(List<Node> nodes) async {
+    for (final n in nodes) {
+      final t = n.lastHeard;
+      if (t == null) continue;
+      final key = n.key.toString();
+      final old = await (db.select(
+        db.journalNodes,
+      )..where((j) => j.nodeKey.equals(key))).getSingleOrNull();
+      final p = n.path.viaMqtt ? null : n.position;
+      if (old == null) {
+        await db
+            .into(db.journalNodes)
+            .insert(
+              JournalNodesCompanion.insert(
+                nodeKey: key,
+                name: Value(n.name),
+                kind: Value(n.kind.name),
+                firstHeard: t,
+                lastHeard: t,
+                latitude: Value(p?.latitude),
+                longitude: Value(p?.longitude),
+              ),
+            );
+      } else {
+        if (!t.isAfter(old.lastHeard)) {
+          // An older report (a sync): it can only move first heard back.
+          if (t.isBefore(old.firstHeard)) {
+            await (db.update(db.journalNodes)
+                  ..where((j) => j.nodeKey.equals(key)))
+                .write(JournalNodesCompanion(firstHeard: Value(t)));
+          }
+          continue;
+        }
+        await (db.update(
+          db.journalNodes,
+        )..where((j) => j.nodeKey.equals(key))).write(
+          JournalNodesCompanion(
+            name: n.name.isEmpty ? const Value.absent() : Value(n.name),
+            kind: n.kind == NodeKind.unknown
+                ? const Value.absent()
+                : Value(n.kind.name),
+            lastHeard: Value(t),
+            heardCount: Value(old.heardCount + 1),
+            latitude: p == null ? const Value.absent() : Value(p.latitude),
+            longitude: p == null ? const Value.absent() : Value(p.longitude),
+          ),
+        );
+      }
+      if (n.path.viaMqtt) continue;
+      final day = _dayText(journalDayOf(t));
+      final row =
+          await (db.select(db.journalDays)
+                ..where((d) => d.nodeKey.equals(key) & d.day.equals(day)))
+              .getSingleOrNull();
+      final merged =
+          (row == null
+                  ? JournalDay(key: n.key, day: journalDayOf(t))
+                  : _journalDay(row)!)
+              .add(t.toLocal(), hops: n.path.hops, position: p);
+      await db
+          .into(db.journalDays)
+          .insertOnConflictUpdate(
+            JournalDaysCompanion.insert(
+              nodeKey: key,
+              day: day,
+              hoursMask: Value(merged.hoursMask),
+              reports: Value(merged.reports),
+              direct: Value(merged.direct),
+              hopsKnown: Value(merged.hopsKnown),
+              minLat: Value(merged.minLat),
+              maxLat: Value(merged.maxLat),
+              minLon: Value(merged.minLon),
+              maxLon: Value(merged.maxLon),
+            ),
+          );
+      _journalWrites++;
+    }
+    if (_journalWrites >= 500) {
+      _journalWrites = 0;
+      await pruneJournalDays(DateTime.now());
+    }
+  }
+
+  static String _dayText(DateTime d) =>
+      '${d.year.toString().padLeft(4, '0')}-'
+      '${d.month.toString().padLeft(2, '0')}-'
+      '${d.day.toString().padLeft(2, '0')}';
+
+  JournalEntry? _journalEntry(JournalRow r) {
+    final key = NodeKey.tryParse(r.nodeKey);
+    if (key == null) return null;
+    List<String> tags;
+    try {
+      final j = jsonDecode(r.tags);
+      tags = j is List
+          ? [
+              for (final t in j)
+                if (t is String) t,
+            ]
+          : const [];
+    } on FormatException {
+      tags = const [];
+    }
+    final lat = r.latitude;
+    final lon = r.longitude;
+    return JournalEntry(
+      key: key,
+      name: r.name,
+      kind: NodeKind.values.asNameMap()[r.kind] ?? NodeKind.unknown,
+      firstHeard: r.firstHeard,
+      lastHeard: r.lastHeard,
+      heardCount: r.heardCount,
+      tags: tags,
+      note: r.note,
+      position: lat == null || lon == null ? null : GeoPoint(lat, lon),
+    );
+  }
+
+  JournalDay? _journalDay(JournalDayRow r) {
+    final key = NodeKey.tryParse(r.nodeKey);
+    final day = DateTime.tryParse(r.day);
+    if (key == null || day == null) return null;
+    return JournalDay(
+      key: key,
+      day: day,
+      hoursMask: r.hoursMask,
+      reports: r.reports,
+      direct: r.direct,
+      hopsKnown: r.hopsKnown,
+      minLat: r.minLat,
+      maxLat: r.maxLat,
+      minLon: r.minLon,
+      maxLon: r.maxLon,
+    );
+  }
+
+  /// Every node in the journal, most recently heard first, as it changes.
+  Stream<List<JournalEntry>> watchJournal() =>
+      (db.select(db.journalNodes)
+            ..orderBy([(j) => OrderingTerm.desc(j.lastHeard)]))
+          .watch()
+          .map((rows) => rows.map(_journalEntry).nonNulls.toList());
+
+  /// One node's journal entry, or null.
+  Future<JournalEntry?> journalEntry(NodeKey key) async {
+    final r = await (db.select(
+      db.journalNodes,
+    )..where((j) => j.nodeKey.equals(key.toString()))).getSingleOrNull();
+    return r == null ? null : _journalEntry(r);
+  }
+
+  /// Per-day history from [from] (local day) on, by node.
+  Future<Map<NodeKey, List<JournalDay>>> journalDays(
+    DateTime from, {
+    NodeKey? only,
+  }) async {
+    final q = db.select(db.journalDays)
+      ..where((d) {
+        final after = d.day.isBiggerOrEqualValue(_dayText(journalDayOf(from)));
+        return only == null ? after : after & d.nodeKey.equals(only.toString());
+      });
+    final out = <NodeKey, List<JournalDay>>{};
+    for (final r in await q.get()) {
+      final d = _journalDay(r);
+      if (d != null) out.putIfAbsent(d.key, () => []).add(d);
+    }
+    return out;
+  }
+
+  /// Sets your tags on [key] (cleaned with [normalizeTags]).
+  Future<void> setJournalTags(NodeKey key, Iterable<String> tags) =>
+      (db.update(
+        db.journalNodes,
+      )..where((j) => j.nodeKey.equals(key.toString()))).write(
+        JournalNodesCompanion(tags: Value(jsonEncode(normalizeTags(tags)))),
+      );
+
+  /// Sets your note on [key].
+  Future<void> setJournalNote(NodeKey key, String note) =>
+      (db.update(db.journalNodes)
+            ..where((j) => j.nodeKey.equals(key.toString())))
+          .write(JournalNodesCompanion(note: Value(note.trim())));
+
+  /// Removes [key] and its history from the journal. It comes back, as a
+  /// new arrival, if it is heard again.
+  Future<void> forgetJournalNode(NodeKey key) => db.transaction(() async {
+    await (db.delete(
+      db.journalNodes,
+    )..where((j) => j.nodeKey.equals(key.toString()))).go();
+    await (db.delete(
+      db.journalDays,
+    )..where((d) => d.nodeKey.equals(key.toString()))).go();
+  });
+
+  /// Drops per-day history older than [journalDaysKept] before [now].
+  Future<int> pruneJournalDays(DateTime now) =>
+      (db.delete(db.journalDays)..where(
+            (d) => d.day.isSmallerThanValue(
+              _dayText(journalDayOf(now.subtract(journalDaysKept))),
+            ),
+          ))
+          .go();
 
   // Telemetry
 
