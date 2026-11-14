@@ -101,6 +101,8 @@ class MeshColors extends ThemeExtension<MeshColors> {
     required this.meshcore,
     required this.meshtastic,
     required this.sos,
+    required this.sosContainer,
+    required this.onSosContainer,
   });
 
   /// MeshCore badges and map pins.
@@ -109,16 +111,30 @@ class MeshColors extends ThemeExtension<MeshColors> {
   /// Meshtastic badges and map pins.
   final Color meshtastic;
 
-  /// Emergency messages. Stays a recognisable red in every theme.
+  /// Emergency messages and SOS controls. Neon green in every theme,
+  /// darkened on light backgrounds so it stays readable.
   final Color sos;
 
+  /// Background of the running-beacon banner: full neon green.
+  final Color sosContainer;
+
+  /// Text on [sosContainer].
+  final Color onSosContainer;
+
   @override
-  MeshColors copyWith({Color? meshcore, Color? meshtastic, Color? sos}) =>
-      MeshColors(
-        meshcore: meshcore ?? this.meshcore,
-        meshtastic: meshtastic ?? this.meshtastic,
-        sos: sos ?? this.sos,
-      );
+  MeshColors copyWith({
+    Color? meshcore,
+    Color? meshtastic,
+    Color? sos,
+    Color? sosContainer,
+    Color? onSosContainer,
+  }) => MeshColors(
+    meshcore: meshcore ?? this.meshcore,
+    meshtastic: meshtastic ?? this.meshtastic,
+    sos: sos ?? this.sos,
+    sosContainer: sosContainer ?? this.sosContainer,
+    onSosContainer: onSosContainer ?? this.onSosContainer,
+  );
 
   @override
   MeshColors lerp(MeshColors? other, double t) => other == null
@@ -127,6 +143,8 @@ class MeshColors extends ThemeExtension<MeshColors> {
           meshcore: Color.lerp(meshcore, other.meshcore, t)!,
           meshtastic: Color.lerp(meshtastic, other.meshtastic, t)!,
           sos: Color.lerp(sos, other.sos, t)!,
+          sosContainer: Color.lerp(sosContainer, other.sosContainer, t)!,
+          onSosContainer: Color.lerp(onSosContainer, other.onSosContainer, t)!,
         );
 }
 
@@ -157,19 +175,18 @@ const fireEngineRed = Color(0xFFCE2029);
 /// on dark backgrounds.
 const fordBlue = Color(0xFF003478);
 
+/// Emergency colour: neon green.
+const neonGreen = Color(0xFF39FF14);
+
 class _Palette {
   const _Palette(
     this.seed, {
     this.variant = DynamicSchemeVariant.tonalSpot,
-    this.meshcore = fireEngineRed,
-    this.meshtastic = fordBlue,
     this.darkOnly = false,
   });
 
   final Color seed;
   final DynamicSchemeVariant variant;
-  final Color meshcore;
-  final Color meshtastic;
   final bool darkOnly;
 }
 
@@ -196,15 +213,8 @@ const _bare = _Palette(
 const _okabe = _Palette(
   Color(0xFF0072B2),
   variant: DynamicSchemeVariant.fidelity,
-  meshcore: Color(0xFFD55E00),
-  meshtastic: Color(0xFF009E73),
 );
-const _night = _Palette(
-  Color(0xFFB00020),
-  meshcore: Color(0xFFFFB000),
-  meshtastic: Color(0xFFFF7043),
-  darkOnly: true,
-);
+const _night = _Palette(Color(0xFFB00020), darkOnly: true);
 
 const _seasons = {
   Season.spring: _Palette(Color(0xFF4CAF50)),
@@ -298,23 +308,25 @@ ThemeData buildTheme(
     colorScheme: scheme,
     extensions: [
       MeshColors(
-        meshcore: readableOn(p.meshcore, backgrounds),
-        meshtastic: readableOn(p.meshtastic, backgrounds),
-        sos: scheme.error,
+        meshcore: readableOn(fireEngineRed, backgrounds),
+        meshtastic: readableOn(fordBlue, backgrounds),
+        sos: readableOn(neonGreen, backgrounds),
+        sosContainer: neonGreen,
+        onSosContainer: const Color(0xFF000000),
       ),
     ],
   );
 }
 
+/// The app's own colours in [theme].
+MeshColors meshColors(ThemeData theme) =>
+    // A plain MaterialApp has no extension; fall back to the default look.
+    theme.extension<MeshColors>() ??
+    buildTheme(const ThemeChoice(), theme.brightness).extension<MeshColors>()!;
+
 /// Colour that marks [p]'s mesh in [theme].
 Color meshColor(RadioProtocol p, ThemeData theme) {
-  // A plain MaterialApp has no extension; fall back to the default look.
-  final m =
-      theme.extension<MeshColors>() ??
-      buildTheme(
-        const ThemeChoice(),
-        theme.brightness,
-      ).extension<MeshColors>()!;
+  final m = meshColors(theme);
   return switch (p) {
     RadioProtocol.meshcore => m.meshcore,
     RadioProtocol.meshtastic => m.meshtastic,
