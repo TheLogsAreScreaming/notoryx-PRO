@@ -9,6 +9,7 @@ import '../mesh/model.dart';
 import '../radio/radio.dart';
 import '../store/mesh_store.dart';
 import 'channel_bridge.dart';
+import 'checklists.dart';
 import 'auto_responder.dart';
 import 'automations.dart';
 import 'distress_beacon.dart';
@@ -149,6 +150,9 @@ class AppController extends ChangeNotifier {
 
   /// Automatic replies.
   late final responder = AutoResponder(store: store, send: _sendScheduled);
+
+  /// Offline checklists and their saved records.
+  late final checklists = ChecklistBook(store);
 
   /// New nodes, signal changes and new places, for the timeline.
   late final timeline = TimelineRecorder(store);
