@@ -549,6 +549,17 @@ class MeshCoreConnection extends RadioConnection {
         : null;
   }
 
+  /// The radio's identity private key (64 bytes), for a backup.
+  Future<Uint8List> exportPrivateKey() => session.exportPrivateKey();
+
+  /// Gives the radio the identity in [key], then reads its own info back.
+  /// Messages and contacts stay filed under the old identity until the
+  /// radio reconnects.
+  Future<void> importPrivateKey(List<int> key) async {
+    await session.importPrivateKey(key);
+    selfInfo = await session.appStart();
+  }
+
   Future<MeshCoreSettings> applySettings(
     MeshCoreSettings wanted, {
     int? pathHashBytes,

@@ -36,6 +36,18 @@ class MeshCoreTimeout implements Exception {
   String toString() => 'MeshCoreTimeout: no reply to command $command';
 }
 
+/// The radio's firmware was built without this feature, or is too old for
+/// it.
+class MeshCoreFeatureOff implements Exception {
+  const MeshCoreFeatureOff(this.command);
+
+  /// The command byte that was turned down.
+  final int command;
+
+  @override
+  String toString() => 'MeshCoreFeatureOff: command $command';
+}
+
 /// Result of [MeshCoreSession.getContacts].
 class ContactSync {
   const ContactSync({
@@ -466,6 +478,36 @@ class MeshCoreSession {
   Future<void> setPathHashMode(int mode) {
     requireFeature(MeshCoreFeature.pathHashMode);
     return _expect<OkFrame>(MeshCoreCommands.setPathHashMode(mode));
+  }
+
+  /// The radio's identity private key (64 bytes), for a backup. Throws
+  /// [MeshCoreFeatureOff] when the firmware doesn't allow it.
+  Future<Uint8List> exportPrivateKey() async =>
+      (await _expectOrOff<PrivateKeyFrame>(
+        MeshCoreCommands.exportPrivateKey(),
+      )).key;
+
+  /// Gives the radio the identity in [key] (64 bytes). Throws
+  /// [MeshCoreFeatureOff] when the firmware doesn't allow it.
+  Future<void> importPrivateKey(List<int> key) =>
+      _expectOrOff<OkFrame>(MeshCoreCommands.importPrivateKey(key));
+
+  Future<T> _expectOrOff<T extends MeshCoreFrame>(Uint8List command) async {
+    final result = await _send(command, (frame, done) {
+      switch (frame) {
+        case T():
+          done.complete(frame);
+        case DisabledFrame():
+        case ErrorFrame(code: MeshCoreErrorCode.unsupported):
+          done.completeError(MeshCoreFeatureOff(command.first));
+        case ErrorFrame(:final code):
+          done.completeError(MeshCoreException(code, command.first));
+        default:
+          return false;
+      }
+      return true;
+    });
+    return result! as T;
   }
 
   /// Restarts the radio. It doesn't reply; the link drops and reconnects.
