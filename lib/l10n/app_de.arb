@@ -1018,5 +1018,18 @@
   "identityKeyOff": "Die Firmware dieses Funkgeräts hat die Schlüsselsicherung deaktiviert.",
   "identityKeyNoAnswer": "Das Funkgerät hat nicht geantwortet. Versuche es erneut.",
   "identityKeyRefused": "Das Funkgerät hat abgelehnt. Prüfe den Schlüssel und versuche es erneut.",
-  "identityKeyFailed": "Das hat nicht geklappt. Prüfe, ob das Funkgerät verbunden ist."
+  "identityKeyFailed": "Das hat nicht geklappt. Prüfe, ob das Funkgerät verbunden ist.",
+  "hopNamesTitle": "Repeater-Namen",
+  "hopNamesOnline": "Unbekannte IDs online nachschlagen",
+  "hopNamesOnlineHelp": "Sendet nur die kurzen Repeater-IDs an den Server unten. Ein Name wird nur gezeigt, wenn der Repeater in Funkreichweite liegt oder der Server sicher ist. Standardmäßig aus.",
+  "hopNamesServer": "Server für die Suche (https)",
+  "hopNamesMemoryHelp": "Mehrere Repeater können sich eine Kurz-ID teilen. Wenn Positionen zeigen, welcher es ist, merkt sich die App diese Wahl und nutzt sie erneut, wenn keine Position vorliegt oder zwei etwa gleich nah sind.",
+  "hopNamesKeep": "Wahl merken für",
+  "hopNamesDays": "{days} T",
+  "hopNamesMargin": "Gleichstand-Spanne",
+  "hopNamesMarginHelp": "Wie nah die Entfernungen zweier Repeater sein müssen (in %), damit die gemerkte Wahl entscheidet. 0 heißt nur exakter Gleichstand; bis 20; Standard 5. Nicht erneut genutzte Wahlen werden nach den Tagen oben vergessen.",
+  "hopNamesForget": "Gemerkte Wahl vergessen ({count})",
+  "hopNamesLess": "Weniger",
+  "hopNamesMore": "Mehr",
+  "mapRouteOnlineHop": "{name} (online)"
 }

@@ -1018,5 +1018,18 @@
   "identityKeyOff": "Il firmware di questa radio ha il backup della chiave disattivato.",
   "identityKeyNoAnswer": "La radio non ha risposto. Riprova.",
   "identityKeyRefused": "La radio ha rifiutato. Controlla la chiave e riprova.",
-  "identityKeyFailed": "Non ha funzionato. Controlla che la radio sia collegata."
+  "identityKeyFailed": "Non ha funzionato. Controlla che la radio sia collegata.",
+  "hopNamesTitle": "Nomi dei ripetitori",
+  "hopNamesOnline": "Cerca online gli ID sconosciuti",
+  "hopNamesOnlineHelp": "Invia solo gli ID corti dei ripetitori al server qui sotto. Un nome appare solo se il ripetitore è nel tuo raggio radio o il server ne è certo. Disattivato di default.",
+  "hopNamesServer": "Server di ricerca (https)",
+  "hopNamesMemoryHelp": "Più ripetitori possono condividere un ID corto. Quando le posizioni mostrano quale sia, l'app ricorda la scelta e la riusa se manca la posizione o se due sono quasi alla stessa distanza.",
+  "hopNamesKeep": "Ricorda le scelte per",
+  "hopNamesDays": "{days} g",
+  "hopNamesMargin": "Margine di parità",
+  "hopNamesMarginHelp": "Quanto (in %) devono essere vicine le distanze di due ripetitori perché decida la scelta ricordata. 0 solo parità esatte; fino a 20; 5 predefinito. Le scelte non riusate entro quei giorni vengono dimenticate.",
+  "hopNamesForget": "Dimentica le scelte ricordate ({count})",
+  "hopNamesLess": "Meno",
+  "hopNamesMore": "Più",
+  "mapRouteOnlineHop": "{name} (online)"
 }

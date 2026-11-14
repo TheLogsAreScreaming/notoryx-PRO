@@ -64,7 +64,14 @@ class Topology {
   /// shown by its hash prefix. Nodes heard directly link straight to you.
   /// Meshtastic doesn't report which nodes relayed, so its nodes beyond
   /// one hop sit on their ring without links.
-  factory Topology.build(List<Node> all, {int maxNodes = 60}) {
+  ///
+  /// [resolve] names each route's hops; [resolveRoute] by default.
+  factory Topology.build(
+    List<Node> all, {
+    int maxNodes = 60,
+    List<RouteHop> Function(Node target, Iterable<Node> known) resolve =
+        resolveRoute,
+  }) {
     final merged = mergeAcrossRadios(all).map((m) => m.node).toList();
     final nodes = <String, TopoNode>{
       topologyYou: const TopoNode(id: topologyYou, label: '', ring: 0),
@@ -87,7 +94,7 @@ class Topology {
         continue;
       }
       if (n.protocol != RadioProtocol.meshcore || n.route.isEmpty) continue;
-      final route = resolveRoute(n, all.where((k) => k.radioId == n.radioId));
+      final route = resolve(n, all.where((k) => k.radioId == n.radioId));
       var prev = topologyYou;
       for (var i = 0; i < route.length; i++) {
         final h = route[i];
@@ -99,7 +106,11 @@ class Topology {
         if (h.node == null) {
           nodes.putIfAbsent(
             hopId,
-            () => TopoNode(id: hopId, label: h.prefix, ring: i + 1),
+            () => TopoNode(
+              id: hopId,
+              label: h.onlineName ?? h.prefix,
+              ring: i + 1,
+            ),
           );
         }
         link(prev, hopId);
