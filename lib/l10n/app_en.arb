@@ -2480,6 +2480,55 @@
       }
     }
   },
+  "autoPresets": "Ready-made replies",
+  "autoPresetsHelp": "Tap one to check it, change it if you like, and add it.",
+  "autoTplPing": "pong. {hops} hops, SNR {snr} dB.",
+  "@autoTplPing": {
+    "placeholders": {
+      "hops": {
+        "type": "String"
+      },
+      "snr": {
+        "type": "String"
+      }
+    }
+  },
+  "autoTplTest": "Got your test, {name}. {hops} hops, SNR {snr} dB.",
+  "@autoTplTest": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "hops": {
+        "type": "String"
+      },
+      "snr": {
+        "type": "String"
+      }
+    }
+  },
+  "autoTplSignal": "I hear you at SNR {snr} dB over {hops} hops.",
+  "@autoTplSignal": {
+    "placeholders": {
+      "snr": {
+        "type": "String"
+      },
+      "hops": {
+        "type": "String"
+      }
+    }
+  },
+  "autoTplTime": "It's {time} here.",
+  "@autoTplTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "autoTplHelp": "Auto-replies here: ping, test, signal, time.",
+  "autoTplAway": "Away from the radio right now. I'll answer when I'm back.",
+  "autoTplDriving": "On the road and can't reply. I'll answer when I stop.",
   "lockTitle": "App lock",
   "lockOn": "Require fingerprint, face or passcode",
   "lockHelp": "Covers the app until you unlock it. Radios, beacons and scheduled messages keep running. Notifications can still show message text on your lock screen. Saved messages are only encrypted if you turn that on below.",

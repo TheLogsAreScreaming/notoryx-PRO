@@ -163,4 +163,67 @@ void main() {
     await t.pump(const Duration(seconds: 1));
     await t.runAsync(() => closing);
   });
+
+  test('presets fit the reply limit and use only known fields', () {
+    for (final locale in AppLocalizations.supportedLocales) {
+      final l = lookupAppLocalizations(locale);
+      final presets = AutoPreset.all(l);
+      expect(presets.where((p) => p.isAway), hasLength(2));
+      for (final p in presets) {
+        expect(p.reply.length, lessThanOrEqualTo(120), reason: p.reply);
+        final fields = RegExp(r'\{(\w+)\}').allMatches(p.reply);
+        for (final f in fields) {
+          expect(['name', 'time', 'hops', 'snr'], contains(f.group(1)));
+        }
+      }
+    }
+  });
+
+  testWidgets('screen: a preset opens filled in and is added', (t) async {
+    t.view.physicalSize = const Size(420, 1400);
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.reset);
+    final s = MeshStore.memory();
+    Future<void> settle() async {
+      for (var i = 0; i < 8; i++) {
+        await t.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 20)),
+        );
+        await t.pump(const Duration(milliseconds: 100));
+      }
+    }
+
+    await t.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: AutoReplyScreen(store: s),
+      ),
+    );
+    await settle();
+    expect(find.text('Ready-made replies'), findsOneWidget);
+    await t.tap(find.byKey(const Key('auto-preset-ping')));
+    await settle();
+    final reply = t.widget<TextField>(find.byKey(const Key('auto-reply')));
+    expect(reply.controller!.text, 'pong. {hops} hops, SNR {snr} dB.');
+    await t.tap(find.byKey(const Key('auto-save')));
+    await settle();
+    expect(find.byKey(const Key('auto-preset-ping')), findsNothing);
+    final saved = AutoSettings.decode(
+      await t.runAsync<String?>(() => s.preference(AutoResponder.prefName)),
+    );
+    expect(saved.rules.single.keyword, 'ping');
+
+    await t.tap(find.byKey(const Key('auto-preset-away')));
+    await settle();
+    await t.tap(find.byKey(const Key('auto-save')));
+    await settle();
+    expect(find.byKey(const Key('auto-preset-away')), findsNothing);
+    expect(find.byKey(const Key('auto-preset-driving')), findsNothing);
+
+    await t.pumpWidget(const SizedBox());
+    final closing = s.close();
+    await t.pump(const Duration(seconds: 1));
+    await t.runAsync(() => closing);
+  });
 }
