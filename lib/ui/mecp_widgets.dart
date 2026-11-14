@@ -5,6 +5,7 @@ import '../mesh/mecp_codes.dart';
 import '../mesh/mecp_labels.dart';
 import '../mesh/model.dart';
 import 'common.dart';
+import 'themes.dart';
 
 /// Labels in the phone's own language, which may be one MECP covers even
 /// when the rest of the app has fallen back to English.
@@ -52,7 +53,7 @@ class MecpCard extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final m = message;
     final serious = m.severity.index < 2 && !m.isDrill;
-    final color = serious ? scheme.error : scheme.primary;
+    final color = serious ? meshColors(Theme.of(context)).sos : scheme.primary;
     final position = m.position;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -58,6 +58,28 @@ void main() {
       }
     }
 
+    test('emergency messages are neon green in every theme', () {
+      for (final (name, choice, date) in looks()) {
+        for (final b in Brightness.values) {
+          final t = buildTheme(choice, b, now: date);
+          final g = meshColors(t);
+          final hue = HSLColor.fromColor(g.sos).hue;
+          expect(hue, inInclusiveRange(90, 130), reason: '$name ${b.name}');
+          expect(g.sosContainer, neonGreen);
+          expect(
+            contrastRatio(g.onSosContainer, g.sosContainer),
+            greaterThanOrEqualTo(4.5),
+          );
+          for (final bg in [
+            t.colorScheme.surface,
+            t.colorScheme.surfaceContainerHighest,
+          ]) {
+            expect(contrastRatio(g.sos, bg), greaterThanOrEqualTo(4.5));
+          }
+        }
+      }
+    });
+
     test('emergency red stays red in every theme', () {
       for (final (name, choice, date) in looks()) {
         for (final b in Brightness.values) {

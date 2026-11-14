@@ -17,6 +17,7 @@ import 'sentinel_screen.dart';
 import '../meshcore/codes.dart' show MeshCoreLimits;
 import '../meshtastic/messages.dart' show meshtasticMaxPayload;
 import 'common.dart';
+import 'themes.dart';
 import 'forward_sheet.dart';
 import 'schedule_sheet.dart';
 import 'export_sheet.dart';
@@ -630,6 +631,7 @@ class _ComposerState extends State<Composer> {
               children: [
                 IconButton(
                   tooltip: l.mecpTitle,
+                  color: meshColors(Theme.of(context)).sos,
                   icon: const Icon(Icons.sos),
                   onPressed: () => _emergency(c),
                 ),
