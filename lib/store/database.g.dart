@@ -6352,6 +6352,1213 @@ class PositionReportsCompanion extends UpdateCompanion<PositionRow> {
   }
 }
 
+class $JournalNodesTable extends JournalNodes
+    with TableInfo<$JournalNodesTable, JournalRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $JournalNodesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _nodeKeyMeta = const VerificationMeta(
+    'nodeKey',
+  );
+  @override
+  late final GeneratedColumn<String> nodeKey = GeneratedColumn<String>(
+    'node_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('unknown'),
+  );
+  static const VerificationMeta _firstHeardMeta = const VerificationMeta(
+    'firstHeard',
+  );
+  @override
+  late final GeneratedColumn<DateTime> firstHeard = GeneratedColumn<DateTime>(
+    'first_heard',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastHeardMeta = const VerificationMeta(
+    'lastHeard',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastHeard = GeneratedColumn<DateTime>(
+    'last_heard',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _heardCountMeta = const VerificationMeta(
+    'heardCount',
+  );
+  @override
+  late final GeneratedColumn<int> heardCount = GeneratedColumn<int>(
+    'heard_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _tagsMeta = const VerificationMeta('tags');
+  @override
+  late final GeneratedColumn<String> tags = GeneratedColumn<String>(
+    'tags',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _latitudeMeta = const VerificationMeta(
+    'latitude',
+  );
+  @override
+  late final GeneratedColumn<double> latitude = GeneratedColumn<double>(
+    'latitude',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _longitudeMeta = const VerificationMeta(
+    'longitude',
+  );
+  @override
+  late final GeneratedColumn<double> longitude = GeneratedColumn<double>(
+    'longitude',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    nodeKey,
+    name,
+    kind,
+    firstHeard,
+    lastHeard,
+    heardCount,
+    tags,
+    note,
+    latitude,
+    longitude,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'journal_nodes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<JournalRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('node_key')) {
+      context.handle(
+        _nodeKeyMeta,
+        nodeKey.isAcceptableOrUnknown(data['node_key']!, _nodeKeyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nodeKeyMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    }
+    if (data.containsKey('first_heard')) {
+      context.handle(
+        _firstHeardMeta,
+        firstHeard.isAcceptableOrUnknown(data['first_heard']!, _firstHeardMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_firstHeardMeta);
+    }
+    if (data.containsKey('last_heard')) {
+      context.handle(
+        _lastHeardMeta,
+        lastHeard.isAcceptableOrUnknown(data['last_heard']!, _lastHeardMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_lastHeardMeta);
+    }
+    if (data.containsKey('heard_count')) {
+      context.handle(
+        _heardCountMeta,
+        heardCount.isAcceptableOrUnknown(data['heard_count']!, _heardCountMeta),
+      );
+    }
+    if (data.containsKey('tags')) {
+      context.handle(
+        _tagsMeta,
+        tags.isAcceptableOrUnknown(data['tags']!, _tagsMeta),
+      );
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    if (data.containsKey('latitude')) {
+      context.handle(
+        _latitudeMeta,
+        latitude.isAcceptableOrUnknown(data['latitude']!, _latitudeMeta),
+      );
+    }
+    if (data.containsKey('longitude')) {
+      context.handle(
+        _longitudeMeta,
+        longitude.isAcceptableOrUnknown(data['longitude']!, _longitudeMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {nodeKey};
+  @override
+  JournalRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return JournalRow(
+      nodeKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}node_key'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      firstHeard: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}first_heard'],
+      )!,
+      lastHeard: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_heard'],
+      )!,
+      heardCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}heard_count'],
+      )!,
+      tags: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tags'],
+      )!,
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      )!,
+      latitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}latitude'],
+      ),
+      longitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}longitude'],
+      ),
+    );
+  }
+
+  @override
+  $JournalNodesTable createAlias(String alias) {
+    return $JournalNodesTable(attachedDatabase, alias);
+  }
+}
+
+class JournalRow extends DataClass implements Insertable<JournalRow> {
+  /// [NodeKey] as text.
+  final String nodeKey;
+  final String name;
+
+  /// `NodeKind.name`.
+  final String kind;
+  final DateTime firstHeard;
+  final DateTime lastHeard;
+  final int heardCount;
+
+  /// Your tags as a JSON list.
+  final String tags;
+  final String note;
+  final double? latitude;
+  final double? longitude;
+  const JournalRow({
+    required this.nodeKey,
+    required this.name,
+    required this.kind,
+    required this.firstHeard,
+    required this.lastHeard,
+    required this.heardCount,
+    required this.tags,
+    required this.note,
+    this.latitude,
+    this.longitude,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['node_key'] = Variable<String>(nodeKey);
+    map['name'] = Variable<String>(name);
+    map['kind'] = Variable<String>(kind);
+    map['first_heard'] = Variable<DateTime>(firstHeard);
+    map['last_heard'] = Variable<DateTime>(lastHeard);
+    map['heard_count'] = Variable<int>(heardCount);
+    map['tags'] = Variable<String>(tags);
+    map['note'] = Variable<String>(note);
+    if (!nullToAbsent || latitude != null) {
+      map['latitude'] = Variable<double>(latitude);
+    }
+    if (!nullToAbsent || longitude != null) {
+      map['longitude'] = Variable<double>(longitude);
+    }
+    return map;
+  }
+
+  JournalNodesCompanion toCompanion(bool nullToAbsent) {
+    return JournalNodesCompanion(
+      nodeKey: Value(nodeKey),
+      name: Value(name),
+      kind: Value(kind),
+      firstHeard: Value(firstHeard),
+      lastHeard: Value(lastHeard),
+      heardCount: Value(heardCount),
+      tags: Value(tags),
+      note: Value(note),
+      latitude: latitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(latitude),
+      longitude: longitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(longitude),
+    );
+  }
+
+  factory JournalRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return JournalRow(
+      nodeKey: serializer.fromJson<String>(json['nodeKey']),
+      name: serializer.fromJson<String>(json['name']),
+      kind: serializer.fromJson<String>(json['kind']),
+      firstHeard: serializer.fromJson<DateTime>(json['firstHeard']),
+      lastHeard: serializer.fromJson<DateTime>(json['lastHeard']),
+      heardCount: serializer.fromJson<int>(json['heardCount']),
+      tags: serializer.fromJson<String>(json['tags']),
+      note: serializer.fromJson<String>(json['note']),
+      latitude: serializer.fromJson<double?>(json['latitude']),
+      longitude: serializer.fromJson<double?>(json['longitude']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'nodeKey': serializer.toJson<String>(nodeKey),
+      'name': serializer.toJson<String>(name),
+      'kind': serializer.toJson<String>(kind),
+      'firstHeard': serializer.toJson<DateTime>(firstHeard),
+      'lastHeard': serializer.toJson<DateTime>(lastHeard),
+      'heardCount': serializer.toJson<int>(heardCount),
+      'tags': serializer.toJson<String>(tags),
+      'note': serializer.toJson<String>(note),
+      'latitude': serializer.toJson<double?>(latitude),
+      'longitude': serializer.toJson<double?>(longitude),
+    };
+  }
+
+  JournalRow copyWith({
+    String? nodeKey,
+    String? name,
+    String? kind,
+    DateTime? firstHeard,
+    DateTime? lastHeard,
+    int? heardCount,
+    String? tags,
+    String? note,
+    Value<double?> latitude = const Value.absent(),
+    Value<double?> longitude = const Value.absent(),
+  }) => JournalRow(
+    nodeKey: nodeKey ?? this.nodeKey,
+    name: name ?? this.name,
+    kind: kind ?? this.kind,
+    firstHeard: firstHeard ?? this.firstHeard,
+    lastHeard: lastHeard ?? this.lastHeard,
+    heardCount: heardCount ?? this.heardCount,
+    tags: tags ?? this.tags,
+    note: note ?? this.note,
+    latitude: latitude.present ? latitude.value : this.latitude,
+    longitude: longitude.present ? longitude.value : this.longitude,
+  );
+  JournalRow copyWithCompanion(JournalNodesCompanion data) {
+    return JournalRow(
+      nodeKey: data.nodeKey.present ? data.nodeKey.value : this.nodeKey,
+      name: data.name.present ? data.name.value : this.name,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      firstHeard: data.firstHeard.present
+          ? data.firstHeard.value
+          : this.firstHeard,
+      lastHeard: data.lastHeard.present ? data.lastHeard.value : this.lastHeard,
+      heardCount: data.heardCount.present
+          ? data.heardCount.value
+          : this.heardCount,
+      tags: data.tags.present ? data.tags.value : this.tags,
+      note: data.note.present ? data.note.value : this.note,
+      latitude: data.latitude.present ? data.latitude.value : this.latitude,
+      longitude: data.longitude.present ? data.longitude.value : this.longitude,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('JournalRow(')
+          ..write('nodeKey: $nodeKey, ')
+          ..write('name: $name, ')
+          ..write('kind: $kind, ')
+          ..write('firstHeard: $firstHeard, ')
+          ..write('lastHeard: $lastHeard, ')
+          ..write('heardCount: $heardCount, ')
+          ..write('tags: $tags, ')
+          ..write('note: $note, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    nodeKey,
+    name,
+    kind,
+    firstHeard,
+    lastHeard,
+    heardCount,
+    tags,
+    note,
+    latitude,
+    longitude,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is JournalRow &&
+          other.nodeKey == this.nodeKey &&
+          other.name == this.name &&
+          other.kind == this.kind &&
+          other.firstHeard == this.firstHeard &&
+          other.lastHeard == this.lastHeard &&
+          other.heardCount == this.heardCount &&
+          other.tags == this.tags &&
+          other.note == this.note &&
+          other.latitude == this.latitude &&
+          other.longitude == this.longitude);
+}
+
+class JournalNodesCompanion extends UpdateCompanion<JournalRow> {
+  final Value<String> nodeKey;
+  final Value<String> name;
+  final Value<String> kind;
+  final Value<DateTime> firstHeard;
+  final Value<DateTime> lastHeard;
+  final Value<int> heardCount;
+  final Value<String> tags;
+  final Value<String> note;
+  final Value<double?> latitude;
+  final Value<double?> longitude;
+  final Value<int> rowid;
+  const JournalNodesCompanion({
+    this.nodeKey = const Value.absent(),
+    this.name = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.firstHeard = const Value.absent(),
+    this.lastHeard = const Value.absent(),
+    this.heardCount = const Value.absent(),
+    this.tags = const Value.absent(),
+    this.note = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  JournalNodesCompanion.insert({
+    required String nodeKey,
+    this.name = const Value.absent(),
+    this.kind = const Value.absent(),
+    required DateTime firstHeard,
+    required DateTime lastHeard,
+    this.heardCount = const Value.absent(),
+    this.tags = const Value.absent(),
+    this.note = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : nodeKey = Value(nodeKey),
+       firstHeard = Value(firstHeard),
+       lastHeard = Value(lastHeard);
+  static Insertable<JournalRow> custom({
+    Expression<String>? nodeKey,
+    Expression<String>? name,
+    Expression<String>? kind,
+    Expression<DateTime>? firstHeard,
+    Expression<DateTime>? lastHeard,
+    Expression<int>? heardCount,
+    Expression<String>? tags,
+    Expression<String>? note,
+    Expression<double>? latitude,
+    Expression<double>? longitude,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (nodeKey != null) 'node_key': nodeKey,
+      if (name != null) 'name': name,
+      if (kind != null) 'kind': kind,
+      if (firstHeard != null) 'first_heard': firstHeard,
+      if (lastHeard != null) 'last_heard': lastHeard,
+      if (heardCount != null) 'heard_count': heardCount,
+      if (tags != null) 'tags': tags,
+      if (note != null) 'note': note,
+      if (latitude != null) 'latitude': latitude,
+      if (longitude != null) 'longitude': longitude,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  JournalNodesCompanion copyWith({
+    Value<String>? nodeKey,
+    Value<String>? name,
+    Value<String>? kind,
+    Value<DateTime>? firstHeard,
+    Value<DateTime>? lastHeard,
+    Value<int>? heardCount,
+    Value<String>? tags,
+    Value<String>? note,
+    Value<double?>? latitude,
+    Value<double?>? longitude,
+    Value<int>? rowid,
+  }) {
+    return JournalNodesCompanion(
+      nodeKey: nodeKey ?? this.nodeKey,
+      name: name ?? this.name,
+      kind: kind ?? this.kind,
+      firstHeard: firstHeard ?? this.firstHeard,
+      lastHeard: lastHeard ?? this.lastHeard,
+      heardCount: heardCount ?? this.heardCount,
+      tags: tags ?? this.tags,
+      note: note ?? this.note,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (nodeKey.present) {
+      map['node_key'] = Variable<String>(nodeKey.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (firstHeard.present) {
+      map['first_heard'] = Variable<DateTime>(firstHeard.value);
+    }
+    if (lastHeard.present) {
+      map['last_heard'] = Variable<DateTime>(lastHeard.value);
+    }
+    if (heardCount.present) {
+      map['heard_count'] = Variable<int>(heardCount.value);
+    }
+    if (tags.present) {
+      map['tags'] = Variable<String>(tags.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    if (latitude.present) {
+      map['latitude'] = Variable<double>(latitude.value);
+    }
+    if (longitude.present) {
+      map['longitude'] = Variable<double>(longitude.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('JournalNodesCompanion(')
+          ..write('nodeKey: $nodeKey, ')
+          ..write('name: $name, ')
+          ..write('kind: $kind, ')
+          ..write('firstHeard: $firstHeard, ')
+          ..write('lastHeard: $lastHeard, ')
+          ..write('heardCount: $heardCount, ')
+          ..write('tags: $tags, ')
+          ..write('note: $note, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $JournalDaysTable extends JournalDays
+    with TableInfo<$JournalDaysTable, JournalDayRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $JournalDaysTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _nodeKeyMeta = const VerificationMeta(
+    'nodeKey',
+  );
+  @override
+  late final GeneratedColumn<String> nodeKey = GeneratedColumn<String>(
+    'node_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dayMeta = const VerificationMeta('day');
+  @override
+  late final GeneratedColumn<String> day = GeneratedColumn<String>(
+    'day',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _hoursMaskMeta = const VerificationMeta(
+    'hoursMask',
+  );
+  @override
+  late final GeneratedColumn<int> hoursMask = GeneratedColumn<int>(
+    'hours_mask',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _reportsMeta = const VerificationMeta(
+    'reports',
+  );
+  @override
+  late final GeneratedColumn<int> reports = GeneratedColumn<int>(
+    'reports',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _directMeta = const VerificationMeta('direct');
+  @override
+  late final GeneratedColumn<int> direct = GeneratedColumn<int>(
+    'direct',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _hopsKnownMeta = const VerificationMeta(
+    'hopsKnown',
+  );
+  @override
+  late final GeneratedColumn<int> hopsKnown = GeneratedColumn<int>(
+    'hops_known',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _minLatMeta = const VerificationMeta('minLat');
+  @override
+  late final GeneratedColumn<double> minLat = GeneratedColumn<double>(
+    'min_lat',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _maxLatMeta = const VerificationMeta('maxLat');
+  @override
+  late final GeneratedColumn<double> maxLat = GeneratedColumn<double>(
+    'max_lat',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _minLonMeta = const VerificationMeta('minLon');
+  @override
+  late final GeneratedColumn<double> minLon = GeneratedColumn<double>(
+    'min_lon',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _maxLonMeta = const VerificationMeta('maxLon');
+  @override
+  late final GeneratedColumn<double> maxLon = GeneratedColumn<double>(
+    'max_lon',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    nodeKey,
+    day,
+    hoursMask,
+    reports,
+    direct,
+    hopsKnown,
+    minLat,
+    maxLat,
+    minLon,
+    maxLon,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'journal_days';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<JournalDayRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('node_key')) {
+      context.handle(
+        _nodeKeyMeta,
+        nodeKey.isAcceptableOrUnknown(data['node_key']!, _nodeKeyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nodeKeyMeta);
+    }
+    if (data.containsKey('day')) {
+      context.handle(
+        _dayMeta,
+        day.isAcceptableOrUnknown(data['day']!, _dayMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dayMeta);
+    }
+    if (data.containsKey('hours_mask')) {
+      context.handle(
+        _hoursMaskMeta,
+        hoursMask.isAcceptableOrUnknown(data['hours_mask']!, _hoursMaskMeta),
+      );
+    }
+    if (data.containsKey('reports')) {
+      context.handle(
+        _reportsMeta,
+        reports.isAcceptableOrUnknown(data['reports']!, _reportsMeta),
+      );
+    }
+    if (data.containsKey('direct')) {
+      context.handle(
+        _directMeta,
+        direct.isAcceptableOrUnknown(data['direct']!, _directMeta),
+      );
+    }
+    if (data.containsKey('hops_known')) {
+      context.handle(
+        _hopsKnownMeta,
+        hopsKnown.isAcceptableOrUnknown(data['hops_known']!, _hopsKnownMeta),
+      );
+    }
+    if (data.containsKey('min_lat')) {
+      context.handle(
+        _minLatMeta,
+        minLat.isAcceptableOrUnknown(data['min_lat']!, _minLatMeta),
+      );
+    }
+    if (data.containsKey('max_lat')) {
+      context.handle(
+        _maxLatMeta,
+        maxLat.isAcceptableOrUnknown(data['max_lat']!, _maxLatMeta),
+      );
+    }
+    if (data.containsKey('min_lon')) {
+      context.handle(
+        _minLonMeta,
+        minLon.isAcceptableOrUnknown(data['min_lon']!, _minLonMeta),
+      );
+    }
+    if (data.containsKey('max_lon')) {
+      context.handle(
+        _maxLonMeta,
+        maxLon.isAcceptableOrUnknown(data['max_lon']!, _maxLonMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {nodeKey, day};
+  @override
+  JournalDayRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return JournalDayRow(
+      nodeKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}node_key'],
+      )!,
+      day: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}day'],
+      )!,
+      hoursMask: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}hours_mask'],
+      )!,
+      reports: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}reports'],
+      )!,
+      direct: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}direct'],
+      )!,
+      hopsKnown: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}hops_known'],
+      )!,
+      minLat: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}min_lat'],
+      ),
+      maxLat: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}max_lat'],
+      ),
+      minLon: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}min_lon'],
+      ),
+      maxLon: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}max_lon'],
+      ),
+    );
+  }
+
+  @override
+  $JournalDaysTable createAlias(String alias) {
+    return $JournalDaysTable(attachedDatabase, alias);
+  }
+}
+
+class JournalDayRow extends DataClass implements Insertable<JournalDayRow> {
+  final String nodeKey;
+
+  /// Local date as `yyyy-mm-dd`.
+  final String day;
+
+  /// Bit n set when heard during hour n.
+  final int hoursMask;
+  final int reports;
+  final int direct;
+  final int hopsKnown;
+  final double? minLat;
+  final double? maxLat;
+  final double? minLon;
+  final double? maxLon;
+  const JournalDayRow({
+    required this.nodeKey,
+    required this.day,
+    required this.hoursMask,
+    required this.reports,
+    required this.direct,
+    required this.hopsKnown,
+    this.minLat,
+    this.maxLat,
+    this.minLon,
+    this.maxLon,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['node_key'] = Variable<String>(nodeKey);
+    map['day'] = Variable<String>(day);
+    map['hours_mask'] = Variable<int>(hoursMask);
+    map['reports'] = Variable<int>(reports);
+    map['direct'] = Variable<int>(direct);
+    map['hops_known'] = Variable<int>(hopsKnown);
+    if (!nullToAbsent || minLat != null) {
+      map['min_lat'] = Variable<double>(minLat);
+    }
+    if (!nullToAbsent || maxLat != null) {
+      map['max_lat'] = Variable<double>(maxLat);
+    }
+    if (!nullToAbsent || minLon != null) {
+      map['min_lon'] = Variable<double>(minLon);
+    }
+    if (!nullToAbsent || maxLon != null) {
+      map['max_lon'] = Variable<double>(maxLon);
+    }
+    return map;
+  }
+
+  JournalDaysCompanion toCompanion(bool nullToAbsent) {
+    return JournalDaysCompanion(
+      nodeKey: Value(nodeKey),
+      day: Value(day),
+      hoursMask: Value(hoursMask),
+      reports: Value(reports),
+      direct: Value(direct),
+      hopsKnown: Value(hopsKnown),
+      minLat: minLat == null && nullToAbsent
+          ? const Value.absent()
+          : Value(minLat),
+      maxLat: maxLat == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxLat),
+      minLon: minLon == null && nullToAbsent
+          ? const Value.absent()
+          : Value(minLon),
+      maxLon: maxLon == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxLon),
+    );
+  }
+
+  factory JournalDayRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return JournalDayRow(
+      nodeKey: serializer.fromJson<String>(json['nodeKey']),
+      day: serializer.fromJson<String>(json['day']),
+      hoursMask: serializer.fromJson<int>(json['hoursMask']),
+      reports: serializer.fromJson<int>(json['reports']),
+      direct: serializer.fromJson<int>(json['direct']),
+      hopsKnown: serializer.fromJson<int>(json['hopsKnown']),
+      minLat: serializer.fromJson<double?>(json['minLat']),
+      maxLat: serializer.fromJson<double?>(json['maxLat']),
+      minLon: serializer.fromJson<double?>(json['minLon']),
+      maxLon: serializer.fromJson<double?>(json['maxLon']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'nodeKey': serializer.toJson<String>(nodeKey),
+      'day': serializer.toJson<String>(day),
+      'hoursMask': serializer.toJson<int>(hoursMask),
+      'reports': serializer.toJson<int>(reports),
+      'direct': serializer.toJson<int>(direct),
+      'hopsKnown': serializer.toJson<int>(hopsKnown),
+      'minLat': serializer.toJson<double?>(minLat),
+      'maxLat': serializer.toJson<double?>(maxLat),
+      'minLon': serializer.toJson<double?>(minLon),
+      'maxLon': serializer.toJson<double?>(maxLon),
+    };
+  }
+
+  JournalDayRow copyWith({
+    String? nodeKey,
+    String? day,
+    int? hoursMask,
+    int? reports,
+    int? direct,
+    int? hopsKnown,
+    Value<double?> minLat = const Value.absent(),
+    Value<double?> maxLat = const Value.absent(),
+    Value<double?> minLon = const Value.absent(),
+    Value<double?> maxLon = const Value.absent(),
+  }) => JournalDayRow(
+    nodeKey: nodeKey ?? this.nodeKey,
+    day: day ?? this.day,
+    hoursMask: hoursMask ?? this.hoursMask,
+    reports: reports ?? this.reports,
+    direct: direct ?? this.direct,
+    hopsKnown: hopsKnown ?? this.hopsKnown,
+    minLat: minLat.present ? minLat.value : this.minLat,
+    maxLat: maxLat.present ? maxLat.value : this.maxLat,
+    minLon: minLon.present ? minLon.value : this.minLon,
+    maxLon: maxLon.present ? maxLon.value : this.maxLon,
+  );
+  JournalDayRow copyWithCompanion(JournalDaysCompanion data) {
+    return JournalDayRow(
+      nodeKey: data.nodeKey.present ? data.nodeKey.value : this.nodeKey,
+      day: data.day.present ? data.day.value : this.day,
+      hoursMask: data.hoursMask.present ? data.hoursMask.value : this.hoursMask,
+      reports: data.reports.present ? data.reports.value : this.reports,
+      direct: data.direct.present ? data.direct.value : this.direct,
+      hopsKnown: data.hopsKnown.present ? data.hopsKnown.value : this.hopsKnown,
+      minLat: data.minLat.present ? data.minLat.value : this.minLat,
+      maxLat: data.maxLat.present ? data.maxLat.value : this.maxLat,
+      minLon: data.minLon.present ? data.minLon.value : this.minLon,
+      maxLon: data.maxLon.present ? data.maxLon.value : this.maxLon,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('JournalDayRow(')
+          ..write('nodeKey: $nodeKey, ')
+          ..write('day: $day, ')
+          ..write('hoursMask: $hoursMask, ')
+          ..write('reports: $reports, ')
+          ..write('direct: $direct, ')
+          ..write('hopsKnown: $hopsKnown, ')
+          ..write('minLat: $minLat, ')
+          ..write('maxLat: $maxLat, ')
+          ..write('minLon: $minLon, ')
+          ..write('maxLon: $maxLon')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    nodeKey,
+    day,
+    hoursMask,
+    reports,
+    direct,
+    hopsKnown,
+    minLat,
+    maxLat,
+    minLon,
+    maxLon,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is JournalDayRow &&
+          other.nodeKey == this.nodeKey &&
+          other.day == this.day &&
+          other.hoursMask == this.hoursMask &&
+          other.reports == this.reports &&
+          other.direct == this.direct &&
+          other.hopsKnown == this.hopsKnown &&
+          other.minLat == this.minLat &&
+          other.maxLat == this.maxLat &&
+          other.minLon == this.minLon &&
+          other.maxLon == this.maxLon);
+}
+
+class JournalDaysCompanion extends UpdateCompanion<JournalDayRow> {
+  final Value<String> nodeKey;
+  final Value<String> day;
+  final Value<int> hoursMask;
+  final Value<int> reports;
+  final Value<int> direct;
+  final Value<int> hopsKnown;
+  final Value<double?> minLat;
+  final Value<double?> maxLat;
+  final Value<double?> minLon;
+  final Value<double?> maxLon;
+  final Value<int> rowid;
+  const JournalDaysCompanion({
+    this.nodeKey = const Value.absent(),
+    this.day = const Value.absent(),
+    this.hoursMask = const Value.absent(),
+    this.reports = const Value.absent(),
+    this.direct = const Value.absent(),
+    this.hopsKnown = const Value.absent(),
+    this.minLat = const Value.absent(),
+    this.maxLat = const Value.absent(),
+    this.minLon = const Value.absent(),
+    this.maxLon = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  JournalDaysCompanion.insert({
+    required String nodeKey,
+    required String day,
+    this.hoursMask = const Value.absent(),
+    this.reports = const Value.absent(),
+    this.direct = const Value.absent(),
+    this.hopsKnown = const Value.absent(),
+    this.minLat = const Value.absent(),
+    this.maxLat = const Value.absent(),
+    this.minLon = const Value.absent(),
+    this.maxLon = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : nodeKey = Value(nodeKey),
+       day = Value(day);
+  static Insertable<JournalDayRow> custom({
+    Expression<String>? nodeKey,
+    Expression<String>? day,
+    Expression<int>? hoursMask,
+    Expression<int>? reports,
+    Expression<int>? direct,
+    Expression<int>? hopsKnown,
+    Expression<double>? minLat,
+    Expression<double>? maxLat,
+    Expression<double>? minLon,
+    Expression<double>? maxLon,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (nodeKey != null) 'node_key': nodeKey,
+      if (day != null) 'day': day,
+      if (hoursMask != null) 'hours_mask': hoursMask,
+      if (reports != null) 'reports': reports,
+      if (direct != null) 'direct': direct,
+      if (hopsKnown != null) 'hops_known': hopsKnown,
+      if (minLat != null) 'min_lat': minLat,
+      if (maxLat != null) 'max_lat': maxLat,
+      if (minLon != null) 'min_lon': minLon,
+      if (maxLon != null) 'max_lon': maxLon,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  JournalDaysCompanion copyWith({
+    Value<String>? nodeKey,
+    Value<String>? day,
+    Value<int>? hoursMask,
+    Value<int>? reports,
+    Value<int>? direct,
+    Value<int>? hopsKnown,
+    Value<double?>? minLat,
+    Value<double?>? maxLat,
+    Value<double?>? minLon,
+    Value<double?>? maxLon,
+    Value<int>? rowid,
+  }) {
+    return JournalDaysCompanion(
+      nodeKey: nodeKey ?? this.nodeKey,
+      day: day ?? this.day,
+      hoursMask: hoursMask ?? this.hoursMask,
+      reports: reports ?? this.reports,
+      direct: direct ?? this.direct,
+      hopsKnown: hopsKnown ?? this.hopsKnown,
+      minLat: minLat ?? this.minLat,
+      maxLat: maxLat ?? this.maxLat,
+      minLon: minLon ?? this.minLon,
+      maxLon: maxLon ?? this.maxLon,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (nodeKey.present) {
+      map['node_key'] = Variable<String>(nodeKey.value);
+    }
+    if (day.present) {
+      map['day'] = Variable<String>(day.value);
+    }
+    if (hoursMask.present) {
+      map['hours_mask'] = Variable<int>(hoursMask.value);
+    }
+    if (reports.present) {
+      map['reports'] = Variable<int>(reports.value);
+    }
+    if (direct.present) {
+      map['direct'] = Variable<int>(direct.value);
+    }
+    if (hopsKnown.present) {
+      map['hops_known'] = Variable<int>(hopsKnown.value);
+    }
+    if (minLat.present) {
+      map['min_lat'] = Variable<double>(minLat.value);
+    }
+    if (maxLat.present) {
+      map['max_lat'] = Variable<double>(maxLat.value);
+    }
+    if (minLon.present) {
+      map['min_lon'] = Variable<double>(minLon.value);
+    }
+    if (maxLon.present) {
+      map['max_lon'] = Variable<double>(maxLon.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('JournalDaysCompanion(')
+          ..write('nodeKey: $nodeKey, ')
+          ..write('day: $day, ')
+          ..write('hoursMask: $hoursMask, ')
+          ..write('reports: $reports, ')
+          ..write('direct: $direct, ')
+          ..write('hopsKnown: $hopsKnown, ')
+          ..write('minLat: $minLat, ')
+          ..write('maxLat: $maxLat, ')
+          ..write('minLon: $minLon, ')
+          ..write('maxLon: $maxLon, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$MeshDatabase extends GeneratedDatabase {
   _$MeshDatabase(QueryExecutor e) : super(e);
   $MeshDatabaseManager get managers => $MeshDatabaseManager(this);
@@ -6371,6 +7578,8 @@ abstract class _$MeshDatabase extends GeneratedDatabase {
   late final $PositionReportsTable positionReports = $PositionReportsTable(
     this,
   );
+  late final $JournalNodesTable journalNodes = $JournalNodesTable(this);
+  late final $JournalDaysTable journalDays = $JournalDaysTable(this);
   late final Index messagesByConversation = Index(
     'messages_by_conversation',
     'CREATE INDEX messages_by_conversation ON messages (conversation, id)',
@@ -6408,6 +7617,8 @@ abstract class _$MeshDatabase extends GeneratedDatabase {
     traceRecords,
     places,
     positionReports,
+    journalNodes,
+    journalDays,
     messagesByConversation,
     messagesByNativeId,
     telemetryByNode,
@@ -9685,6 +10896,618 @@ typedef $$PositionReportsTableProcessedTableManager =
       PositionRow,
       PrefetchHooks Function()
     >;
+typedef $$JournalNodesTableCreateCompanionBuilder =
+    JournalNodesCompanion Function({
+      required String nodeKey,
+      Value<String> name,
+      Value<String> kind,
+      required DateTime firstHeard,
+      required DateTime lastHeard,
+      Value<int> heardCount,
+      Value<String> tags,
+      Value<String> note,
+      Value<double?> latitude,
+      Value<double?> longitude,
+      Value<int> rowid,
+    });
+typedef $$JournalNodesTableUpdateCompanionBuilder =
+    JournalNodesCompanion Function({
+      Value<String> nodeKey,
+      Value<String> name,
+      Value<String> kind,
+      Value<DateTime> firstHeard,
+      Value<DateTime> lastHeard,
+      Value<int> heardCount,
+      Value<String> tags,
+      Value<String> note,
+      Value<double?> latitude,
+      Value<double?> longitude,
+      Value<int> rowid,
+    });
+
+class $$JournalNodesTableFilterComposer
+    extends Composer<_$MeshDatabase, $JournalNodesTable> {
+  $$JournalNodesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get nodeKey => $composableBuilder(
+    column: $table.nodeKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get firstHeard => $composableBuilder(
+    column: $table.firstHeard,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastHeard => $composableBuilder(
+    column: $table.lastHeard,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get heardCount => $composableBuilder(
+    column: $table.heardCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tags => $composableBuilder(
+    column: $table.tags,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$JournalNodesTableOrderingComposer
+    extends Composer<_$MeshDatabase, $JournalNodesTable> {
+  $$JournalNodesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get nodeKey => $composableBuilder(
+    column: $table.nodeKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get firstHeard => $composableBuilder(
+    column: $table.firstHeard,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastHeard => $composableBuilder(
+    column: $table.lastHeard,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get heardCount => $composableBuilder(
+    column: $table.heardCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tags => $composableBuilder(
+    column: $table.tags,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$JournalNodesTableAnnotationComposer
+    extends Composer<_$MeshDatabase, $JournalNodesTable> {
+  $$JournalNodesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get nodeKey =>
+      $composableBuilder(column: $table.nodeKey, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get firstHeard => $composableBuilder(
+    column: $table.firstHeard,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get lastHeard =>
+      $composableBuilder(column: $table.lastHeard, builder: (column) => column);
+
+  GeneratedColumn<int> get heardCount => $composableBuilder(
+    column: $table.heardCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get tags =>
+      $composableBuilder(column: $table.tags, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+
+  GeneratedColumn<double> get latitude =>
+      $composableBuilder(column: $table.latitude, builder: (column) => column);
+
+  GeneratedColumn<double> get longitude =>
+      $composableBuilder(column: $table.longitude, builder: (column) => column);
+}
+
+class $$JournalNodesTableTableManager
+    extends
+        RootTableManager<
+          _$MeshDatabase,
+          $JournalNodesTable,
+          JournalRow,
+          $$JournalNodesTableFilterComposer,
+          $$JournalNodesTableOrderingComposer,
+          $$JournalNodesTableAnnotationComposer,
+          $$JournalNodesTableCreateCompanionBuilder,
+          $$JournalNodesTableUpdateCompanionBuilder,
+          (
+            JournalRow,
+            BaseReferences<_$MeshDatabase, $JournalNodesTable, JournalRow>,
+          ),
+          JournalRow,
+          PrefetchHooks Function()
+        > {
+  $$JournalNodesTableTableManager(_$MeshDatabase db, $JournalNodesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$JournalNodesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$JournalNodesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$JournalNodesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> nodeKey = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<DateTime> firstHeard = const Value.absent(),
+                Value<DateTime> lastHeard = const Value.absent(),
+                Value<int> heardCount = const Value.absent(),
+                Value<String> tags = const Value.absent(),
+                Value<String> note = const Value.absent(),
+                Value<double?> latitude = const Value.absent(),
+                Value<double?> longitude = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => JournalNodesCompanion(
+                nodeKey: nodeKey,
+                name: name,
+                kind: kind,
+                firstHeard: firstHeard,
+                lastHeard: lastHeard,
+                heardCount: heardCount,
+                tags: tags,
+                note: note,
+                latitude: latitude,
+                longitude: longitude,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String nodeKey,
+                Value<String> name = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                required DateTime firstHeard,
+                required DateTime lastHeard,
+                Value<int> heardCount = const Value.absent(),
+                Value<String> tags = const Value.absent(),
+                Value<String> note = const Value.absent(),
+                Value<double?> latitude = const Value.absent(),
+                Value<double?> longitude = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => JournalNodesCompanion.insert(
+                nodeKey: nodeKey,
+                name: name,
+                kind: kind,
+                firstHeard: firstHeard,
+                lastHeard: lastHeard,
+                heardCount: heardCount,
+                tags: tags,
+                note: note,
+                latitude: latitude,
+                longitude: longitude,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$JournalNodesTable, JournalRow>(table),
+                  BaseReferences<
+                    _$MeshDatabase,
+                    $JournalNodesTable,
+                    JournalRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$JournalNodesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$MeshDatabase,
+      $JournalNodesTable,
+      JournalRow,
+      $$JournalNodesTableFilterComposer,
+      $$JournalNodesTableOrderingComposer,
+      $$JournalNodesTableAnnotationComposer,
+      $$JournalNodesTableCreateCompanionBuilder,
+      $$JournalNodesTableUpdateCompanionBuilder,
+      (
+        JournalRow,
+        BaseReferences<_$MeshDatabase, $JournalNodesTable, JournalRow>,
+      ),
+      JournalRow,
+      PrefetchHooks Function()
+    >;
+typedef $$JournalDaysTableCreateCompanionBuilder =
+    JournalDaysCompanion Function({
+      required String nodeKey,
+      required String day,
+      Value<int> hoursMask,
+      Value<int> reports,
+      Value<int> direct,
+      Value<int> hopsKnown,
+      Value<double?> minLat,
+      Value<double?> maxLat,
+      Value<double?> minLon,
+      Value<double?> maxLon,
+      Value<int> rowid,
+    });
+typedef $$JournalDaysTableUpdateCompanionBuilder =
+    JournalDaysCompanion Function({
+      Value<String> nodeKey,
+      Value<String> day,
+      Value<int> hoursMask,
+      Value<int> reports,
+      Value<int> direct,
+      Value<int> hopsKnown,
+      Value<double?> minLat,
+      Value<double?> maxLat,
+      Value<double?> minLon,
+      Value<double?> maxLon,
+      Value<int> rowid,
+    });
+
+class $$JournalDaysTableFilterComposer
+    extends Composer<_$MeshDatabase, $JournalDaysTable> {
+  $$JournalDaysTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get nodeKey => $composableBuilder(
+    column: $table.nodeKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get day => $composableBuilder(
+    column: $table.day,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get hoursMask => $composableBuilder(
+    column: $table.hoursMask,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get reports => $composableBuilder(
+    column: $table.reports,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get direct => $composableBuilder(
+    column: $table.direct,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get hopsKnown => $composableBuilder(
+    column: $table.hopsKnown,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get minLat => $composableBuilder(
+    column: $table.minLat,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get maxLat => $composableBuilder(
+    column: $table.maxLat,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get minLon => $composableBuilder(
+    column: $table.minLon,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get maxLon => $composableBuilder(
+    column: $table.maxLon,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$JournalDaysTableOrderingComposer
+    extends Composer<_$MeshDatabase, $JournalDaysTable> {
+  $$JournalDaysTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get nodeKey => $composableBuilder(
+    column: $table.nodeKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get day => $composableBuilder(
+    column: $table.day,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get hoursMask => $composableBuilder(
+    column: $table.hoursMask,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get reports => $composableBuilder(
+    column: $table.reports,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get direct => $composableBuilder(
+    column: $table.direct,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get hopsKnown => $composableBuilder(
+    column: $table.hopsKnown,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get minLat => $composableBuilder(
+    column: $table.minLat,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get maxLat => $composableBuilder(
+    column: $table.maxLat,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get minLon => $composableBuilder(
+    column: $table.minLon,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get maxLon => $composableBuilder(
+    column: $table.maxLon,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$JournalDaysTableAnnotationComposer
+    extends Composer<_$MeshDatabase, $JournalDaysTable> {
+  $$JournalDaysTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get nodeKey =>
+      $composableBuilder(column: $table.nodeKey, builder: (column) => column);
+
+  GeneratedColumn<String> get day =>
+      $composableBuilder(column: $table.day, builder: (column) => column);
+
+  GeneratedColumn<int> get hoursMask =>
+      $composableBuilder(column: $table.hoursMask, builder: (column) => column);
+
+  GeneratedColumn<int> get reports =>
+      $composableBuilder(column: $table.reports, builder: (column) => column);
+
+  GeneratedColumn<int> get direct =>
+      $composableBuilder(column: $table.direct, builder: (column) => column);
+
+  GeneratedColumn<int> get hopsKnown =>
+      $composableBuilder(column: $table.hopsKnown, builder: (column) => column);
+
+  GeneratedColumn<double> get minLat =>
+      $composableBuilder(column: $table.minLat, builder: (column) => column);
+
+  GeneratedColumn<double> get maxLat =>
+      $composableBuilder(column: $table.maxLat, builder: (column) => column);
+
+  GeneratedColumn<double> get minLon =>
+      $composableBuilder(column: $table.minLon, builder: (column) => column);
+
+  GeneratedColumn<double> get maxLon =>
+      $composableBuilder(column: $table.maxLon, builder: (column) => column);
+}
+
+class $$JournalDaysTableTableManager
+    extends
+        RootTableManager<
+          _$MeshDatabase,
+          $JournalDaysTable,
+          JournalDayRow,
+          $$JournalDaysTableFilterComposer,
+          $$JournalDaysTableOrderingComposer,
+          $$JournalDaysTableAnnotationComposer,
+          $$JournalDaysTableCreateCompanionBuilder,
+          $$JournalDaysTableUpdateCompanionBuilder,
+          (
+            JournalDayRow,
+            BaseReferences<_$MeshDatabase, $JournalDaysTable, JournalDayRow>,
+          ),
+          JournalDayRow,
+          PrefetchHooks Function()
+        > {
+  $$JournalDaysTableTableManager(_$MeshDatabase db, $JournalDaysTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$JournalDaysTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$JournalDaysTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$JournalDaysTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> nodeKey = const Value.absent(),
+                Value<String> day = const Value.absent(),
+                Value<int> hoursMask = const Value.absent(),
+                Value<int> reports = const Value.absent(),
+                Value<int> direct = const Value.absent(),
+                Value<int> hopsKnown = const Value.absent(),
+                Value<double?> minLat = const Value.absent(),
+                Value<double?> maxLat = const Value.absent(),
+                Value<double?> minLon = const Value.absent(),
+                Value<double?> maxLon = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => JournalDaysCompanion(
+                nodeKey: nodeKey,
+                day: day,
+                hoursMask: hoursMask,
+                reports: reports,
+                direct: direct,
+                hopsKnown: hopsKnown,
+                minLat: minLat,
+                maxLat: maxLat,
+                minLon: minLon,
+                maxLon: maxLon,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String nodeKey,
+                required String day,
+                Value<int> hoursMask = const Value.absent(),
+                Value<int> reports = const Value.absent(),
+                Value<int> direct = const Value.absent(),
+                Value<int> hopsKnown = const Value.absent(),
+                Value<double?> minLat = const Value.absent(),
+                Value<double?> maxLat = const Value.absent(),
+                Value<double?> minLon = const Value.absent(),
+                Value<double?> maxLon = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => JournalDaysCompanion.insert(
+                nodeKey: nodeKey,
+                day: day,
+                hoursMask: hoursMask,
+                reports: reports,
+                direct: direct,
+                hopsKnown: hopsKnown,
+                minLat: minLat,
+                maxLat: maxLat,
+                minLon: minLon,
+                maxLon: maxLon,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$JournalDaysTable, JournalDayRow>(table),
+                  BaseReferences<
+                    _$MeshDatabase,
+                    $JournalDaysTable,
+                    JournalDayRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$JournalDaysTableProcessedTableManager =
+    ProcessedTableManager<
+      _$MeshDatabase,
+      $JournalDaysTable,
+      JournalDayRow,
+      $$JournalDaysTableFilterComposer,
+      $$JournalDaysTableOrderingComposer,
+      $$JournalDaysTableAnnotationComposer,
+      $$JournalDaysTableCreateCompanionBuilder,
+      $$JournalDaysTableUpdateCompanionBuilder,
+      (
+        JournalDayRow,
+        BaseReferences<_$MeshDatabase, $JournalDaysTable, JournalDayRow>,
+      ),
+      JournalDayRow,
+      PrefetchHooks Function()
+    >;
 
 class $MeshDatabaseManager {
   final _$MeshDatabase _db;
@@ -9713,4 +11536,8 @@ class $MeshDatabaseManager {
       $$PlacesTableTableManager(_db, _db.places);
   $$PositionReportsTableTableManager get positionReports =>
       $$PositionReportsTableTableManager(_db, _db.positionReports);
+  $$JournalNodesTableTableManager get journalNodes =>
+      $$JournalNodesTableTableManager(_db, _db.journalNodes);
+  $$JournalDaysTableTableManager get journalDays =>
+      $$JournalDaysTableTableManager(_db, _db.journalDays);
 }

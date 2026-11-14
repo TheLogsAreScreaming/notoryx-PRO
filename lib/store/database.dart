@@ -260,6 +260,52 @@ class PositionReports extends Table {
   RealColumn get longitude => real()();
 }
 
+/// Every node ever heard, across radios: the node journal. Schema v11.
+@DataClassName('JournalRow')
+class JournalNodes extends Table {
+  /// [NodeKey] as text.
+  TextColumn get nodeKey => text()();
+  TextColumn get name => text().withDefault(const Constant(''))();
+
+  /// `NodeKind.name`.
+  TextColumn get kind => text().withDefault(const Constant('unknown'))();
+  DateTimeColumn get firstHeard => dateTime()();
+  DateTimeColumn get lastHeard => dateTime()();
+  IntColumn get heardCount => integer().withDefault(const Constant(1))();
+
+  /// Your tags as a JSON list.
+  TextColumn get tags => text().withDefault(const Constant('[]'))();
+  TextColumn get note => text().withDefault(const Constant(''))();
+  RealColumn get latitude => real().nullable()();
+  RealColumn get longitude => real().nullable()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {nodeKey};
+}
+
+/// What the journal saw of a node on one local day, for its behaviour
+/// labels. Kept for [MeshStore.journalDaysKept]. Schema v11.
+@DataClassName('JournalDayRow')
+class JournalDays extends Table {
+  TextColumn get nodeKey => text()();
+
+  /// Local date as `yyyy-mm-dd`.
+  TextColumn get day => text()();
+
+  /// Bit n set when heard during hour n.
+  IntColumn get hoursMask => integer().withDefault(const Constant(0))();
+  IntColumn get reports => integer().withDefault(const Constant(0))();
+  IntColumn get direct => integer().withDefault(const Constant(0))();
+  IntColumn get hopsKnown => integer().withDefault(const Constant(0))();
+  RealColumn get minLat => real().nullable()();
+  RealColumn get maxLat => real().nullable()();
+  RealColumn get minLon => real().nullable()();
+  RealColumn get maxLon => real().nullable()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {nodeKey, day};
+}
+
 @DriftDatabase(
   tables: [
     Radios,
@@ -274,13 +320,15 @@ class PositionReports extends Table {
     TraceRecords,
     Places,
     PositionReports,
+    JournalNodes,
+    JournalDays,
   ],
 )
 class MeshDatabase extends _$MeshDatabase {
   MeshDatabase(super.e);
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -332,6 +380,11 @@ class MeshDatabase extends _$MeshDatabase {
         await m.createTable(schema.positionReports);
         await m.createIndex(schema.positionsByNode);
         await m.createIndex(schema.positionsByTime);
+      },
+      from10To11: (m, schema) async {
+        // v11: the node journal. Starts empty and fills as nodes are heard.
+        await m.createTable(schema.journalNodes);
+        await m.createTable(schema.journalDays);
       },
     ),
   );
