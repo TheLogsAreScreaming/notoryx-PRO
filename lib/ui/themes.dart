@@ -149,12 +149,20 @@ Color readableOn(Color color, List<Color> backgrounds) {
   return c;
 }
 
+/// MeshCore's colour: fire engine red. Lightened where needed to stay
+/// readable on dark backgrounds.
+const fireEngineRed = Color(0xFFCE2029);
+
+/// Meshtastic's colour: Ford blue. Lightened where needed to stay readable
+/// on dark backgrounds.
+const fordBlue = Color(0xFF003478);
+
 class _Palette {
   const _Palette(
     this.seed, {
     this.variant = DynamicSchemeVariant.tonalSpot,
-    this.meshcore = const Color(0xFFE0782A),
-    this.meshtastic = const Color(0xFF67C23A),
+    this.meshcore = fireEngineRed,
+    this.meshtastic = fordBlue,
     this.darkOnly = false,
   });
 
@@ -172,8 +180,6 @@ const _blaze = _Palette(
 const _neon = _Palette(
   Color(0xFFFF00C8),
   variant: DynamicSchemeVariant.vibrant,
-  meshcore: Color(0xFFFFE600),
-  meshtastic: Color(0xFF00FFA3),
   darkOnly: true,
 );
 const _tactical = _Palette(Color(0xFF6B7A3A));
