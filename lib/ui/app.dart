@@ -11,6 +11,7 @@ import '../app/trusted_nodes.dart';
 import '../l10n/app_localizations.dart';
 import 'about_screen.dart';
 import 'beacon_sheet.dart';
+import 'checklists_screen.dart';
 import 'common.dart';
 import 'conversation_screen.dart';
 import 'export_sheet.dart';
@@ -101,6 +102,7 @@ class NotoryxProApp extends StatelessWidget {
 enum _MenuAction {
   markRead,
   timeline,
+  checklists,
   export,
   restore,
   theme,
@@ -286,6 +288,11 @@ class _HomeShellState extends State<HomeShell> {
                   builder: (_) => TimelineScreen(app: app),
                 ),
               ),
+              _MenuAction.checklists => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => ChecklistsScreen(book: app.checklists),
+                ),
+              ),
               _MenuAction.export => showExportSheet(context, store: app.store),
               _MenuAction.restore => restoreFromExport(
                 context,
@@ -335,6 +342,11 @@ class _HomeShellState extends State<HomeShell> {
               PopupMenuItem(
                 value: _MenuAction.timeline,
                 child: Text(context.l10n.tlTitle),
+              ),
+              PopupMenuItem(
+                key: const Key('menu-checklists'),
+                value: _MenuAction.checklists,
+                child: Text(context.l10n.ckTitle),
               ),
               PopupMenuItem(
                 value: _MenuAction.theme,

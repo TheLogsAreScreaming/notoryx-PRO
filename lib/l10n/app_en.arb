@@ -1821,6 +1821,121 @@
   "messageDeleteHint": "delete",
   "nodeFavorite": "Favorite",
   "themeTitle": "Appearance",
+  "ckTitle": "Checklists",
+  "ckIntro": "Reusable checklists that work offline. Each finished run is saved with times, so you can export it later.",
+  "ckPreTrip": "Pre-trip",
+  "ckPreTrip1": "Radio charged and spare power packed",
+  "ckPreTrip2": "Phone paired with the radio",
+  "ckPreTrip3": "Test message sent and received",
+  "ckPreTrip4": "Offline map downloaded for the area",
+  "ckPreTrip5": "Route and return time shared with someone at home",
+  "ckPreTrip6": "Team channel and contacts checked",
+  "ckDeployment": "Deployment",
+  "ckDeploy1": "Site and owner permission confirmed",
+  "ckDeploy2": "Antenna mounted, cable and connectors sealed",
+  "ckDeploy3": "Power source and battery checked",
+  "ckDeploy4": "Name, role and position set on the node",
+  "ckDeploy5": "Heard by another node (trace or test message)",
+  "ckDeploy6": "Photos and notes of the install taken",
+  "ckInProgress": "In progress",
+  "ckChecklists": "Your checklists",
+  "ckNoChecklists": "No checklists. Add one with the button below.",
+  "ckRecords": "Saved records",
+  "ckNoRecords": "Finished checklists are saved here.",
+  "ckItemCount": "Items: {count}",
+  "@ckItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ckProgress": "{done} of {total} done",
+  "@ckProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "ckStart": "Start",
+  "ckReplaceActive": "Another checklist is in progress. Start this one and drop it?",
+  "ckNew": "New checklist",
+  "ckEdit": "Edit checklist",
+  "ckName": "Name",
+  "ckNameNeeded": "Give the checklist a name",
+  "ckItems": "Items",
+  "ckItemsHelp": "One item per line",
+  "ckItemsNeeded": "Add at least one item",
+  "ckSave": "Save",
+  "ckDelete": "Delete",
+  "ckDeleteConfirm": "Delete this checklist? Saved records stay.",
+  "ckDeleteRecordConfirm": "Delete this record? This can't be undone.",
+  "ckFinish": "Finish and save",
+  "ckFinishIncomplete": "Items not ticked: {count}. Finish and save anyway?",
+  "@ckFinishIncomplete": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ckSaved": "Checklist record saved",
+  "ckDiscard": "Discard run",
+  "ckDiscardConfirm": "Discard this run without saving a record?",
+  "ckNothingActive": "No checklist in progress.",
+  "ckCheckedAt": "Ticked {when}",
+  "@ckCheckedAt": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "ckNote": "Note",
+  "ckNoteLine": "Note: {note}",
+  "@ckNoteLine": {
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "ckStarted": "Started {when}",
+  "@ckStarted": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "ckFinished": "Finished {when}",
+  "@ckFinished": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "ckDone": "Done",
+  "ckNotDone": "Not done",
+  "ckExport": "Export this record",
+  "ckExportAll": "Export all records",
+  "ckExportText": "Text",
+  "ckExportTextHelp": "Easy to read, print or paste into a report",
+  "ckExportJson": "JSON",
+  "ckExportJsonHelp": "Every time in UTC, for other tools",
+  "ckExportFailed": "Export failed: {error}",
+  "@ckExportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "themeBlaze": "Blaze",
   "themeBlazeAbout": "Hot orange, the default",
   "themeNeonAnarchy": "Neon Anarchy",
