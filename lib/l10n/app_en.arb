@@ -2753,5 +2753,39 @@
   "identityKeyOff": "This radio's firmware has key backup turned off.",
   "identityKeyNoAnswer": "The radio didn't answer. Try again.",
   "identityKeyRefused": "The radio refused. Check the key and try again.",
-  "identityKeyFailed": "That didn't work. Check the radio is connected."
+  "identityKeyFailed": "That didn't work. Check the radio is connected.",
+  "hopNamesTitle": "Repeater names",
+  "hopNamesOnline": "Look up unknown IDs online",
+  "hopNamesOnlineHelp": "Sends only the short repeater IDs to the server below. A name is shown only if that repeater is within radio range of you, or the server is sure. Off by default.",
+  "hopNamesServer": "Lookup server (https)",
+  "hopNamesMemoryHelp": "Several repeaters can share a short ID. When positions show which one it is, the app remembers that pick and uses it again when there's no position to go on, or two of them are about equally close.",
+  "hopNamesKeep": "Remember picks for",
+  "hopNamesDays": "{days} d",
+  "@hopNamesDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "hopNamesMargin": "Tie margin",
+  "hopNamesMarginHelp": "How close two repeaters' distances must be (in %) for the remembered pick to decide. 0 means only exact ties; up to 20; 5 by default. Picks not used again within the days above are forgotten.",
+  "hopNamesForget": "Forget remembered picks ({count})",
+  "@hopNamesForget": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hopNamesLess": "Less",
+  "hopNamesMore": "More",
+  "mapRouteOnlineHop": "{name} (online)",
+  "@mapRouteOnlineHop": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

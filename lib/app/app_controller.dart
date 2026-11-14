@@ -14,6 +14,7 @@ import 'auto_responder.dart';
 import 'automations.dart';
 import 'distress_beacon.dart';
 import 'geofence_alerts.dart';
+import 'hop_naming_service.dart';
 import 'message_alerts.dart';
 import 'message_scheduler.dart';
 import 'sentinel.dart';
@@ -160,6 +161,13 @@ class AppController extends ChangeNotifier {
   /// Messages to send later.
   late final scheduler = MessageScheduler(store: store, send: _sendScheduled);
 
+  /// Names for repeater IDs in routes: remembered picks and the opt-in
+  /// online lookup.
+  late final hopNaming = HopNamingService(
+    read: store.preference,
+    write: store.setPreference,
+  );
+
   /// Opt-in community moderation (off until the user turns it on).
   late final sentinel = SentinelService(
     read: store.preference,
@@ -277,6 +285,7 @@ class AppController extends ChangeNotifier {
       disconnect(c);
     }
     sentinel.dispose();
+    hopNaming.dispose();
     super.dispose();
   }
 }

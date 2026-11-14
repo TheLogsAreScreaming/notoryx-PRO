@@ -15,6 +15,7 @@ import 'checklists_screen.dart';
 import 'common.dart';
 import 'conversation_screen.dart';
 import 'export_sheet.dart';
+import 'hop_naming_screen.dart';
 import 'inbox_screen.dart';
 import 'lock_gate.dart';
 import 'map_screen.dart';
@@ -108,6 +109,7 @@ enum _MenuAction {
   export,
   restore,
   theme,
+  repeaterNames,
   lock,
   moderation,
   about,
@@ -325,6 +327,11 @@ class _HomeShellState extends State<HomeShell> {
               _MenuAction.about => Navigator.of(context).push(
                 MaterialPageRoute<void>(builder: (_) => const AboutScreen()),
               ),
+              _MenuAction.repeaterNames => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => HopNamingScreen(service: app.hopNaming),
+                ),
+              ),
               _MenuAction.theme => Navigator.of(context).push(
                 MaterialPageRoute<void>(
                   builder: (_) => ThemeScreen(store: app.store),
@@ -363,6 +370,11 @@ class _HomeShellState extends State<HomeShell> {
               PopupMenuItem(
                 value: _MenuAction.theme,
                 child: Text(context.l10n.themeTitle),
+              ),
+              PopupMenuItem(
+                key: const Key('menu-repeater-names'),
+                value: _MenuAction.repeaterNames,
+                child: Text(context.l10n.hopNamesTitle),
               ),
               if (widget.auth != null)
                 PopupMenuItem(

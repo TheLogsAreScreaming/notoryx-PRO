@@ -41,6 +41,23 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   final _map = MapController();
   late final Stream<List<Node>> _nodes = widget.app.store.watchAllNodes();
+
+  @override
+  void initState() {
+    super.initState();
+    widget.app.hopNaming.addListener(_namesChanged);
+  }
+
+  @override
+  void dispose() {
+    widget.app.hopNaming.removeListener(_namesChanged);
+    super.dispose();
+  }
+
+  void _namesChanged() {
+    if (mounted) setState(() {});
+  }
+
   late final Stream<List<Place>> _places = widget.app.store.watchPlaces();
   late final Stream<TrustState> _trust = TrustedNodes.watch(widget.app.store);
   Node? _route;
@@ -292,6 +309,13 @@ class _MapScreenState extends State<MapScreen> {
     },
   );
 
+  /// Where the radio that knows [n] is, if it has a position.
+  GeoPoint? _radioAt(Node n) => widget.app.connections
+      .where((c) => c.radio?.id == n.radioId)
+      .map((c) => c.radio?.position)
+      .nonNulls
+      .firstOrNull;
+
   /// Our radio → known repeaters → the node; hops without a known position
   /// are skipped. Null when there is nothing to draw.
   List<LatLng>? _routeLine(Node target, List<Node> all) {
@@ -300,7 +324,7 @@ class _MapScreenState extends State<MapScreen> {
         .map((c) => c.radio?.position)
         .nonNulls
         .firstOrNull;
-    final hops = resolveRoute(target, all);
+    final hops = widget.app.hopNaming.resolve(target, all, from: start);
     final points = [
       if (start != null) _ll(start),
       for (final h in hops)
@@ -318,7 +342,7 @@ class _MapScreenState extends State<MapScreen> {
       builder: (_) => NodeSheet(
         app: widget.app,
         node: n,
-        hops: resolveRoute(n, all),
+        hops: widget.app.hopNaming.resolve(n, all, from: _radioAt(n)),
         routeShown: _route?.key == n.key,
         tiles: widget.tiles,
       ),
@@ -434,7 +458,10 @@ class NodeSheet extends StatelessWidget {
               else
                 for (final h in hops)
                   Text(
-                    '• ${h.node?.displayName ?? l.mapRouteUnknownHop(h.prefix)}',
+                    '• ${h.node?.displayName ?? switch (h.onlineName) {
+                          final name? => l.mapRouteOnlineHop(name),
+                          null => l.mapRouteUnknownHop(h.prefix),
+                        }}',
                   ),
             ],
             const SizedBox(height: 12),

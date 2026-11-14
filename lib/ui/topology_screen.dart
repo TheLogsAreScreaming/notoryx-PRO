@@ -249,83 +249,97 @@ class TopologyScreen extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(title: Text(l.topologyTitle)),
-      body: StreamBuilder<List<Node>>(
-        stream: app.store.watchAllNodes(),
-        builder: (context, snap) {
-          final t = Topology.build(snap.data ?? const []);
-          if (t.nodes.length <= 1) {
-            return EmptyState(l.topologyEmpty, icon: Icons.hub_outlined);
-          }
-          return ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              LayoutBuilder(
-                builder: (context, box) {
-                  final side = box.maxWidth.clamp(220.0, 560.0);
-                  final size = Size(box.maxWidth, side);
-                  final layout = layoutTopology(t, size);
-                  return Semantics(
-                    label: l.topologySemantics(t.nodes.length - 1, t.rings),
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTapUp: (d) {
-                        final id = layout.hit(d.localPosition);
-                        if (id != null && id != topologyYou) {
-                          _open(context, t.nodes[id]!);
-                        }
-                      },
-                      child: SizedBox.fromSize(
-                        key: const Key('topology'),
-                        size: size,
-                        child: CustomPaint(
-                          painter: _Painter(
-                            t,
-                            layout,
-                            scheme,
-                            (Theme.of(context).textTheme.labelSmall ??
-                                    const TextStyle())
-                                .copyWith(
-                                  color: scheme.onSurface,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                            l.topologyYou,
+      body: ListenableBuilder(
+        listenable: app.hopNaming,
+        builder: (context, _) => StreamBuilder<List<Node>>(
+          stream: app.store.watchAllNodes(),
+          builder: (context, snap) {
+            final t = Topology.build(
+              snap.data ?? const [],
+              resolve: (n, known) => app.hopNaming.resolve(
+                n,
+                known,
+                from: app.connections
+                    .where((c) => c.radio?.id == n.radioId)
+                    .map((c) => c.radio?.position)
+                    .nonNulls
+                    .firstOrNull,
+              ),
+            );
+            if (t.nodes.length <= 1) {
+              return EmptyState(l.topologyEmpty, icon: Icons.hub_outlined);
+            }
+            return ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                LayoutBuilder(
+                  builder: (context, box) {
+                    final side = box.maxWidth.clamp(220.0, 560.0);
+                    final size = Size(box.maxWidth, side);
+                    final layout = layoutTopology(t, size);
+                    return Semantics(
+                      label: l.topologySemantics(t.nodes.length - 1, t.rings),
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTapUp: (d) {
+                          final id = layout.hit(d.localPosition);
+                          if (id != null && id != topologyYou) {
+                            _open(context, t.nodes[id]!);
+                          }
+                        },
+                        child: SizedBox.fromSize(
+                          key: const Key('topology'),
+                          size: size,
+                          child: CustomPaint(
+                            painter: _Painter(
+                              t,
+                              layout,
+                              scheme,
+                              (Theme.of(context).textTheme.labelSmall ??
+                                      const TextStyle())
+                                  .copyWith(
+                                    color: scheme.onSurface,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                              l.topologyYou,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 12),
-              Text(
-                l.topologyHint,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              const SizedBox(height: 16),
-              for (var r = 1; r <= t.rings; r++) ...[
-                Text(
-                  l.topologyRing(r - 1),
-                  style: Theme.of(context).textTheme.titleSmall,
+                    );
+                  },
                 ),
-                for (final n in t.ring(r))
-                  ListTile(
-                    key: Key('topo-${n.id}'),
-                    dense: true,
-                    leading: Icon(
-                      n.node == null
-                          ? Icons.help_outline
-                          : nodeKindIcon(n.node!.kind),
-                    ),
-                    title: Text(n.label),
-                    subtitle: n.routes > 0
-                        ? Text(l.topologyRoutes(n.routes))
-                        : null,
-                    onTap: () => _open(context, n),
+                const SizedBox(height: 12),
+                Text(
+                  l.topologyHint,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                const SizedBox(height: 16),
+                for (var r = 1; r <= t.rings; r++) ...[
+                  Text(
+                    l.topologyRing(r - 1),
+                    style: Theme.of(context).textTheme.titleSmall,
                   ),
+                  for (final n in t.ring(r))
+                    ListTile(
+                      key: Key('topo-${n.id}'),
+                      dense: true,
+                      leading: Icon(
+                        n.node == null
+                            ? Icons.help_outline
+                            : nodeKindIcon(n.node!.kind),
+                      ),
+                      title: Text(n.label),
+                      subtitle: n.routes > 0
+                          ? Text(l.topologyRoutes(n.routes))
+                          : null,
+                      onTap: () => _open(context, n),
+                    ),
+                ],
               ],
-            ],
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
