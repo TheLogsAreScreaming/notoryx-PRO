@@ -440,7 +440,7 @@
       }
     }
   },
-  "losExplain": "Both antennas need to clear any hill, tree or building at the midpoint by this much. This uses no terrain data, so it can't see hills: check a map.",
+  "losExplain": "Both antennas need to clear any hill, tree or building at the midpoint by this much. These numbers use no terrain data; use Check terrain below to see the ground between.",
   "losNeedPositions": "Needs a position for your radio and for this node.",
   "hintsTitle": "Why it might not have arrived",
   "hintNotHeardRecently": "They haven't been heard for over a day; they may be out of range or switched off.",
@@ -2837,6 +2837,42 @@
       }
     }
   },
+  "losYourRadio": "Your radio",
+  "losTerrain": "Terrain between the two",
+  "losAntennaFrom": "Antenna height at start (m)",
+  "losAntennaTo": "Antenna height at end (m)",
+  "losTerrainSends": "Check terrain sends the points along this line to Open-Meteo to get ground heights. Nothing is sent until you tap it.",
+  "losCheckTerrain": "Check terrain",
+  "losSamePoint": "Pick two different places.",
+  "losTerrainLoading": "Getting ground heights…",
+  "losTerrainFailed": "Couldn't get ground heights. Check the internet connection and try again.",
+  "losVerdictClear": "Clear: at least 60% of the Fresnel zone is open all the way",
+  "losVerdictPartial": "Partial: the direct line is clear, but terrain reaches into the Fresnel zone",
+  "losVerdictBlocked": "Blocked: terrain cuts the direct line",
+  "losWorstOpen": "Tightest point {km} km along: {percent}% of the zone open",
+  "@losWorstOpen": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "losWorstBlocked": "Ground rises {metres} m above the line {km} km along",
+  "@losWorstBlocked": {
+    "placeholders": {
+      "metres": {
+        "type": "String"
+      },
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "losLegend": "Shaded: first Fresnel zone. Dashed: 60% of it. Straight line: direct path. The ground and the lower curve include the Earth's curve.",
+  "losSource": "Ground heights: Open-Meteo (Copernicus DEM, about 90 m grid). Trees and buildings aren't included.",
   "bgTitle": "Background",
   "bgHelp": "Lists sit on frosted glass over the background. The glass turns more solid over bright pictures so text stays readable.",
   "bgTheme": "Theme default",

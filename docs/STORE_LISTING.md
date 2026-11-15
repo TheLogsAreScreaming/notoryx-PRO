@@ -45,7 +45,7 @@ Last checked against `main` on 13 November 2026 (version 0.11.0, test 11).
 > • Every node with a position on one map, with signal bars and routes
 > • Import and export GPX waypoints and tracks
 > • Geofences that notify you when a node enters or leaves
-> • A link planner and line-of-sight check (open-ground estimates)
+> • A link planner and a line-of-sight check with a terrain profile and Fresnel zone
 >
 > RADIO TOOLS
 > • Radio settings and remote admin for MeshCore and Meshtastic
@@ -94,6 +94,7 @@ Answers follow from the code and `docs/PRIVACY.md`. "Collected" in Play's sense 
 
 Things a reviewer may ask about, and the honest answers:
 - **Map tiles**: downloaded from OpenStreetMap, which sees the device's IP address and the map area. This is a request to a third party, not data the app collects.
+- **Terrain check**: when the user taps Check terrain, up to 64 points along the chosen line go to Open-Meteo for ground heights. User-initiated request to a third party, like map tiles; nothing goes to the developer.
 - **MQTT feeds**: only connect to a broker the user adds.
 - **QR scanning**: Google ML Kit runs on the device and may send Google diagnostics. Play's guidance treats on-device SDK diagnostics as the SDK's own disclosure; mention it if asked.
 
