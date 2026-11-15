@@ -2836,5 +2836,21 @@
         "type": "String"
       }
     }
-  }
+  },
+  "bgTitle": "Background",
+  "bgHelp": "Lists sit on frosted glass over the background. The glass turns more solid over bright pictures so text stays readable.",
+  "bgTheme": "Theme default",
+  "bgSolid": "Solid colour",
+  "bgLinear": "Gradient",
+  "bgMesh": "Mesh gradient",
+  "bgPhoto": "Your photo",
+  "bgColour": "Colour",
+  "bgFirst": "First colour",
+  "bgSecond": "Second colour",
+  "bgPickPhoto": "Choose photo",
+  "bgPhotoFailed": "No photo was chosen, or it couldn't be read.",
+  "bgDim": "Dim",
+  "bgBlur": "Blur",
+  "bgSample": "Messages stay readable on glass.",
+  "bgColourNames": "Navy,Blue,Teal,Green,Lime,Gold,Orange,Red,Magenta,Purple,Slate,Black"
 }

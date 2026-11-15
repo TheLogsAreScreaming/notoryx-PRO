@@ -1137,5 +1137,21 @@
   "hopNamesForget": "Dimentica le scelte ricordate ({count})",
   "hopNamesLess": "Meno",
   "hopNamesMore": "Più",
-  "mapRouteOnlineHop": "{name} (online)"
+  "mapRouteOnlineHop": "{name} (online)",
+  "bgTitle": "Sfondo",
+  "bgHelp": "Gli elenchi stanno su un vetro smerigliato sopra lo sfondo. Sulle immagini chiare il vetro diventa più opaco, così il testo resta leggibile.",
+  "bgTheme": "Predefinito del tema",
+  "bgSolid": "Tinta unita",
+  "bgLinear": "Sfumatura",
+  "bgMesh": "Sfumatura a rete",
+  "bgPhoto": "La tua foto",
+  "bgColour": "Colore",
+  "bgFirst": "Primo colore",
+  "bgSecond": "Secondo colore",
+  "bgPickPhoto": "Scegli foto",
+  "bgPhotoFailed": "Nessuna foto scelta, oppure non è stato possibile leggerla.",
+  "bgDim": "Scurisci",
+  "bgBlur": "Sfocatura",
+  "bgSample": "I messaggi restano leggibili sul vetro.",
+  "bgColourNames": "Blu navy,Blu,Verde acqua,Verde,Lime,Oro,Arancione,Rosso,Magenta,Viola,Ardesia,Nero"
 }

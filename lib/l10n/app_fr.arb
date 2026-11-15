@@ -1137,5 +1137,21 @@
   "hopNamesForget": "Oublier les choix retenus ({count})",
   "hopNamesLess": "Moins",
   "hopNamesMore": "Plus",
-  "mapRouteOnlineHop": "{name} (en ligne)"
+  "mapRouteOnlineHop": "{name} (en ligne)",
+  "bgTitle": "Arrière-plan",
+  "bgHelp": "Les listes reposent sur du verre dépoli au-dessus de l'arrière-plan. Le verre devient plus opaque sur les images claires pour que le texte reste lisible.",
+  "bgTheme": "Thème par défaut",
+  "bgSolid": "Couleur unie",
+  "bgLinear": "Dégradé",
+  "bgMesh": "Dégradé maillé",
+  "bgPhoto": "Votre photo",
+  "bgColour": "Couleur",
+  "bgFirst": "Première couleur",
+  "bgSecond": "Deuxième couleur",
+  "bgPickPhoto": "Choisir une photo",
+  "bgPhotoFailed": "Aucune photo choisie, ou elle n'a pas pu être lue.",
+  "bgDim": "Assombrir",
+  "bgBlur": "Flou",
+  "bgSample": "Les messages restent lisibles sur le verre.",
+  "bgColourNames": "Bleu marine,Bleu,Bleu canard,Vert,Citron vert,Or,Orange,Rouge,Magenta,Violet,Ardoise,Noir"
 }

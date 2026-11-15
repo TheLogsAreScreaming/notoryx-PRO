@@ -1137,5 +1137,21 @@
   "hopNamesForget": "Olvidar elecciones recordadas ({count})",
   "hopNamesLess": "Menos",
   "hopNamesMore": "Más",
-  "mapRouteOnlineHop": "{name} (en línea)"
+  "mapRouteOnlineHop": "{name} (en línea)",
+  "bgTitle": "Fondo",
+  "bgHelp": "Las listas quedan sobre un cristal esmerilado encima del fondo. El cristal se vuelve más opaco sobre imágenes claras para que el texto se lea bien.",
+  "bgTheme": "Predeterminado del tema",
+  "bgSolid": "Color sólido",
+  "bgLinear": "Degradado",
+  "bgMesh": "Degradado en malla",
+  "bgPhoto": "Tu foto",
+  "bgColour": "Color",
+  "bgFirst": "Primer color",
+  "bgSecond": "Segundo color",
+  "bgPickPhoto": "Elegir foto",
+  "bgPhotoFailed": "No se eligió ninguna foto o no se pudo leer.",
+  "bgDim": "Oscurecer",
+  "bgBlur": "Desenfoque",
+  "bgSample": "Los mensajes se leen bien sobre el cristal.",
+  "bgColourNames": "Azul marino,Azul,Verde azulado,Verde,Lima,Dorado,Naranja,Rojo,Magenta,Morado,Pizarra,Negro"
 }

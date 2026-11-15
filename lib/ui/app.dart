@@ -28,6 +28,7 @@ import 'radios_screen.dart';
 import 'restore_sheet.dart';
 import 'search_screen.dart';
 import 'sentinel_screen.dart';
+import 'backdrop.dart';
 import 'theme_screen.dart';
 import 'themes.dart';
 import 'timeline_screen.dart';
@@ -225,8 +226,34 @@ class _HomeShellState extends State<HomeShell> {
     );
   }
 
+  late final Stream<BackdropState> _backdrop = watchBackdrop(widget.app.store);
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => StreamBuilder<BackdropState>(
+    stream: _backdrop,
+    builder: (context, snap) {
+      final bg = snap.data;
+      if (bg == null || !bg.choice.glass) return _shell(context, null);
+      final theme = Theme.of(context);
+      final fill = glassFill(
+        theme,
+        dim: bg.choice.kind == BackdropKind.photo ? bg.choice.dim : 0,
+      );
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          BackdropView(choice: bg.choice, photo: bg.photo),
+          Theme(
+            data: glassTheme(theme, fill),
+            child: Builder(builder: (context) => _shell(context, fill)),
+          ),
+        ],
+      );
+    },
+  );
+
+  /// The screen itself; [glass] is the panel fill over a background.
+  Widget _shell(BuildContext context, Color? glass) {
     final l = context.l10n;
     final app = widget.app;
     if (app.geofences case final g?) {
@@ -398,11 +425,14 @@ class _HomeShellState extends State<HomeShell> {
         children: [
           BeaconBanner(app: app),
           Expanded(
-            child: switch (_tab) {
-              0 => InboxScreen(app: app),
-              1 => NodesScreen(app: app),
-              2 => MapScreen(app: app, tiles: widget.tiles),
-              _ => RadiosScreen(app: app),
+            child: switch ((_tab, glass)) {
+              (2, _) => MapScreen(app: app, tiles: widget.tiles),
+              (final t, final fill?) => GlassPanel(
+                fill: fill,
+                margin: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                child: _tabBody(t),
+              ),
+              (final t, null) => _tabBody(t),
             },
           ),
         ],
@@ -442,6 +472,12 @@ class _HomeShellState extends State<HomeShell> {
       ),
     );
   }
+
+  Widget _tabBody(int tab) => switch (tab) {
+    0 => InboxScreen(app: widget.app),
+    1 => NodesScreen(app: widget.app),
+    _ => RadiosScreen(app: widget.app),
+  };
 }
 
 /// The inbox icon with the number of unread messages outside muted

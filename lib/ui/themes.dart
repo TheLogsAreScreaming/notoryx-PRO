@@ -332,3 +332,192 @@ Color meshColor(RadioProtocol p, ThemeData theme) {
     RadioProtocol.meshtastic => m.meshtastic,
   };
 }
+
+/// What sits behind the main screens.
+enum BackdropKind {
+  /// The theme's own plain surface (no glass).
+  theme,
+
+  /// One colour.
+  solid,
+
+  /// Two colours, corner to corner.
+  linear,
+
+  /// Two colours blended in soft overlapping blobs.
+  mesh,
+
+  /// The person's own photo, dimmed and blurred.
+  photo,
+}
+
+/// Colours offered for backgrounds.
+const backdropColors = <Color>[
+  Color(0xFF0B1D3A),
+  Color(0xFF1E5AA8),
+  Color(0xFF0E7C7B),
+  Color(0xFF2E7D32),
+  Color(0xFF7CB342),
+  Color(0xFFF9A825),
+  Color(0xFFEF6C00),
+  Color(0xFFC62828),
+  Color(0xFFAD1457),
+  Color(0xFF6A1B9A),
+  Color(0xFF37474F),
+  Color(0xFF111111),
+];
+
+/// Laid over a photo to dim it.
+const backdropShade = Color(0xFF000000);
+
+const _brightest = Color(0xFFFFFFFF);
+
+const _strongHues = [
+  Color(0xFFFF0000),
+  Color(0xFF00FF00),
+  Color(0xFF0000FF),
+  Color(0xFFFFFF00),
+  Color(0xFF00FFFF),
+  Color(0xFFFF00FF),
+];
+
+/// The background the person picked, saved as a preference.
+@immutable
+class BackdropChoice {
+  const BackdropChoice({
+    this.kind = BackdropKind.theme,
+    this.first = 0xFF1E5AA8,
+    this.second = 0xFFAD1457,
+    this.dim = .35,
+    this.blur = 8,
+  });
+
+  /// Preference the choice is saved under.
+  static const prefName = 'backdrop';
+
+  /// Preference holding the photo, base64 PNG.
+  static const photoPrefName = 'backdropPhoto';
+
+  /// Most a photo may be dimmed (0 to 1).
+  static const maxDim = .8;
+
+  /// Strongest photo blur, in logical pixels.
+  static const maxBlur = 20.0;
+
+  final BackdropKind kind;
+
+  /// First colour, ARGB.
+  final int first;
+
+  /// Second colour (gradients), ARGB.
+  final int second;
+
+  /// How much a photo is darkened, 0 to [maxDim].
+  final double dim;
+
+  /// How much a photo is blurred, 0 to [maxBlur].
+  final double blur;
+
+  /// Whether the main screens use glass over a background.
+  bool get glass => kind != BackdropKind.theme;
+
+  /// Saved form: `kind;first;second;dim;blur`.
+  String encode() =>
+      '${kind.name};$first;$second;${dim.toStringAsFixed(2)};'
+      '${blur.toStringAsFixed(1)}';
+
+  /// Reads [encode]'s output; anything unknown falls back to defaults.
+  static BackdropChoice decode(String? saved) {
+    const d = BackdropChoice();
+    final p = (saved ?? '').split(';');
+    String? at(int i) => p.length > i ? p[i] : null;
+    return BackdropChoice(
+      kind: BackdropKind.values.asNameMap()[p.first] ?? d.kind,
+      first: int.tryParse(at(1) ?? '') ?? d.first,
+      second: int.tryParse(at(2) ?? '') ?? d.second,
+      dim: (double.tryParse(at(3) ?? '') ?? d.dim).clamp(0, maxDim),
+      blur: (double.tryParse(at(4) ?? '') ?? d.blur).clamp(0, maxBlur),
+    );
+  }
+
+  /// Saves this choice.
+  Future<void> save(MeshStore store) => store.setPreference(prefName, encode());
+
+  /// A copy with some settings changed.
+  BackdropChoice copyWith({
+    BackdropKind? kind,
+    int? first,
+    int? second,
+    double? dim,
+    double? blur,
+  }) => BackdropChoice(
+    kind: kind ?? this.kind,
+    first: first ?? this.first,
+    second: second ?? this.second,
+    dim: dim ?? this.dim,
+    blur: blur ?? this.blur,
+  );
+
+  @override
+  bool operator ==(Object other) =>
+      other is BackdropChoice &&
+      other.kind == kind &&
+      other.first == first &&
+      other.second == second &&
+      other.dim == dim &&
+      other.blur == blur;
+
+  @override
+  int get hashCode => Object.hash(kind, first, second, dim, blur);
+}
+
+/// The frosted-glass fill for [theme] over any background darkened by
+/// [dim]: the theme's surface, made just opaque enough that text and the
+/// mesh colours stay at 4.5:1 (or as readable as on the plain surface)
+/// whether the background behind is black or as bright as it can be.
+Color glassFill(ThemeData theme, {double dim = 0}) {
+  final s = theme.colorScheme;
+  final m = meshColors(theme);
+  // Text is hardest to read when the background's brightness nears its
+  // own, so try greys all the way up plus strong hues, all as dimmed.
+  final behind = [
+    for (var g = 0; g <= 20; g++)
+      Color.lerp(backdropShade, _brightest, g / 20)!,
+    ..._strongHues,
+    ...backdropColors,
+  ].map((c) => Color.lerp(c, backdropShade, dim)!).toList();
+  final texts = [
+    s.onSurface,
+    s.onSurfaceVariant,
+    s.primary,
+    s.error,
+    m.meshcore,
+    m.meshtastic,
+    m.sos,
+  ];
+  // The best each colour can do is on the plain surface.
+  final goal = [for (final t in texts) min(4.5, contrastRatio(t, s.surface))];
+  for (var a = .55; a < 1; a += .01) {
+    final fill = s.surface.withValues(alpha: a);
+    final ok = behind.every((b) {
+      final bg = Color.alphaBlend(fill, b);
+      for (var i = 0; i < texts.length; i++) {
+        if (contrastRatio(texts[i], bg) < goal[i] - .001) return false;
+      }
+      return true;
+    });
+    if (ok) return fill;
+  }
+  return s.surface;
+}
+
+/// [theme] for screens laid over a background: see-through scaffold, and
+/// app bar and navigation bar filled with [fill].
+ThemeData glassTheme(ThemeData theme, Color fill) => theme.copyWith(
+  scaffoldBackgroundColor: const Color(0x00000000),
+  appBarTheme: theme.appBarTheme.copyWith(
+    backgroundColor: fill,
+    surfaceTintColor: const Color(0x00000000),
+  ),
+  navigationBarTheme: theme.navigationBarTheme.copyWith(backgroundColor: fill),
+);
