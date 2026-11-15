@@ -123,7 +123,5 @@ class MeshCoreMapper {
       ? PathFacts(route: RouteKind.direct, snr: snr)
       : PathFacts(route: RouteKind.flood, hops: pathLength & 0x3f, snr: snr);
 
-  static DateTime? _seconds(int unix) => unix <= 0
-      ? null
-      : DateTime.fromMillisecondsSinceEpoch(unix * 1000, isUtc: true);
+  static DateTime? _seconds(int unix) => radioSeconds(unix);
 }

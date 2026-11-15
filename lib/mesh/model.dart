@@ -8,6 +8,23 @@ library;
 
 import '../radio/radio_link.dart';
 
+/// The earliest time a radio's clock is believed. Repeaters whose clock was
+/// never set count from 1970 (or from when they booted), which would show as
+/// "heard 20,000 days ago".
+final DateTime earliestPlausibleTime = DateTime.utc(2020);
+
+/// [time], or null when it comes from a radio clock that was never set.
+DateTime? plausibleTime(DateTime? time) =>
+    time == null || time.isBefore(earliestPlausibleTime) ? null : time;
+
+/// A radio's Unix time in seconds, or null when it is missing or comes from
+/// a clock that was never set.
+DateTime? radioSeconds(int unix) => plausibleTime(
+  unix <= 0
+      ? null
+      : DateTime.fromMillisecondsSinceEpoch(unix * 1000, isUtc: true),
+);
+
 /// Identifies one radio the app talks to.
 ///
 /// MeshCore radios are keyed by their public key, Meshtastic nodes by their

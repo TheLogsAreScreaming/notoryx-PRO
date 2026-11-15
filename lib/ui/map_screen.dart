@@ -447,7 +447,8 @@ class NodeSheet extends StatelessWidget {
     final bars = signalBars(n.path);
     final details = [
       nodeKindName(context, n.kind),
-      if (n.lastHeard != null) l.lastHeard(ago(context, n.lastHeard!)),
+      if (plausibleTime(n.lastHeard) case final t?)
+        l.lastHeard(ago(context, t)),
       if (pathSummary(context, n.path) case final p when p.isNotEmpty) p,
     ].join(' · ');
     return SafeArea(

@@ -142,7 +142,5 @@ class MeshtasticMapper {
     return GeoPoint(p.latitude!, p.longitude!, altitude: p.altitude);
   }
 
-  static DateTime? _seconds(int unix) => unix <= 0
-      ? null
-      : DateTime.fromMillisecondsSinceEpoch(unix * 1000, isUtc: true);
+  static DateTime? _seconds(int unix) => radioSeconds(unix);
 }
