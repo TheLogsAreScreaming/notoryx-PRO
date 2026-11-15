@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_map/flutter_map.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/retry.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// Remembers whether tile requests have recently failed for lack of network.
@@ -48,6 +49,29 @@ class StatusClient extends http.BaseClient {
   @override
   void close() => _inner.close();
 }
+
+/// The HTTP client for map tiles.
+///
+/// A tile whose download fails is left blank by the map until it is
+/// scrolled away, so a short network drop (for example while switching
+/// between Wi-Fi and mobile data) could leave the map grey. Network errors
+/// and server errors are retried a few times, with growing pauses, before
+/// [status] hears about the failure.
+http.Client tileHttpClient(
+  http.Client inner,
+  NetworkStatus status, {
+  Duration Function(int retryCount)? delay,
+}) => StatusClient(
+  RetryClient(
+    inner,
+    retries: 3,
+    when: (response) => response.statusCode >= 500,
+    whenError: (error, _) =>
+        error is SocketException || error is http.ClientException,
+    delay: delay ?? (n) => Duration(milliseconds: 800 * (n + 1)),
+  ),
+  status,
+);
 
 /// Tile cache that follows the server's caching rules while online, but
 /// shows saved tiles of any age when the network is unreachable.
@@ -113,7 +137,7 @@ class MapTiles {
       status,
     );
     final provider = NetworkTileProvider(
-      httpClient: StatusClient(http.Client(), status),
+      httpClient: tileHttpClient(http.Client(), status),
       cachingProvider: cache,
       silenceExceptions: true,
     );
