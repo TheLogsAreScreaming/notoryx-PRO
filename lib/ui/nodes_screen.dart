@@ -6,6 +6,7 @@ import '../mesh/mesh.dart';
 import '../radio/radio_link.dart';
 import '../mesh/node_merge.dart';
 import 'common.dart';
+import 'node_avatar.dart';
 import '../app/sentinel.dart';
 import 'conversation_screen.dart';
 import 'sentinel_screen.dart';
@@ -117,9 +118,29 @@ class NodeTile extends StatelessWidget {
       if (radios > 1) l.nodeHeardBy(radios),
     ].join(' · ');
     return ListTile(
-      leading: Icon(
-        nodeKindIcon(n.kind),
-        semanticLabel: nodeKindName(context, n.kind),
+      leading: Semantics(
+        button: true,
+        label:
+            '${nodeKindName(context, n.kind)}. ${l.lookTitle(n.displayName)}',
+        excludeSemantics: true,
+        child: InkWell(
+          key: Key('look-${n.key}'),
+          customBorder: const CircleBorder(),
+          onTap: () => showNodeLookSheet(
+            context,
+            app: app,
+            nodeKey: n.key.toString(),
+            name: n.displayName,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(4),
+            child: NodeAvatar(
+              app: app,
+              nodeKey: n.key.toString(),
+              icon: nodeKindIcon(n.kind),
+            ),
+          ),
+        ),
       ),
       title: Wrap(
         spacing: 6,

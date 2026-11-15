@@ -12,6 +12,7 @@ import '../mesh/node_merge.dart';
 import '../mesh/places.dart';
 import 'common.dart';
 import 'compass_screen.dart';
+import 'node_avatar.dart';
 import 'places_screen.dart';
 import 'route_screen.dart';
 import 'themes.dart';
@@ -164,6 +165,7 @@ class _MapScreenState extends State<MapScreen> {
                             width: 44,
                             height: 44,
                             child: _NodeMarker(
+                              app: widget.app,
                               node: n,
                               onTap: () => _openNode(n, all),
                             ),
@@ -354,8 +356,13 @@ class _MapScreenState extends State<MapScreen> {
 }
 
 class _NodeMarker extends StatelessWidget {
-  const _NodeMarker({required this.node, required this.onTap});
+  const _NodeMarker({
+    required this.app,
+    required this.node,
+    required this.onTap,
+  });
 
+  final AppController app;
   final Node node;
   final VoidCallback onTap;
 
@@ -373,7 +380,15 @@ class _NodeMarker extends StatelessWidget {
             shape: BoxShape.circle,
             border: Border.all(color: color, width: 3),
           ),
-          child: Icon(nodeKindIcon(node.kind), color: color, size: 22),
+          child: Center(
+            child: NodeAvatar(
+              app: app,
+              nodeKey: node.key.toString(),
+              icon: nodeKindIcon(node.kind),
+              size: 32,
+              iconColor: color,
+            ),
+          ),
         ),
       ),
     );
@@ -428,7 +443,11 @@ class NodeSheet extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(nodeKindIcon(n.kind)),
+                NodeAvatar(
+                  app: app,
+                  nodeKey: n.key.toString(),
+                  icon: nodeKindIcon(n.kind),
+                ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -483,6 +502,17 @@ class NodeSheet extends StatelessWidget {
                       );
                     },
                   ),
+                OutlinedButton.icon(
+                  key: const Key('node-look'),
+                  icon: const Icon(Icons.palette_outlined),
+                  label: Text(l.lookButton),
+                  onPressed: () => showNodeLookSheet(
+                    context,
+                    app: app,
+                    nodeKey: n.key.toString(),
+                    name: n.displayName,
+                  ),
+                ),
                 if (_connection() case final MeshCoreConnection c
                     when n.kind == NodeKind.relay || n.kind == NodeKind.room)
                   OutlinedButton.icon(

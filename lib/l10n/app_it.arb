@@ -1154,5 +1154,21 @@
   "compassFromRadio": "Misurato dalla posizione della tua radio",
   "compassNoPosition": "La tua posizione è sconosciuta. Usa la posizione del telefono o assegna una posizione alla tua radio.",
   "compassNoTarget": "Questo nodo non ha condiviso una posizione.",
-  "compassNoPhone": "Impossibile ottenere la posizione del telefono. Controlla che la localizzazione sia attiva e consentita."
+  "compassNoPhone": "Impossibile ottenere la posizione del telefono. Controlla che la localizzazione sia attiva e consentita.",
+  "lookButton": "Colore o foto",
+  "lookHelp": "Solo su questo dispositivo. Mai inviato sulla rete.",
+  "lookPhoto": "Scegli una foto",
+  "lookPhotoFailed": "Impossibile usare quella foto.",
+  "lookClear": "Rimuovi",
+  "lookRed": "Rosso",
+  "lookOrange": "Arancione",
+  "lookYellow": "Giallo",
+  "lookGreen": "Verde",
+  "lookTeal": "Verde acqua",
+  "lookBlue": "Blu",
+  "lookPurple": "Viola",
+  "lookPink": "Rosa",
+  "lookBrown": "Marrone",
+  "lookGrey": "Grigio",
+  "lookTitle": "Colore o foto per {name}"
 }

@@ -1154,5 +1154,21 @@
   "compassFromRadio": "Medido a partir da posição do seu rádio",
   "compassNoPosition": "Sua posição é desconhecida. Use a localização do telefone ou defina uma posição para o seu rádio.",
   "compassNoTarget": "Este nó não compartilhou uma posição.",
-  "compassNoPhone": "Não foi possível obter a localização do telefone. Verifique se a localização está ativada e permitida."
+  "compassNoPhone": "Não foi possível obter a localização do telefone. Verifique se a localização está ativada e permitida.",
+  "lookButton": "Cor ou foto",
+  "lookHelp": "Só neste aparelho. Nunca é enviado pela malha.",
+  "lookPhoto": "Escolher uma foto",
+  "lookPhotoFailed": "Não foi possível usar essa foto.",
+  "lookClear": "Limpar",
+  "lookRed": "Vermelho",
+  "lookOrange": "Laranja",
+  "lookYellow": "Amarelo",
+  "lookGreen": "Verde",
+  "lookTeal": "Verde-azulado",
+  "lookBlue": "Azul",
+  "lookPurple": "Roxo",
+  "lookPink": "Rosa",
+  "lookBrown": "Marrom",
+  "lookGrey": "Cinza",
+  "lookTitle": "Cor ou foto para {name}"
 }

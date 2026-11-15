@@ -1154,5 +1154,21 @@
   "compassFromRadio": "Gemessen von der Position deines Funkgeräts",
   "compassNoPosition": "Deine Position ist unbekannt. Verwende den Standort des Telefons oder gib deinem Funkgerät eine Position.",
   "compassNoTarget": "Dieser Knoten hat keine Position geteilt.",
-  "compassNoPhone": "Standort des Telefons nicht verfügbar. Prüfe, ob der Standort eingeschaltet und erlaubt ist."
+  "compassNoPhone": "Standort des Telefons nicht verfügbar. Prüfe, ob der Standort eingeschaltet und erlaubt ist.",
+  "lookButton": "Farbe oder Foto",
+  "lookHelp": "Nur auf diesem Gerät. Wird nie über das Mesh gesendet.",
+  "lookPhoto": "Foto auswählen",
+  "lookPhotoFailed": "Dieses Foto ließ sich nicht verwenden.",
+  "lookClear": "Entfernen",
+  "lookRed": "Rot",
+  "lookOrange": "Orange",
+  "lookYellow": "Gelb",
+  "lookGreen": "Grün",
+  "lookTeal": "Petrol",
+  "lookBlue": "Blau",
+  "lookPurple": "Lila",
+  "lookPink": "Rosa",
+  "lookBrown": "Braun",
+  "lookGrey": "Grau",
+  "lookTitle": "Farbe oder Foto für {name}"
 }

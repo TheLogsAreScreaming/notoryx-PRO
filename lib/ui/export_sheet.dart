@@ -82,7 +82,12 @@ Future<void> showExportSheet(
     final now = DateTime.now();
     var content = format == _Format.csv
         ? messagesToCsv(messages, titles)
-        : messagesToJson(messages, titles, exportedAt: now);
+        : messagesToJson(
+            messages,
+            titles,
+            exportedAt: now,
+            looks: await store.nodeLooks(),
+          );
     if (password case final p?) {
       messenger.showSnackBar(SnackBar(content: Text(l.exportProtecting)));
       content = await _protect(content, p);

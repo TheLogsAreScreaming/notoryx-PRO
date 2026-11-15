@@ -2904,5 +2904,28 @@
   "compassFromRadio": "Measured from your radio's position",
   "compassNoPosition": "Your position isn't known. Use the phone's location, or give your radio a position.",
   "compassNoTarget": "This node hasn't shared a position.",
-  "compassNoPhone": "Couldn't get the phone's location. Check that location is on and allowed."
+  "compassNoPhone": "Couldn't get the phone's location. Check that location is on and allowed.",
+  "lookButton": "Colour or photo",
+  "lookHelp": "Only on this device. Never sent over the mesh.",
+  "lookPhoto": "Choose a photo",
+  "lookPhotoFailed": "That photo couldn't be used.",
+  "lookClear": "Clear",
+  "lookRed": "Red",
+  "lookOrange": "Orange",
+  "lookYellow": "Yellow",
+  "lookGreen": "Green",
+  "lookTeal": "Teal",
+  "lookBlue": "Blue",
+  "lookPurple": "Purple",
+  "lookPink": "Pink",
+  "lookBrown": "Brown",
+  "lookGrey": "Grey",
+  "lookTitle": "Colour or photo for {name}",
+  "@lookTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }
