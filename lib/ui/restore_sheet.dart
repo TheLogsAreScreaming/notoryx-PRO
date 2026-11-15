@@ -91,6 +91,11 @@ Future<void> restoreFromExport(
     );
     if (ok != true) return;
     final added = await store.restoreMessages(parsed.messages);
+    // Bring back node colours and photos, without replacing any set here.
+    final have = await store.nodeLooks();
+    for (final MapEntry(:key, :value) in parsed.looks.entries) {
+      if (!have.containsKey(key)) await store.setNodeLook(key, value);
+    }
     say(
       l.restoreDone(added, parsed.messages.length - added, parsed.unreadable),
     );

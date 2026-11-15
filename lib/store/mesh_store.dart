@@ -9,6 +9,7 @@ import '../mesh/diagnostics.dart';
 import '../mesh/identity.dart';
 import '../mesh/model.dart';
 import '../mesh/node_journal.dart';
+import '../mesh/node_look.dart';
 import '../mesh/places.dart';
 import '../mesh/replay.dart';
 import '../mesh/telemetry.dart';
@@ -474,6 +475,42 @@ class MeshStore {
         }
         return '#$index';
     }
+  }
+
+  // Node looks
+
+  /// Every node's chosen colour or photo, keyed by `NodeKey` text.
+  Stream<Map<String, NodeLook>> watchNodeLooks() => db
+      .select(db.nodeLooks)
+      .watch()
+      .map(
+        (rows) => {
+          for (final r in rows)
+            r.nodeKey: NodeLook(color: r.color, photo: r.photo),
+        },
+      );
+
+  /// One-off version of [watchNodeLooks].
+  Future<Map<String, NodeLook>> nodeLooks() async => {
+    for (final r in await db.select(db.nodeLooks).get())
+      r.nodeKey: NodeLook(color: r.color, photo: r.photo),
+  };
+
+  /// Sets [key]'s look; an empty look clears it.
+  Future<void> setNodeLook(String key, NodeLook look) async {
+    if (look.isEmpty) {
+      await (db.delete(db.nodeLooks)..where((l) => l.nodeKey.equals(key))).go();
+      return;
+    }
+    await db
+        .into(db.nodeLooks)
+        .insertOnConflictUpdate(
+          NodeLooksCompanion.insert(
+            nodeKey: key,
+            color: Value(look.color),
+            photo: Value(look.photo),
+          ),
+        );
   }
 
   // Places

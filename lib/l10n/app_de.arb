@@ -1137,5 +1137,21 @@
   "hopNamesForget": "Gemerkte Wahl vergessen ({count})",
   "hopNamesLess": "Weniger",
   "hopNamesMore": "Mehr",
-  "mapRouteOnlineHop": "{name} (online)"
+  "mapRouteOnlineHop": "{name} (online)",
+  "lookButton": "Farbe oder Foto",
+  "lookHelp": "Nur auf diesem Gerät. Wird nie über das Mesh gesendet.",
+  "lookPhoto": "Foto auswählen",
+  "lookPhotoFailed": "Dieses Foto ließ sich nicht verwenden.",
+  "lookClear": "Entfernen",
+  "lookRed": "Rot",
+  "lookOrange": "Orange",
+  "lookYellow": "Gelb",
+  "lookGreen": "Grün",
+  "lookTeal": "Petrol",
+  "lookBlue": "Blau",
+  "lookPurple": "Lila",
+  "lookPink": "Rosa",
+  "lookBrown": "Braun",
+  "lookGrey": "Grau",
+  "lookTitle": "Farbe oder Foto für {name}"
 }

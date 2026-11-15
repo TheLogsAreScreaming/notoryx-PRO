@@ -7559,6 +7559,274 @@ class JournalDaysCompanion extends UpdateCompanion<JournalDayRow> {
   }
 }
 
+class $NodeLooksTable extends NodeLooks
+    with TableInfo<$NodeLooksTable, NodeLookRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $NodeLooksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _nodeKeyMeta = const VerificationMeta(
+    'nodeKey',
+  );
+  @override
+  late final GeneratedColumn<String> nodeKey = GeneratedColumn<String>(
+    'node_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _colorMeta = const VerificationMeta('color');
+  @override
+  late final GeneratedColumn<int> color = GeneratedColumn<int>(
+    'color',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _photoMeta = const VerificationMeta('photo');
+  @override
+  late final GeneratedColumn<Uint8List> photo = GeneratedColumn<Uint8List>(
+    'photo',
+    aliasedName,
+    true,
+    type: DriftSqlType.blob,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [nodeKey, color, photo];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'node_looks';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<NodeLookRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('node_key')) {
+      context.handle(
+        _nodeKeyMeta,
+        nodeKey.isAcceptableOrUnknown(data['node_key']!, _nodeKeyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nodeKeyMeta);
+    }
+    if (data.containsKey('color')) {
+      context.handle(
+        _colorMeta,
+        color.isAcceptableOrUnknown(data['color']!, _colorMeta),
+      );
+    }
+    if (data.containsKey('photo')) {
+      context.handle(
+        _photoMeta,
+        photo.isAcceptableOrUnknown(data['photo']!, _photoMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {nodeKey};
+  @override
+  NodeLookRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return NodeLookRow(
+      nodeKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}node_key'],
+      )!,
+      color: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}color'],
+      ),
+      photo: attachedDatabase.typeMapping.read(
+        DriftSqlType.blob,
+        data['${effectivePrefix}photo'],
+      ),
+    );
+  }
+
+  @override
+  $NodeLooksTable createAlias(String alias) {
+    return $NodeLooksTable(attachedDatabase, alias);
+  }
+}
+
+class NodeLookRow extends DataClass implements Insertable<NodeLookRow> {
+  final String nodeKey;
+
+  /// ARGB colour, if one was chosen.
+  final int? color;
+
+  /// A small PNG, if a photo was chosen.
+  final Uint8List? photo;
+  const NodeLookRow({required this.nodeKey, this.color, this.photo});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['node_key'] = Variable<String>(nodeKey);
+    if (!nullToAbsent || color != null) {
+      map['color'] = Variable<int>(color);
+    }
+    if (!nullToAbsent || photo != null) {
+      map['photo'] = Variable<Uint8List>(photo);
+    }
+    return map;
+  }
+
+  NodeLooksCompanion toCompanion(bool nullToAbsent) {
+    return NodeLooksCompanion(
+      nodeKey: Value(nodeKey),
+      color: color == null && nullToAbsent
+          ? const Value.absent()
+          : Value(color),
+      photo: photo == null && nullToAbsent
+          ? const Value.absent()
+          : Value(photo),
+    );
+  }
+
+  factory NodeLookRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return NodeLookRow(
+      nodeKey: serializer.fromJson<String>(json['nodeKey']),
+      color: serializer.fromJson<int?>(json['color']),
+      photo: serializer.fromJson<Uint8List?>(json['photo']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'nodeKey': serializer.toJson<String>(nodeKey),
+      'color': serializer.toJson<int?>(color),
+      'photo': serializer.toJson<Uint8List?>(photo),
+    };
+  }
+
+  NodeLookRow copyWith({
+    String? nodeKey,
+    Value<int?> color = const Value.absent(),
+    Value<Uint8List?> photo = const Value.absent(),
+  }) => NodeLookRow(
+    nodeKey: nodeKey ?? this.nodeKey,
+    color: color.present ? color.value : this.color,
+    photo: photo.present ? photo.value : this.photo,
+  );
+  NodeLookRow copyWithCompanion(NodeLooksCompanion data) {
+    return NodeLookRow(
+      nodeKey: data.nodeKey.present ? data.nodeKey.value : this.nodeKey,
+      color: data.color.present ? data.color.value : this.color,
+      photo: data.photo.present ? data.photo.value : this.photo,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NodeLookRow(')
+          ..write('nodeKey: $nodeKey, ')
+          ..write('color: $color, ')
+          ..write('photo: $photo')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(nodeKey, color, $driftBlobEquality.hash(photo));
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is NodeLookRow &&
+          other.nodeKey == this.nodeKey &&
+          other.color == this.color &&
+          $driftBlobEquality.equals(other.photo, this.photo));
+}
+
+class NodeLooksCompanion extends UpdateCompanion<NodeLookRow> {
+  final Value<String> nodeKey;
+  final Value<int?> color;
+  final Value<Uint8List?> photo;
+  final Value<int> rowid;
+  const NodeLooksCompanion({
+    this.nodeKey = const Value.absent(),
+    this.color = const Value.absent(),
+    this.photo = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  NodeLooksCompanion.insert({
+    required String nodeKey,
+    this.color = const Value.absent(),
+    this.photo = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : nodeKey = Value(nodeKey);
+  static Insertable<NodeLookRow> custom({
+    Expression<String>? nodeKey,
+    Expression<int>? color,
+    Expression<Uint8List>? photo,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (nodeKey != null) 'node_key': nodeKey,
+      if (color != null) 'color': color,
+      if (photo != null) 'photo': photo,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  NodeLooksCompanion copyWith({
+    Value<String>? nodeKey,
+    Value<int?>? color,
+    Value<Uint8List?>? photo,
+    Value<int>? rowid,
+  }) {
+    return NodeLooksCompanion(
+      nodeKey: nodeKey ?? this.nodeKey,
+      color: color ?? this.color,
+      photo: photo ?? this.photo,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (nodeKey.present) {
+      map['node_key'] = Variable<String>(nodeKey.value);
+    }
+    if (color.present) {
+      map['color'] = Variable<int>(color.value);
+    }
+    if (photo.present) {
+      map['photo'] = Variable<Uint8List>(photo.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NodeLooksCompanion(')
+          ..write('nodeKey: $nodeKey, ')
+          ..write('color: $color, ')
+          ..write('photo: $photo, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$MeshDatabase extends GeneratedDatabase {
   _$MeshDatabase(QueryExecutor e) : super(e);
   $MeshDatabaseManager get managers => $MeshDatabaseManager(this);
@@ -7580,6 +7848,7 @@ abstract class _$MeshDatabase extends GeneratedDatabase {
   );
   late final $JournalNodesTable journalNodes = $JournalNodesTable(this);
   late final $JournalDaysTable journalDays = $JournalDaysTable(this);
+  late final $NodeLooksTable nodeLooks = $NodeLooksTable(this);
   late final Index messagesByConversation = Index(
     'messages_by_conversation',
     'CREATE INDEX messages_by_conversation ON messages (conversation, id)',
@@ -7619,6 +7888,7 @@ abstract class _$MeshDatabase extends GeneratedDatabase {
     positionReports,
     journalNodes,
     journalDays,
+    nodeLooks,
     messagesByConversation,
     messagesByNativeId,
     telemetryByNode,
@@ -11508,6 +11778,177 @@ typedef $$JournalDaysTableProcessedTableManager =
       JournalDayRow,
       PrefetchHooks Function()
     >;
+typedef $$NodeLooksTableCreateCompanionBuilder =
+    NodeLooksCompanion Function({
+      required String nodeKey,
+      Value<int?> color,
+      Value<Uint8List?> photo,
+      Value<int> rowid,
+    });
+typedef $$NodeLooksTableUpdateCompanionBuilder =
+    NodeLooksCompanion Function({
+      Value<String> nodeKey,
+      Value<int?> color,
+      Value<Uint8List?> photo,
+      Value<int> rowid,
+    });
+
+class $$NodeLooksTableFilterComposer
+    extends Composer<_$MeshDatabase, $NodeLooksTable> {
+  $$NodeLooksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get nodeKey => $composableBuilder(
+    column: $table.nodeKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get color => $composableBuilder(
+    column: $table.color,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<Uint8List> get photo => $composableBuilder(
+    column: $table.photo,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$NodeLooksTableOrderingComposer
+    extends Composer<_$MeshDatabase, $NodeLooksTable> {
+  $$NodeLooksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get nodeKey => $composableBuilder(
+    column: $table.nodeKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get color => $composableBuilder(
+    column: $table.color,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<Uint8List> get photo => $composableBuilder(
+    column: $table.photo,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$NodeLooksTableAnnotationComposer
+    extends Composer<_$MeshDatabase, $NodeLooksTable> {
+  $$NodeLooksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get nodeKey =>
+      $composableBuilder(column: $table.nodeKey, builder: (column) => column);
+
+  GeneratedColumn<int> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => column);
+
+  GeneratedColumn<Uint8List> get photo =>
+      $composableBuilder(column: $table.photo, builder: (column) => column);
+}
+
+class $$NodeLooksTableTableManager
+    extends
+        RootTableManager<
+          _$MeshDatabase,
+          $NodeLooksTable,
+          NodeLookRow,
+          $$NodeLooksTableFilterComposer,
+          $$NodeLooksTableOrderingComposer,
+          $$NodeLooksTableAnnotationComposer,
+          $$NodeLooksTableCreateCompanionBuilder,
+          $$NodeLooksTableUpdateCompanionBuilder,
+          (
+            NodeLookRow,
+            BaseReferences<_$MeshDatabase, $NodeLooksTable, NodeLookRow>,
+          ),
+          NodeLookRow,
+          PrefetchHooks Function()
+        > {
+  $$NodeLooksTableTableManager(_$MeshDatabase db, $NodeLooksTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$NodeLooksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$NodeLooksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$NodeLooksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> nodeKey = const Value.absent(),
+                Value<int?> color = const Value.absent(),
+                Value<Uint8List?> photo = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => NodeLooksCompanion(
+                nodeKey: nodeKey,
+                color: color,
+                photo: photo,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String nodeKey,
+                Value<int?> color = const Value.absent(),
+                Value<Uint8List?> photo = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => NodeLooksCompanion.insert(
+                nodeKey: nodeKey,
+                color: color,
+                photo: photo,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$NodeLooksTable, NodeLookRow>(table),
+                  BaseReferences<_$MeshDatabase, $NodeLooksTable, NodeLookRow>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$NodeLooksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$MeshDatabase,
+      $NodeLooksTable,
+      NodeLookRow,
+      $$NodeLooksTableFilterComposer,
+      $$NodeLooksTableOrderingComposer,
+      $$NodeLooksTableAnnotationComposer,
+      $$NodeLooksTableCreateCompanionBuilder,
+      $$NodeLooksTableUpdateCompanionBuilder,
+      (
+        NodeLookRow,
+        BaseReferences<_$MeshDatabase, $NodeLooksTable, NodeLookRow>,
+      ),
+      NodeLookRow,
+      PrefetchHooks Function()
+    >;
 
 class $MeshDatabaseManager {
   final _$MeshDatabase _db;
@@ -11540,4 +11981,6 @@ class $MeshDatabaseManager {
       $$JournalNodesTableTableManager(_db, _db.journalNodes);
   $$JournalDaysTableTableManager get journalDays =>
       $$JournalDaysTableTableManager(_db, _db.journalDays);
+  $$NodeLooksTableTableManager get nodeLooks =>
+      $$NodeLooksTableTableManager(_db, _db.nodeLooks);
 }
