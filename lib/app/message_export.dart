@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import '../mesh/model.dart';
+import '../mesh/node_look.dart';
 import '../store/mesh_store.dart';
 
 /// One CSV text cell: quoted when needed, and with a leading `'` when a
@@ -49,11 +50,22 @@ String messagesToJson(
   List<StoredMessage> messages,
   Map<String, String> titles, {
   required DateTime exportedAt,
+  Map<String, NodeLook> looks = const {},
 }) => const JsonEncoder.withIndent('  ').convert({
   'format': 'notoryx-pro-messages',
   'formatVersion': 1,
   'exportedAtUtc': exportedAt.toUtc().toIso8601String(),
   'messages': [for (final s in messages) _messageJson(s.message, titles)],
+  // Older versions ignore this.
+  if (looks.isNotEmpty)
+    'nodeLooks': [
+      for (final MapEntry(:key, :value) in looks.entries)
+        {
+          'node': key,
+          'color': ?value.color,
+          if (value.photo case final p?) 'photo': base64Encode(p),
+        },
+    ],
 });
 
 Map<String, Object?> _messageJson(Message m, Map<String, String> titles) => {

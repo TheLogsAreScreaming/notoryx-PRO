@@ -12,6 +12,7 @@ import 'channel_bridge.dart';
 import 'checklists.dart';
 import 'auto_responder.dart';
 import 'automations.dart';
+import '../mesh/node_look.dart';
 import 'distress_beacon.dart';
 import 'geofence_alerts.dart';
 import 'hop_naming_service.dart';
@@ -184,6 +185,22 @@ class AppController extends ChangeNotifier {
   }
 
   /// The distress beacon running now, if any.
+  /// Each node's chosen colour or photo, kept current while the home
+  /// screen is open ([startLooks]).
+  final looks = ValueNotifier<Map<String, NodeLook>>(const {});
+  StreamSubscription<Map<String, NodeLook>>? _looks;
+
+  /// Starts following node colours and photos.
+  void startLooks() {
+    _looks ??= store.watchNodeLooks().listen((v) => looks.value = v);
+  }
+
+  /// Stops following them.
+  void stopLooks() {
+    unawaited(_looks?.cancel());
+    _looks = null;
+  }
+
   final beacon = ValueNotifier<DistressBeacon?>(null);
   RadioConnection? _beaconRadio;
 

@@ -103,7 +103,7 @@ Things a reviewer may ask about, and the honest answers:
 | Declaration | Answer |
 |---|---|
 | Foreground service type | **connectedDevice**: keeps the Bluetooth, USB or Wi-Fi connection to the user's radio alive while the screen is off, only when "Stay connected in the background" is on. Play asks for a short video showing it; record the persistent notification appearing after connecting a radio. |
-| Location permission | Requested only on Android 11 and earlier, which require it for Bluetooth scanning. The app never reads the phone's location. Declare "Bluetooth device scanning on older Android versions". |
+| Location permission | Requested on Android 11 and earlier for Bluetooth scanning, and when the user taps "Use phone location" on the compass screen (never on opening it). The location is only used on the phone to point at a node; it is not stored or sent. Declare both uses. |
 | Biometric | Only for App lock, checked by the system. |
 | Target audience | 13 and over; not designed for children. |
 | Content rating (IARC) | Users can communicate with each other (messages); no user-generated public content hosted by the developer; no violence, gambling or purchases. Emergency tools aren't "medical advice". |
@@ -128,7 +128,7 @@ New personal developer accounts must run a **closed test with at least 12 tester
 | Camera | Set (QR codes) | None |
 | Face ID | Set (App lock) | None |
 | Local network | Set (Wi-Fi radios) | None |
-| **Location** | `NSLocationWhenInUseUsageDescription` says the app "shows where you are on the map", but **the app never reads the phone's location** | Before the first upload: remove the key, or change it to say what's true. If the upload then reports a missing purpose string, a library references location APIs and the key must stay with honest wording. |
+| Location | `NSLocationWhenInUseUsageDescription` describes the compass screen, the only place the app reads the phone's location | None. Location is used on the phone only, so the nutrition label stays "Data Not Collected". |
 | Background mode | `bluetooth-central` | Justify as: keeps the radio connection for incoming messages and the user's distress beacon. iOS may still suspend the app; don't promise background sending in the store text. |
 | Export compliance | `ITSAppUsesNonExemptEncryption` = false (PR 63) | Standard encryption only. The US may expect a yearly self-classification report for mass-market encryption; check BIS guidance. |
 | Privacy manifest | `PrivacyInfo.xcprivacy` (PR 63) | None |

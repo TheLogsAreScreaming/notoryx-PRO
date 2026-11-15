@@ -5,6 +5,7 @@ import '../mesh/model.dart';
 import '../radio/radio_link.dart';
 import '../store/mesh_store.dart';
 import 'common.dart';
+import 'node_avatar.dart';
 import 'conversation_screen.dart';
 import 'mute_menu.dart';
 
@@ -182,7 +183,14 @@ class _ConversationTile extends StatelessWidget {
         ? const TextStyle(fontWeight: FontWeight.bold)
         : null;
     return ListTile(
-      leading: Icon(icon),
+      leading: switch (conversation) {
+        DirectConversation(:final node) => NodeAvatar(
+          app: app,
+          nodeKey: node.toString(),
+          icon: icon,
+        ),
+        _ => Icon(icon),
+      },
       title: Wrap(
         spacing: 6,
         crossAxisAlignment: WrapCrossAlignment.center,

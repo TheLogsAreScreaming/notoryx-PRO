@@ -2872,5 +2872,112 @@
     }
   },
   "losLegend": "Shaded: first Fresnel zone. Dashed: 60% of it. Straight line: direct path. The ground and the lower curve include the Earth's curve.",
-  "losSource": "Ground heights: Open-Meteo (Copernicus DEM, about 90 m grid). Trees and buildings aren't included."
+  "losSource": "Ground heights: Open-Meteo (Copernicus DEM, about 90 m grid). Trees and buildings aren't included.",
+  "bgTitle": "Background",
+  "bgHelp": "Lists sit on frosted glass over the background. The glass turns more solid over bright pictures so text stays readable.",
+  "bgTheme": "Theme default",
+  "bgSolid": "Solid colour",
+  "bgLinear": "Gradient",
+  "bgMesh": "Mesh gradient",
+  "bgPhoto": "Your photo",
+  "bgColour": "Colour",
+  "bgFirst": "First colour",
+  "bgSecond": "Second colour",
+  "bgPickPhoto": "Choose photo",
+  "bgPhotoFailed": "No photo was chosen, or it couldn't be read.",
+  "bgDim": "Dim",
+  "bgBlur": "Blur",
+  "bgSample": "Messages stay readable on glass.",
+  "bgColourNames": "Navy,Blue,Teal,Green,Lime,Gold,Orange,Red,Magenta,Purple,Slate,Black",
+  "compassButton": "Compass",
+  "compassTitle": "Find {name}",
+  "@compassTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "compassTurnLeft": "Turn left {degrees}°",
+  "@compassTurnLeft": {
+    "placeholders": {
+      "degrees": {
+        "type": "int"
+      }
+    }
+  },
+  "compassTurnRight": "Turn right {degrees}°",
+  "@compassTurnRight": {
+    "placeholders": {
+      "degrees": {
+        "type": "int"
+      }
+    }
+  },
+  "compassOnTarget": "On target",
+  "compassBearing": "Bearing {degrees}° {point}",
+  "@compassBearing": {
+    "placeholders": {
+      "degrees": {
+        "type": "int"
+      },
+      "point": {
+        "type": "String"
+      }
+    }
+  },
+  "compassPoints": "N,NE,E,SE,S,SW,W,NW",
+  "compassMetres": "{metres} m",
+  "@compassMetres": {
+    "placeholders": {
+      "metres": {
+        "type": "int"
+      }
+    }
+  },
+  "compassSummary": "{name}, {distance}, {direction}",
+  "@compassSummary": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "distance": {
+        "type": "String"
+      },
+      "direction": {
+        "type": "String"
+      }
+    }
+  },
+  "compassCalibrate": "The compass needs calibrating: move the phone in a figure of eight.",
+  "compassNone": "No compass on this device. North is at the top.",
+  "compassUsePhone": "Use phone location",
+  "compassFromPhone": "Measured from your phone's location",
+  "compassFromRadio": "Measured from your radio's position",
+  "compassNoPosition": "Your position isn't known. Use the phone's location, or give your radio a position.",
+  "compassNoTarget": "This node hasn't shared a position.",
+  "compassNoPhone": "Couldn't get the phone's location. Check that location is on and allowed.",
+  "lookButton": "Colour or photo",
+  "lookHelp": "Only on this device. Never sent over the mesh.",
+  "lookPhoto": "Choose a photo",
+  "lookPhotoFailed": "That photo couldn't be used.",
+  "lookClear": "Clear",
+  "lookRed": "Red",
+  "lookOrange": "Orange",
+  "lookYellow": "Yellow",
+  "lookGreen": "Green",
+  "lookTeal": "Teal",
+  "lookBlue": "Blue",
+  "lookPurple": "Purple",
+  "lookPink": "Pink",
+  "lookBrown": "Brown",
+  "lookGrey": "Grey",
+  "lookTitle": "Colour or photo for {name}",
+  "@lookTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }
