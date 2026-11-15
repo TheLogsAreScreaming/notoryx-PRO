@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import '../mesh/model.dart';
+import '../mesh/node_look.dart';
 import '../store/mesh_store.dart';
 
 /// Why a file can't be restored at all.
@@ -14,10 +16,13 @@ class RestoreRefused implements Exception {
 
 /// The readable contents of an export file.
 class ParsedExport {
-  const ParsedExport(this.messages, this.unreadable);
+  const ParsedExport(this.messages, this.unreadable, {this.looks = const {}});
 
   /// Messages in the order they arrived.
   final List<Message> messages;
+
+  /// Node colours and photos, keyed by `NodeKey` text.
+  final Map<String, NodeLook> looks;
 
   /// Entries that couldn't be understood and will be left out.
   final int unreadable;
@@ -57,7 +62,34 @@ ParsedExport parseExport(String text) {
     }
   }
   out.sort((a, b) => a.receivedAt.compareTo(b.receivedAt));
-  return ParsedExport(out, unreadable);
+  return ParsedExport(out, unreadable, looks: _looks(root['nodeLooks']));
+}
+
+/// The largest photo accepted from a file, so a crafted backup can't fill
+/// the database.
+const maxLookPhotoBytes = 256 * 1024;
+
+Map<String, NodeLook> _looks(Object? raw) {
+  if (raw is! List<Object?>) return const {};
+  final out = <String, NodeLook>{};
+  for (final e in raw.take(5000)) {
+    if (e is! Map<String, Object?>) continue;
+    final node = e['node'];
+    if (node is! String || NodeKey.tryParse(node) == null) continue;
+    final color = e['color'];
+    Uint8List? photo;
+    if (e['photo'] case final String b64) {
+      try {
+        final bytes = base64Decode(b64);
+        if (bytes.length <= maxLookPhotoBytes) photo = bytes;
+      } on FormatException {
+        // Leave the photo out; keep the colour.
+      }
+    }
+    final look = NodeLook(color: color is int ? color : null, photo: photo);
+    if (!look.isEmpty) out[node] = look;
+  }
+  return out;
 }
 
 T? _as<T>(Object? v) => v is T ? v : null;

@@ -16,7 +16,7 @@ Messages, contacts, channels, node details, telemetry, saved places and settings
 
 ## Permissions
 - **Bluetooth:** to find and connect to your radio.
-- **Location:** Android versions before 12 require it for Bluetooth scanning. The app does not read your phone's GPS.
+- **Location:** Android versions before 12 require it for Bluetooth scanning. The compass screen (open a node on the map, then Compass) reads your phone's location only if you have already allowed it, or when you tap "Use phone location". It is used on the phone to work out the distance and direction to that node; it is not saved, not sent over the mesh and not sent anywhere else. The compass itself uses the phone's motion sensors, also only on the phone.
 - **Camera:** to scan QR codes, only while the scanner is open.
 - **Fingerprint, face or passcode:** only if you turn on App lock. The check happens in your phone's system, and the app never sees the result beyond pass or fail.
 - **Notifications and foreground service:** to alert you to messages and keep the radio connected in the background when you turn that on.
