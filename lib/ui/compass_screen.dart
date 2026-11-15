@@ -215,6 +215,9 @@ class _CompassScreenState extends State<CompassScreen> {
                             ring: scheme.outline,
                             north: scheme.error,
                             label: scheme.onSurface,
+                            font: Theme.of(
+                              context,
+                            ).textTheme.titleMedium?.fontFamily,
                             points: points,
                           ),
                         ),
@@ -313,12 +316,16 @@ class _RosePainter extends CustomPainter {
     required this.ring,
     required this.north,
     required this.label,
+    required this.font,
     required this.points,
   });
 
   final Color ring;
   final Color north;
   final Color label;
+
+  /// The theme's font, so the letters match the rest of the app.
+  final String? font;
   final List<String> points;
 
   @override
@@ -353,6 +360,7 @@ class _RosePainter extends CustomPainter {
           text: points[i],
           style: TextStyle(
             color: i == 0 ? north : label,
+            fontFamily: font,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
@@ -369,6 +377,7 @@ class _RosePainter extends CustomPainter {
       old.ring != ring ||
       old.north != north ||
       old.label != label ||
+      old.font != font ||
       old.points != points;
 }
 

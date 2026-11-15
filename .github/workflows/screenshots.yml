@@ -1,8 +1,9 @@
 name: Store screenshots
 
 # Renders the store screenshots from demo mode, in every store size and
-# language, with real fonts. Run it by hand from the Actions tab; the PNGs
-# are attached to the run as the "store-screenshots" artifact.
+# language, plus the README extras (build/screenshots/readme/), with real
+# fonts. Run it by hand from the Actions tab; the PNGs are attached to the
+# run as the "store-screenshots" artifact.
 on:
   workflow_dispatch:
 

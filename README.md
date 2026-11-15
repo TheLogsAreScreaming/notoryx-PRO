@@ -4,20 +4,123 @@
 
 NOTORYX PRO talks to both kinds of radio from the same app: connect a MeshCore companion and a Meshtastic node, and chat, map and manage both from one place.
 
-Downloads are published in **[notoryx-PRO-releases](https://github.com/TheLogsAreScreaming/notoryx-PRO-releases)**, not here.
+Downloads are published in **[notoryx-PRO-releases](https://github.com/TheLogsAreScreaming/notoryx-PRO-releases/releases)**, not here.
 
-## Status: just started
+<table>
+  <tr>
+    <td><img src="docs/screenshots/1-inbox.png" width="200" alt="Inbox with MeshCore and Meshtastic channels side by side"></td>
+    <td><img src="docs/screenshots/2-conversation.png" width="200" alt="A direct conversation with delivery ticks"></td>
+    <td><img src="docs/screenshots/3-nodes.png" width="200" alt="Node list for both meshes with signal bars"></td>
+    <td><img src="docs/screenshots/4-radios.png" width="200" alt="Two radios connected at once"></td>
+  </tr>
+  <tr>
+    <td align="center">One inbox</td>
+    <td align="center">Conversation</td>
+    <td align="center">Nodes</td>
+    <td align="center">Several radios</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/line-of-sight.png" width="200" alt="Line of sight with a terrain profile and the Fresnel zone"></td>
+    <td><img src="docs/screenshots/compass.png" width="200" alt="Compass arrow pointing to a node"></td>
+    <td><img src="docs/screenshots/node-colours.png" width="200" alt="Nodes with their own colours"></td>
+    <td><img src="docs/screenshots/glass-background.png" width="200" alt="Inbox on a gradient background with a glass panel"></td>
+  </tr>
+  <tr>
+    <td align="center">Line of sight with terrain</td>
+    <td align="center">Compass to a node</td>
+    <td align="center">Node colours</td>
+    <td align="center">Glass backgrounds</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/5-diagnostics.png" width="200" alt="Diagnostics with packet log and radio readings"></td>
+    <td><img src="docs/screenshots/6-emergency.png" width="200" alt="MECP emergency message composer"></td>
+    <td><img src="docs/screenshots/7-themes.png" width="200" alt="Theme picker"></td>
+    <td><img src="docs/screenshots/8-night-ops.png" width="200" alt="Night Ops theme"></td>
+  </tr>
+  <tr>
+    <td align="center">Diagnostics</td>
+    <td align="center">Emergency messages</td>
+    <td align="center">Eight themes</td>
+    <td align="center">Night Ops</td>
+  </tr>
+</table>
 
-There's no test build yet. See [ROADMAP.md](ROADMAP.md) for the build order.
+Screenshots come from the app's demo mode (pretend radios, made-up places). They're rendered by `test/screenshots/`; see [Screenshots](#screenshots).
 
-## What makes it different
+## Status: test 20 (0.20.0), 15 November 2026
 
-- **Both meshes, one app.** MeshCore and Meshtastic radios side by side, each speaking its own protocol, with one inbox, one map and one node list.
-- **Free and open.** No paid timers, no feature paywalls, source in this repository.
-- **Clean-room code.** Written from the published MeshCore companion protocol and the Meshtastic protobuf definitions. No code is copied from other client apps; CI checks for meshcore-open code on every pull request.
-- **Pro diagnostics on every platform.** Live packet log, noise floor, signal bars, line of sight and telemetry history on Android and Mac as well as iPhone.
-- **Trust you can see.** Verified-sender badges for contacts whose keys you've confirmed.
-- **Built for the backcountry.** Offline maps, connection health you can see, and automatic reconnect.
+The latest build is **[0.20.0 test 20](https://github.com/TheLogsAreScreaming/notoryx-PRO-releases/releases/tag/v0.20.0-test.20)** (build 25), a test build for Android, Mac and Windows.
+
+- **Checked on real hardware:** test 19 was checked on a phone with a MeshCore and a Meshtastic radio (connect, send on a test channel). Test 18's node colours, compass and line of sight were checked on a phone, and test 20's clock fix too.
+- **Not tried on real radios yet:** most features added since test 14 (trusted nodes, network diagram, off-route alerts, route picker, nearby repeater test, automations, day replay, node journal, checklists, identity key backup). They pass the automated tests and CI only. Please report what works.
+- **Not yet built:** iPhone (needs an Apple developer account), Google Play and the App Store. The Mac build isn't notarized and the Windows build isn't code-signed.
+
+## Features
+
+### Both meshes, one app
+- MeshCore and Meshtastic radios side by side, each speaking its own protocol, with one inbox, one map and one node list.
+- Up to four radios at once, from either mesh.
+- Bluetooth, USB (Android and Windows) and Wi-Fi links, with automatic reconnect and a connection log.
+- Keeps the connection in the background.
+- **Demo mode** with a pretend MeshCore and Meshtastic radio, for trying the app without one.
+
+### Messaging
+- Unified inbox by person and channel, unread counts, mute and notifications.
+- Delivery ticks and retries (MeshCore direct, reset path, then flood; Meshtastic resend), and a card showing how each message arrived.
+- Channels: create, join, leave and share by QR code or link.
+- Forwarding, scheduled messages, search, delete and export.
+- Auto-replies with ready-made presets, and automations (webhooks off by default).
+- Contacts beyond the radio's own limit.
+
+### Map and navigation
+- One map for both meshes with signal bars, MeshCore routes and offline use of every tile you've viewed.
+- Route view and picker for MeshCore direct paths.
+- Places: GPX import and export, geofences, link planner and off-route alerts.
+- Day replay of where nodes were.
+- **Compass** that points to a node, with distance and "turn left/right".
+- **Line of sight** between any two points, with Fresnel zone and Earth's curve, and an optional terrain profile from Open-Meteo (nothing is sent until you tap **Check terrain**).
+
+### Diagnostics
+- Live packet log, noise floor and channel activity.
+- Trace route with each hop's signal, saved traces and shareable trace cards.
+- Nearby repeater test, network diagram and a timeline of what happened.
+- Delivery hints that explain why a message may not have arrived.
+- Telemetry history with charts for Meshtastic nodes.
+
+### Trust and safety
+- Verified senders: QR codes, fingerprints, badges and name-clash warnings.
+- Trusted nodes, identity key backup and a node journal.
+- MECP emergency messages with labels in 20 languages, a MAYDAY that gets through mute, and a manually started distress beacon. Emergencies show in neon green.
+- SALUTE and 9-Line reports, and offline checklists.
+- Community moderation: report a message, a Flagged label and appeals.
+
+### Radio admin
+- MeshCore: radio settings with area presets, adverts, repeater and room server admin, repeater names, the radio's command line and path-hash setting.
+- Meshtastic: radio settings, module settings, remote admin over the mesh, fixed position and standard region setup.
+- Other-mesh traffic, MQTT feeds and opt-in channel bridging.
+- Airtime savers: Plus Codes and paced remote settings.
+
+### Your look, your data
+- Eight themes with MeshCore red and Meshtastic blue throughout, and a colour or photo for each node.
+- Backgrounds: solid colour, gradient, mesh gradient or your own photo, with frosted glass panels.
+- App lock, optional encryption of saved messages, password-protected backups, restore and team setup sharing.
+- English, Spanish, French, German, Portuguese and Italian. Everything except English is machine-written and needs a native speaker's review.
+
+## Install
+
+Get the files from the **[latest test build](https://github.com/TheLogsAreScreaming/notoryx-PRO-releases/releases/tag/v0.20.0-test.20)**. Each test updates the previous one in place and keeps your messages.
+
+| File | For |
+|---|---|
+| `NOTORYX-PRO-0.20.0-android-arm64.apk` | Most Android phones (64-bit ARM) |
+| `NOTORYX-PRO-0.20.0-android.apk` | Any Android device (larger) |
+| `NOTORYX-PRO-0.20.0-macos.zip` | Mac (Intel and Apple silicon), macOS 12 or later |
+| `NOTORYX-PRO-0.20.0-windows-x64.zip` | Windows 10 and 11, 64-bit (never run on a real PC yet) |
+
+- **Android:** download the APK on the phone, open it and allow installs from your browser or file manager when asked. Builds are signed with the NOTORYX PRO key, certificate SHA-256 `7419F685D2FBFDF533C2EE32034477531E3A414D8574320B079FC913183AFA70`.
+- **Mac:** unzip, then right-click **NOTORYX PRO** → **Open** the first time (the app isn't notarized).
+- **Windows:** unzip and run `notoryx_pro.exe`. If SmartScreen warns, choose **More info** → **Run anyway**.
+- **Check the download:** each release has `SHA256SUMS.txt`.
 
 ## App IDs
 
@@ -28,17 +131,40 @@ There's no test build yet. See [ROADMAP.md](ROADMAP.md) for the build order.
 
 These differ from NOTORYX Core, NOTORYX Independent and NOTORYX Connect, so all of them can be installed together.
 
+## What makes it different
+
+- **Both meshes, one app.** No switching apps to talk to a MeshCore and a Meshtastic radio.
+- **Free and open.** No paid timers, no feature paywalls, source in this repository.
+- **Clean-room code.** Written from the published MeshCore companion protocol and the Meshtastic protobuf definitions. No code is copied from other client apps; CI checks for that on every pull request.
+- **Pro tools on every platform.** Packet log, noise floor, signal bars, line of sight with terrain and telemetry history on Android, Mac and Windows.
+- **Built for the backcountry.** Offline maps, compass, connection health you can see and automatic reconnect.
+
 ## Building
 
-CI is the build loop (`.github/workflows/ci.yml`): format, analyze, tests, the independence check and a debug Android build. Locally:
+CI is the build loop (`.github/workflows/ci.yml`): format, analyze, tests, the independence check and a debug Android build. Test builds come from `release-build.yml`. Locally:
 
 ```bash
 flutter pub get
+flutter gen-l10n
 flutter test
 ```
+
+## Screenshots
+
+The images above and the store screenshots are rendered from demo mode with real fonts, headless:
+
+```bash
+SCREENSHOTS=1 flutter test test/screenshots
+```
+
+PNGs land in `build/screenshots/` (`readme/` for the extra README shots, `<size>/<language>/` for the store sets). You can also run the **Store screenshots** workflow from the Actions tab and download the `store-screenshots` artifact. The README copies in `docs/screenshots/` are the English phone shots, shrunk to 960 px tall.
+
+## Privacy
+
+The app has no accounts and no advertising, analytics or crash-reporting SDK. Its developer receives data only if you turn on Community moderation and send a report or appeal. See [docs/PRIVACY.md](docs/PRIVACY.md) and the [privacy policy](https://meshmayhem.org/privacy/notoryx-pro/).
 
 ## License
 
 NOTORYX PRO is free software under the [GNU General Public License v3.0](LICENSE). The Meshtastic protocol definitions it uses are GPL-3.0 too, so the app as a whole is GPL-3.0: anyone can use, study, share and change it, and anyone who shares a changed version must share its source under the same license.
 
-Emergency message labels come from the [MECP project](https://github.com/mecp-org/MECP)'s language files (CC BY 4.0); the MECP protocol itself is CC0.
+Emergency message labels come from the [MECP project](https://github.com/mecp-org/MECP)'s language files (CC BY 4.0); the MECP protocol itself is CC0. Encryption by [SQLite3MultipleCiphers](https://github.com/utelle/SQLite3MultipleCiphers) (MIT). Windows USB by [libserialport](https://sigrok.org/wiki/Libserialport) (LGPL-3.0). Map tiles © OpenStreetMap contributors. Elevation data from [Open-Meteo](https://open-meteo.com/) (Copernicus DEM).
