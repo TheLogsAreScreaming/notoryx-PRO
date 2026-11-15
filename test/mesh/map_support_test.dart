@@ -183,5 +183,57 @@ void main() {
       await up.get(Uri.parse('https://tile.example/1/1/1.png'));
       expect(status.offline, isFalse);
     });
+
+    test('a tile that fails once is fetched again', () async {
+      final status = NetworkStatus();
+      var calls = 0;
+      final client = tileHttpClient(
+        MockClient((_) async {
+          calls++;
+          if (calls < 3) throw const SocketException('dropped');
+          return http.Response('tile', 200);
+        }),
+        status,
+        delay: (_) => Duration.zero,
+      );
+      final r = await client.get(Uri.parse('https://tile.example/1/1/1.png'));
+      expect(r.body, 'tile');
+      expect(calls, 3);
+      expect(status.offline, isFalse);
+    });
+
+    test('a server error is retried too', () async {
+      var calls = 0;
+      final client = tileHttpClient(
+        MockClient((_) async {
+          calls++;
+          return http.Response('busy', calls == 1 ? 503 : 200);
+        }),
+        NetworkStatus(),
+        delay: (_) => Duration.zero,
+      );
+      final r = await client.get(Uri.parse('https://tile.example/1/1/1.png'));
+      expect(r.statusCode, 200);
+      expect(calls, 2);
+    });
+
+    test('offline only after every retry fails', () async {
+      final status = NetworkStatus();
+      var calls = 0;
+      final client = tileHttpClient(
+        MockClient((_) async {
+          calls++;
+          throw const SocketException('no route');
+        }),
+        status,
+        delay: (_) => Duration.zero,
+      );
+      await expectLater(
+        client.get(Uri.parse('https://tile.example/1/1/1.png')),
+        throwsA(isA<SocketException>()),
+      );
+      expect(calls, 4);
+      expect(status.offline, isTrue);
+    });
   });
 }
