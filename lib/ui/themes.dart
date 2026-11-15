@@ -332,3 +332,9 @@ Color meshColor(RadioProtocol p, ThemeData theme) {
     RadioProtocol.meshtastic => m.meshtastic,
   };
 }
+
+/// Black or white, whichever reads better on a colour the person chose
+/// (a node's colour, say), since that colour isn't from the theme.
+Color onChosenColor(Color fill) => fill.computeLuminance() > 0.4
+    ? const Color(0xFF000000)
+    : const Color(0xFFFFFFFF);

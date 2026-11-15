@@ -1137,5 +1137,21 @@
   "hopNamesForget": "Oublier les choix retenus ({count})",
   "hopNamesLess": "Moins",
   "hopNamesMore": "Plus",
-  "mapRouteOnlineHop": "{name} (en ligne)"
+  "mapRouteOnlineHop": "{name} (en ligne)",
+  "lookButton": "Couleur ou photo",
+  "lookHelp": "Uniquement sur cet appareil. Jamais envoyé sur le maillage.",
+  "lookPhoto": "Choisir une photo",
+  "lookPhotoFailed": "Cette photo n'a pas pu être utilisée.",
+  "lookClear": "Effacer",
+  "lookRed": "Rouge",
+  "lookOrange": "Orange",
+  "lookYellow": "Jaune",
+  "lookGreen": "Vert",
+  "lookTeal": "Bleu-vert",
+  "lookBlue": "Bleu",
+  "lookPurple": "Violet",
+  "lookPink": "Rose",
+  "lookBrown": "Marron",
+  "lookGrey": "Gris",
+  "lookTitle": "Couleur ou photo pour {name}"
 }

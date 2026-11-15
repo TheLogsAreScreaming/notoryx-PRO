@@ -225,6 +225,23 @@ enum DeliveryCode {
 
 /// The app's SQLite database.
 ///
+/// A colour or photo the person chose for a node, keyed by `NodeKey` (a
+/// MeshCore public key or a Meshtastic node number). Only on this device.
+/// Schema v12.
+@DataClassName('NodeLookRow')
+class NodeLooks extends Table {
+  TextColumn get nodeKey => text()();
+
+  /// ARGB colour, if one was chosen.
+  IntColumn get color => integer().nullable()();
+
+  /// A small PNG, if a photo was chosen.
+  BlobColumn get photo => blob().nullable()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {nodeKey};
+}
+
 /// Saved waypoints, routes and geofences. Schema v9.
 @DataClassName('PlaceRow')
 class Places extends Table {
@@ -322,13 +339,14 @@ class JournalDays extends Table {
     PositionReports,
     JournalNodes,
     JournalDays,
+    NodeLooks,
   ],
 )
 class MeshDatabase extends _$MeshDatabase {
   MeshDatabase(super.e);
 
   @override
-  int get schemaVersion => 11;
+  int get schemaVersion => 12;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -385,6 +403,10 @@ class MeshDatabase extends _$MeshDatabase {
         // v11: the node journal. Starts empty and fills as nodes are heard.
         await m.createTable(schema.journalNodes);
         await m.createTable(schema.journalDays);
+      },
+      from11To12: (m, schema) async {
+        // v12: a colour or photo per node.
+        await m.createTable(schema.nodeLooks);
       },
     ),
   );
