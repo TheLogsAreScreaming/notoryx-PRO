@@ -31,7 +31,7 @@
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>NOTORYX PRO uses Bluetooth to connect to your MeshCore and Meshtastic radios.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>NOTORYX PRO shows where you are on the map and can share your position with your radio.</string>
+	<string>NOTORYX PRO uses your location on this phone to show the distance and direction to a mesh node on the compass screen. It is not saved or sent anywhere.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Unlocks NOTORYX PRO when App lock is on.</string>
 	<key>NSCameraUsageDescription</key>

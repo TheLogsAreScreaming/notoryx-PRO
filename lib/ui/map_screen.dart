@@ -11,6 +11,7 @@ import 'admin_screens.dart';
 import '../mesh/node_merge.dart';
 import '../mesh/places.dart';
 import 'common.dart';
+import 'compass_screen.dart';
 import 'node_avatar.dart';
 import 'places_screen.dart';
 import 'route_screen.dart';
@@ -487,6 +488,20 @@ class NodeSheet extends StatelessWidget {
             Wrap(
               spacing: 8,
               children: [
+                if (n.position != null)
+                  OutlinedButton.icon(
+                    key: const Key('node-compass'),
+                    icon: const Icon(Icons.explore_outlined),
+                    label: Text(l.compassButton),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => CompassScreen(app: app, node: n),
+                        ),
+                      );
+                    },
+                  ),
                 OutlinedButton.icon(
                   key: const Key('node-look'),
                   icon: const Icon(Icons.palette_outlined),
