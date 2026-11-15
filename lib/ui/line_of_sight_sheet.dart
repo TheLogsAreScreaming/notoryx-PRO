@@ -257,7 +257,7 @@ class _Verdict extends StatelessWidget {
     final detail = w == null
         ? null
         : w.clearanceM < 0
-        ? l.losWorstBlocked(km!, (-w.clearanceM).toStringAsFixed(0))
+        ? l.losWorstBlocked((-w.clearanceM).toStringAsFixed(0), km!)
         : l.losWorstOpen(
             km!,
             (math.min(w.zoneOpen!, 1) * 100).toStringAsFixed(0),

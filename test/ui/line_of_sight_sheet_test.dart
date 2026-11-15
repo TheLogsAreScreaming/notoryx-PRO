@@ -91,6 +91,14 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.textContaining('Blocked:'), findsOneWidget);
     expect(find.textContaining('Ground rises'), findsOneWidget);
+    // The hill is ~500 m above a ~7 km path: metres and km must not swap.
+    final text = tester.widget<Text>(find.textContaining('Ground rises')).data!;
+    final m = RegExp(
+      r'Ground rises (\d+) m above the line ([\d.]+) km along',
+    ).firstMatch(text);
+    expect(m, isNotNull, reason: text);
+    expect(int.parse(m!.group(1)!), greaterThan(400));
+    expect(double.parse(m.group(2)!), lessThan(10));
   });
 
   testWidgets('changing an end drops a stale profile', (tester) async {
