@@ -3,11 +3,12 @@
 NOTORYX PRO is a client for LoRa mesh radios (MeshCore and Meshtastic). It has no accounts. Its developer receives data only if you turn on the optional Community moderation feature and send a report or appeal. It contains no advertising, analytics or crash-reporting SDK.
 
 ## Stored on your phone
-Messages, contacts, channels, node details, telemetry, saved places and settings are kept in the app's private storage. The app opts out of Android's cloud backup, so this data isn't copied to Google backup. You can choose to encrypt saved messages; the key stays on your phone, and if it is lost the messages can't be recovered.
+Messages, contacts, channels, node details, telemetry, saved places and settings are kept in the app's private storage. Photos you pick for a node or as a background are copied there too. The app opts out of Android's cloud backup, so this data isn't copied to Google backup. You can choose to encrypt saved messages; the key stays on your phone, and if it is lost the messages can't be recovered.
 
 ## What leaves your phone, and when
 - **Over your radio:** messages, node information and any position you choose to share are sent over the air through your radio. Other mesh users and anyone listening can receive them. Channels and direct messages are protected only as far as the mesh protocol and your channel settings provide.
 - **Map tiles:** when you view the map, the app downloads tiles from OpenStreetMap's servers, which receive your IP address and the areas requested.
+- **Terrain check:** only when you tap Check terrain in Line of sight, the app sends the coordinates of up to 64 points along the line between the two ends you picked to Open-Meteo (api.open-meteo.com) to get ground heights. Open-Meteo receives those coordinates and your IP address. Nothing is sent until you tap.
 - **Radio over Wi-Fi:** if you connect to a radio by address, the app talks directly to that address.
 - **MQTT feeds:** only if you add a broker, the app connects to the broker you chose and it receives your IP address and connection details.
 - **Sharing and export:** files and text leave the app only when you share or save them yourself. Exports aren't encrypted unless you choose a password-protected backup, and a team setup includes your channel keys.
@@ -28,4 +29,4 @@ The app is not directed at children under 13.
 
 Questions or requests: bastionappsupport@gmail.com
 
-Effective date: November 13, 2026
+Effective date: November 14, 2026

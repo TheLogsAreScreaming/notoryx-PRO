@@ -10,6 +10,7 @@ import '../mesh/gpx.dart';
 import '../mesh/model.dart';
 import '../mesh/places.dart';
 import 'common.dart';
+import 'line_of_sight_sheet.dart';
 import 'restore_sheet.dart' show pickTextFile;
 
 /// Saved waypoints, routes and geofences; GPX in and out; the link planner.
@@ -106,20 +107,47 @@ class PlacesScreen extends StatelessWidget {
                 stream: app.store.watchAllNodes(),
                 builder: (context, nodes) {
                   final ends = _endpoints(places, nodes.data ?? const []);
-                  return ListTile(
-                    key: const Key('plan-link'),
-                    leading: const Icon(Icons.settings_input_antenna),
-                    title: Text(l.placesPlanner),
-                    enabled: ends.length >= 2,
-                    subtitle: ends.length < 2
-                        ? Text(l.placesPlannerNeed)
-                        : null,
-                    onTap: () => showModalBottomSheet<void>(
-                      context: context,
-                      showDragHandle: true,
-                      isScrollControlled: true,
-                      builder: (_) => _LinkPlanner(ends: ends),
-                    ),
+                  final mhz = app.connections
+                      .map((c) => c.frequencyMHz)
+                      .nonNulls
+                      .firstOrNull;
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ListTile(
+                        key: const Key('places-line-of-sight'),
+                        leading: const Icon(Icons.landscape_outlined),
+                        title: Text(l.lineOfSight),
+                        enabled: ends.length >= 2,
+                        subtitle: ends.length < 2
+                            ? Text(l.placesPlannerNeed)
+                            : null,
+                        onTap: () => showModalBottomSheet<void>(
+                          context: context,
+                          showDragHandle: true,
+                          isScrollControlled: true,
+                          builder: (_) => LineOfSightSheet(
+                            ends: ends,
+                            frequencyMHz: mhz ?? 915,
+                          ),
+                        ),
+                      ),
+                      ListTile(
+                        key: const Key('plan-link'),
+                        leading: const Icon(Icons.settings_input_antenna),
+                        title: Text(l.placesPlanner),
+                        enabled: ends.length >= 2,
+                        subtitle: ends.length < 2
+                            ? Text(l.placesPlannerNeed)
+                            : null,
+                        onTap: () => showModalBottomSheet<void>(
+                          context: context,
+                          showDragHandle: true,
+                          isScrollControlled: true,
+                          builder: (_) => _LinkPlanner(ends: ends),
+                        ),
+                      ),
+                    ],
                   );
                 },
               ),

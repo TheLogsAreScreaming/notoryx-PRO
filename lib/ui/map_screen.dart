@@ -16,6 +16,7 @@ import 'route_screen.dart';
 import 'themes.dart';
 import 'conversation_screen.dart';
 import 'diagnostics_screen.dart';
+import 'line_of_sight_sheet.dart';
 import 'verify_screen.dart';
 import 'map_tiles.dart';
 import 'meshtastic_admin_screen.dart';
@@ -345,6 +346,7 @@ class _MapScreenState extends State<MapScreen> {
         hops: widget.app.hopNaming.resolve(n, all, from: _radioAt(n)),
         routeShown: _route?.key == n.key,
         tiles: widget.tiles,
+        others: [for (final m in mergeAcrossRadios(all)) m.node],
       ),
     );
     if (showRoute == null || !mounted) return;
@@ -388,6 +390,7 @@ class NodeSheet extends StatelessWidget {
     required this.hops,
     required this.routeShown,
     this.tiles,
+    this.others = const [],
   });
 
   final AppController app;
@@ -397,6 +400,19 @@ class NodeSheet extends StatelessWidget {
 
   /// Map background for trace cards.
   final MapTiles? tiles;
+
+  /// Other nodes on the map, offered as ends for line of sight.
+  final List<Node> others;
+
+  /// Places line of sight can run between: your radio (if it has a
+  /// position), this node, then the other nodes with positions.
+  List<(String, GeoPoint)> _losEnds(BuildContext context) => [
+    if (_connection()?.radio?.position case final p?)
+      (context.l10n.losYourRadio, p),
+    if (node.position case final p?) (node.displayName, p),
+    for (final o in others)
+      if (o.position case final p? when o.key != node.key) (o.displayName, p),
+  ];
 
   /// The connected radio that knows this node, if any.
   RadioConnection? _connection() {
@@ -607,11 +623,10 @@ class NodeSheet extends StatelessWidget {
                     ),
                   ),
                 ),
-                if ((_connection()?.radio?.position, n.position) case (
-                  final from?,
-                  final to?,
-                ))
+                if (_losEnds(context) case final ends
+                    when ends.length >= 2 && n.position != null)
                   OutlinedButton.icon(
+                    key: const Key('node-line-of-sight'),
                     icon: const Icon(Icons.landscape_outlined),
                     label: Text(l.lineOfSight),
                     onPressed: () => showModalBottomSheet<void>(
@@ -619,8 +634,7 @@ class NodeSheet extends StatelessWidget {
                       showDragHandle: true,
                       isScrollControlled: true,
                       builder: (_) => LineOfSightSheet(
-                        from: from,
-                        to: to,
+                        ends: ends,
                         frequencyMHz: _connection()?.frequencyMHz ?? 915,
                       ),
                     ),
