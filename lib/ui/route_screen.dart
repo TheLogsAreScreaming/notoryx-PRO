@@ -5,6 +5,7 @@ import '../mesh/mesh.dart';
 import '../mesh/route_planner.dart';
 import 'common.dart';
 import 'diagnostics_screen.dart';
+import 'list_insets.dart';
 
 /// A MeshCore node's route: each repeater on the way with how well each
 /// link heard, other routes the saved traces measured (best first, with a
@@ -112,7 +113,7 @@ class _RouteScreenState extends State<RouteScreen> {
             if (_node.path.rssi != null) l.pathRssi(_node.path.rssi!),
           ].join(' · ');
           return ListView(
-            padding: const EdgeInsets.all(16),
+            padding: withBottomInset(context, const EdgeInsets.all(16)),
             children: [
               Text(l.rpCurrent, style: text.titleMedium),
               const SizedBox(height: 8),

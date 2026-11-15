@@ -6,6 +6,7 @@ import '../app/sentinel.dart';
 import '../l10n/app_localizations.dart';
 import '../mesh/model.dart';
 import '../radio/radio_link.dart';
+import 'list_insets.dart';
 
 String sentinelReasonLabel(AppLocalizations l, SentinelReason r) => switch (r) {
   SentinelReason.spam => l.sntReasonSpam,
@@ -316,7 +317,10 @@ class SentinelPage extends StatelessWidget {
           final synced = sentinel.syncedAt;
           final scheme = Theme.of(context).colorScheme;
           return ListView(
-            padding: const EdgeInsets.only(bottom: 24),
+            padding: withBottomInset(
+              context,
+              const EdgeInsets.only(bottom: 24),
+            ),
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),

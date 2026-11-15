@@ -9,6 +9,7 @@ import '../mesh/mesh.dart';
 import '../meshtastic/admin.dart';
 import 'airtime_warning.dart';
 import 'common.dart';
+import 'list_insets.dart';
 
 typedef _Text = String Function(AppLocalizations l);
 
@@ -447,7 +448,7 @@ class _ModuleScreenState extends State<_ModuleScreen> {
           ? Form(
               key: _form,
               child: ListView(
-                padding: const EdgeInsets.all(16),
+                padding: withBottomInset(context, const EdgeInsets.all(16)),
                 children: [
                   Text(widget.module.help(l)),
                   const SizedBox(height: 8),
@@ -464,7 +465,7 @@ class _ModuleScreenState extends State<_ModuleScreen> {
             )
           : _error != null
           ? ListView(
-              padding: const EdgeInsets.all(16),
+              padding: withBottomInset(context, const EdgeInsets.all(16)),
               children: [
                 Text(
                   l.settingsSaveFailed(RadioConnection.describeError(_error!)),

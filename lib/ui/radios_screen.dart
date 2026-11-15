@@ -20,6 +20,7 @@ import 'verify_screen.dart';
 import 'channels_screen.dart';
 import 'meshtastic_admin_screen.dart';
 import 'telemetry_screen.dart';
+import 'list_insets.dart';
 
 /// Connected radios, and ways to connect more: Bluetooth, Wi-Fi and USB.
 class RadiosScreen extends StatelessWidget {
@@ -33,7 +34,7 @@ class RadiosScreen extends StatelessWidget {
     return ListenableBuilder(
       listenable: app,
       builder: (context, _) => ListView(
-        padding: const EdgeInsets.all(16),
+        padding: withBottomInset(context, const EdgeInsets.all(16)),
         children: [
           Text(
             l.radiosConnected,

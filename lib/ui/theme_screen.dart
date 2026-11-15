@@ -8,6 +8,7 @@ import '../store/mesh_store.dart';
 import 'backdrop.dart';
 import 'common.dart';
 import 'themes.dart';
+import 'list_insets.dart';
 
 /// Picks one of the eight themes, with a live preview of each.
 class ThemeScreen extends StatelessWidget {
@@ -57,7 +58,7 @@ class ThemeScreen extends StatelessWidget {
               final across = box.maxWidth >= 840 ? 4 : 2;
               final width = (box.maxWidth - 16 - 8 * (across - 1)) / across;
               return ListView(
-                padding: const EdgeInsets.all(8),
+                padding: withBottomInset(context, const EdgeInsets.all(8)),
                 children: [
                   Wrap(
                     spacing: 8,

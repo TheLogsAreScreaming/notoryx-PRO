@@ -9,6 +9,7 @@ import '../app/heading.dart';
 import '../mesh/compass.dart';
 import '../mesh/mesh.dart';
 import 'common.dart';
+import 'list_insets.dart';
 
 /// A big arrow pointing at [node], turning with the phone.
 class CompassScreen extends StatefulWidget {
@@ -166,7 +167,7 @@ class _CompassScreenState extends State<CompassScreen> {
       final rose = -(heading ?? 0) * math.pi / 180;
       final arrow = (bearing - (heading ?? 0)) * math.pi / 180;
       body = ListView(
-        padding: const EdgeInsets.all(16),
+        padding: withBottomInset(context, const EdgeInsets.all(16)),
         children: [
           Semantics(
             liveRegion: true,

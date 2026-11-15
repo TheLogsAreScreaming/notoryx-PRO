@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../meshcore/meshcore.dart';
 import 'common.dart';
+import 'list_insets.dart';
 
 /// The 64-byte key in [text]: 128 hex digits, ignoring spaces, line
 /// breaks and a leading 0x. Null when it isn't one.
@@ -140,7 +141,7 @@ class _IdentityKeyScreenState extends State<IdentityKeyScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(l.identityKeyTitle)),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: withBottomInset(context, const EdgeInsets.all(16)),
         children: [
           Text(l.identityKeyIntro),
           const SizedBox(height: 24),

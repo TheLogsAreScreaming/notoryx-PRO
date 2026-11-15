@@ -7,6 +7,7 @@ import '../l10n/app_localizations.dart';
 import '../mesh/model.dart';
 import '../mesh/places.dart';
 import 'common.dart';
+import 'list_insets.dart';
 
 /// What the editors can pick from: nodes, conversations, geofences and
 /// radios, loaded once when a screen opens.
@@ -173,7 +174,10 @@ class _AutomationsScreenState extends State<AutomationsScreen> {
                   builder: (context, _) {
                     final s = _engine.settings;
                     return ListView(
-                      padding: const EdgeInsets.only(bottom: 88),
+                      padding: withBottomInset(
+                        context,
+                        const EdgeInsets.only(bottom: 88),
+                      ),
                       children: [
                         Padding(
                           padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
@@ -361,7 +365,7 @@ class _AutomationEditorState extends State<AutomationEditor> {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: withBottomInset(context, const EdgeInsets.all(16)),
         children: [
           TextField(
             controller: _name,

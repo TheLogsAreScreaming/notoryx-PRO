@@ -4,6 +4,7 @@ import '../mesh/mesh.dart';
 import '../store/mesh_store.dart';
 import 'common.dart';
 import 'line_chart.dart';
+import 'list_insets.dart';
 
 /// A node's battery, radio load and sensor readings over time.
 class TelemetryScreen extends StatefulWidget {
@@ -49,7 +50,7 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
         builder: (context, snap) {
           final points = snap.data ?? const <TelemetryPoint>[];
           return ListView(
-            padding: const EdgeInsets.all(16),
+            padding: withBottomInset(context, const EdgeInsets.all(16)),
             children: [
               SegmentedButton<Duration>(
                 segments: [
