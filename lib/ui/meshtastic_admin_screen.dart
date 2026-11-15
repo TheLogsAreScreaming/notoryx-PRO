@@ -12,6 +12,7 @@ import 'common.dart';
 import 'fixed_position_dialog.dart';
 import 'meshtastic_modules_screen.dart';
 import 'preset_sheet.dart';
+import 'list_insets.dart';
 
 /// Settings of a Meshtastic node: the connected radio, or another node
 /// ([node]) administered over the mesh.
@@ -267,7 +268,7 @@ class _MeshtasticSettingsScreenState extends State<MeshtasticSettingsScreen> {
   Widget _failed(BuildContext context) {
     final l = context.l10n;
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: withBottomInset(context, const EdgeInsets.all(16)),
       children: [
         Text(
           _remote
@@ -311,7 +312,7 @@ class _MeshtasticSettingsScreenState extends State<MeshtasticSettingsScreen> {
     return Form(
       key: _form,
       child: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: withBottomInset(context, const EdgeInsets.all(16)),
         children: [
           Text(l.mtNames, style: heading),
           TextFormField(

@@ -5,6 +5,7 @@ import '../app/mqtt_feed.dart';
 import '../radio/radio_link.dart';
 import 'common.dart';
 import 'diagnostics_screen.dart';
+import 'list_insets.dart';
 
 /// MQTT feeds: read-only views of a mesh through an internet broker.
 class FeedsScreen extends StatefulWidget {
@@ -176,7 +177,7 @@ class _FeedFormState extends State<_FeedForm> {
     return Scaffold(
       appBar: AppBar(title: Text(l.feedAdd)),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: withBottomInset(context, const EdgeInsets.all(16)),
         children: [
           SegmentedButton<RadioProtocol>(
             segments: const [

@@ -8,6 +8,7 @@ import '../mesh/topology.dart';
 import '../radio/radio_link.dart';
 import 'common.dart';
 import 'conversation_screen.dart';
+import 'list_insets.dart';
 
 /// Where each dot goes.
 class TopologyLayout {
@@ -270,7 +271,7 @@ class TopologyScreen extends StatelessWidget {
               return EmptyState(l.topologyEmpty, icon: Icons.hub_outlined);
             }
             return ListView(
-              padding: const EdgeInsets.all(16),
+              padding: withBottomInset(context, const EdgeInsets.all(16)),
               children: [
                 LayoutBuilder(
                   builder: (context, box) {

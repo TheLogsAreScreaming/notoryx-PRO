@@ -7,6 +7,7 @@ import 'package:share_plus/share_plus.dart';
 import '../app/checklists.dart';
 import '../l10n/app_localizations.dart';
 import 'common.dart';
+import 'list_insets.dart';
 
 /// The starter checklists, in the user's language.
 List<ChecklistTemplate> starterChecklists(AppLocalizations l) => [
@@ -148,7 +149,10 @@ class _ChecklistsScreenState extends State<ChecklistsScreen> {
             ),
           );
           return ListView(
-            padding: const EdgeInsets.only(bottom: 96),
+            padding: withBottomInset(
+              context,
+              const EdgeInsets.only(bottom: 96),
+            ),
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
@@ -322,7 +326,10 @@ class _ChecklistRunScreenState extends State<ChecklistRunScreen> {
             ],
           ),
           body: ListView(
-            padding: const EdgeInsets.only(bottom: 24),
+            padding: withBottomInset(
+              context,
+              const EdgeInsets.only(bottom: 24),
+            ),
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
@@ -474,7 +481,7 @@ class _ChecklistEditScreenState extends State<ChecklistEditScreen> {
       body: Form(
         key: _form,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: withBottomInset(context, const EdgeInsets.all(16)),
           children: [
             TextFormField(
               key: const Key('checklist-name'),
@@ -562,7 +569,7 @@ class ChecklistRecordScreen extends StatelessWidget {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.only(bottom: 24),
+        padding: withBottomInset(context, const EdgeInsets.only(bottom: 24)),
         children: [
           ListTile(
             leading: const Icon(Icons.schedule),

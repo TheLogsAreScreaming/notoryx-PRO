@@ -5,6 +5,7 @@ import '../app/channel_bridge.dart';
 import '../mesh/model.dart';
 import '../radio/radio_link.dart';
 import 'common.dart';
+import 'list_insets.dart';
 
 /// Lists bridges between the two meshes and turns them on and off.
 class BridgeScreen extends StatefulWidget {
@@ -223,7 +224,7 @@ class _BridgeFormState extends State<_BridgeForm> {
           final ready =
               has(RadioProtocol.meshcore) && has(RadioProtocol.meshtastic);
           return ListView(
-            padding: const EdgeInsets.all(16),
+            padding: withBottomInset(context, const EdgeInsets.all(16)),
             children: [
               SegmentedButton<bool>(
                 segments: [

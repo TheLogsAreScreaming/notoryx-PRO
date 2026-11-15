@@ -8,6 +8,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import '../app/app_controller.dart';
 import '../mesh/mesh.dart';
 import 'common.dart';
+import 'list_insets.dart';
 
 /// Badge for a node's trust status; nothing when unverified.
 class TrustBadge extends StatelessWidget {
@@ -141,7 +142,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
           final v = snap.data?[node.key];
           final status = trustOf(node, v);
           return ListView(
-            padding: const EdgeInsets.all(16),
+            padding: withBottomInset(context, const EdgeInsets.all(16)),
             children: [
               Text(l.verifyIntro),
               const SizedBox(height: 16),

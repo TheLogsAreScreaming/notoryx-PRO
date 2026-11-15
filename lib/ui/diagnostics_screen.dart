@@ -10,6 +10,7 @@ import 'common.dart';
 import 'map_tiles.dart';
 import 'trace_card.dart';
 import 'line_chart.dart';
+import 'list_insets.dart';
 
 /// Live packet log and radio readings for one connected radio.
 class DiagnosticsScreen extends StatelessWidget {
@@ -205,7 +206,7 @@ class _RadioStatsViewState extends State<RadioStatsView> {
             (useNoise ? s.noiseFloor?.toDouble() : s.channelUtilization),
         ].nonNulls.toList();
         return ListView(
-          padding: const EdgeInsets.all(16),
+          padding: withBottomInset(context, const EdgeInsets.all(16)),
           children: [
             Text(
               c.protocol == RadioProtocol.meshcore

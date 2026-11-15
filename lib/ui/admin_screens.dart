@@ -9,6 +9,7 @@ import '../meshcore/frames.dart';
 import 'common.dart';
 import 'identity_key_screen.dart';
 import 'preset_sheet.dart';
+import 'list_insets.dart';
 
 /// A MeshCore companion's own settings.
 class MeshCoreSettingsScreen extends StatefulWidget {
@@ -116,7 +117,7 @@ class _MeshCoreSettingsScreenState extends State<MeshCoreSettingsScreen> {
       body: Form(
         key: _form,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: withBottomInset(context, const EdgeInsets.all(16)),
           children: [
             TextFormField(
               key: const Key('settings-name'),
@@ -402,7 +403,7 @@ class _ConsoleScreenState extends State<ConsoleScreen> {
             child: _lines.isEmpty
                 ? EmptyState(l.consoleEmpty, icon: Icons.terminal)
                 : ListView(
-                    padding: const EdgeInsets.all(12),
+                    padding: withBottomInset(context, const EdgeInsets.all(12)),
                     children: [
                       for (final (cmd, reply, failed) in _lines) ...[
                         Text('> $cmd', style: mono),
@@ -509,7 +510,7 @@ class _ServerScreenState extends State<ServerScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(l.serverTitle(n.displayName))),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: withBottomInset(context, const EdgeInsets.all(16)),
         children: [
           TextField(
             key: const Key('server-password'),

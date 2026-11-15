@@ -11,6 +11,7 @@ import '../store/mesh_store.dart';
 import 'common.dart';
 import 'restore_sheet.dart' show pickTextFile;
 import 'verify_screen.dart' show openScanner;
+import 'list_insets.dart';
 
 /// Longest code that scans reliably on a phone screen.
 const maxQrChars = 1200;
@@ -116,7 +117,7 @@ class _TeamPackScreenState extends State<TeamPackScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(l.teamTitle)),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: withBottomInset(context, const EdgeInsets.all(16)),
         children: [
           Text(
             l.teamApplyHeading,

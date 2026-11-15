@@ -4,6 +4,7 @@ import '../app/app_controller.dart';
 import '../mesh/model.dart';
 import '../mesh/node_journal.dart';
 import 'common.dart';
+import 'list_insets.dart';
 
 /// The name of a journal label.
 String journalLabelName(BuildContext context, JournalLabel label) {
@@ -432,7 +433,7 @@ class _JournalNodeScreenState extends State<JournalNodeScreen> {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.only(bottom: 24),
+        padding: withBottomInset(context, const EdgeInsets.only(bottom: 24)),
         children: [
           Padding(
             padding: const EdgeInsets.all(16),
