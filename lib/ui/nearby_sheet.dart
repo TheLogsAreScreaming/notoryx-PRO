@@ -192,8 +192,9 @@ class _NearbyTile extends StatelessWidget {
     final l = context.l10n;
     final facts = [
       nodeKindName(context, n.kind),
-      if (!n.answered && n.lastHeard != null)
-        l.nearbyQuiet(ago(context, n.lastHeard!)),
+      if (!n.answered)
+        if (plausibleTime(n.lastHeard) case final t?)
+          l.nearbyQuiet(ago(context, t)),
       if (n.snr != null || n.rssi != null)
         l.nearbyYouHear(
           [
