@@ -1137,5 +1137,22 @@
   "hopNamesForget": "Oublier les choix retenus ({count})",
   "hopNamesLess": "Moins",
   "hopNamesMore": "Plus",
-  "mapRouteOnlineHop": "{name} (en ligne)"
+  "mapRouteOnlineHop": "{name} (en ligne)",
+  "compassButton": "Boussole",
+  "compassTitle": "Trouver {name}",
+  "compassTurnLeft": "Tournez de {degrees}° à gauche",
+  "compassTurnRight": "Tournez de {degrees}° à droite",
+  "compassOnTarget": "Dans la bonne direction",
+  "compassBearing": "Cap {degrees}° {point}",
+  "compassPoints": "N,NE,E,SE,S,SO,O,NO",
+  "compassMetres": "{metres} m",
+  "compassSummary": "{name}, {distance}, {direction}",
+  "compassCalibrate": "La boussole doit être calibrée : déplacez le téléphone en dessinant un huit.",
+  "compassNone": "Pas de boussole sur cet appareil. Le nord est en haut.",
+  "compassUsePhone": "Utiliser la position du téléphone",
+  "compassFromPhone": "Mesuré depuis la position de votre téléphone",
+  "compassFromRadio": "Mesuré depuis la position de votre radio",
+  "compassNoPosition": "Votre position est inconnue. Utilisez la position du téléphone ou donnez une position à votre radio.",
+  "compassNoTarget": "Ce nœud n'a pas partagé de position.",
+  "compassNoPhone": "Impossible d'obtenir la position du téléphone. Vérifiez que la localisation est activée et autorisée."
 }

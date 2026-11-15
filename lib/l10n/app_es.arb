@@ -1137,5 +1137,22 @@
   "hopNamesForget": "Olvidar elecciones recordadas ({count})",
   "hopNamesLess": "Menos",
   "hopNamesMore": "Más",
-  "mapRouteOnlineHop": "{name} (en línea)"
+  "mapRouteOnlineHop": "{name} (en línea)",
+  "compassButton": "Brújula",
+  "compassTitle": "Buscar a {name}",
+  "compassTurnLeft": "Gira {degrees}° a la izquierda",
+  "compassTurnRight": "Gira {degrees}° a la derecha",
+  "compassOnTarget": "En dirección correcta",
+  "compassBearing": "Rumbo {degrees}° {point}",
+  "compassPoints": "N,NE,E,SE,S,SO,O,NO",
+  "compassMetres": "{metres} m",
+  "compassSummary": "{name}, {distance}, {direction}",
+  "compassCalibrate": "La brújula necesita calibrarse: mueve el teléfono dibujando un ocho.",
+  "compassNone": "Este dispositivo no tiene brújula. El norte está arriba.",
+  "compassUsePhone": "Usar la ubicación del teléfono",
+  "compassFromPhone": "Medido desde la ubicación de tu teléfono",
+  "compassFromRadio": "Medido desde la posición de tu radio",
+  "compassNoPosition": "No se conoce tu posición. Usa la ubicación del teléfono o asigna una posición a tu radio.",
+  "compassNoTarget": "Este nodo no ha compartido una posición.",
+  "compassNoPhone": "No se pudo obtener la ubicación del teléfono. Comprueba que la ubicación esté activada y permitida."
 }

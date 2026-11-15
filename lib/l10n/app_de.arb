@@ -1137,5 +1137,22 @@
   "hopNamesForget": "Gemerkte Wahl vergessen ({count})",
   "hopNamesLess": "Weniger",
   "hopNamesMore": "Mehr",
-  "mapRouteOnlineHop": "{name} (online)"
+  "mapRouteOnlineHop": "{name} (online)",
+  "compassButton": "Kompass",
+  "compassTitle": "{name} finden",
+  "compassTurnLeft": "{degrees}° nach links drehen",
+  "compassTurnRight": "{degrees}° nach rechts drehen",
+  "compassOnTarget": "Richtung stimmt",
+  "compassBearing": "Peilung {degrees}° {point}",
+  "compassPoints": "N,NO,O,SO,S,SW,W,NW",
+  "compassMetres": "{metres} m",
+  "compassSummary": "{name}, {distance}, {direction}",
+  "compassCalibrate": "Der Kompass muss kalibriert werden: Bewege das Telefon in Form einer Acht.",
+  "compassNone": "Dieses Gerät hat keinen Kompass. Norden ist oben.",
+  "compassUsePhone": "Standort des Telefons verwenden",
+  "compassFromPhone": "Gemessen vom Standort deines Telefons",
+  "compassFromRadio": "Gemessen von der Position deines Funkgeräts",
+  "compassNoPosition": "Deine Position ist unbekannt. Verwende den Standort des Telefons oder gib deinem Funkgerät eine Position.",
+  "compassNoTarget": "Dieser Knoten hat keine Position geteilt.",
+  "compassNoPhone": "Standort des Telefons nicht verfügbar. Prüfe, ob der Standort eingeschaltet und erlaubt ist."
 }
