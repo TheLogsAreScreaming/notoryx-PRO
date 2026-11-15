@@ -77,7 +77,19 @@ jobs:
       - name: Build Mac app (checks entitlements and Xcode project)
         run: flutter build macos --debug
       - name: Build iPhone app without signing
-        run: flutter build ios --debug --no-codesign
+        run: flutter build ios --release --no-codesign
+      - name: Package unsigned .ipa for sideloading
+        # Unsigned: Sideloadly or AltStore signs it with your own Apple ID when installing.
+        run: |
+          rm -rf build/ipa && mkdir -p build/ipa/Payload
+          cp -R build/ios/iphoneos/Runner.app build/ipa/Payload/
+          cd build/ipa && zip -qry ../NOTORYX-PRO-unsigned.ipa Payload
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NOTORYX-PRO-ios-unsigned-ipa
+          path: build/NOTORYX-PRO-unsigned.ipa
+          retention-days: 30
+          if-no-files-found: error
 
   windows-build:
     # local_auth_windows 2.0.2 compiles with /await, which Visual Studio 2026
