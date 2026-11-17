@@ -796,7 +796,6 @@
       }
     }
   },
-  "mtCustomRadio": "This node uses custom bandwidth, spreading factor and coding rate. Change them in the official app.",
   "mtHopLimit": "Hops: {count}",
   "@mtHopLimit": {
     "placeholders": {
@@ -808,6 +807,37 @@
   "mtHopHelp": "How many times a message may be relayed. 3 suits most meshes.",
   "mtSlot": "Frequency slot (0 = automatic)",
   "mtSlotInvalid": "A whole number, 0 or more",
+  "mtCustomHelp": "Custom radio settings. Every node you want to talk to must use exactly the same bandwidth, spreading factor and coding rate.",
+  "mtBandwidth": "Bandwidth",
+  "mtKhz": "{value} kHz",
+  "@mtKhz": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "mtSpreadFactor": "Spreading factor",
+  "mtSpreadFactorValue": "SF {value}",
+  "@mtSpreadFactorValue": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "mtCodingRate": "Coding rate",
+  "mtCodingRateValue": "4/{value}",
+  "@mtCodingRateValue": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "mtFrequency": "Exact frequency (optional)",
+  "mtFrequencyHelp": "Leave empty to use the region and frequency slot. When set, the node uses this frequency and ignores the slot.",
+  "mtFrequencyInvalid": "A frequency in MHz, such as 906.875",
   "mtTxEnabled": "Transmit",
   "mtTxPower": "Transmit power: {value}",
   "@mtTxPower": {

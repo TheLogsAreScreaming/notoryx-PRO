@@ -5,6 +5,9 @@ import 'package:notoryx_pro/meshtastic/meshtastic.dart';
 
 import '../support/scripted_meshtastic.dart';
 
+int floatBits(double v) =>
+    (ByteData(4)..setFloat32(0, v, Endian.little)).getUint32(0, Endian.little);
+
 String hex(List<int> b) =>
     b.map((x) => x.toRadixString(16).padLeft(2, '0')).join(' ');
 
@@ -267,5 +270,48 @@ void main() {
         throwsA(isA<MeshtasticTimeout>()),
       );
     });
+  });
+
+  test('float fields: read, change, write back, and unchanged values', () {
+    final raw =
+        (ProtoWriter()
+              ..uint(LoraField.region, 1)
+              ..fixed32(LoraField.overrideFrequency, floatBits(915.5)))
+            .toBytes();
+    final s = SettingsSection(SectionKind.lora, raw);
+    expect(s.real(LoraField.overrideFrequency), 915.5);
+    expect(s.withValue(LoraField.overrideFrequency, 915.5).changed, isFalse);
+    final edited = s.withValue(LoraField.overrideFrequency, 869.525);
+    expect(edited.changed, isTrue);
+    final back = SettingsSection(SectionKind.lora, edited.encode());
+    expect(back.real(LoraField.overrideFrequency), closeTo(869.525, 1e-4));
+    expect(back.number(LoraField.region), 1);
+    // Typed again, the same value matches what the node sent back.
+    expect(
+      back.withValue(LoraField.overrideFrequency, 869.525).changed,
+      isFalse,
+    );
+    final cleared = SettingsSection(
+      SectionKind.lora,
+      back.withValue(LoraField.overrideFrequency, 0.0).encode(),
+    );
+    expect(cleared.real(LoraField.overrideFrequency), 0);
+  });
+
+  test('preset radio settings, with 2.4 GHz bandwidths', () {
+    expect(MeshtasticPreset.radioFor(MeshtasticPreset.longFast), (
+      bandwidth: 250,
+      spreadFactor: 11,
+      codingRate: 5,
+    ));
+    expect(MeshtasticPreset.radioFor(9, wide: true), (
+      bandwidth: 1600,
+      spreadFactor: 11,
+      codingRate: 8,
+    ));
+    expect(MeshtasticPreset.radioFor(2).bandwidth, 250, reason: 'retired');
+    expect(MeshtasticBandwidth.kHz(62), 62.5);
+    expect(MeshtasticBandwidth.kHz(800), 812.5);
+    expect(MeshtasticBandwidth.kHz(0), 250);
   });
 }
