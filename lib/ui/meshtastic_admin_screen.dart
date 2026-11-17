@@ -45,6 +45,7 @@ class _MeshtasticSettingsScreenState extends State<MeshtasticSettingsScreen> {
   final _longName = TextEditingController();
   final _shortName = TextEditingController();
   final _slot = TextEditingController();
+  final _frequency = TextEditingController();
 
   bool get _remote => widget.node != null;
   int? get _target => widget.node?.key.meshtasticNum;
@@ -60,7 +61,7 @@ class _MeshtasticSettingsScreenState extends State<MeshtasticSettingsScreen> {
 
   @override
   void dispose() {
-    for (final c in [_longName, _shortName, _slot]) {
+    for (final c in [_longName, _shortName, _slot, _frequency]) {
       c.dispose();
     }
     super.dispose();
@@ -81,10 +82,42 @@ class _MeshtasticSettingsScreenState extends State<MeshtasticSettingsScreen> {
       _longName.text = owner.text(OwnerField.longName);
       _shortName.text = owner.text(OwnerField.shortName);
       _slot.text = '${s[SectionKind.lora].number(LoraField.channelNum)}';
+      _frequency.text = _mhz(
+        s[SectionKind.lora].real(LoraField.overrideFrequency),
+      );
       setState(() => _settings = s);
     } on Object catch (e) {
       if (mounted) setState(() => _error = e);
     }
+  }
+
+  /// [mhz] as typed in the exact-frequency box; empty for 0 (not set).
+  static String _mhz(double mhz) {
+    if (mhz <= 0) return '';
+    final s = mhz.toStringAsFixed(4);
+    return s.replaceFirst(RegExp(r'\.?0+$'), '');
+  }
+
+  /// Turns presets on or off. Turning them off on a node with no custom
+  /// settings yet starts from what its current preset uses, so the radio
+  /// stays where it was until the user changes something.
+  void _setUsePreset(bool on) {
+    var s = _settings!.withValue(SectionKind.lora, LoraField.usePreset, on);
+    final lora = s[SectionKind.lora];
+    if (!on &&
+        lora.number(LoraField.bandwidth) == 0 &&
+        lora.number(LoraField.spreadFactor) == 0 &&
+        lora.number(LoraField.codingRate) == 0) {
+      final r = MeshtasticPreset.radioFor(
+        lora.number(LoraField.modemPreset),
+        wide: lora.number(LoraField.region) == MeshtasticRegion.lora24,
+      );
+      s = s
+          .withValue(SectionKind.lora, LoraField.bandwidth, r.bandwidth)
+          .withValue(SectionKind.lora, LoraField.spreadFactor, r.spreadFactor)
+          .withValue(SectionKind.lora, LoraField.codingRate, r.codingRate);
+    }
+    setState(() => _settings = s);
   }
 
   void _set(SectionKind kind, int field, Object value) =>
@@ -265,6 +298,72 @@ class _MeshtasticSettingsScreenState extends State<MeshtasticSettingsScreen> {
     );
   }
 
+  /// Bandwidth, spreading factor and coding rate, for a node not on a
+  /// preset.
+  List<Widget> _customRadio(BuildContext context, SettingsSection lora) {
+    final l = context.l10n;
+    final wide = lora.number(LoraField.region) == MeshtasticRegion.lora24;
+    final bandwidths = wide
+        ? MeshtasticBandwidth.wide
+        : MeshtasticBandwidth.subGhz;
+    final bw = lora.number(LoraField.bandwidth);
+    final sf = lora.number(LoraField.spreadFactor);
+    final cr = lora.number(LoraField.codingRate);
+    String khz(int code) {
+      final k = MeshtasticBandwidth.kHz(code);
+      return l.mtKhz(k == k.roundToDouble() ? '${k.round()}' : '$k');
+    }
+
+    return [
+      Text(l.mtCustomHelp, style: Theme.of(context).textTheme.bodySmall),
+      DropdownButtonFormField<int>(
+        key: ValueKey('mt-bandwidth-$bw'),
+        initialValue: bw,
+        isExpanded: true,
+        decoration: InputDecoration(labelText: l.mtBandwidth),
+        items: [
+          if (!bandwidths.containsKey(bw))
+            DropdownMenuItem(value: bw, child: Text(khz(bw))),
+          for (final code in bandwidths.keys)
+            DropdownMenuItem(value: code, child: Text(khz(code))),
+        ],
+        onChanged: (v) {
+          if (v != null) _set(SectionKind.lora, LoraField.bandwidth, v);
+        },
+      ),
+      DropdownButtonFormField<int>(
+        key: ValueKey('mt-sf-$sf'),
+        initialValue: sf,
+        isExpanded: true,
+        decoration: InputDecoration(labelText: l.mtSpreadFactor),
+        items: [
+          if (sf < 7 || sf > 12)
+            DropdownMenuItem(value: sf, child: Text(l.mtSpreadFactorValue(sf))),
+          for (var v = 7; v <= 12; v++)
+            DropdownMenuItem(value: v, child: Text(l.mtSpreadFactorValue(v))),
+        ],
+        onChanged: (v) {
+          if (v != null) _set(SectionKind.lora, LoraField.spreadFactor, v);
+        },
+      ),
+      DropdownButtonFormField<int>(
+        key: ValueKey('mt-cr-$cr'),
+        initialValue: cr,
+        isExpanded: true,
+        decoration: InputDecoration(labelText: l.mtCodingRate),
+        items: [
+          if (cr < 5 || cr > 8)
+            DropdownMenuItem(value: cr, child: Text(l.mtCodingRateValue(cr))),
+          for (var v = 5; v <= 8; v++)
+            DropdownMenuItem(value: v, child: Text(l.mtCodingRateValue(v))),
+        ],
+        onChanged: (v) {
+          if (v != null) _set(SectionKind.lora, LoraField.codingRate, v);
+        },
+      ),
+    ];
+  }
+
   Widget _failed(BuildContext context) {
     final l = context.l10n;
     return ListView(
@@ -387,6 +486,7 @@ class _MeshtasticSettingsScreenState extends State<MeshtasticSettingsScreen> {
                 );
                 if (code == null || !mounted) return;
                 _slot.text = '0';
+                _frequency.text = '';
                 setState(() {
                   _settings = _settings!
                       .withValue(SectionKind.lora, LoraField.region, code)
@@ -396,7 +496,12 @@ class _MeshtasticSettingsScreenState extends State<MeshtasticSettingsScreen> {
                         LoraField.modemPreset,
                         MeshtasticPreset.longFast,
                       )
-                      .withValue(SectionKind.lora, LoraField.channelNum, 0);
+                      .withValue(SectionKind.lora, LoraField.channelNum, 0)
+                      .withValue(
+                        SectionKind.lora,
+                        LoraField.overrideFrequency,
+                        0.0,
+                      );
                 });
               },
             ),
@@ -430,7 +535,7 @@ class _MeshtasticSettingsScreenState extends State<MeshtasticSettingsScreen> {
             contentPadding: EdgeInsets.zero,
             title: Text(l.mtUsePreset),
             value: usePreset,
-            onChanged: (v) => _set(SectionKind.lora, LoraField.usePreset, v),
+            onChanged: _setUsePreset,
           ),
           if (usePreset)
             DropdownButtonFormField<int>(
@@ -457,7 +562,7 @@ class _MeshtasticSettingsScreenState extends State<MeshtasticSettingsScreen> {
               },
             )
           else
-            Text(l.mtCustomRadio),
+            ..._customRadio(context, lora),
           TextFormField(
             key: const Key('mt-slot'),
             controller: _slot,
@@ -471,6 +576,32 @@ class _MeshtasticSettingsScreenState extends State<MeshtasticSettingsScreen> {
               final n = int.tryParse(v.trim());
               if (n != null && n >= 0) {
                 _set(SectionKind.lora, LoraField.channelNum, n);
+              }
+            },
+          ),
+          TextFormField(
+            key: const Key('mt-frequency'),
+            controller: _frequency,
+            decoration: InputDecoration(
+              labelText: l.mtFrequency,
+              helperText: l.mtFrequencyHelp,
+              helperMaxLines: 3,
+              suffixText: 'MHz',
+            ),
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            validator: (v) {
+              final t = (v ?? '').trim().replaceAll(',', '.');
+              if (t.isEmpty) return null;
+              final f = double.tryParse(t);
+              return f == null || f < 0 || (f > 0 && (f < 100 || f > 3000))
+                  ? l.mtFrequencyInvalid
+                  : null;
+            },
+            onChanged: (v) {
+              final t = v.trim().replaceAll(',', '.');
+              final f = t.isEmpty ? 0.0 : double.tryParse(t);
+              if (f != null && (f == 0 || (f >= 100 && f <= 3000))) {
+                _set(SectionKind.lora, LoraField.overrideFrequency, f);
               }
             },
           ),

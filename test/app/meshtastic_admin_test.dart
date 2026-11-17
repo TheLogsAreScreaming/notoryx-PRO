@@ -375,6 +375,68 @@ void main() {
     await closeAll(tester, controller, store);
   });
 
+  testWidgets('custom radio settings and an exact frequency', (tester) async {
+    tester.view.physicalSize = const Size(1000, 4000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final store = MeshStore.memory();
+    final bench = Bench();
+    bench.local.sections[SectionKind.lora] =
+        (ProtoWriter()
+              ..uint(LoraField.usePreset, 1)
+              ..uint(LoraField.modemPreset, 7)
+              ..uint(LoraField.region, 1)
+              ..uint(LoraField.hopLimit, 3))
+            .toBytes();
+    final controller = AppController(
+      store: store,
+      links: FakeLinks(bench.link),
+    );
+    final c =
+        (await tester.runAsync(() => controller.connect(target)))!
+            as MeshtasticConnection;
+    await tester.pumpWidget(app(MeshtasticSettingsScreen(connection: c)));
+    await settle(tester);
+    expect(find.byKey(const Key('mt-bandwidth-0')), findsNothing);
+
+    // Turning presets off starts from what Long Moderate uses.
+    await tester.tap(find.text('Use a modem preset'));
+    await tester.pump();
+    expect(find.text('125 kHz'), findsOneWidget);
+    expect(find.text('SF 11'), findsOneWidget);
+    expect(find.text('4/8'), findsOneWidget);
+
+    await tester.tap(find.text('SF 11'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('SF 12').last);
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byKey(const Key('mt-frequency')), '50');
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('mt-save')));
+    await tester.pump();
+    expect(find.text('A frequency in MHz, such as 906.875'), findsOneWidget);
+
+    await tester.enterText(find.byKey(const Key('mt-frequency')), '906.875');
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('mt-save')));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('region, preset or slot'), findsOneWidget);
+    await tester.tap(find.text('Save to radio').last);
+    await settle(tester);
+    final lora = SettingsSection(
+      SectionKind.lora,
+      bench.local.sections[SectionKind.lora]!,
+    );
+    expect(lora.flag(LoraField.usePreset), isFalse);
+    expect(lora.number(LoraField.bandwidth), 125);
+    expect(lora.number(LoraField.spreadFactor), 12);
+    expect(lora.number(LoraField.codingRate), 8);
+    expect(lora.real(LoraField.overrideFrequency), 906.875);
+    expect(lora.number(LoraField.region), 1, reason: 'untouched');
+    await closeAll(tester, controller, store);
+  });
+
   testWidgets('fixed position: set, reload, remove', (tester) async {
     tester.view.physicalSize = const Size(1000, 4000);
     tester.view.devicePixelRatio = 1;

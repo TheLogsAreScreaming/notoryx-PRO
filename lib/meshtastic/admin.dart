@@ -77,11 +77,24 @@ abstract final class PositionField {
 abstract final class LoraField {
   static const usePreset = 1;
   static const modemPreset = 2;
+
+  /// Bandwidth in kHz, used when [usePreset] is off. 31, 62, 203, 406, 812
+  /// and 1625 stand for 31.25, 62.5, 203.125, 406.25, 812.5 and 1625 kHz.
+  static const bandwidth = 3;
+
+  /// Spreading factor 7–12, used when [usePreset] is off.
+  static const spreadFactor = 4;
+
+  /// Coding rate denominator 5–8 (4/5 to 4/8), used when [usePreset] is off.
+  static const codingRate = 5;
   static const region = 7;
   static const hopLimit = 8;
   static const txEnabled = 9;
   static const txPower = 10;
   static const channelNum = 11;
+
+  /// Exact frequency in MHz (a `float`); 0 uses the region and slot.
+  static const overrideFrequency = 14;
   static const ignoreMqtt = 104;
   static const okToMqtt = 105;
 }
@@ -146,6 +159,12 @@ class SettingsSection {
 
   bool flag(int field) => number(field) != 0;
 
+  /// A `float` field (0 when not set).
+  double real(int field) {
+    if (_changes[field] case final double v) return v;
+    return _originalReal(field);
+  }
+
   /// A string field.
   String text(int field) {
     if (_changes[field] case final String v) return v;
@@ -155,13 +174,20 @@ class SettingsSection {
         : f.asString;
   }
 
-  /// A copy with [field] set to [value] (an `int`, `bool` or `String`).
-  /// Setting a field back to what the node has drops the change.
+  /// A copy with [field] set to [value] (an `int`, `bool`, `double` for a
+  /// `float` field, or `String`). Setting a field back to what the node has
+  /// drops the change.
   SettingsSection withValue(int field, Object value) {
-    final v = value is bool ? (value ? 1 : 0) : value;
-    final original = v is String
-        ? _originalText(field)
-        : _originalNumber(field);
+    final v = switch (value) {
+      bool() => value ? 1 : 0,
+      double() => _toFloat32(value),
+      _ => value,
+    };
+    final Object original = switch (v) {
+      String() => _originalText(field),
+      double() => _originalReal(field),
+      _ => _originalNumber(field),
+    };
     final changes = Map<int, Object>.of(_changes);
     if (v == original) {
       changes.remove(field);
@@ -175,6 +201,21 @@ class SettingsSection {
     final f = _last(field);
     return f == null || f.wireType != WireType.varint ? 0 : f.asInt;
   }
+
+  double _originalReal(int field) {
+    final f = _last(field);
+    return f == null || f.wireType != WireType.fixed32 ? 0 : f.asFloat;
+  }
+
+  static int _floatBits(double v) => (ByteData(
+    4,
+  )..setFloat32(0, v, Endian.little)).getUint32(0, Endian.little);
+
+  /// [v] rounded to what a `float` field can hold, so a value typed in
+  /// compares equal to the same value read back from the node.
+  static double _toFloat32(double v) => (ByteData(
+    4,
+  )..setFloat32(0, v, Endian.little)).getFloat32(0, Endian.little);
 
   String _originalText(int field) {
     final f = _last(field);
@@ -195,6 +236,8 @@ class SettingsSection {
           w.string(n, v);
         case int():
           w.uint(n, v);
+        case double():
+          w.fixed32(n, _floatBits(v));
       }
     }
     return w.toBytes();
@@ -395,6 +438,9 @@ abstract final class MeshtasticRole {
 /// LoRa regions (`Config.LoRaConfig.RegionCode`) with their names.
 abstract final class MeshtasticRegion {
   static const unset = 0;
+
+  /// The 2.4 GHz band, which uses wider bandwidths.
+  static const lora24 = 13;
   static const names = {
     1: 'United States',
     2: 'EU 433 MHz',
@@ -442,6 +488,62 @@ abstract final class MeshtasticPreset {
 
   /// Retired presets: shown when a node uses one, never offered.
   static const retired = {1, 2};
+
+  /// Each preset's bandwidth (as a [MeshtasticBandwidth] code outside the
+  /// 2.4 GHz band), spreading factor and coding rate, as the firmware sets
+  /// them. Presets not listed run as Long Fast.
+  static const radio = {
+    0: (bandwidth: 250, spreadFactor: 11, codingRate: 5),
+    1: (bandwidth: 125, spreadFactor: 12, codingRate: 8),
+    3: (bandwidth: 250, spreadFactor: 10, codingRate: 5),
+    4: (bandwidth: 250, spreadFactor: 9, codingRate: 5),
+    5: (bandwidth: 250, spreadFactor: 8, codingRate: 5),
+    6: (bandwidth: 250, spreadFactor: 7, codingRate: 5),
+    7: (bandwidth: 125, spreadFactor: 11, codingRate: 8),
+    8: (bandwidth: 500, spreadFactor: 7, codingRate: 5),
+    9: (bandwidth: 500, spreadFactor: 11, codingRate: 8),
+  };
+
+  /// [preset]'s radio settings, for a 2.4 GHz node when [wide].
+  static ({int bandwidth, int spreadFactor, int codingRate}) radioFor(
+    int preset, {
+    bool wide = false,
+  }) {
+    final r = radio[preset] ?? radio[longFast]!;
+    if (!wide) return r;
+    return (
+      bandwidth: MeshtasticBandwidth.widen[r.bandwidth] ?? 800,
+      spreadFactor: r.spreadFactor,
+      codingRate: r.codingRate,
+    );
+  }
+}
+
+/// Bandwidths for custom radio settings: the code stored in `bandwidth`
+/// and the kHz it stands for, as the firmware reads them.
+abstract final class MeshtasticBandwidth {
+  static const subGhz = {
+    8: 7.8,
+    10: 10.4,
+    16: 15.6,
+    21: 20.8,
+    31: 31.25,
+    42: 41.7,
+    62: 62.5,
+    125: 125.0,
+    250: 250.0,
+    500: 500.0,
+  };
+
+  /// The 2.4 GHz band's choices.
+  static const wide = {200: 203.125, 400: 406.25, 800: 812.5, 1600: 1625.0};
+
+  /// The 2.4 GHz equivalent of each sub-GHz preset bandwidth.
+  static const widen = {125: 400, 250: 800, 500: 1600};
+
+  /// The kHz [code] stands for; 0 means the firmware default, 250.
+  static double kHz(int code) =>
+      subGhz[code] ?? wide[code] ?? (code == 0 ? 250 : code.toDouble());
 }
 
 /// GPS modes (`Config.PositionConfig.GpsMode`).

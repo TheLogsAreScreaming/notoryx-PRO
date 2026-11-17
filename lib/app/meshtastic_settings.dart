@@ -43,6 +43,10 @@ class MeshtasticSettings {
       LoraField.modemPreset,
       LoraField.usePreset,
       LoraField.channelNum,
+      LoraField.bandwidth,
+      LoraField.spreadFactor,
+      LoraField.codingRate,
+      LoraField.overrideFrequency,
     }).isNotEmpty;
   }
 
