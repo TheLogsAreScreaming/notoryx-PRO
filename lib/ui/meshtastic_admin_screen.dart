@@ -781,8 +781,19 @@ class _MeshtasticSettingsScreenState extends State<MeshtasticSettingsScreen> {
     );
   }
 
-  /// Interval choices, in seconds; 0 is the firmware's default.
-  static const _intervals = [0, 900, 1800, 3600, 10800, 21600, 43200, 86400];
+  /// Interval choices, in seconds; 0 is the firmware's default and
+  /// [intervalNever] turns sending off.
+  static const _intervals = [
+    0,
+    900,
+    1800,
+    3600,
+    10800,
+    21600,
+    43200,
+    86400,
+    intervalNever,
+  ];
 
   Widget _interval(
     BuildContext context, {
@@ -803,10 +814,15 @@ class _MeshtasticSettingsScreenState extends State<MeshtasticSettingsScreen> {
   );
 }
 
+/// The interval Meshtastic firmware reads as "never send" (the largest
+/// 32-bit number).
+const intervalNever = 0x7fffffff;
+
 /// How often something is sent, in words.
 String intervalName(BuildContext context, int seconds) {
   final l = context.l10n;
   if (seconds <= 0) return l.mtIntervalDefault;
+  if (seconds >= intervalNever) return l.mtIntervalNever;
   if (seconds % 3600 == 0) return l.mtIntervalHours(seconds ~/ 3600);
   if (seconds % 60 == 0) return l.mtIntervalMinutes(seconds ~/ 60);
   return l.mtIntervalSeconds(seconds);

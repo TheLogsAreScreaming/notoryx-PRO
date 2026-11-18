@@ -863,6 +863,7 @@
   "mtEnvironmentEnabled": "Send sensor readings",
   "mtEnvironmentInterval": "Send sensor readings every",
   "mtIntervalDefault": "Default",
+  "mtIntervalNever": "Never",
   "mtIntervalMinutes": "Every {count} min",
   "@mtIntervalMinutes": {
     "placeholders": {

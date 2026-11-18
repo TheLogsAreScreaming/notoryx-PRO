@@ -355,6 +355,7 @@
   "mtEnvironmentEnabled": "Sensorwerte senden",
   "mtEnvironmentInterval": "Sensorwerte senden alle",
   "mtIntervalDefault": "Standard",
+  "mtIntervalNever": "Nie",
   "mtIntervalMinutes": "Alle {count} Min.",
   "mtIntervalHours": "Alle {count} Std.",
   "mtIntervalSeconds": "Alle {count} s",

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -12,6 +13,7 @@ class NetworkStatus {
 
   final DateTime Function() _clock;
   DateTime? _lastFailure;
+  final _back = StreamController<void>.broadcast(sync: true);
 
   /// How long one failure counts as "offline".
   static const window = Duration(minutes: 2);
@@ -20,8 +22,50 @@ class NetworkStatus {
   bool get offline =>
       _lastFailure != null && _clock().difference(_lastFailure!) < window;
 
+  /// Fires when a download works again after a failure, so the map can
+  /// fetch the tiles it left blank while the network was down.
+  Stream<void> get backOnline => _back.stream;
+
   void markFailure() => _lastFailure = _clock();
-  void markSuccess() => _lastFailure = null;
+
+  void markSuccess() {
+    final wasDown = _lastFailure != null;
+    _lastFailure = null;
+    if (wasDown) _back.add(null);
+  }
+}
+
+/// Tells tile layers when to fetch tiles again that they left blank.
+///
+/// A tile whose download fails stays blank until it is scrolled away. This
+/// fires when downloads work again, and every [retryEvery] while the
+/// network still looks down, so the map fills in by itself. The timer only
+/// runs while something listens.
+class TileReloader {
+  TileReloader(this.status, {this.retryEvery = const Duration(seconds: 30)});
+
+  final NetworkStatus status;
+  final Duration retryEvery;
+  StreamSubscription<void>? _back;
+  Timer? _timer;
+
+  late final StreamController<void> _reload = StreamController.broadcast(
+    onListen: () {
+      _back = status.backOnline.listen((_) => _reload.add(null));
+      _timer = Timer.periodic(retryEvery, (_) {
+        if (status.offline) _reload.add(null);
+      });
+    },
+    onCancel: () {
+      unawaited(_back?.cancel());
+      _back = null;
+      _timer?.cancel();
+      _timer = null;
+    },
+  );
+
+  /// Pass to `TileLayer.reset`.
+  Stream<void> get stream => _reload.stream;
 }
 
 /// An HTTP client that reports network failures to [status].
@@ -37,6 +81,10 @@ class StatusClient extends http.BaseClient {
       final response = await _inner.send(request);
       status.markSuccess();
       return response;
+    } on http.RequestAbortedException {
+      // The map cancels downloads for tiles it no longer shows (after a
+      // zoom or pan). That says nothing about the network.
+      rethrow;
     } on SocketException {
       status.markFailure();
       rethrow;
@@ -123,6 +171,9 @@ class MapTiles {
 
   final TileProvider provider;
   final NetworkStatus status;
+
+  /// When to fetch blank tiles again; pass to `TileLayer.reset`.
+  late final Stream<void> reload = TileReloader(status).stream;
 
   /// Sets up the cache in the app's own storage (not a folder the system
   /// may clear), up to [maxBytes].
