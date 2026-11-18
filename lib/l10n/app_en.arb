@@ -3009,5 +3009,64 @@
         "type": "String"
       }
     }
-  }
+  },
+  "trafficTitle": "Traffic",
+  "trafficAdvert": "Advert",
+  "trafficDirect": "Direct message",
+  "trafficChannel": "Channel message",
+  "trafficAck": "Acknowledgement",
+  "trafficTrace": "Trace",
+  "trafficPath": "Path",
+  "trafficListening": "Listening for packets…",
+  "trafficHeardFrom": "Heard from {name}",
+  "@trafficHeardFrom": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "trafficFlood": "Flood {hops}",
+  "@trafficFlood": {
+    "placeholders": {
+      "hops": {
+        "type": "String"
+      }
+    }
+  },
+  "trafficDirectRoute": "Direct",
+  "trafficNotOnMapCount": "{count} not on map",
+  "@trafficNotOnMapCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "trafficNotOnMap": "Not on map: {names}",
+  "@trafficNotOnMap": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "trafficAge": "{seconds}s",
+  "@trafficAge": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "trafficFilterTitle": "Packet types to show",
+  "trafficHopLabels": "Hop labels",
+  "mapLocate": "Locate",
+  "mapAdvert": "Advert",
+  "mapFilter": "Filter",
+  "mapSearch": "Search",
+  "mapOptions": "Options",
+  "mapSearchHint": "Search nodes on the map",
+  "mapNoOwnPosition": "Your radio has no position yet",
+  "mapAdvertNeedsMeshCore": "Connect a MeshCore radio to send an advert"
 }

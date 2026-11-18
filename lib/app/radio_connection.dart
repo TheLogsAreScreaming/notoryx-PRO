@@ -90,6 +90,9 @@ abstract class RadioConnection extends ChangeNotifier {
   /// Packets heard, for the diagnostics screen.
   final PacketLog packetLog = PacketLog();
 
+  /// Packets heard, with their routes, for the Traffic map.
+  final TrafficLog traffic = TrafficLog();
+
   /// Noise and channel-activity readings over time.
   final RadioSamples samples = RadioSamples();
 
@@ -359,6 +362,17 @@ class MeshCoreConnection extends RadioConnection {
           return;
         }
         final info = MeshCorePacketInfo.parse(raw);
+        if (info != null) {
+          traffic.add(
+            heardMeshCore(
+              info,
+              radioId: radio.id,
+              time: DateTime.now(),
+              snr: snr,
+              rssi: rssi,
+            ),
+          );
+        }
         packetLog.add(
           PacketLogEntry(
             time: DateTime.now(),
@@ -1125,6 +1139,16 @@ class MeshtasticConnection extends RadioConnection {
       }
     }
     if (p.from == me) return;
+    if (radio case final r?) {
+      traffic.add(
+        heardMeshtastic(
+          p,
+          radioId: r.id,
+          time: DateTime.now(),
+          label: data == null ? 'Encrypted' : portName(data.portnum),
+        ),
+      );
+    }
     packetLog.add(
       PacketLogEntry(
         time: DateTime.now(),

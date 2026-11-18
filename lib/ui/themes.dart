@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../radio/radio.dart';
+import '../mesh/traffic.dart';
 import '../store/mesh_store.dart';
 
 /// The eight looks the app can wear, in picker order.
@@ -527,3 +528,25 @@ ThemeData glassTheme(ThemeData theme, Color fill) => theme.copyWith(
 Color onChosenColor(Color fill) => fill.computeLuminance() > 0.4
     ? const Color(0xFF000000)
     : const Color(0xFFFFFFFF);
+
+/// The colour each kind of packet is drawn in on the Traffic map. Fixed
+/// across themes so the legend always means the same thing.
+Color trafficColor(TrafficKind k) => switch (k) {
+  TrafficKind.advert => const Color(0xFFFF4FA3),
+  TrafficKind.direct => const Color(0xFF4D8DFF),
+  TrafficKind.channel => const Color(0xFF3DDC84),
+  TrafficKind.ack => const Color(0xFF22D3EE),
+  TrafficKind.trace => const Color(0xFFFF9F1C),
+  TrafficKind.path => const Color(0xFFB07CFF),
+};
+
+/// The bright core of a travelling packet.
+const trafficDotCore = Color(0xFFFFFFFF);
+
+/// Hop label text and its backing chip on the Traffic map; light on dark
+/// so they read over any map tile.
+const trafficLabelInk = Color(0xFFFFFFFF);
+const trafficLabelBack = Color(0xFF000000);
+
+/// The ring on pins of nodes heard in the last hour.
+const recentRing = Color(0xFF3DDC84);
