@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -24,6 +26,7 @@ import 'map_tiles.dart';
 import 'meshtastic_admin_screen.dart';
 import 'telemetry_screen.dart';
 import 'replay_screen.dart';
+import 'traffic_layer.dart';
 
 /// Every node with a position, from both meshes, on one map.
 ///
@@ -41,20 +44,107 @@ class MapScreen extends StatefulWidget {
   State<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   final _map = MapController();
   late final Stream<List<Node>> _nodes = widget.app.store.watchAllNodes();
+
+  /// Traffic mode: heard packets drawn hop by hop.
+  bool _traffic = false;
+  bool _hopLabels = true;
+  Set<TrafficKind> _kinds = TrafficKind.values.toSet();
+  TrafficRoute? _latest;
+  late final TrafficPlayer _player = TrafficPlayer(vsync: this);
+  Timer? _clock;
+
+  /// How many packets of each radio's log have been looked at.
+  final Map<TrafficLog, int> _seen = {};
+
+  /// The nodes last drawn, for matching heard packets' hops.
+  List<Node> _all = const [];
 
   @override
   void initState() {
     super.initState();
     widget.app.hopNaming.addListener(_namesChanged);
+    widget.app.addListener(_wireTraffic);
+    _wireTraffic();
   }
 
   @override
   void dispose() {
     widget.app.hopNaming.removeListener(_namesChanged);
+    widget.app.removeListener(_wireTraffic);
+    for (final log in _seen.keys) {
+      log.removeListener(_onTraffic);
+    }
+    _clock?.cancel();
+    _player.dispose();
     super.dispose();
+  }
+
+  /// Follows the traffic logs of the radios connected now.
+  void _wireTraffic() {
+    final logs = {for (final c in widget.app.connections) c.traffic};
+    for (final gone in _seen.keys.where((l) => !logs.contains(l)).toList()) {
+      gone.removeListener(_onTraffic);
+      _seen.remove(gone);
+    }
+    for (final log in logs) {
+      if (_seen.containsKey(log)) continue;
+      _seen[log] = log.count;
+      log.addListener(_onTraffic);
+    }
+  }
+
+  void _onTraffic() {
+    if (!mounted) return;
+    final now = DateTime.now();
+    TrafficRoute? newest;
+    for (final c in widget.app.connections) {
+      final log = c.traffic;
+      final fresh = log.since(_seen[log] ?? log.count);
+      _seen[log] = log.count;
+      if (!_traffic) continue;
+      for (final p in fresh) {
+        if (!_kinds.contains(p.kind)) continue;
+        final radio = c.radio;
+        final route = buildTrafficRoute(
+          p,
+          _all,
+          selfLabel: radio == null || radio.name.isEmpty
+              ? context.l10n.mapYourRadio
+              : radio.name,
+          self: radio?.self,
+          selfAt: radio?.position,
+          naming: widget.app.hopNaming.value,
+          now: now,
+        );
+        _player.play(route);
+        newest = route;
+      }
+    }
+    if (widget.app.hopNaming.value.unsaved) {
+      widget.app.hopNaming.value.unsaved = false;
+      widget.app.hopNaming.picksChanged();
+    }
+    if (newest != null) setState(() => _latest = newest);
+  }
+
+  void _setTraffic(bool on) {
+    setState(() {
+      _traffic = on;
+      if (!on) {
+        _player.clear();
+        _latest = null;
+      }
+    });
+    _clock?.cancel();
+    // The card's "seconds ago" ticks while traffic is shown.
+    _clock = on
+        ? Timer.periodic(const Duration(seconds: 1), (_) {
+            if (mounted && _latest != null) setState(() {});
+          })
+        : null;
   }
 
   void _namesChanged() {
@@ -111,6 +201,8 @@ class _MapScreenState extends State<MapScreen> {
             ...own.map(_ll),
           ];
           final route = _route == null ? null : _routeLine(_route!, all);
+          _all = all;
+          final dark = Theme.of(context).brightness == Brightness.dark;
           return Stack(
             children: [
               Semantics(
@@ -130,6 +222,7 @@ class _MapScreenState extends State<MapScreen> {
                         urlTemplate: MapTiles.urlTemplate,
                         userAgentPackageName: MapTiles.userAgentPackageName,
                         tileProvider: tiles.provider,
+                        tileBuilder: dark ? darkModeTileBuilder : null,
                       ),
                     _placesLayer(),
                     if (route != null && route.length > 1)
@@ -173,6 +266,8 @@ class _MapScreenState extends State<MapScreen> {
                           ),
                       ],
                     ),
+                    if (_traffic)
+                      TrafficMapLayer(player: _player, showLabels: _hopLabels),
                     if (widget.tiles != null)
                       const RichAttributionWidget(
                         attributions: [
@@ -207,49 +302,239 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                 ),
               Positioned(
-                right: 16,
-                bottom: 128,
-                child: FloatingActionButton.small(
-                  heroTag: 'map-replay',
-                  tooltip: l.drTitle,
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) =>
-                          ReplayScreen(app: widget.app, tiles: widget.tiles),
-                    ),
-                  ),
-                  child: const Icon(Icons.history),
+                top: 8,
+                right: 8,
+                bottom: _traffic ? 200 : 8,
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: MapToolbar(items: _tools(placed, all, points)),
                 ),
               ),
-              Positioned(
-                right: 16,
-                bottom: 72,
-                child: FloatingActionButton.small(
-                  heroTag: 'map-places',
-                  tooltip: l.placesTitle,
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => PlacesScreen(app: widget.app),
-                    ),
-                  ),
-                  child: const Icon(Icons.bookmark_border),
+              if (_traffic)
+                Positioned(
+                  left: 8,
+                  right: 8,
+                  bottom: 8,
+                  child: TrafficCard(route: _latest, now: DateTime.now()),
                 ),
-              ),
-              Positioned(
-                right: 16,
-                bottom: 16,
-                child: FloatingActionButton.small(
-                  heroTag: 'map-fit',
-                  tooltip: l.mapFitAll,
-                  onPressed: () => _fit(points),
-                  child: const Icon(Icons.fit_screen),
-                ),
-              ),
             ],
           );
         },
       ),
     );
+  }
+
+  List<MapToolItem> _tools(
+    List<Node> placed,
+    List<Node> all,
+    List<LatLng> points,
+  ) {
+    final l = context.l10n;
+    final own = _ownPositions();
+    final meshCore = [
+      for (final c in widget.app.connections)
+        if (c is MeshCoreConnection &&
+            c.status.phase == SupervisorPhase.connected)
+          c,
+    ];
+    return [
+      MapToolItem(
+        key: const Key('map-locate'),
+        icon: Icons.near_me_outlined,
+        label: l.mapLocate,
+        onPressed: own.isEmpty
+            ? () => _say(l.mapNoOwnPosition)
+            : () => _map.move(
+                _ll(own.first),
+                _map.camera.zoom < 12 ? 12 : _map.camera.zoom,
+              ),
+      ),
+      MapToolItem(
+        key: const Key('map-advert'),
+        icon: Icons.campaign_outlined,
+        label: l.mapAdvert,
+        onPressed: meshCore.isEmpty
+            ? () => _say(l.mapAdvertNeedsMeshCore)
+            : () => _sendAdvert(meshCore),
+      ),
+      MapToolItem(
+        key: const Key('map-filter'),
+        icon: Icons.filter_list,
+        label: l.mapFilter,
+        selected: _kinds.length < TrafficKind.values.length,
+        onPressed: _pickKinds,
+      ),
+      MapToolItem(
+        key: const Key('map-traffic'),
+        icon: Icons.route,
+        label: l.trafficTitle,
+        selected: _traffic,
+        onPressed: () => _setTraffic(!_traffic),
+      ),
+      MapToolItem(
+        key: const Key('map-search'),
+        icon: Icons.search,
+        label: l.mapSearch,
+        onPressed: placed.isEmpty ? null : () => _search(placed, all),
+      ),
+      MapToolItem(
+        key: const Key('map-fit'),
+        icon: Icons.open_in_full,
+        label: l.mapFitAll,
+        showLabel: false,
+        onPressed: () => _fit(points),
+      ),
+      MapToolItem(
+        key: const Key('map-options'),
+        icon: Icons.more_horiz,
+        label: l.mapOptions,
+        onPressed: _options,
+      ),
+    ];
+  }
+
+  void _say(String text) => ScaffoldMessenger.maybeOf(context)
+    ?..hideCurrentSnackBar()
+    ..showSnackBar(SnackBar(content: Text(text)));
+
+  Future<void> _sendAdvert(List<MeshCoreConnection> radios) async {
+    final l = context.l10n;
+    final flood = await showModalBottomSheet<bool>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.wifi_tethering),
+              title: Text(l.settingsAdvertNeighbours),
+              onTap: () => Navigator.pop(context, false),
+            ),
+            ListTile(
+              leading: const Icon(Icons.public),
+              title: Text(l.settingsAdvertEveryone),
+              onTap: () => Navigator.pop(context, true),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (flood == null) return;
+    try {
+      for (final c in radios) {
+        await c.sendAdvert(flood: flood);
+      }
+      if (mounted) _say(l.settingsAdvertSent);
+    } on Object catch (e) {
+      if (mounted) _say(RadioConnection.describeError(e));
+    }
+  }
+
+  Future<void> _pickKinds() async {
+    final l = context.l10n;
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setSheet) => SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                  child: Text(
+                    l.trafficFilterTitle,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+                for (final k in TrafficKind.values)
+                  CheckboxListTile(
+                    key: Key('traffic-kind-${k.name}'),
+                    value: _kinds.contains(k),
+                    secondary: Icon(Icons.circle, color: trafficColor(k)),
+                    title: Text(trafficKindName(context, k)),
+                    onChanged: (on) {
+                      final next = {..._kinds};
+                      on == true ? next.add(k) : next.remove(k);
+                      setState(() => _kinds = next);
+                      setSheet(() {});
+                    },
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _search(List<Node> placed, List<Node> all) async {
+    final picked = await showModalBottomSheet<Node>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (_) => _NodeSearchSheet(nodes: placed),
+    );
+    if (picked == null || !mounted) return;
+    _map.move(
+      _ll(picked.position!),
+      _map.camera.zoom < 13 ? 13 : _map.camera.zoom,
+    );
+    await _openNode(picked, all);
+  }
+
+  Future<void> _options() async {
+    final l = context.l10n;
+    final choice = await showModalBottomSheet<String>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SwitchListTile(
+              key: const Key('map-hop-labels'),
+              secondary: const Icon(Icons.label_outline),
+              title: Text(l.trafficHopLabels),
+              value: _hopLabels,
+              onChanged: (v) =>
+                  Navigator.pop(context, v ? 'labels-on' : 'labels-off'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.history),
+              title: Text(l.drTitle),
+              onTap: () => Navigator.pop(context, 'replay'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.bookmark_border),
+              title: Text(l.placesTitle),
+              onTap: () => Navigator.pop(context, 'places'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (!mounted) return;
+    switch (choice) {
+      case 'labels-on' || 'labels-off':
+        setState(() => _hopLabels = choice == 'labels-on');
+      case 'replay':
+        await Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => ReplayScreen(app: widget.app, tiles: widget.tiles),
+          ),
+        );
+      case 'places':
+        await Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => PlacesScreen(app: widget.app),
+          ),
+        );
+    }
   }
 
   /// Saved routes, geofences and waypoints.
@@ -357,6 +642,9 @@ class _MapScreenState extends State<MapScreen> {
   }
 }
 
+/// How long a node counts as recently heard (green ring on its pin).
+const recentlyHeard = Duration(hours: 1);
+
 class _NodeMarker extends StatelessWidget {
   const _NodeMarker({
     required this.app,
@@ -371,27 +659,44 @@ class _NodeMarker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = meshColor(node.protocol, Theme.of(context));
+    final repeater = node.kind == NodeKind.relay;
+    final heard = plausibleTime(node.lastHeard);
+    final recent =
+        heard != null && DateTime.now().difference(heard) < recentlyHeard;
+    final pin = Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        shape: repeater ? BoxShape.rectangle : BoxShape.circle,
+        borderRadius: repeater ? BorderRadius.circular(10) : null,
+        border: Border.all(color: color, width: 3),
+      ),
+      child: Center(
+        child: NodeAvatar(
+          app: app,
+          nodeKey: node.key.toString(),
+          icon: nodeKindIcon(node.kind),
+          size: recent ? 26 : 32,
+          iconColor: color,
+        ),
+      ),
+    );
     return Semantics(
       button: true,
       label: '${node.displayName}, ${protocolName(context, node.protocol)}',
       child: GestureDetector(
         onTap: onTap,
-        child: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            shape: BoxShape.circle,
-            border: Border.all(color: color, width: 3),
-          ),
-          child: Center(
-            child: NodeAvatar(
-              app: app,
-              nodeKey: node.key.toString(),
-              icon: nodeKindIcon(node.kind),
-              size: 32,
-              iconColor: color,
-            ),
-          ),
-        ),
+        child: recent
+            ? Container(
+                key: const Key('pin-recent'),
+                padding: const EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                  shape: repeater ? BoxShape.rectangle : BoxShape.circle,
+                  borderRadius: repeater ? BorderRadius.circular(13) : null,
+                  border: Border.all(color: recentRing, width: 2.5),
+                ),
+                child: pin,
+              )
+            : pin,
       ),
     );
   }
@@ -686,6 +991,68 @@ class NodeSheet extends StatelessWidget {
                     ),
                   ),
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Finds a node on the map by name or ID.
+class _NodeSearchSheet extends StatefulWidget {
+  const _NodeSearchSheet({required this.nodes});
+
+  final List<Node> nodes;
+
+  @override
+  State<_NodeSearchSheet> createState() => _NodeSearchSheetState();
+}
+
+class _NodeSearchSheetState extends State<_NodeSearchSheet> {
+  String _query = '';
+
+  @override
+  Widget build(BuildContext context) {
+    final q = _query.trim().toLowerCase();
+    final hits = [
+      for (final n in widget.nodes)
+        if (q.isEmpty ||
+            n.displayName.toLowerCase().contains(q) ||
+            n.shortName.toLowerCase().contains(q) ||
+            n.key.native.startsWith(q))
+          n,
+    ]..sort((a, b) => a.displayName.compareTo(b.displayName));
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      child: SizedBox(
+        height: MediaQuery.sizeOf(context).height * .6,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: TextField(
+                key: const Key('map-search-field'),
+                autofocus: true,
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.search),
+                  hintText: context.l10n.mapSearchHint,
+                ),
+                onChanged: (v) => setState(() => _query = v),
+              ),
+            ),
+            Expanded(
+              child: ListView(
+                children: [
+                  for (final n in hits.take(100))
+                    ListTile(
+                      leading: Icon(nodeKindIcon(n.kind)),
+                      title: Text(n.displayName),
+                      subtitle: Text(protocolName(context, n.protocol)),
+                      onTap: () => Navigator.pop(context, n),
+                    ),
+                ],
+              ),
             ),
           ],
         ),

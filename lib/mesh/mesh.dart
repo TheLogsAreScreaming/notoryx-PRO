@@ -10,3 +10,4 @@ export 'meshtastic_mapper.dart';
 export 'model.dart';
 export 'signal.dart';
 export 'telemetry.dart';
+export 'traffic.dart';
