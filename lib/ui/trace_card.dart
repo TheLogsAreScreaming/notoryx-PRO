@@ -450,6 +450,7 @@ class _TraceMap extends StatelessWidget {
             urlTemplate: MapTiles.urlTemplate,
             userAgentPackageName: MapTiles.userAgentPackageName,
             tileProvider: t.provider,
+            reset: t.reload,
           )
         else
           ColoredBox(color: scheme.surfaceContainerHighest),

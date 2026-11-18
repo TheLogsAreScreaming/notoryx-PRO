@@ -355,6 +355,7 @@
   "mtEnvironmentEnabled": "Enviar leituras dos sensores",
   "mtEnvironmentInterval": "Enviar leituras dos sensores a cada",
   "mtIntervalDefault": "Padrão",
+  "mtIntervalNever": "Nunca",
   "mtIntervalMinutes": "A cada {count} min",
   "mtIntervalHours": "A cada {count} h",
   "mtIntervalSeconds": "A cada {count} s",

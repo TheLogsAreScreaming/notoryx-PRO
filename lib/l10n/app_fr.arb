@@ -355,6 +355,7 @@
   "mtEnvironmentEnabled": "Envoyer les mesures des capteurs",
   "mtEnvironmentInterval": "Envoyer les mesures des capteurs toutes les",
   "mtIntervalDefault": "Par défaut",
+  "mtIntervalNever": "Jamais",
   "mtIntervalMinutes": "Toutes les {count} min",
   "mtIntervalHours": "Toutes les {count} h",
   "mtIntervalSeconds": "Toutes les {count} s",

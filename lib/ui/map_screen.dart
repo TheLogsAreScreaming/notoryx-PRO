@@ -222,6 +222,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                         urlTemplate: MapTiles.urlTemplate,
                         userAgentPackageName: MapTiles.userAgentPackageName,
                         tileProvider: tiles.provider,
+                        reset: tiles.reload,
                         tileBuilder: dark ? darkModeTileBuilder : null,
                       ),
                     _placesLayer(),

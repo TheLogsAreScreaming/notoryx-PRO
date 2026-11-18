@@ -236,4 +236,58 @@ void main() {
       expect(status.offline, isTrue);
     });
   });
+
+  group('blank tiles come back', () {
+    test('a cancelled tile download does not count as offline', () async {
+      final status = NetworkStatus();
+      final client = tileHttpClient(
+        MockClient((r) async => throw http.RequestAbortedException(r.url)),
+        status,
+        delay: (_) => Duration.zero,
+      );
+      await expectLater(
+        client.get(Uri.parse('https://tile.example/1/1/1.png')),
+        throwsA(isA<http.RequestAbortedException>()),
+      );
+      expect(status.offline, isFalse);
+    });
+
+    test('back online fires once, only after a failure', () {
+      final status = NetworkStatus();
+      var fired = 0;
+      status.backOnline.listen((_) => fired++);
+      status.markSuccess();
+      expect(fired, 0);
+      status
+        ..markFailure()
+        ..markSuccess()
+        ..markSuccess();
+      expect(fired, 1);
+    });
+
+    test('the map reloads when the network is back, and retries while '
+        'it is down', () async {
+      final status = NetworkStatus();
+      final reloader = TileReloader(
+        status,
+        retryEvery: const Duration(milliseconds: 20),
+      );
+      var reloads = 0;
+      final sub = reloader.stream.listen((_) => reloads++);
+      await Future<void>.delayed(const Duration(milliseconds: 70));
+      expect(reloads, 0, reason: 'online: nothing to retry');
+
+      status.markFailure();
+      await Future<void>.delayed(const Duration(milliseconds: 70));
+      final whileDown = reloads;
+      expect(whileDown, greaterThanOrEqualTo(2));
+
+      status.markSuccess();
+      await Future<void>.delayed(Duration.zero);
+      expect(reloads, whileDown + 1);
+      await Future<void>.delayed(const Duration(milliseconds: 70));
+      expect(reloads, whileDown + 1);
+      await sub.cancel();
+    });
+  });
 }
