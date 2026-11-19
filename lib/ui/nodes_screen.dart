@@ -91,7 +91,7 @@ class _NodesScreenState extends State<NodesScreen> {
               itemCount: merged.length,
               itemBuilder: (context, i) {
                 final n = merged[i].node;
-                final heard = plausibleTime(n.lastHeard);
+                final heard = knownHeard(n.lastHeard, now);
                 return NodeTile(
                   staleAge: isStale(heard, now, staleAfter)
                       ? now.difference(heard!)

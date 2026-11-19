@@ -1,14 +1,33 @@
 /// When a node counts as stale: not heard for a while.
 library;
 
+import 'model.dart';
+
+/// How far ahead of the phone a last-heard time may be and still be
+/// believed; radio and phone clocks drift and time zones get mixed up.
+const futureSlack = Duration(days: 1);
+
+/// [lastHeard] if it can be trusted at [now], else null (unknown).
+///
+/// A clock that was never set reports 0 (1970) or a time before 2020; a
+/// wrong one can report the future. Ages measured from either are
+/// nonsense ("20771 days"), so both count as not knowing when the node
+/// was heard.
+DateTime? knownHeard(DateTime? lastHeard, DateTime now) {
+  final t = plausibleTime(lastHeard);
+  if (t == null || t.isAfter(now.add(futureSlack))) return null;
+  return t;
+}
+
 /// Whether a node last heard at [lastHeard] is stale at [now].
 ///
 /// [after] is how long a node may go unheard; null turns marking off. A
-/// node with no last-heard time is never stale, since there is nothing to
-/// measure from.
+/// node whose last-heard time is missing or can't be trusted
+/// ([knownHeard]) is never stale, since there is nothing to measure from.
 bool isStale(DateTime? lastHeard, DateTime now, Duration? after) {
-  if (lastHeard == null || after == null) return false;
-  return now.difference(lastHeard) >= after;
+  final t = knownHeard(lastHeard, now);
+  if (t == null || after == null) return false;
+  return now.difference(t) >= after;
 }
 
 /// The choices for "Mark nodes stale after", and how they are saved.

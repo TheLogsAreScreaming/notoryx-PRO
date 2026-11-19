@@ -276,6 +276,13 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                     if (rings && own.isNotEmpty)
                       RangeRingsLayer(
                         center: _ll(own.first),
+                        // Clear of the toolbar, the offline banner and
+                        // the traffic card.
+                        insets: EdgeInsets.only(
+                          top: (widget.tiles?.status.offline ?? false) ? 64 : 0,
+                          right: MapToolbar.width + 16,
+                          bottom: _traffic ? 200 : 24,
+                        ),
                         imperial: usesMiles(
                           WidgetsBinding
                               .instance
@@ -320,11 +327,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                             child: _NodeMarker(
                               app: widget.app,
                               node: n,
-                              stale: isStale(
-                                plausibleTime(n.lastHeard),
-                                now,
-                                staleAfter,
-                              ),
+                              stale: isStale(n.lastHeard, now, staleAfter),
                               onTap: () => _openNode(n, all),
                             ),
                           ),
@@ -742,9 +745,9 @@ class _NodeMarker extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = meshColor(node.protocol, Theme.of(context));
     final repeater = node.kind == NodeKind.relay;
-    final heard = plausibleTime(node.lastHeard);
-    final recent =
-        heard != null && DateTime.now().difference(heard) < recentlyHeard;
+    final now = DateTime.now();
+    final heard = knownHeard(node.lastHeard, now);
+    final recent = heard != null && now.difference(heard) < recentlyHeard;
     final pin = Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
@@ -762,7 +765,7 @@ class _NodeMarker extends StatelessWidget {
         ),
       ),
     );
-    final age = heard == null ? null : DateTime.now().difference(heard);
+    final age = heard == null ? null : now.difference(heard);
     return Semantics(
       button: true,
       label: [
