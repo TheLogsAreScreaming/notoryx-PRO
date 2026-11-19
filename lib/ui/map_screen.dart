@@ -301,6 +301,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                           right: MapToolbar.width + 16,
                           bottom: _traffic ? 200 : 24,
                         ),
+                        // Labels stay off the pins drawn above them.
+                        pins: points,
                         imperial: usesMiles(
                           WidgetsBinding
                               .instance

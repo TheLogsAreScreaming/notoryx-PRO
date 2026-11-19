@@ -10,6 +10,9 @@ import '../mesh/range_rings.dart';
 const ringLabelSize = Size(80, 20);
 const compassTagSize = Size(24, 20);
 
+/// The box a node pin covers on the map, in logical pixels.
+const ringPinSize = Size(44, 44);
+
 /// Where a ring's label may go, in order: its north point first, then
 /// round the ring, so a label pushed off one side shows on another.
 const ringLabelBearings = [0.0, 45.0, 315.0, 90.0, 270.0, 135.0, 225.0, 180.0];
@@ -59,13 +62,15 @@ Rect unobscured(Size size, EdgeInsets insets) {
 /// Four distance rings around [center], sized to the part of the map you
 /// can see, with a label on each ring, faint spokes every 45° and N/E/S/W
 /// just outside the outer ring. Labels stay clear of [insets], the edges
-/// the map's own controls cover. Rebuilds as the map moves.
+/// the map's own controls cover, and off the node [pins] where a clear
+/// spot exists. Rebuilds as the map moves.
 class RangeRingsLayer extends StatelessWidget {
   const RangeRingsLayer({
     super.key,
     required this.center,
     this.imperial = false,
     this.insets = EdgeInsets.zero,
+    this.pins = const [],
   });
 
   /// Your position.
@@ -76,6 +81,11 @@ class RangeRingsLayer extends StatelessWidget {
 
   /// How far in from each edge the map is covered by its controls.
   final EdgeInsets insets;
+
+  /// Where the map draws pins (nodes and your radio). Ring labels pick a
+  /// spot on their ring that no pin covers; a ring with no such spot still
+  /// gets its label, on top of whatever pin is there.
+  final List<LatLng> pins;
 
   static GeoPoint _geo(LatLng p) => GeoPoint(p.latitude, p.longitude);
   static LatLng _ll(GeoPoint p) => LatLng(p.latitude, p.longitude);
@@ -158,17 +168,24 @@ class RangeRingsLayer extends StatelessWidget {
         ),
       );
     }
-    // Each ring's label sits on the ring, wherever it can be seen; a ring
-    // with no visible spot for one goes unlabelled.
+    // Pins on screen, so a label can sit somewhere none of them covers.
+    final pinBoxes = [
+      for (final p in pins)
+        Rect.fromCenter(
+          center: camera.latLngToScreenOffset(p),
+          width: ringPinSize.width,
+          height: ringPinSize.height,
+        ),
+    ];
+    // Each ring's label sits on the ring, wherever it can be seen and clear
+    // of pins if it can be; a ring with no visible spot goes unlabelled.
     final labels = <Marker>[];
     for (final r in radii) {
       final spots = [for (final b in ringLabelBearings) pointAt(from, b, r)];
-      final i = firstFree(
-        [for (final p in spots) screen(p)],
-        ringLabelSize,
-        area,
-        taken,
-      );
+      final onScreen = [for (final p in spots) screen(p)];
+      final i =
+          firstFree(onScreen, ringLabelSize, area, [...taken, ...pinBoxes]) ??
+          firstFree(onScreen, ringLabelSize, area, taken);
       if (i == null) continue;
       final at = screen(spots[i]);
       taken.add(
