@@ -52,6 +52,48 @@ int? firstFree(
   return null;
 }
 
+/// Among [candidates] whose [size] box lies wholly inside [area] and
+/// overlaps none of [taken], the index of the one [covers] overlap least
+/// (by area); null if none qualifies.
+int? leastCovered(
+  List<Offset> candidates,
+  Size size,
+  Rect area,
+  List<Rect> taken,
+  List<Rect> covers,
+) {
+  int? best;
+  var bestCovered = double.infinity;
+  for (var i = 0; i < candidates.length; i++) {
+    final box = Rect.fromCenter(
+      center: candidates[i],
+      width: size.width,
+      height: size.height,
+    );
+    final inside =
+        box.left >= area.left &&
+        box.top >= area.top &&
+        box.right <= area.right &&
+        box.bottom <= area.bottom;
+    if (!inside || taken.any(box.overlaps)) continue;
+    var covered = 0.0;
+    for (final c in covers) {
+      final o = box.intersect(c);
+      if (o.width > 0 && o.height > 0) covered += o.width * o.height;
+    }
+    if (covered < bestCovered) {
+      best = i;
+      bestCovered = covered;
+    }
+  }
+  return best;
+}
+
+/// Which part of the range rings a [RangeRingsLayer] draws: the map puts
+/// the rings under its pins and the labels over them, so a label never
+/// hides under a pin.
+enum RingsPart { all, rings, labels }
+
 /// The part of a [size] map not covered by [insets] (toolbars, banners);
 /// the whole map when the insets leave nothing.
 Rect unobscured(Size size, EdgeInsets insets) {
@@ -71,7 +113,11 @@ class RangeRingsLayer extends StatelessWidget {
     this.imperial = false,
     this.insets = EdgeInsets.zero,
     this.pins = const [],
+    this.part = RingsPart.all,
   });
+
+  /// Which part to draw; see [RingsPart].
+  final RingsPart part;
 
   /// Your position.
   final LatLng center;
@@ -83,8 +129,9 @@ class RangeRingsLayer extends StatelessWidget {
   final EdgeInsets insets;
 
   /// Where the map draws pins (nodes and your radio). Ring labels pick a
-  /// spot on their ring that no pin covers; a ring with no such spot still
-  /// gets its label, on top of whatever pin is there.
+  /// spot on their ring that no pin covers; a ring with no such spot gets
+  /// its label where pins cover it least, drawn over them when the map
+  /// puts the labels part above its pins.
   final List<LatLng> pins;
 
   static GeoPoint _geo(LatLng p) => GeoPoint(p.latitude, p.longitude);
@@ -185,7 +232,7 @@ class RangeRingsLayer extends StatelessWidget {
       final onScreen = [for (final p in spots) screen(p)];
       final i =
           firstFree(onScreen, ringLabelSize, area, [...taken, ...pinBoxes]) ??
-          firstFree(onScreen, ringLabelSize, area, taken);
+          leastCovered(onScreen, ringLabelSize, area, taken, pinBoxes);
       if (i == null) continue;
       final at = screen(spots[i]);
       taken.add(
@@ -204,9 +251,8 @@ class RangeRingsLayer extends StatelessWidget {
         ),
       );
     }
-    return Stack(
-      key: const Key('range-rings'),
-      children: [
+    final drawn = <Widget>[
+      if (part != RingsPart.labels) ...[
         PolylineLayer(
           polylines: [
             for (var b = 0; b < 360; b += 45)
@@ -230,8 +276,14 @@ class RangeRingsLayer extends StatelessWidget {
               ),
           ],
         ),
-        MarkerLayer(markers: [...labels, ...compass]),
       ],
+      // Labels never take a tap meant for a pin they sit over.
+      if (part != RingsPart.rings)
+        IgnorePointer(child: MarkerLayer(markers: [...labels, ...compass])),
+    ];
+    return Stack(
+      key: Key(part == RingsPart.labels ? 'range-ring-labels' : 'range-rings'),
+      children: drawn,
     );
   }
 }
