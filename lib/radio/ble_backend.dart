@@ -92,6 +92,17 @@ abstract class BleBackend {
 class UniversalBleBackend implements BleBackend {
   const UniversalBleBackend();
 
+  /// Options for every connect. On Android the plugin otherwise leaves the
+  /// GATT link open when the Flutter engine goes away (leaving the app with
+  /// Back finishes the activity and its engine), so the radio stays
+  /// connected to a phone nobody is using, stops advertising and can't be
+  /// found by a new scan until the app is force-stopped. With
+  /// closeGattOnDetach the plugin closes this engine's links as the engine
+  /// detaches.
+  static final connectOptions = ConnectionPlatformConfig(
+    android: AndroidConnectionOptions(closeGattOnDetach: true),
+  );
+
   @override
   Future<BleAvailability> availability() async {
     final state = await UniversalBle.getBluetoothAvailabilityState();
@@ -134,6 +145,7 @@ class UniversalBleBackend implements BleBackend {
       UniversalBle.connect(
         deviceId,
         timeout: timeout ?? const Duration(seconds: 20),
+        platformConfig: connectOptions,
       );
 
   @override

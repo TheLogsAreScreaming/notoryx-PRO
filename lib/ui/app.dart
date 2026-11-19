@@ -1,4 +1,5 @@
 import 'topology_screen.dart';
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -92,12 +93,15 @@ class NotoryxProApp extends StatelessWidget {
       supportedLocales: AppLocalizations.supportedLocales,
       theme: buildTheme(choice, Brightness.light),
       darkTheme: buildTheme(choice, Brightness.dark),
-      home: HomeShell(
+      home: DisconnectOnDetach(
         app: app,
-        tiles: tiles,
-        navigatorKey: navigatorKey,
-        auth: auth,
-        vault: vault,
+        child: HomeShell(
+          app: app,
+          tiles: tiles,
+          navigatorKey: navigatorKey,
+          auth: auth,
+          vault: vault,
+        ),
       ),
     );
   }
@@ -117,6 +121,47 @@ enum _MenuAction {
   lock,
   moderation,
   about,
+}
+
+/// Disconnects every radio when the app is detached from its engine.
+///
+/// On Android, leaving with Back finishes the activity and its Flutter
+/// engine. Closing the links while Dart can still run lets each radio
+/// start advertising again, instead of staying tied to an app that has
+/// gone. The Bluetooth plugin also closes its links as the engine detaches
+/// (see UniversalBleBackend.connectOptions), for when Dart can't.
+class DisconnectOnDetach extends StatefulWidget {
+  const DisconnectOnDetach({super.key, required this.app, required this.child});
+
+  /// Whose radios to disconnect.
+  final AppController app;
+
+  /// The app itself.
+  final Widget child;
+
+  @override
+  State<DisconnectOnDetach> createState() => _DisconnectOnDetachState();
+}
+
+class _DisconnectOnDetachState extends State<DisconnectOnDetach> {
+  late final AppLifecycleListener _lifecycle;
+
+  @override
+  void initState() {
+    super.initState();
+    _lifecycle = AppLifecycleListener(
+      onDetach: () => unawaited(widget.app.disconnectAll()),
+    );
+  }
+
+  @override
+  void dispose() {
+    _lifecycle.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
 
 /// Inbox, nodes and radios, with a bottom navigation bar.
