@@ -282,11 +282,15 @@ void main() {
       final whileDown = reloads;
       expect(whileDown, greaterThanOrEqualTo(2));
 
+      // A retry already on its way can land after the count above, so
+      // this only asks for more reloads, then none once settled. "Back
+      // online fires once" checks the exact count without timers.
       status.markSuccess();
-      await Future<void>.delayed(Duration.zero);
-      expect(reloads, whileDown + 1);
+      await Future<void>.delayed(const Duration(milliseconds: 30));
+      expect(reloads, greaterThan(whileDown), reason: 'back online: reload');
+      final settled = reloads;
       await Future<void>.delayed(const Duration(milliseconds: 70));
-      expect(reloads, whileDown + 1);
+      expect(reloads, settled, reason: 'online again: no retries');
       await sub.cancel();
     });
   });
