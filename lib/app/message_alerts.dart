@@ -357,11 +357,20 @@ class MessageAlerts {
   }
 
   /// Whether [m] comes from a node you ignore (its message is still saved).
+  ///
+  /// MeshCore channel posts name their sender but carry no key, so for
+  /// those the name is matched against the ignored nodes on that radio.
   Future<bool> _fromIgnored(Message m) async {
+    final ignored = await IgnoredNodes.read(store);
+    if (ignored.isEmpty) return false;
     final c = m.conversation;
     final sender = m.from ?? (c is DirectConversation ? c.node : null);
-    if (sender == null) return false;
-    return IgnoredNodes.has(await IgnoredNodes.read(store), sender);
+    if (sender != null) return IgnoredNodes.has(ignored, sender);
+    final name = m.senderName?.trim() ?? '';
+    if (c is! ChannelConversation || name.isEmpty) return false;
+    return (await store.nodes(
+      c.radioId,
+    )).any((n) => IgnoredNodes.has(ignored, n.key) && n.name.trim() == name);
   }
 
   Future<String> _title(Conversation c, Message m) async {

@@ -253,6 +253,27 @@ void main() {
       expect(notifier.shown.single.body, 'hello');
     });
 
+    test('an ignored node\'s channel posts by name stay silent', () async {
+      // MeshCore channel posts name the sender but carry no key.
+      await store.upsertNode(
+        Node(key: relay, radioId: mt, name: 'Ridge Relay'),
+      );
+      await IgnoredNodes.set(store, relay, ignored: true);
+      alerts.foreground = false;
+      await store.addMessage(
+        received(channel, 'beacon', sender: 'Ridge Relay'),
+      );
+      await drain();
+      expect(notifier.shown, isEmpty);
+      final kept = await store.watchMessages(channel).first;
+      expect(kept.map((m) => m.message.text), contains('beacon'));
+
+      // Anyone else on the channel still notifies.
+      await store.addMessage(received(channel, 'hi all', sender: 'Ann'));
+      await drain();
+      expect(notifier.shown.single.body, 'Ann: hi all');
+    });
+
     group('MAYDAY through mute', () {
       const real = 'MECP/0/R01 2pax';
       setUp(() async {
