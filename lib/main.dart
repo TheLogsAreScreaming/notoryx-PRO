@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'app/app_controller.dart';
 import 'app/app_lock.dart';
 import 'app/message_alerts.dart';
+import 'app/heard_cleanup.dart';
 import 'store/database_vault.dart';
 import 'store/mesh_store.dart';
 import 'ui/app.dart';
@@ -26,6 +27,7 @@ Future<void> main() async {
     return;
   }
   final store = MeshStore.open(file, key: key);
+  await HeardCleanup.runOnce(store);
   final tiles = await MapTiles.create();
   final notifier = SystemNotifier();
   await notifier.init();

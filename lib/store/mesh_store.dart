@@ -126,6 +126,30 @@ class MeshStore {
     await _noteJournal(list);
   });
 
+  /// Clears MeshCore last-heard times from before this app first saved a
+  /// message, and returns how many nodes it changed.
+  ///
+  /// Before test 27, MeshCore last-heard came from each node's own clock,
+  /// and repeaters that never had theirs set reported a date in 2024
+  /// ("stale · 900 d"). The app can't have heard anything before it first
+  /// ran, so such times are wrong; they become unknown until the node is
+  /// heard again. A node the radio still lists gets its time back on the
+  /// next sync. Meshtastic nodes are left alone.
+  Future<int> clearPreAppMeshCoreHeard() async {
+    final earliest = db.messages.receivedAt.min();
+    final first = await (db.selectOnly(
+      db.messages,
+    )..addColumns([earliest])).map((r) => r.read(earliest)).getSingle();
+    if (first == null) return 0;
+    final floor = first.subtract(const Duration(days: 1));
+    return (db.update(db.nodes)..where(
+          (n) =>
+              n.radioId.like('meshcore:%') &
+              n.lastHeard.isSmallerThanValue(floor),
+        ))
+        .write(const NodesCompanion(lastHeard: Value(null)));
+  }
+
   /// The nodes [radio] knows, most recently heard first.
   Future<List<Node>> nodes(RadioId radio) => _nodesQuery(radio).get();
 
