@@ -43,6 +43,16 @@ abstract final class MeshtasticFirmware {
   /// the device metadata fields the app relies on.
   static const minimum = MeshtasticVersion(2, 5, 0);
 
+  /// First release whose node database has an ignored flag, set with the
+  /// `set_ignored_node` / `remove_ignored_node` admin messages.
+  static const ignoredNodes = MeshtasticVersion(2, 5, 13);
+
+  /// Whether [version] can keep an ignored flag on nodes.
+  static bool supportsIgnoredNodes(String version) {
+    final v = MeshtasticVersion.tryParse(version);
+    return v != null && !(v < ignoredNodes);
+  }
+
   /// Whether [version] (from `DeviceMetadata.firmware_version`) is usable.
   static bool isSupported(String version) {
     final v = MeshtasticVersion.tryParse(version);

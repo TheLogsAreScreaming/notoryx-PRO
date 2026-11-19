@@ -22,6 +22,7 @@ import 'map_screen.dart';
 import 'map_tiles.dart';
 import 'mute_menu.dart';
 import 'node_journal_screen.dart';
+import 'node_visibility.dart';
 import 'nodes_screen.dart';
 import 'notification_settings.dart';
 import 'radios_screen.dart';
@@ -111,6 +112,8 @@ enum _MenuAction {
   restore,
   theme,
   repeaterNames,
+  staleAfter,
+  ignoredNodes,
   lock,
   moderation,
   about,
@@ -361,6 +364,12 @@ class _HomeShellState extends State<HomeShell> {
                   builder: (_) => HopNamingScreen(service: app.hopNaming),
                 ),
               ),
+              _MenuAction.staleAfter => pickStaleAfter(context, app),
+              _MenuAction.ignoredNodes => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => IgnoredNodesScreen(app: app),
+                ),
+              ),
               _MenuAction.theme => Navigator.of(context).push(
                 MaterialPageRoute<void>(
                   builder: (_) => ThemeScreen(store: app.store),
@@ -404,6 +413,16 @@ class _HomeShellState extends State<HomeShell> {
                 key: const Key('menu-repeater-names'),
                 value: _MenuAction.repeaterNames,
                 child: Text(context.l10n.hopNamesTitle),
+              ),
+              PopupMenuItem(
+                key: const Key('menu-stale-after'),
+                value: _MenuAction.staleAfter,
+                child: Text(context.l10n.staleAfterTitle),
+              ),
+              PopupMenuItem(
+                key: const Key('menu-ignored-nodes'),
+                value: _MenuAction.ignoredNodes,
+                child: Text(context.l10n.ignoredTitle),
               ),
               if (widget.auth != null)
                 PopupMenuItem(

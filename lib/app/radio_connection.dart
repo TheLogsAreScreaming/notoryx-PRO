@@ -8,6 +8,7 @@ import '../meshcore/raw_packet.dart';
 import '../meshtastic/meshtastic.dart';
 import '../radio/radio.dart';
 import '../store/mesh_store.dart';
+import 'ignored_nodes.dart';
 import 'meshcore_settings.dart';
 import 'meshtastic_settings.dart';
 import 'nearby_probe.dart';
@@ -1084,6 +1085,55 @@ class MeshtasticConnection extends RadioConnection {
       radio.id,
       config.channels.map(mapper.channel).nonNulls,
     );
+    unawaited(
+      _syncIgnored(config).catchError((Object e) {
+        log.add('Meshtastic ${link.label}', 'ignored nodes not synced: $e');
+      }),
+    );
+  }
+
+  /// Whether this radio is connected and its firmware keeps an ignored
+  /// flag on nodes.
+  bool get canIgnoreNodes =>
+      status.phase == SupervisorPhase.connected &&
+      MeshtasticFirmware.supportsIgnoredNodes(radio?.firmware ?? '');
+
+  /// Sets or clears the radio's ignored flag on [key] (a Meshtastic node).
+  Future<void> setNodeIgnored(NodeKey key, {required bool ignored}) async {
+    final num = key.meshtasticNum;
+    if (num == null || num == session.myNodeNum) return;
+    await session.setIgnoredNode(_me, num, ignored: ignored);
+  }
+
+  /// Brings the radio's ignored flags and the phone's list together: nodes
+  /// the radio ignores show as ignored, unless you stopped ignoring them
+  /// in the app (then the radio's flag is cleared), and nodes ignored in
+  /// the app are flagged on the radio when its firmware supports that.
+  Future<void> _syncIgnored(MeshtasticConfig config) async {
+    final me = config.myInfo.nodeNum;
+    final cleared = await IgnoredNodes.readCleared(store);
+    final phone = await IgnoredNodes.read(store);
+    final flagged = <NodeKey>[];
+    final toClear = <NodeKey>[];
+    final toSet = <NodeKey>[];
+    for (final n in config.nodes.values) {
+      if (n.num == me) continue;
+      final key = NodeKey.meshtastic(n.num);
+      if (n.isIgnored) {
+        cleared.contains(key.toString()) ? toClear.add(key) : flagged.add(key);
+      } else if (phone.contains(key.toString())) {
+        toSet.add(key);
+      }
+    }
+    await IgnoredNodes.addAll(store, flagged);
+    if (!canIgnoreNodes) return;
+    for (final key in toClear) {
+      await setNodeIgnored(key, ignored: false);
+      await IgnoredNodes.forgetCleared(store, key);
+    }
+    for (final key in toSet) {
+      await setNodeIgnored(key, ignored: true);
+    }
   }
 
   Future<void> _onText(MeshtasticText t) async {

@@ -7,6 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart'
 import '../mesh/mecp.dart';
 import '../mesh/model.dart';
 import '../store/mesh_store.dart';
+import 'ignored_nodes.dart';
 
 /// Shows system notifications; replaceable in tests.
 abstract interface class Notifier {
@@ -338,6 +339,7 @@ class MessageAlerts {
     if (m.isReaction) return;
     if (foreground && open == c) return;
     if (!await enabled(c)) return;
+    if (await _fromIgnored(m)) return;
     final muted = await store.isMuted(c, _now());
     if (muted && !await breaksMute(m)) return;
     final count = _counts[c.key] = (_counts[c.key] ?? 0) + 1;
@@ -352,6 +354,14 @@ class MessageAlerts {
       body: text,
       payload: c.key,
     );
+  }
+
+  /// Whether [m] comes from a node you ignore (its message is still saved).
+  Future<bool> _fromIgnored(Message m) async {
+    final c = m.conversation;
+    final sender = m.from ?? (c is DirectConversation ? c.node : null);
+    if (sender == null) return false;
+    return IgnoredNodes.has(await IgnoredNodes.read(store), sender);
   }
 
   Future<String> _title(Conversation c, Message m) async {

@@ -3069,5 +3069,64 @@
   "mapOptions": "Options",
   "mapSearchHint": "Search nodes on the map",
   "mapNoOwnPosition": "Your radio has no position yet",
-  "mapAdvertNeedsMeshCore": "Connect a MeshCore radio to send an advert"
+  "mapAdvertNeedsMeshCore": "Connect a MeshCore radio to send an advert",
+  "staleAge": "stale · {age}",
+  "@staleAge": {
+    "placeholders": {
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "ageMinutes": "{count} min",
+  "@ageMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ageHours": "{count} h",
+  "@ageHours": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ageDays": "{count} d",
+  "@ageDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "staleAfterTitle": "Mark nodes stale after",
+  "staleOff": "Off",
+  "mapRangeRings": "Range rings",
+  "mapRingsNoPosition": "Your position isn't known yet, so range rings can't be drawn.",
+  "ignoreNode": "Ignore",
+  "unignoreNode": "Stop ignoring",
+  "ignoreConfirmTitle": "Ignore {name}?",
+  "@ignoreConfirmTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ignoreConfirmBody": "An ignored node is hidden from the node lists and the map, and it never notifies you. Its messages are still saved. On a Meshtastic radio that supports it, the radio ignores the node too. You can undo this under Ignored nodes.",
+  "ignoredTitle": "Ignored nodes",
+  "ignoredEmpty": "You aren't ignoring any nodes.",
+  "ignoredShowAgain": "Show again",
+  "ignoredBadge": "Ignored",
+  "ignoreRadioFailed": "Saved on this phone, but the radio couldn't be updated: {error}",
+  "@ignoreRadioFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

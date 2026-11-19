@@ -18,6 +18,8 @@ abstract final class AdminField {
   static const setModuleConfig = 35;
   static const setFixedPosition = 41;
   static const removeFixedPosition = 42;
+  static const setIgnoredNode = 47;
+  static const removeIgnoredNode = 48;
   static const beginEditSettings = 64;
   static const commitEditSettings = 65;
   static const rebootSeconds = 97;
@@ -333,6 +335,21 @@ abstract final class AdminMessages {
   /// Clears a fixed position so the node goes back to its GPS, if any.
   static Uint8List removeFixedPosition(List<int> passkey) =>
       _with((w) => w.boolean(AdminField.removeFixedPosition, true), passkey);
+
+  /// Sets or clears the ignored flag on node number [node] in the
+  /// receiving node's database (`set_ignored_node` / `remove_ignored_node`).
+  static Uint8List setIgnoredNode(
+    int node,
+    List<int> passkey, {
+    required bool ignored,
+  }) => _with(
+    (w) => w.uint(
+      ignored ? AdminField.setIgnoredNode : AdminField.removeIgnoredNode,
+      node,
+      always: true,
+    ),
+    passkey,
+  );
 
   /// Starts a batch of changes; the node saves them all on [commitEdit].
   static Uint8List beginEdit(List<int> passkey) =>

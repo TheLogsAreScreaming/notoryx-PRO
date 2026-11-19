@@ -4,6 +4,7 @@ import '../mesh/diagnostics.dart' show haversineKm;
 import '../mesh/model.dart';
 import '../mesh/places.dart';
 import '../store/mesh_store.dart';
+import 'ignored_nodes.dart';
 import 'message_alerts.dart';
 
 /// Notifies when a node crosses a geofence.
@@ -27,6 +28,10 @@ class GeofenceAlerts {
   final DateTime Function() _now;
   StreamSubscription<List<Place>>? _places;
   StreamSubscription<List<Node>>? _nodes;
+  StreamSubscription<Set<String>>? _ignoredSub;
+
+  /// Nodes you ignore never alert.
+  Set<String> _ignored = const {};
   List<Place> _fences = const [];
   List<Place> _routes = const [];
   final Map<String, bool> _inside = {};
@@ -41,8 +46,12 @@ class GeofenceAlerts {
   String Function(String node, String route, int metres) describeOffRoute =
       (node, route, metres) => '$node is $metres m off $route';
 
-  /// Looks for crossings in [nodes].
-  void check(List<Node> nodes) {
+  /// Looks for crossings in [nodes]; ignored nodes are skipped.
+  void check(List<Node> all) {
+    final nodes = [
+      for (final n in all)
+        if (!IgnoredNodes.has(_ignored, n.key)) n,
+    ];
     _checkRoutes(nodes);
     for (final f in _fences) {
       final radius = f.radiusM;
@@ -125,6 +134,7 @@ class GeofenceAlerts {
       }
       _routes = routes;
     });
+    _ignoredSub ??= IgnoredNodes.watch(store).listen((keys) => _ignored = keys);
     _nodes ??= store.watchAllNodes().listen(check);
   }
 
@@ -132,7 +142,9 @@ class GeofenceAlerts {
   void stop() {
     unawaited(_places?.cancel());
     unawaited(_nodes?.cancel());
+    unawaited(_ignoredSub?.cancel());
     _places = null;
     _nodes = null;
+    _ignoredSub = null;
   }
 }

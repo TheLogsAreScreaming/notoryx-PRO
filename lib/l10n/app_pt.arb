@@ -1236,5 +1236,22 @@
   "mapOptions": "Opções",
   "mapSearchHint": "Pesquisar nós no mapa",
   "mapNoOwnPosition": "O seu rádio ainda não tem posição",
-  "mapAdvertNeedsMeshCore": "Ligue um rádio MeshCore para enviar um anúncio"
+  "mapAdvertNeedsMeshCore": "Ligue um rádio MeshCore para enviar um anúncio",
+  "staleAge": "inativo · {age}",
+  "ageMinutes": "{count} min",
+  "ageHours": "{count} h",
+  "ageDays": "{count} d",
+  "staleAfterTitle": "Marcar nós inativos após",
+  "staleOff": "Desligado",
+  "mapRangeRings": "Anéis de distância",
+  "mapRingsNoPosition": "A sua posição ainda não é conhecida, por isso os anéis de distância não podem ser desenhados.",
+  "ignoreNode": "Ignorar",
+  "unignoreNode": "Deixar de ignorar",
+  "ignoreConfirmTitle": "Ignorar {name}?",
+  "ignoreConfirmBody": "Um nó ignorado fica oculto das listas de nós e do mapa e nunca o notifica. As suas mensagens continuam a ser guardadas. Num rádio Meshtastic que o suporte, o rádio também ignora o nó. Pode desfazer isto em Nós ignorados.",
+  "ignoredTitle": "Nós ignorados",
+  "ignoredEmpty": "Não está a ignorar nenhum nó.",
+  "ignoredShowAgain": "Mostrar novamente",
+  "ignoredBadge": "Ignorado",
+  "ignoreRadioFailed": "Guardado neste telefone, mas não foi possível atualizar o rádio: {error}"
 }

@@ -1236,5 +1236,22 @@
   "mapOptions": "Opzioni",
   "mapSearchHint": "Cerca nodi sulla mappa",
   "mapNoOwnPosition": "La tua radio non ha ancora una posizione",
-  "mapAdvertNeedsMeshCore": "Collega una radio MeshCore per inviare un annuncio"
+  "mapAdvertNeedsMeshCore": "Collega una radio MeshCore per inviare un annuncio",
+  "staleAge": "inattivo · {age}",
+  "ageMinutes": "{count} min",
+  "ageHours": "{count} h",
+  "ageDays": "{count} g",
+  "staleAfterTitle": "Segna i nodi inattivi dopo",
+  "staleOff": "Disattivato",
+  "mapRangeRings": "Anelli di distanza",
+  "mapRingsNoPosition": "La tua posizione non è ancora nota, quindi non è possibile disegnare gli anelli di distanza.",
+  "ignoreNode": "Ignora",
+  "unignoreNode": "Non ignorare più",
+  "ignoreConfirmTitle": "Ignorare {name}?",
+  "ignoreConfirmBody": "Un nodo ignorato viene nascosto dagli elenchi dei nodi e dalla mappa e non ti invia mai notifiche. I suoi messaggi vengono comunque salvati. Su una radio Meshtastic che lo supporta, anche la radio ignora il nodo. Puoi annullare in Nodi ignorati.",
+  "ignoredTitle": "Nodi ignorati",
+  "ignoredEmpty": "Non stai ignorando nessun nodo.",
+  "ignoredShowAgain": "Mostra di nuovo",
+  "ignoredBadge": "Ignorato",
+  "ignoreRadioFailed": "Salvato su questo telefono, ma non è stato possibile aggiornare la radio: {error}"
 }
