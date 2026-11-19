@@ -1,25 +1,58 @@
 import 'package:flutter/material.dart';
 
 import '../app/app_controller.dart';
+import '../app/ignored_nodes.dart';
 import '../app/trusted_nodes.dart';
 import '../mesh/mesh.dart';
 import '../radio/radio_link.dart';
 import '../mesh/node_merge.dart';
+import '../mesh/stale.dart';
 import 'common.dart';
 import 'node_avatar.dart';
+import 'node_visibility.dart';
 import '../app/sentinel.dart';
 import 'conversation_screen.dart';
 import 'sentinel_screen.dart';
 import 'verify_screen.dart';
 
-/// Every node both radios have heard, most recent first.
-class NodesScreen extends StatelessWidget {
+/// Every node both radios have heard, most recent first. Ignored nodes
+/// are left out; nodes not heard for a while are marked stale.
+class NodesScreen extends StatefulWidget {
   const NodesScreen({super.key, required this.app});
 
   final AppController app;
 
   @override
+  State<NodesScreen> createState() => _NodesScreenState();
+}
+
+class _NodesScreenState extends State<NodesScreen> {
+  AppController get app => widget.app;
+  late final Stream<Set<String>> _ignored = IgnoredNodes.watch(app.store);
+  late final Stream<Duration?> _staleAfter = watchStaleAfter(app);
+
+  @override
   Widget build(BuildContext context) {
+    return StreamBuilder<Set<String>>(
+      stream: _ignored,
+      builder: (context, iSnap) => StreamBuilder<Duration?>(
+        stream: _staleAfter,
+        builder: (context, sSnap) => _list(
+          context,
+          iSnap.data ?? const {},
+          sSnap.connectionState == ConnectionState.waiting
+              ? StaleAfter.fallback
+              : sSnap.data,
+        ),
+      ),
+    );
+  }
+
+  Widget _list(
+    BuildContext context,
+    Set<String> ignored,
+    Duration? staleAfter,
+  ) {
     return StreamBuilder<TrustState>(
       stream: TrustedNodes.watch(app.store),
       builder: (context, tSnap) => StreamBuilder<Set<String>>(
@@ -30,7 +63,10 @@ class NodesScreen extends StatelessWidget {
             final all = snap.data ?? const <Node>[];
             final trust = tSnap.data ?? const TrustState();
             final favorites = favoriteKeys(all);
-            var merged = mergeAcrossRadios(all);
+            var merged = [
+              for (final m in mergeAcrossRadios(all))
+                if (!IgnoredNodes.has(ignored, m.node.key)) m,
+            ];
             if (trust.onlyTrusted && merged.isNotEmpty) {
               merged = [
                 for (final m in merged)
@@ -50,11 +86,16 @@ class NodesScreen extends StatelessWidget {
               );
             }
             final verified = trust.verifications;
+            final now = DateTime.now();
             return ListView.builder(
               itemCount: merged.length,
               itemBuilder: (context, i) {
                 final n = merged[i].node;
+                final heard = plausibleTime(n.lastHeard);
                 return NodeTile(
+                  staleAge: isStale(heard, now, staleAfter)
+                      ? now.difference(heard!)
+                      : null,
                   app: app,
                   node: n,
                   radios: merged[i].radios,
@@ -86,7 +127,11 @@ class NodeTile extends StatelessWidget {
     this.radios = 1,
     this.marked = false,
     this.trusted = false,
+    this.staleAge,
   });
+
+  /// How long since the node was heard, when that makes it stale.
+  final Duration? staleAge;
 
   /// Marked trusted in the app (the star button's state).
   final bool marked;
@@ -111,7 +156,7 @@ class NodeTile extends StatelessWidget {
     final n = node;
     final details = [
       nodeKindName(context, n.kind),
-      if (plausibleTime(n.lastHeard) case final t?)
+      if (plausibleTime(n.lastHeard) case final t? when staleAge == null)
         l.lastHeard(ago(context, t)),
       if (pathSummary(context, n.path) case final p when p.isNotEmpty) p,
       if (!n.canMessage) l.nodeCannotMessage,
@@ -159,6 +204,7 @@ class NodeTile extends StatelessWidget {
               semanticLabel: context.l10n.nodeFavorite,
             ),
           SignalBars(signalBars(n.path)),
+          if (staleAge case final age?) StaleBadge(age),
         ],
       ),
       subtitle: Text(details),

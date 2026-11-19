@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:notoryx_pro/app/app_controller.dart';
+import 'package:notoryx_pro/app/ignored_nodes.dart';
 import 'package:notoryx_pro/app/message_alerts.dart';
 import 'package:notoryx_pro/app/regional_presets.dart';
 import 'package:notoryx_pro/app/meshcore_settings.dart';
@@ -236,6 +237,20 @@ void main() {
       await store.addMessage(received(channel, 'off now', sender: 'Bo'));
       await drain();
       expect(notifier.shown, hasLength(1));
+    });
+
+    test('an ignored node never notifies; its messages are kept', () async {
+      await IgnoredNodes.set(store, relay, ignored: true);
+      await store.addMessage(received(dm, 'psst', id: 1));
+      await drain();
+      expect(notifier.shown, isEmpty);
+      final kept = await store.watchMessages(dm).first;
+      expect(kept.map((m) => m.message.text), contains('psst'));
+
+      await IgnoredNodes.set(store, relay, ignored: false);
+      await store.addMessage(received(dm, 'hello', id: 2));
+      await drain();
+      expect(notifier.shown.single.body, 'hello');
     });
 
     group('MAYDAY through mute', () {

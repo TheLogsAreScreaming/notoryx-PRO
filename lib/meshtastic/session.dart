@@ -550,6 +550,26 @@ class MeshtasticSession {
     _log?.add(_source, 'removed fixed position on ${nodeIdOf(to)}');
   }
 
+  /// Sets or clears the ignored flag on node number [node] in the
+  /// database of node [to] (usually your own radio).
+  Future<void> setIgnoredNode(
+    int to,
+    int node, {
+    required bool ignored,
+    Duration timeout = const Duration(seconds: 30),
+  }) async {
+    final key = await _passkeyFor(to, timeout);
+    await _sendAdmin(
+      to,
+      AdminMessages.setIgnoredNode(node, key, ignored: ignored),
+    );
+    _log?.add(
+      _source,
+      '${ignored ? 'ignored' : 'stopped ignoring'} ${nodeIdOf(node)} on '
+      '${nodeIdOf(to)}',
+    );
+  }
+
   /// Restarts node [to].
   Future<void> rebootNode(
     int to, {

@@ -1236,5 +1236,22 @@
   "mapOptions": "Options",
   "mapSearchHint": "Rechercher des nœuds sur la carte",
   "mapNoOwnPosition": "Votre radio n'a pas encore de position",
-  "mapAdvertNeedsMeshCore": "Connectez une radio MeshCore pour envoyer une annonce"
+  "mapAdvertNeedsMeshCore": "Connectez une radio MeshCore pour envoyer une annonce",
+  "staleAge": "inactif · {age}",
+  "ageMinutes": "{count} min",
+  "ageHours": "{count} h",
+  "ageDays": "{count} j",
+  "staleAfterTitle": "Marquer les nœuds inactifs après",
+  "staleOff": "Désactivé",
+  "mapRangeRings": "Cercles de distance",
+  "mapRingsNoPosition": "Votre position est encore inconnue, les cercles de distance ne peuvent pas être tracés.",
+  "ignoreNode": "Ignorer",
+  "unignoreNode": "Ne plus ignorer",
+  "ignoreConfirmTitle": "Ignorer {name} ?",
+  "ignoreConfirmBody": "Un nœud ignoré est masqué des listes de nœuds et de la carte, et ne vous notifie jamais. Ses messages sont toujours enregistrés. Sur une radio Meshtastic compatible, la radio ignore aussi le nœud. Vous pouvez annuler cela dans Nœuds ignorés.",
+  "ignoredTitle": "Nœuds ignorés",
+  "ignoredEmpty": "Vous n'ignorez aucun nœud.",
+  "ignoredShowAgain": "Afficher à nouveau",
+  "ignoredBadge": "Ignoré",
+  "ignoreRadioFailed": "Enregistré sur ce téléphone, mais la radio n'a pas pu être mise à jour : {error}"
 }

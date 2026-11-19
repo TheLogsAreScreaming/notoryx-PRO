@@ -6,16 +6,21 @@ import 'package:latlong2/latlong.dart';
 
 import '../app/app_controller.dart';
 import '../app/radio_connection.dart';
+import '../app/ignored_nodes.dart';
 import '../app/trusted_nodes.dart';
 import '../mesh/mesh.dart';
 import '../radio/radio.dart';
 import 'admin_screens.dart';
 import '../mesh/node_merge.dart';
 import '../mesh/places.dart';
+import '../mesh/range_rings.dart';
+import '../mesh/stale.dart';
 import 'common.dart';
 import 'compass_screen.dart';
 import 'node_avatar.dart';
+import 'node_visibility.dart';
 import 'places_screen.dart';
+import 'range_rings_layer.dart';
 import 'route_screen.dart';
 import 'themes.dart';
 import 'conversation_screen.dart';
@@ -153,7 +158,24 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
 
   late final Stream<List<Place>> _places = widget.app.store.watchPlaces();
   late final Stream<TrustState> _trust = TrustedNodes.watch(widget.app.store);
+  late final Stream<Set<String>> _ignored = IgnoredNodes.watch(
+    widget.app.store,
+  );
+  late final Stream<Duration?> _staleAfter = watchStaleAfter(widget.app);
+  late final Stream<String?> _ringsPref = widget.app.store.watchPreference(
+    rangeRingsPref,
+  );
   Node? _route;
+
+  /// Preference name for the range-rings switch (`1` on).
+  static const rangeRingsPref = 'map.rangeRings';
+
+  Future<void> _setRings(bool on) async {
+    await widget.app.store.setPreference(rangeRingsPref, on ? '1' : '0');
+    if (on && _ownPositions().isEmpty && mounted) {
+      _say(context.l10n.mapRingsNoPosition);
+    }
+  }
 
   static LatLng _ll(GeoPoint p) => LatLng(p.latitude, p.longitude);
 
@@ -177,7 +199,30 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => StreamBuilder<Set<String>>(
+    stream: _ignored,
+    builder: (context, iSnap) => StreamBuilder<Duration?>(
+      stream: _staleAfter,
+      builder: (context, sSnap) => StreamBuilder<String?>(
+        stream: _ringsPref,
+        builder: (context, rSnap) => _build(
+          context,
+          ignored: iSnap.data ?? const {},
+          staleAfter: sSnap.connectionState == ConnectionState.waiting
+              ? StaleAfter.fallback
+              : sSnap.data,
+          rings: rSnap.data == '1',
+        ),
+      ),
+    ),
+  );
+
+  Widget _build(
+    BuildContext context, {
+    required Set<String> ignored,
+    required Duration? staleAfter,
+    required bool rings,
+  }) {
     final l = context.l10n;
     return StreamBuilder<TrustState>(
       stream: _trust,
@@ -187,10 +232,12 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           final all = snap.data ?? const <Node>[];
           final trust = tSnap.data ?? const TrustState();
           final favorites = favoriteKeys(all);
+          final now = DateTime.now();
           // One pin per node, even when several of your radios hear it.
           final placed = [
             for (final m in mergeAcrossRadios(all))
               if (m.node.position != null &&
+                  !IgnoredNodes.has(ignored, m.node.key) &&
                   (!trust.onlyTrusted ||
                       trust.trusts(m.node, favorites: favorites)))
                 m.node,
@@ -226,6 +273,17 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                         tileBuilder: dark ? darkModeTileBuilder : null,
                       ),
                     _placesLayer(),
+                    if (rings && own.isNotEmpty)
+                      RangeRingsLayer(
+                        center: _ll(own.first),
+                        imperial: usesMiles(
+                          WidgetsBinding
+                              .instance
+                              .platformDispatcher
+                              .locale
+                              .countryCode,
+                        ),
+                      ),
                     if (route != null && route.length > 1)
                       PolylineLayer(
                         polylines: [
@@ -262,6 +320,11 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                             child: _NodeMarker(
                               app: widget.app,
                               node: n,
+                              stale: isStale(
+                                plausibleTime(n.lastHeard),
+                                now,
+                                staleAfter,
+                              ),
                               onTap: () => _openNode(n, all),
                             ),
                           ),
@@ -308,7 +371,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                 bottom: _traffic ? 200 : 8,
                 child: Align(
                   alignment: Alignment.topRight,
-                  child: MapToolbar(items: _tools(placed, all, points)),
+                  child: MapToolbar(
+                    items: _tools(placed, all, points, rings: rings),
+                  ),
                 ),
               ),
               if (_traffic)
@@ -328,8 +393,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   List<MapToolItem> _tools(
     List<Node> placed,
     List<Node> all,
-    List<LatLng> points,
-  ) {
+    List<LatLng> points, {
+    required bool rings,
+  }) {
     final l = context.l10n;
     final own = _ownPositions();
     final meshCore = [
@@ -371,6 +437,14 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         label: l.trafficTitle,
         selected: _traffic,
         onPressed: () => _setTraffic(!_traffic),
+      ),
+      MapToolItem(
+        key: const Key('map-rings'),
+        icon: Icons.track_changes,
+        label: l.mapRangeRings,
+        showLabel: false,
+        selected: rings,
+        onPressed: () => unawaited(_setRings(!rings)),
       ),
       MapToolItem(
         key: const Key('map-search'),
@@ -651,11 +725,18 @@ class _NodeMarker extends StatelessWidget {
     required this.app,
     required this.node,
     required this.onTap,
+    this.stale = false,
   });
 
   final AppController app;
   final Node node;
   final VoidCallback onTap;
+
+  /// Not heard for a while: drawn faded.
+  final bool stale;
+
+  /// How opaque a stale node's pin is.
+  static const staleOpacity = .45;
 
   @override
   Widget build(BuildContext context) {
@@ -681,23 +762,32 @@ class _NodeMarker extends StatelessWidget {
         ),
       ),
     );
+    final age = heard == null ? null : DateTime.now().difference(heard);
     return Semantics(
       button: true,
-      label: '${node.displayName}, ${protocolName(context, node.protocol)}',
+      label: [
+        node.displayName,
+        protocolName(context, node.protocol),
+        if (stale && age != null) context.l10n.staleAge(shortAge(context, age)),
+      ].join(', '),
       child: GestureDetector(
         onTap: onTap,
-        child: recent
-            ? Container(
-                key: const Key('pin-recent'),
-                padding: const EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                  shape: repeater ? BoxShape.rectangle : BoxShape.circle,
-                  borderRadius: repeater ? BorderRadius.circular(13) : null,
-                  border: Border.all(color: recentRing, width: 2.5),
-                ),
-                child: pin,
-              )
-            : pin,
+        child: Opacity(
+          key: stale ? const Key('pin-stale') : null,
+          opacity: stale ? staleOpacity : 1,
+          child: recent
+              ? Container(
+                  key: const Key('pin-recent'),
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    shape: repeater ? BoxShape.rectangle : BoxShape.circle,
+                    borderRadius: repeater ? BorderRadius.circular(13) : null,
+                    border: Border.all(color: recentRing, width: 2.5),
+                  ),
+                  child: pin,
+                )
+              : pin,
+        ),
       ),
     );
   }
@@ -895,6 +985,30 @@ class NodeSheet extends StatelessWidget {
                         app.store,
                         n.key,
                         trusted: !marked,
+                      ),
+                    );
+                  },
+                ),
+                StreamBuilder<Set<String>>(
+                  stream: IgnoredNodes.watch(app.store),
+                  builder: (context, i) {
+                    final ignored = IgnoredNodes.has(i.data ?? const {}, n.key);
+                    return OutlinedButton.icon(
+                      key: const Key('sheet-ignore'),
+                      icon: Icon(
+                        ignored
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                      ),
+                      label: Text(ignored ? l.unignoreNode : l.ignoreNode),
+                      onPressed: () => unawaited(
+                        setNodeIgnored(
+                          context,
+                          app,
+                          n.key,
+                          n.displayName,
+                          ignored: !ignored,
+                        ),
                       ),
                     );
                   },

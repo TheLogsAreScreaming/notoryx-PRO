@@ -1236,5 +1236,22 @@
   "mapOptions": "Optionen",
   "mapSearchHint": "Knoten auf der Karte suchen",
   "mapNoOwnPosition": "Dein Funkgerät hat noch keine Position",
-  "mapAdvertNeedsMeshCore": "Verbinde ein MeshCore-Funkgerät, um eine Anzeige zu senden"
+  "mapAdvertNeedsMeshCore": "Verbinde ein MeshCore-Funkgerät, um eine Anzeige zu senden",
+  "staleAge": "inaktiv · {age}",
+  "ageMinutes": "{count} Min.",
+  "ageHours": "{count} Std.",
+  "ageDays": "{count} T.",
+  "staleAfterTitle": "Knoten als inaktiv markieren nach",
+  "staleOff": "Aus",
+  "mapRangeRings": "Entfernungsringe",
+  "mapRingsNoPosition": "Deine Position ist noch unbekannt, daher können keine Entfernungsringe gezeichnet werden.",
+  "ignoreNode": "Ignorieren",
+  "unignoreNode": "Nicht mehr ignorieren",
+  "ignoreConfirmTitle": "{name} ignorieren?",
+  "ignoreConfirmBody": "Ein ignorierter Knoten wird in den Knotenlisten und auf der Karte ausgeblendet und benachrichtigt dich nie. Seine Nachrichten werden weiterhin gespeichert. Auf einem Meshtastic-Funkgerät, das es unterstützt, ignoriert auch das Funkgerät den Knoten. Du kannst das unter Ignorierte Knoten rückgängig machen.",
+  "ignoredTitle": "Ignorierte Knoten",
+  "ignoredEmpty": "Du ignorierst keine Knoten.",
+  "ignoredShowAgain": "Wieder anzeigen",
+  "ignoredBadge": "Ignoriert",
+  "ignoreRadioFailed": "Auf diesem Telefon gespeichert, aber das Funkgerät konnte nicht aktualisiert werden: {error}"
 }
