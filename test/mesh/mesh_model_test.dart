@@ -66,6 +66,43 @@ void main() {
       expect(r.self.native, toHex(RadioFrames.key(0x10)));
     });
 
+    group('last heard', () {
+      // A repeater whose clock was never set reports its default date.
+      const badClock = 1715770351; // 2024-05-15
+      const radioStamp = 1763500000; // 2025-11-18, by the companion radio
+      DateTime at(int unix) =>
+          DateTime.fromMillisecondsSinceEpoch(unix * 1000, isUtc: true);
+
+      test('a synced contact uses the radio\'s own stamp', () {
+        final c =
+            decodeFrame(
+                  RadioFrames.contact(
+                    lastAdvert: badClock,
+                    lastModified: radioStamp,
+                  ),
+                )
+                as ContactFrame;
+        expect(m.node(c).lastHeard, at(radioStamp));
+      });
+
+      test('an advert heard live counts as heard now', () {
+        final c =
+            decodeFrame(RadioFrames.contact(code: 0x8a, lastAdvert: badClock))
+                as ContactFrame;
+        expect(c.fromNewAdvert, isTrue);
+        expect(m.node(c).lastHeard, now.toUtc());
+      });
+
+      test('falls back to the node\'s clock when the radio has no stamp', () {
+        final c =
+            decodeFrame(
+                  RadioFrames.contact(lastAdvert: 1762500000, lastModified: 0),
+                )
+                as ContactFrame;
+        expect(m.node(c).lastHeard, at(1762500000));
+      });
+    });
+
     test('contacts become nodes with kind, path and favourite', () {
       final repeater =
           decodeFrame(RadioFrames.contact(name: 'Peak', type: 2))
