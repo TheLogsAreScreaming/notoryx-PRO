@@ -20,6 +20,36 @@ void main() {
     expect(isStale(now.add(const Duration(hours: 2)), now, day), isFalse);
   });
 
+  group('an untrustworthy last-heard time is unknown, never stale', () {
+    test('epoch (a clock that was never set)', () {
+      final epoch = DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);
+      expect(knownHeard(epoch, now), isNull);
+      expect(isStale(epoch, now, day), isFalse);
+    });
+
+    test('a time before 2020', () {
+      final old = DateTime.utc(2019, 12, 31, 23, 59);
+      expect(knownHeard(old, now), isNull);
+      expect(isStale(old, now, day), isFalse);
+      expect(knownHeard(DateTime.utc(2020), now), DateTime.utc(2020));
+    });
+
+    test('more than a day in the future', () {
+      final ahead = now.add(const Duration(days: 1, minutes: 1));
+      expect(knownHeard(ahead, now), isNull);
+      expect(isStale(ahead, now, day), isFalse);
+      final slightlyAhead = now.add(const Duration(hours: 23));
+      expect(knownHeard(slightlyAhead, now), slightlyAhead);
+    });
+
+    test('a normal time is kept', () {
+      final heard = now.subtract(const Duration(days: 3));
+      expect(knownHeard(heard, now), heard);
+      expect(isStale(heard, now, day), isTrue);
+      expect(knownHeard(null, now), isNull);
+    });
+  });
+
   test('the setting is saved as minutes, 24 h until picked', () {
     expect(StaleAfter.decode(null), StaleAfter.fallback);
     expect(StaleAfter.fallback, day);

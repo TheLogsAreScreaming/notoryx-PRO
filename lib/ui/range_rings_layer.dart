@@ -6,14 +6,66 @@ import '../mesh/diagnostics.dart' show haversineKm;
 import '../mesh/model.dart';
 import '../mesh/range_rings.dart';
 
-/// Four distance rings around [center], sized to the visible map, with a
-/// label at each ring's north point, faint spokes every 45° and N/E/S/W
-/// just outside the outer ring. Rebuilds as the map moves.
+/// The size of a ring label and of a compass tag, in logical pixels.
+const ringLabelSize = Size(80, 20);
+const compassTagSize = Size(24, 20);
+
+/// Where a ring's label may go, in order: its north point first, then
+/// round the ring, so a label pushed off one side shows on another.
+const ringLabelBearings = [0.0, 45.0, 315.0, 90.0, 270.0, 135.0, 225.0, 180.0];
+
+/// [at] moved just enough that a [size] box centred on it lies inside
+/// [area]; centred in [area] when the box is bigger than it.
+Offset clampInto(Offset at, Size size, Rect area) {
+  double clamp(double v, double lo, double hi) =>
+      lo > hi ? (lo + hi) / 2 : v.clamp(lo, hi);
+  return Offset(
+    clamp(at.dx, area.left + size.width / 2, area.right - size.width / 2),
+    clamp(at.dy, area.top + size.height / 2, area.bottom - size.height / 2),
+  );
+}
+
+/// The index of the first of [candidates] where a [size] box centred on it
+/// lies wholly inside [area] and overlaps none of [taken]; null if none.
+int? firstFree(
+  List<Offset> candidates,
+  Size size,
+  Rect area,
+  List<Rect> taken,
+) {
+  for (var i = 0; i < candidates.length; i++) {
+    final box = Rect.fromCenter(
+      center: candidates[i],
+      width: size.width,
+      height: size.height,
+    );
+    final inside =
+        box.left >= area.left &&
+        box.top >= area.top &&
+        box.right <= area.right &&
+        box.bottom <= area.bottom;
+    if (inside && !taken.any(box.overlaps)) return i;
+  }
+  return null;
+}
+
+/// The part of a [size] map not covered by [insets] (toolbars, banners);
+/// the whole map when the insets leave nothing.
+Rect unobscured(Size size, EdgeInsets insets) {
+  final area = insets.deflateRect(Offset.zero & size);
+  return area.width > 0 && area.height > 0 ? area : Offset.zero & size;
+}
+
+/// Four distance rings around [center], sized to the part of the map you
+/// can see, with a label on each ring, faint spokes every 45° and N/E/S/W
+/// just outside the outer ring. Labels stay clear of [insets], the edges
+/// the map's own controls cover. Rebuilds as the map moves.
 class RangeRingsLayer extends StatelessWidget {
   const RangeRingsLayer({
     super.key,
     required this.center,
     this.imperial = false,
+    this.insets = EdgeInsets.zero,
   });
 
   /// Your position.
@@ -22,25 +74,35 @@ class RangeRingsLayer extends StatelessWidget {
   /// Distances in miles rather than metres.
   final bool imperial;
 
+  /// How far in from each edge the map is covered by its controls.
+  final EdgeInsets insets;
+
   static GeoPoint _geo(LatLng p) => GeoPoint(p.latitude, p.longitude);
   static LatLng _ll(GeoPoint p) => LatLng(p.latitude, p.longitude);
 
-  /// Metres from the view's centre to its nearer edge.
-  static double nearEdgeMetres(MapCamera camera) {
-    final b = camera.visibleBounds;
-    final c = _geo(camera.center);
-    final toNorth = haversineKm(c, GeoPoint(b.north, c.longitude));
-    final toSouth = haversineKm(c, GeoPoint(b.south, c.longitude));
-    final toEast = haversineKm(c, GeoPoint(c.latitude, b.east));
-    final toWest = haversineKm(c, GeoPoint(c.latitude, b.west));
-    return [toNorth, toSouth, toEast, toWest].reduce((a, b) => a < b ? a : b) *
+  /// Metres from the centre of [area] (in screen pixels) to its nearer
+  /// edge.
+  static double nearEdgeMetres(MapCamera camera, Rect area) {
+    final c = _geo(camera.screenOffsetToLatLng(area.center));
+    double to(Offset edge) =>
+        haversineKm(c, _geo(camera.screenOffsetToLatLng(edge)));
+    return [
+          to(area.topCenter),
+          to(area.bottomCenter),
+          to(area.centerLeft),
+          to(area.centerRight),
+        ].reduce((a, b) => a < b ? a : b) *
         1000;
   }
 
   @override
   Widget build(BuildContext context) {
     final camera = MapCamera.of(context);
-    final radii = ringRadii(nearEdgeMetres(camera), imperial: imperial);
+    final area = unobscured(
+      camera.nonRotatedSize,
+      insets + const EdgeInsets.all(4),
+    );
+    final radii = ringRadii(nearEdgeMetres(camera, area), imperial: imperial);
     final outer = radii.last;
     final scheme = Theme.of(context).colorScheme;
     final line = scheme.onSurface.withValues(alpha: .55);
@@ -64,6 +126,67 @@ class RangeRingsLayer extends StatelessWidget {
         ),
       ),
     );
+    Offset screen(GeoPoint p) => camera.latLngToScreenOffset(_ll(p));
+
+    // Compass tags point the way even when pushed in from an edge.
+    final taken = <Rect>[];
+    final compass = <Marker>[];
+    for (final (bearing, name) in const [
+      (0.0, 'N'),
+      (90.0, 'E'),
+      (180.0, 'S'),
+      (270.0, 'W'),
+    ]) {
+      final at = clampInto(
+        screen(pointAt(from, bearing, outer * 1.12)),
+        compassTagSize,
+        area,
+      );
+      taken.add(
+        Rect.fromCenter(
+          center: at,
+          width: compassTagSize.width,
+          height: compassTagSize.height,
+        ),
+      );
+      compass.add(
+        Marker(
+          point: camera.screenOffsetToLatLng(at),
+          width: compassTagSize.width,
+          height: compassTagSize.height,
+          child: tag(name),
+        ),
+      );
+    }
+    // Each ring's label sits on the ring, wherever it can be seen; a ring
+    // with no visible spot for one goes unlabelled.
+    final labels = <Marker>[];
+    for (final r in radii) {
+      final spots = [for (final b in ringLabelBearings) pointAt(from, b, r)];
+      final i = firstFree(
+        [for (final p in spots) screen(p)],
+        ringLabelSize,
+        area,
+        taken,
+      );
+      if (i == null) continue;
+      final at = screen(spots[i]);
+      taken.add(
+        Rect.fromCenter(
+          center: at,
+          width: ringLabelSize.width,
+          height: ringLabelSize.height,
+        ),
+      );
+      labels.add(
+        Marker(
+          point: _ll(spots[i]),
+          width: ringLabelSize.width,
+          height: ringLabelSize.height,
+          child: tag(ringLabel(r, imperial: imperial)),
+        ),
+      );
+    }
     return Stack(
       key: const Key('range-rings'),
       children: [
@@ -90,29 +213,7 @@ class RangeRingsLayer extends StatelessWidget {
               ),
           ],
         ),
-        MarkerLayer(
-          markers: [
-            for (final r in radii)
-              Marker(
-                point: _ll(pointAt(from, 0, r)),
-                width: 80,
-                height: 20,
-                child: tag(ringLabel(r, imperial: imperial)),
-              ),
-            for (final (bearing, name) in const [
-              (0.0, 'N'),
-              (90.0, 'E'),
-              (180.0, 'S'),
-              (270.0, 'W'),
-            ])
-              Marker(
-                point: _ll(pointAt(from, bearing, outer * 1.12)),
-                width: 24,
-                height: 20,
-                child: tag(name),
-              ),
-          ],
-        ),
+        MarkerLayer(markers: [...labels, ...compass]),
       ],
     );
   }

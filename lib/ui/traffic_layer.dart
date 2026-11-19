@@ -547,6 +547,9 @@ class MapToolbar extends StatelessWidget {
   /// About how tall a button with its label is.
   static const labelledHeight = 64.0;
 
+  /// How wide the pill is.
+  static const width = 64.0;
+
   final List<MapToolItem> items;
 
   @override
@@ -602,7 +605,7 @@ class _ToolButton extends StatelessWidget {
           onTap: item.onPressed,
           borderRadius: BorderRadius.circular(20),
           child: Container(
-            width: 64,
+            width: MapToolbar.width,
             constraints: const BoxConstraints(minHeight: 48),
             padding: const EdgeInsets.symmetric(vertical: 6),
             decoration: item.selected
