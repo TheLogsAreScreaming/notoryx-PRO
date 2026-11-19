@@ -293,6 +293,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                     _placesLayer(),
                     if (rings && own.isNotEmpty)
                       RangeRingsLayer(
+                        part: RingsPart.rings,
                         center: _ll(own.first),
                         // Clear of the toolbar, the offline banner and
                         // the traffic card.
@@ -353,6 +354,27 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                           ),
                       ],
                     ),
+                    if (rings && own.isNotEmpty)
+                      RangeRingsLayer(
+                        part: RingsPart.labels,
+                        center: _ll(own.first),
+                        // Clear of the toolbar, the offline banner and
+                        // the traffic card.
+                        insets: EdgeInsets.only(
+                          top: (widget.tiles?.status.offline ?? false) ? 64 : 0,
+                          right: MapToolbar.width + 16,
+                          bottom: _traffic ? 200 : 24,
+                        ),
+                        // Above the pins, and off them where it can.
+                        pins: points,
+                        imperial: usesMiles(
+                          WidgetsBinding
+                              .instance
+                              .platformDispatcher
+                              .locale
+                              .countryCode,
+                        ),
+                      ),
                     if (_traffic)
                       TrafficMapLayer(player: _player, showLabels: _hopLabels),
                     if (widget.tiles != null)

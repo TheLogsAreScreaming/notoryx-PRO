@@ -71,6 +71,95 @@ void main() {
     });
   });
 
+  group('leastCovered', () {
+    const area = Rect.fromLTWH(0, 0, 200, 200);
+    const size = Size(20, 10);
+    test('picks the spot pins cover least', () {
+      // Both spots are under a pin; the second only by a corner.
+      final pins = [
+        Rect.fromCenter(center: const Offset(50, 50), width: 44, height: 44),
+        Rect.fromCenter(center: const Offset(170, 170), width: 44, height: 44),
+      ];
+      expect(
+        leastCovered(
+          const [Offset(50, 50), Offset(140, 140)],
+          size,
+          area,
+          const [],
+          pins,
+        ),
+        1,
+      );
+    });
+    test('takes an uncovered spot over any covered one', () {
+      final pins = [
+        Rect.fromCenter(center: const Offset(50, 50), width: 44, height: 44),
+      ];
+      expect(
+        leastCovered(
+          const [Offset(50, 50), Offset(100, 100)],
+          size,
+          area,
+          const [],
+          pins,
+        ),
+        1,
+      );
+    });
+    test('skips spots off the area or on another label; null if none', () {
+      final taken = [
+        Rect.fromCenter(center: const Offset(100, 100), width: 30, height: 30),
+      ];
+      expect(
+        leastCovered(
+          const [Offset(-5, 50), Offset(100, 100)],
+          size,
+          area,
+          taken,
+          const [],
+        ),
+        isNull,
+      );
+    });
+  });
+
+  testWidgets('the rings part draws no labels; the labels part only labels', (
+    tester,
+  ) async {
+    const you = LatLng(45, -122);
+    Future<void> show(RingsPart part) => tester.pumpWidget(
+      MaterialApp(
+        home: FlutterMap(
+          key: ValueKey(part),
+          options: const MapOptions(initialCenter: you, initialZoom: 14),
+          children: [RangeRingsLayer(center: you, part: part)],
+        ),
+      ),
+    );
+
+    await show(RingsPart.rings);
+    await tester.pump();
+    expect(find.byType(CircleLayer), findsOneWidget);
+    expect(find.textContaining(RegExp('[0-9]')), findsNothing);
+    expect(find.text('N'), findsNothing);
+
+    await show(RingsPart.labels);
+    await tester.pump();
+    expect(find.byType(CircleLayer), findsNothing);
+    expect(find.textContaining(RegExp('[0-9]')), findsNWidgets(4));
+    expect(find.text('N'), findsOneWidget);
+    // Drawn over the pins, so they must not take a pin's tap.
+    expect(
+      find.ancestor(
+        of: find.text('N'),
+        matching: find.byWidgetPredicate(
+          (w) => w is IgnorePointer && w.ignoring,
+        ),
+      ),
+      findsWidgets,
+    );
+  });
+
   test('unobscured leaves out the covered edges', () {
     expect(
       unobscured(
