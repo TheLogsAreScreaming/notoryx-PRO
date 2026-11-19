@@ -32,6 +32,18 @@ class MeshCoreMapper {
     );
   }
 
+  /// When the radio last heard [c], by a clock that can be trusted.
+  ///
+  /// `lastAdvert` is the node's own clock, and many repeaters never have
+  /// theirs set: they report a default date in 2024 and showed as "stale ·
+  /// 900 d" though heard minutes ago. So an advert heard live counts as
+  /// heard now, and a synced contact uses `lastModified`, which the
+  /// companion radio stamps by its own clock (set from the phone on
+  /// connect). The node's `lastAdvert` is only the fallback.
+  DateTime? heardAt(ContactFrame c) => c.fromNewAdvert
+      ? _clock().toUtc()
+      : _seconds(c.lastModified) ?? _seconds(c.lastAdvert);
+
   /// A contact, or a node heard advertising.
   Node node(ContactFrame c) => Node(
     key: NodeKey.meshcore(c.keyHex),
@@ -45,7 +57,7 @@ class MeshCoreMapper {
       NodeType.unknown => NodeKind.unknown,
     },
     position: c.latitude == null ? null : GeoPoint(c.latitude!, c.longitude!),
-    lastHeard: _seconds(c.lastAdvert),
+    lastHeard: heardAt(c),
     path: PathFacts(
       hops: c.hops,
       route: c.hasPath ? RouteKind.direct : RouteKind.flood,
