@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:flutter/painting.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/retry.dart';
@@ -160,56 +159,6 @@ class OfflineFriendlyCache implements MapCachingProvider {
   }) => _delegate.putTile(url: url, metadata: metadata, bytes: bytes);
 }
 
-/// A tile provider whose every tile request gets its own image load.
-///
-/// When the map's size changes right after it moves (for example as it
-/// first opens on your radio), flutter_map cancels every tile and asks for
-/// it again in the same frame. With the stock provider the new request is
-/// handed the cancelled load still pending in Flutter's image cache, which
-/// ends as a transparent tile, so the map stayed blank until it was moved.
-/// Here no two requests share a load; the disk cache keeps repeats cheap.
-class OwnLoadTileProvider extends NetworkTileProvider {
-  OwnLoadTileProvider({
-    super.httpClient,
-    super.cachingProvider,
-    super.silenceExceptions,
-  });
-
-  @override
-  ImageProvider getImageWithCancelLoadingSupport(
-    TileCoordinates coordinates,
-    TileLayer options,
-    Future<void> cancelLoading,
-  ) => OwnLoadImage(
-    super.getImageWithCancelLoadingSupport(coordinates, options, cancelLoading),
-  );
-}
-
-/// Wraps [inner] so the image cache never shares its load with another
-/// request: the cache key is this object, compared by identity.
-class OwnLoadImage extends ImageProvider<OwnLoadImage> {
-  OwnLoadImage(this.inner);
-
-  final ImageProvider inner;
-  Object? _innerKey;
-
-  @override
-  Future<OwnLoadImage> obtainKey(ImageConfiguration configuration) {
-    final completer = Completer<OwnLoadImage>();
-    inner.obtainKey(configuration).then((key) {
-      _innerKey = key;
-      completer.complete(this);
-    }, onError: completer.completeError);
-    return completer.future;
-  }
-
-  @override
-  ImageStreamCompleter loadImage(
-    OwnLoadImage key,
-    ImageDecoderCallback decode,
-  ) => inner.loadImage(_innerKey!, decode);
-}
-
 /// The map's tile source and cache.
 class MapTiles {
   MapTiles._(this.provider, this.status);
@@ -238,7 +187,7 @@ class MapTiles {
       ),
       status,
     );
-    final provider = OwnLoadTileProvider(
+    final provider = NetworkTileProvider(
       httpClient: tileHttpClient(http.Client(), status),
       cachingProvider: cache,
       silenceExceptions: true,

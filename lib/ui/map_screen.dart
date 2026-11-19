@@ -37,6 +37,29 @@ import 'traffic_layer.dart';
 ///
 /// Tap a node for its details, signal and (MeshCore) the route our radio
 /// would use to reach it, drawn through the repeaters along the way.
+/// Fits [points] in view, with a margin, no closer than street level.
+CameraFit fitAll(List<LatLng> points) => CameraFit.coordinates(
+  coordinates: points,
+  padding: const EdgeInsets.all(48),
+  maxZoom: 15,
+);
+
+/// Where the map opens: your radio up close, or everything in view.
+///
+/// This goes into [MapOptions] rather than moving the map in `onMapReady`.
+/// flutter_map calls `onMapReady` before it reports the map's first size,
+/// and that size event carries the camera from before any move. A move in
+/// `onMapReady` left the tile layer loading the old view, and the tiles for
+/// the new one were never fetched: the map stayed blank until dragged.
+/// `initialCameraFit` is applied after the size event, so it is safe.
+({LatLng center, double zoom, CameraFit? fit}) openingCamera(
+  List<LatLng> points,
+) => switch (points) {
+  [] => (center: const LatLng(39.5, -98.35), zoom: 3, fit: null),
+  [final only] => (center: only, zoom: 12, fit: null),
+  _ => (center: points.first, zoom: 10, fit: fitAll(points)),
+};
+
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key, required this.app, this.tiles});
 
@@ -189,13 +212,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       _map.move(points.single, 12);
       return;
     }
-    _map.fitCamera(
-      CameraFit.coordinates(
-        coordinates: points,
-        padding: const EdgeInsets.all(48),
-        maxZoom: 15,
-      ),
-    );
+    _map.fitCamera(fitAll(points));
   }
 
   @override
@@ -247,6 +264,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
             ...placed.map((n) => _ll(n.position!)),
             ...own.map(_ll),
           ];
+          final opening = openingCamera(points);
           final route = _route == null ? null : _routeLine(_route!, all);
           _all = all;
           final dark = Theme.of(context).brightness == Brightness.dark;
@@ -256,12 +274,12 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                 label: l.mapDescription(placed.length),
                 child: FlutterMap(
                   mapController: _map,
+                  // The opening view is set here, not by moving the map in
+                  // onMapReady: see openingCamera.
                   options: MapOptions(
-                    initialCenter: points.isEmpty
-                        ? const LatLng(39.5, -98.35)
-                        : points.first,
-                    initialZoom: points.isEmpty ? 3 : 10,
-                    onMapReady: () => _fit(points),
+                    initialCenter: opening.center,
+                    initialZoom: opening.zoom,
+                    initialCameraFit: opening.fit,
                   ),
                   children: [
                     if (widget.tiles case final tiles?)
