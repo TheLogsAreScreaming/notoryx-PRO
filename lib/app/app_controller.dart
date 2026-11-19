@@ -291,6 +291,12 @@ class AppController extends ChangeNotifier {
     await alerts?.dispose();
     await feeds.stopAll();
     await bridge.stop();
+    await disconnectAll();
+  }
+
+  /// Disconnects every radio, one after another, and waits until they have
+  /// finished. Used when the app goes away, so no link is left open.
+  Future<void> disconnectAll() async {
     for (final c in [..._connections.values]) {
       await disconnect(c);
     }
