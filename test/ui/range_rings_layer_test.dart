@@ -127,4 +127,68 @@ void main() {
       }
     }
   });
+
+  testWidgets('ring labels move off node pins', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(400, 400));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    const you = LatLng(45, -122);
+    const pinSize = Size(44, 44);
+    final map = MapController();
+    Future<List<Rect>> labelBoxes(List<LatLng> pins) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: FlutterMap(
+            key: ValueKey(pins.length),
+            mapController: map,
+            options: const MapOptions(initialCenter: you, initialZoom: 14),
+            children: [RangeRingsLayer(center: you, pins: pins)],
+          ),
+        ),
+      );
+      await tester.pump();
+      final tags = find.descendant(
+        of: find.byKey(const Key('range-rings')),
+        matching: find.byType(DecoratedBox),
+      );
+      return [
+        for (final e in tags.evaluate())
+          if (find
+              .descendant(
+                of: find.byWidget(e.widget),
+                matching: find.textContaining(RegExp('[0-9]')),
+              )
+              .evaluate()
+              .isNotEmpty)
+            tester.getRect(find.byWidget(e.widget)),
+      ];
+    }
+
+    // Where the labels go with no pins, then a pin on top of each of them.
+    final before = await labelBoxes(const []);
+    expect(before, hasLength(4));
+    final origin = tester.getTopLeft(find.byType(FlutterMap));
+    final pins = [
+      for (final b in before)
+        map.camera.screenOffsetToLatLng(b.center - origin),
+    ];
+    final after = await labelBoxes(pins);
+    expect(after, hasLength(4), reason: 'every ring keeps its label');
+    final pinBoxes = [
+      for (final b in before)
+        Rect.fromCenter(
+          center: b.center,
+          width: pinSize.width,
+          height: pinSize.height,
+        ),
+    ];
+    for (final label in after) {
+      for (final pin in pinBoxes) {
+        expect(
+          label.deflate(.5).overlaps(pin),
+          isFalse,
+          reason: 'label at $label is under the pin at $pin',
+        );
+      }
+    }
+  });
 }
