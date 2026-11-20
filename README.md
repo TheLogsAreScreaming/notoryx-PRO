@@ -47,12 +47,12 @@ Downloads are published in **[notoryx-PRO-releases](https://github.com/TheLogsAr
 
 Screenshots come from the app's demo mode (pretend radios, made-up places). They're rendered by `test/screenshots/`; see [Screenshots](#screenshots).
 
-## Status: test 20 (0.20.0), 15 November 2026
+## Status: test 28 (0.28.0), 19 November 2026
 
-The latest build is **[0.20.0 test 20](https://github.com/TheLogsAreScreaming/notoryx-PRO-releases/releases/tag/v0.20.0-test.20)** (build 25), a test build for Android, Mac and Windows.
+The latest build is **[0.28.0 test 28](https://github.com/TheLogsAreScreaming/notoryx-PRO-releases/releases/tag/v0.28.0-test.28)** (build 33), a test build for Android, Mac and Windows.
 
-- **Checked on real hardware:** test 19 was checked on a phone with a MeshCore and a Meshtastic radio (connect, send on a test channel). Test 18's node colours, compass and line of sight were checked on a phone, and test 20's clock fix too.
-- **Not tried on real radios yet:** most features added since test 14 (trusted nodes, network diagram, off-route alerts, route picker, nearby repeater test, automations, day replay, node journal, checklists, identity key backup). They pass the automated tests and CI only. Please report what works.
+- **Checked on real hardware:** on a phone with a MeshCore and a Meshtastic radio: the live Traffic map and map toolbar (test 22), the stale-node badge and range rings (tests 24 to 27), Back releasing the radio while Home keeps it connected (test 26), real MeshCore last-heard times and quiet ignored MeshCore channel posts (test 27), and old wrong MeshCore dates cleared (test 28). Earlier: connect and send on a test channel (test 19), node colours, compass and line of sight (test 18), and a moderation report reaching Sentinel.
+- **Not tried on real radios yet:** most features added in tests 14 and 15 (trusted nodes, network diagram, off-route alerts, route picker, nearby repeater test, automations, day replay, node journal, checklists, identity key backup), and ignoring a MeshCore direct message (needs a second sender). They pass the automated tests and CI only. Please report what works.
 - **Not yet built:** iPhone (needs an Apple developer account), Google Play and the App Store. The Mac build isn't notarized and the Windows build isn't code-signed.
 
 ## Features
@@ -77,6 +77,7 @@ The latest build is **[0.20.0 test 20](https://github.com/TheLogsAreScreaming/no
 - Route view and picker for MeshCore direct paths.
 - Places: GPX import and export, geofences, link planner and off-route alerts.
 - Day replay of where nodes were.
+- **Live Traffic map** that draws heard packets hop by hop, a map toolbar, **range rings** around your position and a **stale** badge for nodes that have gone quiet (you choose how long).
 - **Compass** that points to a node, with distance and "turn left/right".
 - **Line of sight** between any two points, with Fresnel zone and Earth's curve, and an optional terrain profile from Open-Meteo (nothing is sent until you tap **Check terrain**).
 
@@ -90,6 +91,7 @@ The latest build is **[0.20.0 test 20](https://github.com/TheLogsAreScreaming/no
 ### Trust and safety
 - Verified senders: QR codes, fingerprints, badges and name-clash warnings.
 - Trusted nodes, identity key backup and a node journal.
+- Ignore a node: its channel posts and messages are saved without a notification.
 - MECP emergency messages with labels in 20 languages, a MAYDAY that gets through mute, and a manually started distress beacon. Emergencies show in neon green.
 - SALUTE and 9-Line reports, and offline checklists.
 - Community moderation: report a message, a Flagged label and appeals.
@@ -108,14 +110,14 @@ The latest build is **[0.20.0 test 20](https://github.com/TheLogsAreScreaming/no
 
 ## Install
 
-Get the files from the **[latest test build](https://github.com/TheLogsAreScreaming/notoryx-PRO-releases/releases/tag/v0.20.0-test.20)**. Each test updates the previous one in place and keeps your messages.
+Get the files from the **[latest test build](https://github.com/TheLogsAreScreaming/notoryx-PRO-releases/releases/tag/v0.28.0-test.28)**. Each test updates the previous one in place and keeps your messages.
 
 | File | For |
 |---|---|
-| `NOTORYX-PRO-0.20.0-android-arm64.apk` | Most Android phones (64-bit ARM) |
-| `NOTORYX-PRO-0.20.0-android.apk` | Any Android device (larger) |
-| `NOTORYX-PRO-0.20.0-macos.zip` | Mac (Intel and Apple silicon), macOS 12 or later |
-| `NOTORYX-PRO-0.20.0-windows-x64.zip` | Windows 10 and 11, 64-bit (never run on a real PC yet) |
+| `NOTORYX-PRO-0.28.0-android-arm64.apk` | Most Android phones (64-bit ARM) |
+| `NOTORYX-PRO-0.28.0-android.apk` | Any Android device (larger) |
+| `NOTORYX-PRO-0.28.0-macos.zip` | Mac (Intel and Apple silicon), macOS 12 or later |
+| `NOTORYX-PRO-0.28.0-windows-x64.zip` | Windows 10 and 11, 64-bit (never run on a real PC yet) |
 
 - **Android:** download the APK on the phone, open it and allow installs from your browser or file manager when asked. Builds are signed with the NOTORYX PRO key, certificate SHA-256 `7419F685D2FBFDF533C2EE32034477531E3A414D8574320B079FC913183AFA70`.
 - **Mac:** unzip, then right-click **NOTORYX PRO** → **Open** the first time (the app isn't notarized).
