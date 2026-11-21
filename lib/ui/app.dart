@@ -34,6 +34,7 @@ import 'backdrop.dart';
 import 'theme_screen.dart';
 import 'themes.dart';
 import 'timeline_screen.dart';
+import 'sarneg/sarneg_ui.dart';
 
 /// The app: localisation, theme and the three tabs.
 class NotoryxProApp extends StatelessWidget {
@@ -112,6 +113,7 @@ enum _MenuAction {
   timeline,
   journal,
   checklists,
+  sarneg,
   export,
   restore,
   theme,
@@ -379,6 +381,9 @@ class _HomeShellState extends State<HomeShell> {
                   builder: (_) => ChecklistsScreen(book: app.checklists),
                 ),
               ),
+              _MenuAction.sarneg => Navigator.of(context).push(
+                MaterialPageRoute<void>(builder: (_) => const SarnegScreen()),
+              ),
               _MenuAction.export => showExportSheet(context, store: app.store),
               _MenuAction.restore => restoreFromExport(
                 context,
@@ -449,6 +454,11 @@ class _HomeShellState extends State<HomeShell> {
                 key: const Key('menu-checklists'),
                 value: _MenuAction.checklists,
                 child: Text(context.l10n.ckTitle),
+              ),
+              PopupMenuItem(
+                key: const Key('menu-sarneg'),
+                value: _MenuAction.sarneg,
+                child: Text(context.l10n.sarneg_title),
               ),
               PopupMenuItem(
                 value: _MenuAction.theme,

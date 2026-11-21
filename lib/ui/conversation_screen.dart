@@ -25,6 +25,8 @@ import 'mecp_widgets.dart';
 import 'message_path_card.dart';
 import 'mute_menu.dart';
 import 'report_sheet.dart';
+import 'sarneg/sarneg.dart';
+import 'sarneg/sarneg_ui.dart';
 
 /// One conversation: messages with how each arrived, and a composer.
 class ConversationScreen extends StatefulWidget {
@@ -474,6 +476,8 @@ class MessageBubble extends StatelessWidget {
                   MecpCard(mecp, raw: m.text)
                 else
                   Text(m.text),
+                if (isSarnegMessage(m.text))
+                  SarnegDecodeLine(text: m.text, at: m.receivedAt),
                 const SizedBox(height: 4),
                 Row(
                   mainAxisSize: MainAxisSize.min,
@@ -640,6 +644,7 @@ class _ComposerState extends State<Composer> {
                   icon: const Icon(Icons.assignment_outlined),
                   onPressed: () => _report(c),
                 ),
+                SarnegComposeButton(controller: _controller),
                 Expanded(
                   child: TextField(
                     controller: _controller,
