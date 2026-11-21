@@ -70,6 +70,7 @@ The latest build is **[0.28.0 test 28](https://github.com/TheLogsAreScreaming/no
 - Channels: create, join, leave and share by QR code or link.
 - Forwarding, scheduled messages, search, delete and export.
 - Auto-replies with ready-made presets, and automations (webhooks off by default).
+- **SARNEG code words** (Inbox menu → SARNEG code word): send grid references, frequencies and times as letters instead of digits. Your team agrees on a 10-letter word with no repeated letter (with BLACKHORSE, `[SARNEG] LRs KSAC` reads as 17S 4823). A SARNEG button in the message box codes the numbers before you press Send, and a received `[SARNEG]` message gets a tap-to-decode line. Share the word by QR code or text, and set a different word for given days. It works on both meshes and uses the same format as every NOTORYX app. It keeps numbers away from a casual listener; it is **not encryption**. Merged after the latest release, so it arrives in the next test build; not yet tried on a phone.
 - Contacts beyond the radio's own limit.
 
 ### Map and navigation
