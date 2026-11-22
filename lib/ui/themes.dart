@@ -6,49 +6,21 @@ import '../radio/radio.dart';
 import '../mesh/traffic.dart';
 import '../store/mesh_store.dart';
 
-/// The eight looks the app can wear, in picker order.
+/// The looks the app can wear, in picker order.
 enum AppThemeId {
+  blackout,
   blaze,
   neonAnarchy,
   tactical,
-  pinkOverload,
   bareBeauty,
   okabeIto,
   nightOps,
-  seasonal,
 }
-
-/// The four seasons the Seasonal theme moves through.
-enum Season { spring, summer, autumn, winter }
-
-/// The season at [date], northern-hemisphere months.
-Season seasonOf(DateTime date) => switch (date.month) {
-  3 || 4 || 5 => Season.spring,
-  6 || 7 || 8 => Season.summer,
-  9 || 10 || 11 => Season.autumn,
-  _ => Season.winter,
-};
-
-/// The optional holiday palettes, each covering a few days.
-enum Holiday { independence, halloween, winterHolidays, newYear }
-
-/// The holiday at [date], or null.
-Holiday? holidayOf(DateTime date) => switch ((date.month, date.day)) {
-  (7, >= 1 && <= 4) => Holiday.independence,
-  (10, >= 25) => Holiday.halloween,
-  (12, >= 20 && <= 26) => Holiday.winterHolidays,
-  (12, 31) || (1, 1) => Holiday.newYear,
-  _ => null,
-};
 
 /// What the person picked on the theme screen.
 @immutable
 class ThemeChoice {
-  const ThemeChoice({
-    this.id = AppThemeId.blaze,
-    this.season,
-    this.holidays = false,
-  });
+  const ThemeChoice({this.id = AppThemeId.blackout});
 
   /// Preference the choice is saved under.
   static const prefName = 'theme';
@@ -56,25 +28,17 @@ class ThemeChoice {
   /// The chosen look.
   final AppThemeId id;
 
-  /// For Seasonal: a fixed season, or null to follow the date.
-  final Season? season;
+  /// Saved form: the look's name.
+  String encode() => id.name;
 
-  /// For Seasonal: whether holiday palettes may replace the season.
-  final bool holidays;
-
-  /// Saved form: `id;season;holidays`.
-  String encode() =>
-      '${id.name};${season?.name ?? ''};${holidays ? 'on' : 'off'}';
-
-  /// Reads [encode]'s output; anything unknown falls back to the default.
-  static ThemeChoice decode(String? saved) {
-    final p = (saved ?? '').split(';');
-    return ThemeChoice(
-      id: AppThemeId.values.asNameMap()[p.first] ?? AppThemeId.blaze,
-      season: p.length > 1 ? Season.values.asNameMap()[p[1]] : null,
-      holidays: p.length > 2 && p[2] == 'on',
-    );
-  }
+  /// Reads [encode]'s output. Older saves added `;season;holidays` after the
+  /// name; that part is ignored. A look that no longer exists (Seasonal, Pink
+  /// Overload) or anything unknown falls back to BLACKOUT.
+  static ThemeChoice decode(String? saved) => ThemeChoice(
+    id:
+        AppThemeId.values.asNameMap()[(saved ?? '').split(';').first] ??
+        AppThemeId.blackout,
+  );
 
   /// Saves this choice.
   Future<void> save(MeshStore store) => store.setPreference(prefName, encode());
@@ -83,16 +47,8 @@ class ThemeChoice {
   static Future<ThemeChoice> load(MeshStore store) async =>
       decode(await store.preference(prefName));
 
-  /// A copy with some settings changed.
-  ThemeChoice copyWith({
-    AppThemeId? id,
-    Season? Function()? season,
-    bool? holidays,
-  }) => ThemeChoice(
-    id: id ?? this.id,
-    season: season == null ? this.season : season(),
-    holidays: holidays ?? this.holidays,
-  );
+  /// A copy with another look.
+  ThemeChoice copyWith({AppThemeId? id}) => ThemeChoice(id: id ?? this.id);
 }
 
 /// Colours specific to this app, carried with the theme.
@@ -201,10 +157,6 @@ const _neon = _Palette(
   darkOnly: true,
 );
 const _tactical = _Palette(Color(0xFF6B7A3A));
-const _pink = _Palette(
-  Color(0xFFFF2E93),
-  variant: DynamicSchemeVariant.vibrant,
-);
 const _bare = _Palette(
   Color(0xFF808080),
   variant: DynamicSchemeVariant.monochrome,
@@ -217,44 +169,65 @@ const _okabe = _Palette(
 );
 const _night = _Palette(Color(0xFFB00020), darkOnly: true);
 
-const _seasons = {
-  Season.spring: _Palette(Color(0xFF4CAF50)),
-  Season.summer: _Palette(
-    Color(0xFFFFB300),
-    variant: DynamicSchemeVariant.vibrant,
-  ),
-  Season.autumn: _Palette(Color(0xFFB5541C)),
-  Season.winter: _Palette(Color(0xFF5B9BD5)),
-};
+/// BLACKOUT is monochrome; its colours come from [_blackout].
+const _blackoutSeed = _Palette(
+  Color(0xFF888888),
+  variant: DynamicSchemeVariant.monochrome,
+  darkOnly: true,
+);
 
-const _holidays = {
-  Holiday.independence: _Palette(
-    Color(0xFF1F3A93),
-    variant: DynamicSchemeVariant.vibrant,
-  ),
-  Holiday.halloween: _Palette(
-    Color(0xFFFF7518),
-    variant: DynamicSchemeVariant.vibrant,
-  ),
-  Holiday.winterHolidays: _Palette(Color(0xFF1B7F3B)),
-  Holiday.newYear: _Palette(
-    Color(0xFFD4AF37),
-    variant: DynamicSchemeVariant.fidelity,
-  ),
-};
-
-_Palette _paletteFor(ThemeChoice c, DateTime now) => switch (c.id) {
+_Palette _paletteFor(ThemeChoice c) => switch (c.id) {
+  AppThemeId.blackout => _blackoutSeed,
   AppThemeId.blaze => _blaze,
   AppThemeId.neonAnarchy => _neon,
   AppThemeId.tactical => _tactical,
-  AppThemeId.pinkOverload => _pink,
   AppThemeId.bareBeauty => _bare,
   AppThemeId.okabeIto => _okabe,
   AppThemeId.nightOps => _night,
-  AppThemeId.seasonal =>
-    (c.holidays && c.season == null ? _holidays[holidayOf(now)] : null) ??
-        _seasons[c.season ?? seasonOf(now)]!,
 };
+
+/// BLACKOUT brand palette (matte, charcoal, gunmetal, steel, frost).
+const blackoutMatte = Color(0xFF080808);
+const blackoutCharcoal = Color(0xFF242424);
+const blackoutGunmetal = Color(0xFF484848);
+const blackoutSteel = Color(0xFF888888);
+const blackoutFrost = Color(0xFFE8E8E8);
+
+/// BLACKOUT: frost on matte black, no brand accent. Secondary text is a
+/// lighter steel (#9E9E9E) so it stays 4.5:1 on charcoal cards; plain
+/// steel #888888 is kept for outlines.
+ColorScheme _blackout(ColorScheme s) => s.copyWith(
+  surface: blackoutMatte,
+  surfaceDim: blackoutMatte,
+  surfaceBright: const Color(0xFF2C2C2C),
+  surfaceContainerLowest: const Color(0xFF040404),
+  surfaceContainerLow: const Color(0xFF101010),
+  surfaceContainer: const Color(0xFF181818),
+  surfaceContainerHigh: const Color(0xFF1E1E1E),
+  surfaceContainerHighest: blackoutCharcoal,
+  onSurface: blackoutFrost,
+  onSurfaceVariant: const Color(0xFF9E9E9E),
+  primary: blackoutFrost,
+  onPrimary: blackoutMatte,
+  primaryContainer: blackoutGunmetal,
+  onPrimaryContainer: blackoutFrost,
+  secondary: const Color(0xFFBDBDBD),
+  onSecondary: blackoutMatte,
+  secondaryContainer: const Color(0xFF363636),
+  onSecondaryContainer: blackoutFrost,
+  tertiary: const Color(0xFFBDBDBD),
+  onTertiary: blackoutMatte,
+  tertiaryContainer: const Color(0xFF363636),
+  onTertiaryContainer: blackoutFrost,
+  outline: blackoutSteel,
+  outlineVariant: blackoutGunmetal,
+  inverseSurface: blackoutFrost,
+  onInverseSurface: blackoutMatte,
+  inversePrimary: blackoutGunmetal,
+  surfaceTint: blackoutFrost,
+  shadow: const Color(0xFF000000),
+  scrim: const Color(0xFF000000),
+);
 
 /// Night Ops keeps everything red on black, to protect night vision.
 ColorScheme _nightOps(ColorScheme s) => s.copyWith(
@@ -276,13 +249,9 @@ ColorScheme _nightOps(ColorScheme s) => s.copyWith(
   outlineVariant: const Color(0xFF5C2020),
 );
 
-/// The Material theme for [choice] at [brightness] on the date [now].
-ThemeData buildTheme(
-  ThemeChoice choice,
-  Brightness brightness, {
-  DateTime? now,
-}) {
-  final p = _paletteFor(choice, now ?? DateTime.now());
+/// The Material theme for [choice] at [brightness].
+ThemeData buildTheme(ThemeChoice choice, Brightness brightness) {
+  final p = _paletteFor(choice);
   final b = p.darkOnly ? Brightness.dark : brightness;
   var scheme = ColorScheme.fromSeed(
     seedColor: p.seed,
@@ -290,6 +259,7 @@ ThemeData buildTheme(
     dynamicSchemeVariant: p.variant,
   );
   if (choice.id == AppThemeId.nightOps) scheme = _nightOps(scheme);
+  if (choice.id == AppThemeId.blackout) scheme = _blackout(scheme);
   final backgrounds = [
     scheme.surface,
     scheme.surfaceContainerLow,
@@ -321,9 +291,14 @@ ThemeData buildTheme(
 
 /// The app's own colours in [theme].
 MeshColors meshColors(ThemeData theme) =>
-    // A plain MaterialApp has no extension; fall back to the default look.
+    // A plain MaterialApp has no extension. Fall back to a look that follows
+    // its brightness (BLACKOUT is always dark, so its colours would be tuned
+    // for the wrong background on a light screen).
     theme.extension<MeshColors>() ??
-    buildTheme(const ThemeChoice(), theme.brightness).extension<MeshColors>()!;
+    buildTheme(
+      const ThemeChoice(id: AppThemeId.bareBeauty),
+      theme.brightness,
+    ).extension<MeshColors>()!;
 
 /// Colour that marks [p]'s mesh in [theme].
 Color meshColor(RadioProtocol p, ThemeData theme) {

@@ -27,9 +27,9 @@ Future<Uint8List> _png(int w, int h) async {
 
 void main() {
   test('glass keeps text readable over black and over bright pictures', () {
-    for (final (name, choice, date) in looks()) {
+    for (final (name, choice) in looks()) {
       for (final b in Brightness.values) {
-        final t = buildTheme(choice, b, now: date);
+        final t = buildTheme(choice, b);
         final s = t.colorScheme;
         for (final dim in [0.0, .35, BackdropChoice.maxDim]) {
           final fill = glassFill(t, dim: dim);

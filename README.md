@@ -40,7 +40,7 @@ Downloads are published in **[notoryx-PRO-releases](https://github.com/TheLogsAr
   <tr>
     <td align="center">Diagnostics</td>
     <td align="center">Emergency messages</td>
-    <td align="center">Eight themes</td>
+    <td align="center">Seven themes</td>
     <td align="center">Night Ops</td>
   </tr>
 </table>
@@ -104,7 +104,7 @@ The latest build is **[0.28.0 test 28](https://github.com/TheLogsAreScreaming/no
 - Airtime savers: Plus Codes and paced remote settings.
 
 ### Your look, your data
-- Eight themes with MeshCore red and Meshtastic blue throughout, and a colour or photo for each node.
+- Seven themes (BLACKOUT by default) with MeshCore red and Meshtastic blue throughout, and a colour or photo for each node.
 - Backgrounds: solid colour, gradient, mesh gradient or your own photo, with frosted glass panels.
 - App lock, optional encryption of saved messages, password-protected backups, restore and team setup sharing.
 - English, Spanish, French, German, Portuguese and Italian. Everything except English is machine-written and needs a native speaker's review.
