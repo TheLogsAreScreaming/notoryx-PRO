@@ -249,6 +249,12 @@ ColorScheme _nightOps(ColorScheme s) => s.copyWith(
   outlineVariant: const Color(0xFF5C2020),
 );
 
+/// Extra font families every theme falls back on, for glyphs its own font
+/// lacks. Only screenshot tests set it: they have no system fonts, so the
+/// "→" in hop paths draws as boxes without a font that has it.
+@visibleForTesting
+List<String>? debugFontFamilyFallback;
+
 /// The Material theme for [choice] at [brightness].
 ThemeData buildTheme(ThemeChoice choice, Brightness brightness) {
   final p = _paletteFor(choice);
@@ -277,6 +283,7 @@ ThemeData buildTheme(ThemeChoice choice, Brightness brightness) {
   );
   return ThemeData(
     colorScheme: scheme,
+    fontFamilyFallback: debugFontFamilyFallback,
     extensions: [
       MeshColors(
         meshcore: readableOn(fireEngineRed, backgrounds),
