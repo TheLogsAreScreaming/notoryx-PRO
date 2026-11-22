@@ -10,6 +10,20 @@ class MainFlutterWindow: NSWindow {
 
     RegisterGeneratedPlugins(registry: flutterViewController)
 
+    // "notoryx/screen_capture": while SARNEG screens show, keep this window
+    // out of screen sharing and capture where macOS allows it.
+    let capture = FlutterMethodChannel(
+      name: "notoryx/screen_capture",
+      binaryMessenger: flutterViewController.engine.binaryMessenger)
+    capture.setMethodCallHandler { [weak self] call, result in
+      guard call.method == "setBlocked", let blocked = call.arguments as? Bool else {
+        result(FlutterMethodNotImplemented)
+        return
+      }
+      self?.sharingType = blocked ? .none : .readOnly
+      result(nil)
+    }
+
     super.awakeFromNib()
   }
 }
