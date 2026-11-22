@@ -23,15 +23,15 @@ Downloads are published in **[notoryx-PRO-releases](https://github.com/TheLogsAr
   </tr>
   <tr>
     <td><img src="docs/screenshots/map.png" width="200" alt="Map with MeshCore and Meshtastic nodes and the map toolbar"></td>
+    <td><img src="docs/screenshots/traffic-map.png" width="200" alt="Traffic map showing a channel message's path over three hops"></td>
     <td><img src="docs/screenshots/sarneg.png" width="200" alt="SARNEG code word screen with the word hidden"></td>
     <td><img src="docs/screenshots/sarneg-compose.png" width="200" alt="SARNEG composer turning 17S 4823 into code letters"></td>
-    <td><img src="docs/screenshots/menu.png" width="200" alt="Inbox menu with tools and settings"></td>
   </tr>
   <tr>
     <td align="center">One map</td>
+    <td align="center">Traffic map</td>
     <td align="center">SARNEG code word</td>
     <td align="center">Numbers as letters</td>
-    <td align="center">Tools and settings</td>
   </tr>
   <tr>
     <td><img src="docs/screenshots/line-of-sight.png" width="200" alt="Line of sight with a terrain profile and the Fresnel zone"></td>

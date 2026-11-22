@@ -14,6 +14,7 @@ import 'package:notoryx_pro/demo/demo_radio.dart';
 import 'package:notoryx_pro/mesh/mesh.dart';
 import 'package:notoryx_pro/store/mesh_store.dart';
 import 'package:notoryx_pro/ui/app.dart';
+import 'package:notoryx_pro/ui/map_tiles.dart';
 import 'package:notoryx_pro/ui/themes.dart';
 
 import 'readme_screenshots_test.dart' show loadFonts, ratio, run, size;
@@ -33,6 +34,13 @@ void main() {
     addTearDown(t.view.reset);
     addTearDown(t.platformDispatcher.clearAllTestValues);
 
+    // Tests block the network; the map fetches the few OpenStreetMap tiles
+    // it shows (the radios are demo).
+    final blocked = HttpOverrides.current;
+    HttpOverrides.global = null;
+    addTearDown(() => HttpOverrides.global = blocked);
+    final tiles = MapTiles.uncached();
+
     final store = MeshStore.memory();
     final app = AppController(
       store: store,
@@ -50,7 +58,11 @@ void main() {
     await t.pumpWidget(
       RepaintBoundary(
         key: boundary,
-        child: NotoryxProApp(app: app, initialTheme: const ThemeChoice()),
+        child: NotoryxProApp(
+          app: app,
+          initialTheme: const ThemeChoice(),
+          tiles: tiles,
+        ),
       ),
     );
     Future<void> frames(int n) async {
@@ -65,7 +77,7 @@ void main() {
     await t.tap(find.byIcon(Icons.map_outlined));
     await frames(10);
     await t.tap(find.byKey(const Key('map-fit')));
-    await frames(4);
+    await frames(25);
     await t.tap(find.byKey(const Key('map-traffic')));
     await frames(2);
 
@@ -102,8 +114,8 @@ void main() {
     await t.tap(find.byKey(const Key('map-traffic')));
     await frames(2);
     await t.pumpWidget(const SizedBox());
-    await t.pump(const Duration(seconds: 5));
+    await t.pump(const Duration(minutes: 2));
     await t.runAsync(app.shutdown);
     debugDisableShadows = true;
-  });
+  }, timeout: const Timeout(Duration(minutes: 3)));
 }

@@ -89,18 +89,23 @@ Future<void> loadFonts() async {
   await load('MaterialIcons', ['MaterialIcons-Regular.otf']);
   // Roboto has no arrows (→) and there is no monospace font in tests; on a
   // Mac, system fonts fill those in (SARNEG code letters are monospace).
-  Future<void> system(String family, String path) async {
-    if (!File(path).existsSync()) return;
+  Future<bool> system(String family, String path) async {
+    if (!File(path).existsSync()) return false;
     final bytes = File(path).readAsBytesSync();
     await (FontLoader(
       family,
     )..addFont(Future.value(ByteData.sublistView(bytes)))).load();
+    return true;
   }
 
-  await system(
+  // Tests don't fall back to other fonts on their own, so every theme names
+  // this one as its fallback.
+  if (await system(
     'ArialUnicode',
     '/System/Library/Fonts/Supplemental/Arial Unicode.ttf',
-  );
+  )) {
+    debugFontFamilyFallback = const ['ArialUnicode'];
+  }
   await system(
     'monospace',
     '/System/Library/Fonts/Supplemental/Andale Mono.ttf',
