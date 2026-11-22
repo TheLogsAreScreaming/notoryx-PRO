@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/notoryx-pro-banner.png" alt="NOTORYX PRO: engineered for independence"></p>
+
 # NOTORYX PRO
 
 **One app for MeshCore and Meshtastic LoRa radios.** Part of the **NOTORYX** off-grid communications family. **No Towers. No Limits.**
@@ -9,15 +11,27 @@ Downloads are published in **[notoryx-PRO-releases](https://github.com/TheLogsAr
 <table>
   <tr>
     <td><img src="docs/screenshots/1-inbox.png" width="200" alt="Inbox with MeshCore and Meshtastic channels side by side"></td>
-    <td><img src="docs/screenshots/2-conversation.png" width="200" alt="A direct conversation with delivery ticks"></td>
+    <td><img src="docs/screenshots/2-conversation.png" width="200" alt="A direct conversation with delivery ticks and signal details"></td>
     <td><img src="docs/screenshots/3-nodes.png" width="200" alt="Node list for both meshes with signal bars"></td>
-    <td><img src="docs/screenshots/4-radios.png" width="200" alt="Two radios connected at once"></td>
+    <td><img src="docs/screenshots/4-radios.png" width="200" alt="A MeshCore and a Meshtastic radio connected at once"></td>
   </tr>
   <tr>
     <td align="center">One inbox</td>
     <td align="center">Conversation</td>
     <td align="center">Nodes</td>
-    <td align="center">Several radios</td>
+    <td align="center">Both radios at once</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/map.png" width="200" alt="Map with MeshCore and Meshtastic nodes and the map toolbar"></td>
+    <td><img src="docs/screenshots/sarneg.png" width="200" alt="SARNEG code word screen with the word hidden"></td>
+    <td><img src="docs/screenshots/sarneg-compose.png" width="200" alt="SARNEG composer turning 17S 4823 into code letters"></td>
+    <td><img src="docs/screenshots/menu.png" width="200" alt="Inbox menu with tools and settings"></td>
+  </tr>
+  <tr>
+    <td align="center">One map</td>
+    <td align="center">SARNEG code word</td>
+    <td align="center">Numbers as letters</td>
+    <td align="center">Tools and settings</td>
   </tr>
   <tr>
     <td><img src="docs/screenshots/line-of-sight.png" width="200" alt="Line of sight with a terrain profile and the Fresnel zone"></td>
@@ -34,7 +48,7 @@ Downloads are published in **[notoryx-PRO-releases](https://github.com/TheLogsAr
   <tr>
     <td><img src="docs/screenshots/5-diagnostics.png" width="200" alt="Diagnostics with packet log and radio readings"></td>
     <td><img src="docs/screenshots/6-emergency.png" width="200" alt="MECP emergency message composer"></td>
-    <td><img src="docs/screenshots/7-themes.png" width="200" alt="Theme picker"></td>
+    <td><img src="docs/screenshots/7-themes.png" width="200" alt="Theme picker with BLACKOUT selected"></td>
     <td><img src="docs/screenshots/8-night-ops.png" width="200" alt="Night Ops theme"></td>
   </tr>
   <tr>
@@ -45,14 +59,15 @@ Downloads are published in **[notoryx-PRO-releases](https://github.com/TheLogsAr
   </tr>
 </table>
 
-Screenshots come from the app's demo mode (pretend radios, made-up places). They're rendered by `test/screenshots/`; see [Screenshots](#screenshots).
+Screenshots come from the app's demo mode (pretend radios, made-up names and places) in the default **BLACKOUT** look. They're rendered by `test/screenshots/`; see [Screenshots](#screenshots).
 
-## Status: test 28 (0.28.0), 19 November 2026
+## Status: test 31 (0.31.0), 21 November 2026
 
-The latest build is **[0.28.0 test 28](https://github.com/TheLogsAreScreaming/notoryx-PRO-releases/releases/tag/v0.28.0-test.28)** (build 33), a test build for Android, Mac and Windows.
+The latest build is **[0.31.0 test 31](https://github.com/TheLogsAreScreaming/notoryx-PRO-releases/releases/tag/v0.31.0-test.31)** (build 36), a test build for Android, Mac and Windows.
 
-- **Checked on real hardware:** on a phone with a MeshCore and a Meshtastic radio: the live Traffic map and map toolbar (test 22), the stale-node badge and range rings (tests 24 to 27), Back releasing the radio while Home keeps it connected (test 26), real MeshCore last-heard times and quiet ignored MeshCore channel posts (test 27), and old wrong MeshCore dates cleared (test 28). Earlier: connect and send on a test channel (test 19), node colours, compass and line of sight (test 18), and a moderation report reaching Sentinel.
-- **Not tried on real radios yet:** most features added in tests 14 and 15 (trusted nodes, network diagram, off-route alerts, route picker, nearby repeater test, automations, day replay, node journal, checklists, identity key backup), and ignoring a MeshCore direct message (needs a second sender). They pass the automated tests and CI only. Please report what works.
+- **New on main, not in a build yet:** the **BLACKOUT** look (frost on matte black) is now the default, with the new steel eagle-N app icon on every platform. Seasonal and Pink Overload were retired; anyone who had them picked gets BLACKOUT. These arrive in the next test build.
+- **Checked on real hardware:** on a phone with a MeshCore and a Meshtastic radio: SARNEG (word rules, Show/Hide, share QR, coding and decoding on the demo radio, screenshots blocked on SARNEG screens; tests 29 to 31), old wrong MeshCore dates cleared (test 28), quiet ignored MeshCore channel posts and real MeshCore last-heard times (test 27), Back releasing the radio while Home keeps it connected (test 26), range rings and the stale-node badge (tests 24 to 27), and the live Traffic map and map toolbar (test 22). Earlier: connect and send on a test channel, node colours, compass and line of sight, and a moderation report reaching Sentinel.
+- **Not tried on real radios yet:** SARNEG over the air, most features added in tests 14 and 15 (trusted nodes, network diagram, off-route alerts, route picker, nearby repeater test, automations, day replay, node journal, checklists, identity key backup), and ignoring a MeshCore direct message (needs a second sender). They pass the automated tests and CI only. Please report what works.
 - **Not yet built:** iPhone (needs an Apple developer account), Google Play and the App Store. The Mac build isn't notarized and the Windows build isn't code-signed.
 
 ## Features
@@ -70,7 +85,7 @@ The latest build is **[0.28.0 test 28](https://github.com/TheLogsAreScreaming/no
 - Channels: create, join, leave and share by QR code or link.
 - Forwarding, scheduled messages, search, delete and export.
 - Auto-replies with ready-made presets, and automations (webhooks off by default).
-- **SARNEG code words** (Inbox menu → SARNEG code word): send grid references, frequencies and times as letters instead of digits. Your team agrees on a 10-letter word with no repeated letter (with BLACKHORSE, `[SARNEG] LRs KSAC` reads as 17S 4823). A SARNEG button in the message box codes the numbers before you press Send, and a received `[SARNEG]` message gets a tap-to-decode line. Share the word by QR code or text, and set a different word for given days. It works on both meshes and uses the same format as every NOTORYX app. It keeps numbers away from a casual listener; it is **not encryption**. Merged after the latest release, so it arrives in the next test build; not yet tried on a phone.
+- **SARNEG code words** (Inbox menu → SARNEG code word): send grid references, frequencies and times as letters instead of digits. Your team agrees on a 10-letter word with no repeated letter, or taps **Random word** (with the textbook example BLACKHORSE, `[SARNEG] LRs KSAC` reads as 17S 4823; the app warns that well-known words like that one are easy to guess). A SARNEG button in the message box codes the numbers before you press Send, and a received `[SARNEG]` message gets a tap-to-decode line. Share the word by QR code or text, and set a different word for given days. The word hides itself again after 30 seconds, copied SARNEG text is cleared from the clipboard after a minute, and screenshots and screen recording are blocked on SARNEG screens (Android, Windows, and Mac where macOS allows it). Works on both meshes with the same format as every NOTORYX app. It keeps numbers away from a casual listener; it is **not encryption**.
 - Contacts beyond the radio's own limit.
 
 ### Map and navigation
@@ -104,21 +119,21 @@ The latest build is **[0.28.0 test 28](https://github.com/TheLogsAreScreaming/no
 - Airtime savers: Plus Codes and paced remote settings.
 
 ### Your look, your data
-- Seven themes (BLACKOUT by default) with MeshCore red and Meshtastic blue throughout, and a colour or photo for each node.
+- Seven looks: **BLACKOUT** (the default: frost on matte black, no accent colour), Blaze, Neon Anarchy, Tactical, Bare Beauty, Okabe-Ito (colour-blind safe) and Night Ops (red on black for night vision). MeshCore red, Meshtastic blue, emergency green and warning red stay readable in every look, and each node can have its own colour or photo.
 - Backgrounds: solid colour, gradient, mesh gradient or your own photo, with frosted glass panels.
 - App lock, optional encryption of saved messages, password-protected backups, restore and team setup sharing.
 - English, Spanish, French, German, Portuguese and Italian. Everything except English is machine-written and needs a native speaker's review.
 
 ## Install
 
-Get the files from the **[latest test build](https://github.com/TheLogsAreScreaming/notoryx-PRO-releases/releases/tag/v0.28.0-test.28)**. Each test updates the previous one in place and keeps your messages.
+Get the files from the **[latest test build](https://github.com/TheLogsAreScreaming/notoryx-PRO-releases/releases/tag/v0.31.0-test.31)**. Each test updates the previous one in place and keeps your messages.
 
 | File | For |
 |---|---|
-| `NOTORYX-PRO-0.28.0-android-arm64.apk` | Most Android phones (64-bit ARM) |
-| `NOTORYX-PRO-0.28.0-android.apk` | Any Android device (larger) |
-| `NOTORYX-PRO-0.28.0-macos.zip` | Mac (Intel and Apple silicon), macOS 12 or later |
-| `NOTORYX-PRO-0.28.0-windows-x64.zip` | Windows 10 and 11, 64-bit (never run on a real PC yet) |
+| `NOTORYX-PRO-0.31.0-android-arm64.apk` | Most Android phones (64-bit ARM) |
+| `NOTORYX-PRO-0.31.0-android.apk` | Any Android device (larger) |
+| `NOTORYX-PRO-0.31.0-macos.zip` | Mac (Intel and Apple silicon), macOS 12 or later |
+| `NOTORYX-PRO-0.31.0-windows-x64.zip` | Windows 10 and 11, 64-bit (never run on a real PC yet) |
 
 - **Android:** download the APK on the phone, open it and allow installs from your browser or file manager when asked. Builds are signed with the NOTORYX PRO key, certificate SHA-256 `7419F685D2FBFDF533C2EE32034477531E3A414D8574320B079FC913183AFA70`.
 - **Mac:** unzip, then right-click **NOTORYX PRO** → **Open** the first time (the app isn't notarized).
@@ -144,7 +159,7 @@ These differ from NOTORYX Core, NOTORYX Independent and NOTORYX Connect, so all 
 
 ## Building
 
-CI is the build loop (`.github/workflows/ci.yml`): format, analyze, tests, the independence check and a debug Android build. Test builds come from `release-build.yml`. Locally:
+CI is the build loop (`.github/workflows/ci.yml`): format, analyze, tests, the independence check and debug Android, iPhone, Mac and Windows builds. Test builds come from `release-build.yml`. Locally:
 
 ```bash
 flutter pub get
@@ -160,7 +175,7 @@ The images above and the store screenshots are rendered from demo mode with real
 SCREENSHOTS=1 flutter test test/screenshots
 ```
 
-PNGs land in `build/screenshots/` (`readme/` for the extra README shots, `<size>/<language>/` for the store sets). You can also run the **Store screenshots** workflow from the Actions tab and download the `store-screenshots` artifact. The README copies in `docs/screenshots/` are the English phone shots, shrunk to 960 px tall.
+PNGs land in `build/screenshots/` (`readme/` for the extra README shots, `<size>/<language>/` for the store sets). You can also run the **Store screenshots** workflow from the Actions tab and download the `store-screenshots` artifact. The README copies in `docs/screenshots/` are the English phone shots, shrunk to 960 px tall. The map shot fetches its OpenStreetMap tiles live; nothing else in the screenshot tests goes online.
 
 ## Privacy
 

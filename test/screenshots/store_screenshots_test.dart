@@ -9,7 +9,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:notoryx_pro/app/app_controller.dart';
 import 'package:notoryx_pro/demo/demo_radio.dart';
@@ -21,6 +20,8 @@ import 'package:notoryx_pro/ui/mecp_widgets.dart';
 import 'package:notoryx_pro/ui/theme_screen.dart';
 import 'package:notoryx_pro/ui/themes.dart';
 
+import 'readme_screenshots_test.dart' show loadFonts;
+
 final run = Platform.environment['SCREENSHOTS'] == '1';
 
 /// Store sizes: name, logical size and pixel ratio.
@@ -30,26 +31,6 @@ const sizes = [
 ];
 
 const languages = ['en', 'es', 'fr', 'de', 'pt', 'it'];
-
-Future<void> loadFonts() async {
-  final root = Platform.environment['FLUTTER_ROOT'] ?? '';
-  final dir = '$root/bin/cache/artifacts/material_fonts';
-  Future<void> load(String family, List<String> files) async {
-    final loader = FontLoader(family);
-    for (final f in files) {
-      final bytes = File('$dir/$f').readAsBytesSync();
-      loader.addFont(Future.value(ByteData.sublistView(bytes)));
-    }
-    await loader.load();
-  }
-
-  await load('Roboto', [
-    'Roboto-Regular.ttf',
-    'Roboto-Medium.ttf',
-    'Roboto-Bold.ttf',
-  ]);
-  await load('MaterialIcons', ['MaterialIcons-Regular.otf']);
-}
 
 void main() {
   setUpAll(() async {

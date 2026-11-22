@@ -24,6 +24,9 @@ import 'package:notoryx_pro/store/mesh_store.dart';
 import 'package:notoryx_pro/ui/app.dart';
 import 'package:notoryx_pro/ui/compass_screen.dart';
 import 'package:notoryx_pro/ui/line_of_sight_sheet.dart';
+import 'package:notoryx_pro/ui/map_tiles.dart';
+import 'package:notoryx_pro/ui/sarneg/sarneg.dart';
+import 'package:notoryx_pro/ui/sarneg/sarneg_ui.dart';
 import 'package:notoryx_pro/ui/themes.dart';
 
 final run = Platform.environment['SCREENSHOTS'] == '1';
@@ -84,6 +87,24 @@ Future<void> loadFonts() async {
     'Roboto-Bold.ttf',
   ]);
   await load('MaterialIcons', ['MaterialIcons-Regular.otf']);
+  // Roboto has no arrows (→) and there is no monospace font in tests; on a
+  // Mac, system fonts fill those in (SARNEG code letters are monospace).
+  Future<void> system(String family, String path) async {
+    if (!File(path).existsSync()) return;
+    final bytes = File(path).readAsBytesSync();
+    await (FontLoader(
+      family,
+    )..addFont(Future.value(ByteData.sublistView(bytes)))).load();
+  }
+
+  await system(
+    'ArialUnicode',
+    '/System/Library/Fonts/Supplemental/Arial Unicode.ttf',
+  );
+  await system(
+    'monospace',
+    '/System/Library/Fonts/Supplemental/Andale Mono.ttf',
+  );
 }
 
 void main() {
@@ -99,6 +120,13 @@ void main() {
     t.platformDispatcher.localeTestValue = const Locale('en');
     addTearDown(t.view.reset);
     addTearDown(t.platformDispatcher.clearAllTestValues);
+
+    // Tests block the network; the map shot fetches the few OpenStreetMap
+    // tiles it shows (nothing else here goes online: the radios are demo).
+    final blocked = HttpOverrides.current;
+    HttpOverrides.global = null;
+    addTearDown(() => HttpOverrides.global = blocked);
+    final tiles = MapTiles.uncached();
 
     final store = MeshStore.memory();
     final app = AppController(
@@ -156,7 +184,11 @@ void main() {
     await t.pumpWidget(
       RepaintBoundary(
         key: boundary,
-        child: NotoryxProApp(app: app, initialTheme: const ThemeChoice()),
+        child: NotoryxProApp(
+          app: app,
+          initialTheme: const ThemeChoice(),
+          tiles: tiles,
+        ),
       ),
     );
     final nav = (t.widget(find.byType(NotoryxProApp)) as NotoryxProApp)
@@ -233,10 +265,47 @@ void main() {
     nav.pop();
     await settle();
 
+    // The map with both meshes, on real OpenStreetMap tiles.
+    await t.tap(find.byIcon(Icons.map_outlined));
+    await settle();
+    await t.tap(find.byKey(const Key('map-fit')));
+    for (var i = 0; i < 20; i++) {
+      await t.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 250)),
+      );
+      await t.pump(const Duration(milliseconds: 100));
+    }
+    await shot('map');
+    await t.tap(find.byIcon(Icons.chat_bubble_outline).first);
+    await settle();
+
+    // SARNEG with the example word from the docs, never a real team's word.
+    SarnegKeys.instance = SarnegKeys(storage: MemorySarnegStorage());
+    await t.runAsync(
+      () => SarnegKeys.instance.save(SarnegKeySet(word: 'BLACKHORSE')),
+    );
+    unawaited(
+      nav.push(MaterialPageRoute<void>(builder: (_) => const SarnegScreen())),
+    );
+    await shot('sarneg');
+    nav.pop();
+    await settle();
+    unawaited(showSarnegComposeSheet(nav.context, initial: '17S 4823'));
+    await shot('sarneg-compose');
+    nav.pop();
+    await settle();
+
+    // The Inbox menu: settings and tools.
+    await t.tap(find.byKey(const Key('inbox-menu')));
+    await shot('menu');
+    await t.tapAt(const Offset(20, 600));
+    await settle();
+
     expect([mc.radio, mt.radio], everyElement(isNotNull));
 
     await t.pumpWidget(const SizedBox());
-    await t.pump(const Duration(seconds: 1));
+    // Lets the tile client's retry and reload timers run out.
+    await t.pump(const Duration(minutes: 2));
     await t.runAsync(app.shutdown);
     final closing = store.close();
     await t.pump(const Duration(seconds: 1));
