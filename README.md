@@ -61,11 +61,10 @@ Downloads are published in **[notoryx-PRO-releases](https://github.com/TheLogsAr
 
 Screenshots come from the app's demo mode (pretend radios, made-up names and places) in the default **BLACKOUT** look. They're rendered by `test/screenshots/`; see [Screenshots](#screenshots).
 
-## Status: test 31 (0.31.0), 21 November 2026
+## Status: test 32 (0.32.0), 22 November 2026
 
-The latest build is **[0.31.0 test 31](https://github.com/TheLogsAreScreaming/notoryx-PRO-releases/releases/tag/v0.31.0-test.31)** (build 36), a test build for Android, Mac and Windows.
+The latest build is **[0.32.0 test 32](https://github.com/TheLogsAreScreaming/notoryx-PRO-releases/releases/tag/v0.32.0-test.32)** (build 37), a test build for Android, Mac and Windows. It brings the **BLACKOUT** look: BLACKOUT (frost on matte black) as the default theme and the new steel eagle-N app icon on every platform. Seasonal and Pink Overload were retired; anyone who had them picked gets BLACKOUT. Test 32 hasn't been tried on a phone or radio yet.
 
-- **New on main, not in a build yet:** the **BLACKOUT** look (frost on matte black) is now the default, with the new steel eagle-N app icon on every platform. Seasonal and Pink Overload were retired; anyone who had them picked gets BLACKOUT. These arrive in the next test build.
 - **Checked on real hardware:** on a phone with a MeshCore and a Meshtastic radio: SARNEG (word rules, Show/Hide, share QR, coding and decoding on the demo radio, screenshots blocked on SARNEG screens; tests 29 to 31), old wrong MeshCore dates cleared (test 28), quiet ignored MeshCore channel posts and real MeshCore last-heard times (test 27), Back releasing the radio while Home keeps it connected (test 26), range rings and the stale-node badge (tests 24 to 27), and the live Traffic map and map toolbar (test 22). Earlier: connect and send on a test channel, node colours, compass and line of sight, and a moderation report reaching Sentinel.
 - **Not tried on real radios yet:** SARNEG over the air, most features added in tests 14 and 15 (trusted nodes, network diagram, off-route alerts, route picker, nearby repeater test, automations, day replay, node journal, checklists, identity key backup), and ignoring a MeshCore direct message (needs a second sender). They pass the automated tests and CI only. Please report what works.
 - **Not yet built:** iPhone (needs an Apple developer account), Google Play and the App Store. The Mac build isn't notarized and the Windows build isn't code-signed.
@@ -126,14 +125,14 @@ The latest build is **[0.31.0 test 31](https://github.com/TheLogsAreScreaming/no
 
 ## Install
 
-Get the files from the **[latest test build](https://github.com/TheLogsAreScreaming/notoryx-PRO-releases/releases/tag/v0.31.0-test.31)**. Each test updates the previous one in place and keeps your messages.
+Get the files from the **[latest test build](https://github.com/TheLogsAreScreaming/notoryx-PRO-releases/releases/tag/v0.32.0-test.32)**. Each test updates the previous one in place and keeps your messages.
 
 | File | For |
 |---|---|
-| `NOTORYX-PRO-0.31.0-android-arm64.apk` | Most Android phones (64-bit ARM) |
-| `NOTORYX-PRO-0.31.0-android.apk` | Any Android device (larger) |
-| `NOTORYX-PRO-0.31.0-macos.zip` | Mac (Intel and Apple silicon), macOS 12 or later |
-| `NOTORYX-PRO-0.31.0-windows-x64.zip` | Windows 10 and 11, 64-bit (never run on a real PC yet) |
+| `NOTORYX-PRO-0.32.0-android-arm64.apk` | Most Android phones (64-bit ARM) |
+| `NOTORYX-PRO-0.32.0-android.apk` | Any Android device (larger) |
+| `NOTORYX-PRO-0.32.0-macos.zip` | Mac (Intel and Apple silicon), macOS 12 or later |
+| `NOTORYX-PRO-0.32.0-windows-x64.zip` | Windows 10 and 11, 64-bit (never run on a real PC yet) |
 
 - **Android:** download the APK on the phone, open it and allow installs from your browser or file manager when asked. Builds are signed with the NOTORYX PRO key, certificate SHA-256 `7419F685D2FBFDF533C2EE32034477531E3A414D8574320B079FC913183AFA70`.
 - **Mac:** unzip, then right-click **NOTORYX PRO** → **Open** the first time (the app isn't notarized).
