@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/retry.dart';
@@ -193,5 +193,20 @@ class MapTiles {
       silenceExceptions: true,
     );
     return MapTiles._(provider, status);
+  }
+
+  /// Tiles straight from the network with no disk cache, for the README
+  /// screenshots (rendered headless, where there is no app folder).
+  @visibleForTesting
+  static MapTiles uncached() {
+    final status = NetworkStatus();
+    return MapTiles._(
+      NetworkTileProvider(
+        httpClient: tileHttpClient(http.Client(), status),
+        cachingProvider: const DisabledMapCachingProvider(),
+        silenceExceptions: true,
+      ),
+      status,
+    );
   }
 }
