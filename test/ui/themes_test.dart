@@ -11,28 +11,17 @@ import 'package:notoryx_pro/ui/themes.dart';
 import 'accessibility_test.dart' show walk;
 import 'screens_test.dart' show settle, tearDownApp;
 
-/// Every distinct look: each theme, each season, each holiday.
-List<(String, ThemeChoice, DateTime)> looks() => [
-  for (final id in AppThemeId.values)
-    if (id != AppThemeId.seasonal)
-      (id.name, ThemeChoice(id: id), DateTime(2026)),
-  for (final s in Season.values)
-    (s.name, ThemeChoice(id: AppThemeId.seasonal, season: s), DateTime(2026)),
-  for (final (h, d) in [
-    ('independence', DateTime(2026, 7, 4)),
-    ('halloween', DateTime(2026, 10, 31)),
-    ('winter holidays', DateTime(2026, 12, 25)),
-    ('new year', DateTime(2027)),
-  ])
-    (h, const ThemeChoice(id: AppThemeId.seasonal, holidays: true), d),
+/// Every distinct look.
+List<(String, ThemeChoice)> looks() => [
+  for (final id in AppThemeId.values) (id.name, ThemeChoice(id: id)),
 ];
 
 void main() {
   group('colours stay readable', () {
-    for (final (name, choice, date) in looks()) {
+    for (final (name, choice) in looks()) {
       for (final b in Brightness.values) {
         test('$name ${b.name}', () {
-          final t = buildTheme(choice, b, now: date);
+          final t = buildTheme(choice, b);
           final s = t.colorScheme;
           void aa(Color fg, Color bg, String what) => expect(
             contrastRatio(fg, bg),
@@ -59,9 +48,9 @@ void main() {
     }
 
     test('emergency messages are neon green in every theme', () {
-      for (final (name, choice, date) in looks()) {
+      for (final (name, choice) in looks()) {
         for (final b in Brightness.values) {
-          final t = buildTheme(choice, b, now: date);
+          final t = buildTheme(choice, b);
           final g = meshColors(t);
           final hue = HSLColor.fromColor(g.sos).hue;
           expect(hue, inInclusiveRange(90, 130), reason: '$name ${b.name}');
@@ -81,9 +70,9 @@ void main() {
     });
 
     test('emergency red stays red in every theme', () {
-      for (final (name, choice, date) in looks()) {
+      for (final (name, choice) in looks()) {
         for (final b in Brightness.values) {
-          final e = buildTheme(choice, b, now: date).colorScheme.error;
+          final e = buildTheme(choice, b).colorScheme.error;
           final hsl = HSLColor.fromColor(e);
           expect(
             hsl.hue < 15 || hsl.hue > 345,
@@ -96,47 +85,41 @@ void main() {
     });
   });
 
-  group('seasons', () {
-    test('months map to seasons', () {
-      expect(seasonOf(DateTime(2026, 3)), Season.spring);
-      expect(seasonOf(DateTime(2026, 8, 31)), Season.summer);
-      expect(seasonOf(DateTime(2026, 11, 30)), Season.autumn);
-      expect(seasonOf(DateTime(2026, 12)), Season.winter);
-      expect(seasonOf(DateTime(2026, 2, 28)), Season.winter);
-    });
-
-    test('holidays are off unless asked for, and yield to a fixed season', () {
-      final halloween = DateTime(2026, 10, 31);
-      expect(holidayOf(halloween), Holiday.halloween);
-      expect(holidayOf(DateTime(2026, 10, 24)), isNull);
-      Color seed(ThemeChoice c) =>
-          buildTheme(c, Brightness.light, now: halloween).colorScheme.primary;
-      const auto = ThemeChoice(id: AppThemeId.seasonal);
-      const fixed = ThemeChoice(
-        id: AppThemeId.seasonal,
-        season: Season.autumn,
-        holidays: true,
-      );
-      const on = ThemeChoice(id: AppThemeId.seasonal, holidays: true);
-      expect(seed(auto), seed(fixed));
-      expect(seed(on), isNot(seed(auto)));
-    });
+  test('a saved choice round-trips; junk and removed looks fall back', () {
+    for (final id in AppThemeId.values) {
+      expect(ThemeChoice.decode(ThemeChoice(id: id).encode()).id, id);
+    }
+    // Saves from before BLACKOUT carried `;season;holidays`.
+    expect(ThemeChoice.decode('nightOps;;off').id, AppThemeId.nightOps);
+    expect(ThemeChoice.decode('blaze;winter;on').id, AppThemeId.blaze);
+    // Looks that were removed land on BLACKOUT.
+    expect(ThemeChoice.decode('seasonal;autumn;on').id, AppThemeId.blackout);
+    expect(ThemeChoice.decode('pinkOverload;;off').id, AppThemeId.blackout);
+    expect(ThemeChoice.decode('nope;x').id, AppThemeId.blackout);
+    expect(ThemeChoice.decode('').id, AppThemeId.blackout);
+    expect(ThemeChoice.decode(null).id, AppThemeId.blackout);
   });
 
-  test('a saved choice round-trips; junk falls back to Blaze', () {
-    const c = ThemeChoice(
-      id: AppThemeId.seasonal,
-      season: Season.winter,
-      holidays: true,
-    );
-    final back = ThemeChoice.decode(c.encode());
-    expect((back.id, back.season, back.holidays), (c.id, c.season, true));
-    expect(ThemeChoice.decode('nope;x').id, AppThemeId.blaze);
-    expect(ThemeChoice.decode(null).id, AppThemeId.blaze);
+  test('BLACKOUT is the default and uses the brand greys', () {
+    expect(const ThemeChoice().id, AppThemeId.blackout);
+    for (final b in Brightness.values) {
+      final s = buildTheme(const ThemeChoice(), b).colorScheme;
+      expect(s.brightness, Brightness.dark);
+      expect(s.surface, blackoutMatte);
+      expect(s.surfaceContainerHighest, blackoutCharcoal);
+      expect(s.outlineVariant, blackoutGunmetal);
+      expect(s.outline, blackoutSteel);
+      expect(s.onSurface, blackoutFrost);
+      expect(s.primary, blackoutFrost);
+    }
   });
 
   test('dark-only themes ignore a light system setting', () {
-    for (final id in [AppThemeId.neonAnarchy, AppThemeId.nightOps]) {
+    for (final id in [
+      AppThemeId.blackout,
+      AppThemeId.neonAnarchy,
+      AppThemeId.nightOps,
+    ]) {
       expect(
         buildTheme(ThemeChoice(id: id), Brightness.light).brightness,
         Brightness.dark,
@@ -206,15 +189,14 @@ void main() {
         .theme!
         .colorScheme
         .primary;
-    await tester.tap(find.byKey(const Key('theme-seasonal')));
+    await tester.tap(find.byKey(const Key('theme-blaze')));
     await settle(tester);
     expect(
       await tester
           .runAsync(() => ThemeChoice.load(app.store))
           .then((c) => c!.id),
-      AppThemeId.seasonal,
+      AppThemeId.blaze,
     );
-    expect(find.text('Holiday colours'), findsOneWidget);
     expect(
       tester
           .widget<MaterialApp>(find.byType(MaterialApp))
