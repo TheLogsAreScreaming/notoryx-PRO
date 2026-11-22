@@ -250,10 +250,7 @@ ColorScheme _nightOps(ColorScheme s) => s.copyWith(
 );
 
 /// The Material theme for [choice] at [brightness].
-ThemeData buildTheme(
-  ThemeChoice choice,
-  Brightness brightness,
-) {
+ThemeData buildTheme(ThemeChoice choice, Brightness brightness) {
   final p = _paletteFor(choice);
   final b = p.darkOnly ? Brightness.dark : brightness;
   var scheme = ColorScheme.fromSeed(
