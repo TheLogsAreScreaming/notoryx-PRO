@@ -14,6 +14,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../l10n/app_localizations.dart';
+import 'no_screenshots.dart';
 import 'sarneg.dart';
 
 AppLocalizations _t(BuildContext context) => AppLocalizations.of(context);
@@ -191,17 +192,19 @@ class SarnegScreen extends StatelessWidget {
   const SarnegScreen({super.key});
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(_t(context).sarneg_title)),
-    body: _keysBuilder(
-      (context, store) => !store.loaded
-          ? const Center(child: CircularProgressIndicator())
-          : Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 640),
-                child: _Body(store: store),
+  Widget build(BuildContext context) => NoScreenshots(
+    child: Scaffold(
+      appBar: AppBar(title: Text(_t(context).sarneg_title)),
+      body: _keysBuilder(
+        (context, store) => !store.loaded
+            ? const Center(child: CircularProgressIndicator())
+            : Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 640),
+                  child: _Body(store: store),
+                ),
               ),
-            ),
+      ),
     ),
   );
 }
@@ -744,70 +747,72 @@ class _SarnegImportScreenState extends State<SarnegImportScreen> {
   @override
   Widget build(BuildContext context) {
     final t = _t(context);
-    return Scaffold(
-      appBar: AppBar(title: Text(t.sarneg_importTitle)),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          if (_scanning)
-            SizedBox(
-              height: 320,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: MobileScanner(
-                  onDetect: (capture) {
-                    for (final b in capture.barcodes) {
-                      final raw = b.rawValue ?? '';
-                      if (raw.trim().toUpperCase().startsWith(
-                        kSarnegSharePrefix,
-                      )) {
-                        setState(() => _scanning = false);
-                        _use(raw);
-                        return;
+    return NoScreenshots(
+      child: Scaffold(
+        appBar: AppBar(title: Text(t.sarneg_importTitle)),
+        body: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            if (_scanning)
+              SizedBox(
+                height: 320,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: MobileScanner(
+                    onDetect: (capture) {
+                      for (final b in capture.barcodes) {
+                        final raw = b.rawValue ?? '';
+                        if (raw.trim().toUpperCase().startsWith(
+                          kSarnegSharePrefix,
+                        )) {
+                          setState(() => _scanning = false);
+                          _use(raw);
+                          return;
+                        }
                       }
-                    }
-                  },
-                  errorBuilder: (context, error) => Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Text(t.sarneg_cameraOff),
+                    },
+                    errorBuilder: (context, error) => Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Text(t.sarneg_cameraOff),
+                      ),
                     ),
                   ),
                 ),
+              )
+            else if (_canScan)
+              FilledButton.icon(
+                onPressed: () => setState(() => _scanning = true),
+                icon: const Icon(Icons.qr_code_scanner),
+                label: Text(t.sarneg_scanQr),
               ),
-            )
-          else if (_canScan)
-            FilledButton.icon(
-              onPressed: () => setState(() => _scanning = true),
-              icon: const Icon(Icons.qr_code_scanner),
-              label: Text(t.sarneg_scanQr),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _paste,
+              autocorrect: false,
+              enableSuggestions: false,
+              minLines: 1,
+              maxLines: 4,
+              style: _mono,
+              decoration: InputDecoration(
+                labelText: t.sarneg_pasteLabel,
+                hintText: 'SARNEG1:BLACKHORSE',
+                errorText: _error,
+              ),
+              onChanged: (_) {
+                if (_error != null) setState(() => _error = null);
+              },
             ),
-          const SizedBox(height: 16),
-          TextField(
-            controller: _paste,
-            autocorrect: false,
-            enableSuggestions: false,
-            minLines: 1,
-            maxLines: 4,
-            style: _mono,
-            decoration: InputDecoration(
-              labelText: t.sarneg_pasteLabel,
-              hintText: 'SARNEG1:BLACKHORSE',
-              errorText: _error,
+            const SizedBox(height: 8),
+            Align(
+              alignment: AlignmentDirectional.centerEnd,
+              child: FilledButton(
+                onPressed: () => _use(_paste.text),
+                child: Text(t.sarneg_useWord),
+              ),
             ),
-            onChanged: (_) {
-              if (_error != null) setState(() => _error = null);
-            },
-          ),
-          const SizedBox(height: 8),
-          Align(
-            alignment: AlignmentDirectional.centerEnd,
-            child: FilledButton(
-              onPressed: () => _use(_paste.text),
-              child: Text(t.sarneg_useWord),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -838,7 +843,7 @@ Future<String?> showSarnegComposeSheet(
   context: context,
   isScrollControlled: true,
   showDragHandle: true,
-  builder: (_) => _ComposeSheet(initial: initial),
+  builder: (_) => NoScreenshots(child: _ComposeSheet(initial: initial)),
 );
 
 class _ComposeSheet extends StatefulWidget {
@@ -1085,44 +1090,49 @@ class _SarnegDecodeLineState extends State<SarnegDecodeLine> {
           ? t.sarneg_noWordSet
           : t.sarneg_decoded(decoded);
       final color = widget.color ?? Theme.of(context).colorScheme.primary;
-      return Semantics(
-        button: true,
-        label: _open ? label : t.sarneg_decodeA11y,
-        excludeSemantics: true,
-        child: InkWell(
-          onTap: () {
-            if (_open && decoded == null) {
-              unawaited(
-                Navigator.push<void>(
-                  context,
-                  MaterialPageRoute(builder: (_) => const SarnegScreen()),
-                ),
-              );
-              return;
-            }
-            _toggle();
-          },
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 32),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  _open ? Icons.lock_open : Icons.pin_outlined,
-                  size: 16,
-                  color: color,
-                ),
-                const SizedBox(width: 6),
-                Flexible(
-                  child: Text(
-                    label,
-                    style: TextStyle(
-                      color: color,
-                      fontFamily: _open && decoded != null ? 'monospace' : null,
+      return NoScreenshots(
+        enabled: _open && decoded != null,
+        child: Semantics(
+          button: true,
+          label: _open ? label : t.sarneg_decodeA11y,
+          excludeSemantics: true,
+          child: InkWell(
+            onTap: () {
+              if (_open && decoded == null) {
+                unawaited(
+                  Navigator.push<void>(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SarnegScreen()),
+                  ),
+                );
+                return;
+              }
+              _toggle();
+            },
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 32),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    _open ? Icons.lock_open : Icons.pin_outlined,
+                    size: 16,
+                    color: color,
+                  ),
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(
+                      label,
+                      style: TextStyle(
+                        color: color,
+                        fontFamily: _open && decoded != null
+                            ? 'monospace'
+                            : null,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

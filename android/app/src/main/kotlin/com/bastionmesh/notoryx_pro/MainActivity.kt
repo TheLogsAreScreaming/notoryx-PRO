@@ -7,5 +7,6 @@ class MainActivity : FlutterFragmentActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         HeadingChannel.register(this, flutterEngine.dartExecutor.binaryMessenger)
+        ScreenCaptureChannel.register(this, flutterEngine.dartExecutor.binaryMessenger)
     }
 }

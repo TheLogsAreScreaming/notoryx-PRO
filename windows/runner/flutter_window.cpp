@@ -1,5 +1,8 @@
 #include "flutter_window.h"
 
+#include <flutter/method_channel.h>
+#include <flutter/standard_method_codec.h>
+
 #include <optional>
 
 #include "flutter/generated_plugin_registrant.h"
@@ -27,6 +30,27 @@ bool FlutterWindow::OnCreate() {
   RegisterPlugins(flutter_controller_->engine());
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 
+  // "notoryx/screen_capture": while SARNEG screens show, leave this window
+  // out of screenshots and screen recording.
+  capture_channel_ =
+      std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
+          flutter_controller_->engine()->messenger(), "notoryx/screen_capture",
+          &flutter::StandardMethodCodec::GetInstance());
+  capture_channel_->SetMethodCallHandler(
+      [this](const flutter::MethodCall<flutter::EncodableValue>& call,
+             std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>>
+                 result) {
+        const auto* blocked = std::get_if<bool>(call.arguments());
+        if (call.method_name() != "setBlocked" || blocked == nullptr) {
+          result->NotImplemented();
+          return;
+        }
+        SetWindowDisplayAffinity(GetHandle(), *blocked
+                                                  ? WDA_EXCLUDEFROMCAPTURE
+                                                  : WDA_NONE);
+        result->Success();
+      });
+
   flutter_controller_->engine()->SetNextFrameCallback([&]() {
     this->Show();
   });
@@ -40,6 +64,7 @@ bool FlutterWindow::OnCreate() {
 }
 
 void FlutterWindow::OnDestroy() {
+  capture_channel_ = nullptr;
   if (flutter_controller_) {
     flutter_controller_ = nullptr;
   }
