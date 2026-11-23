@@ -3466,5 +3466,89 @@
         "type": "String"
       }
     }
-  }
+  },
+  "covTitle": "Coverage mapping",
+  "covMapSwitch": "Map coverage",
+  "covAbout": "MeshCore radios only. Records what your radio hears in hexagons, placed by this phone's GPS. Readings stay on this phone for 7 days.",
+  "covNoMeshCore": "Connect a MeshCore radio to map coverage.",
+  "covLocationOff": "Turn on location for NOTORYX PRO to map coverage.",
+  "covWaitingGps": "Waiting for a good GPS fix…",
+  "covRecording": "{count, plural, =1{Recording. 1 hexagon on this phone.} other{Recording. {count} hexagons on this phone.}}",
+  "@covRecording": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "covHexagons": "{count, plural, =1{1 hexagon recorded} other{{count} hexagons recorded}}",
+  "@covHexagons": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "covNoHexagons": "No hexagons yet. Turn on mapping and drive or walk with your MeshCore radio.",
+  "covShareTitle": "Share with the NOTORYX coverage map",
+  "covShareOff": "Off. Nothing leaves this phone.",
+  "covConsentTitle": "Share your coverage?",
+  "covConsentBody": "NOTORYX PRO will send these to coverage.meshmayhem.org, only for hexagons (about 0.7 km² each) where your radio heard a repeater directly:\n\n• the hexagon, its 15-minute time slot, how many packets were heard, and the best SNR and RSSI\n• the repeaters heard directly there (their short hop codes) and their best SNR\n• the MeshCore repeaters your radio knows, with the positions they advertise themselves\n• a coverage key made only for this, never your radio's identity, and your mapper name if you set one\n\nIt never sends your GPS track or exact position, your messages, your contacts or your radio's name. The first 2 and last 2 hexagons of each drive stay on this phone. Uploads wait 3 hours and use Wi-Fi only unless you change that. Anonymous sends no key, no name and no repeater list, and only the date.\n\nYou can stop sharing or erase your uploads at any time.",
+  "covAgree": "I agree, share",
+  "covPrivacy": "When to share",
+  "covPrivacyLive": "Live",
+  "covPrivacyLiveSub": "As soon as each 15-minute slot ends.",
+  "covPrivacyDelayed": "Delayed (3 hours)",
+  "covPrivacyDelayedSub": "Three hours after each slot ends.",
+  "covPrivacyAnonymous": "Anonymous (24 hours)",
+  "covPrivacyAnonymousSub": "A day later, with no key and only the date. These can't be erased later.",
+  "covWifiOnly": "Upload on Wi-Fi only",
+  "covHideEnds": "Hide the start and end of each drive",
+  "covHideEndsSub": "The first 2 and last 2 hexagons of every mapping session never leave this phone.",
+  "covMapperName": "Mapper name",
+  "covMapperNameSub": "Optional. Shown to coverage map members only.",
+  "covWaiting": "{count, plural, =0{No readings waiting to share.} =1{1 reading waiting to share.} other{{count} readings waiting to share.}}",
+  "@covWaiting": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "covLastSent": "{count, plural, =1{Last upload: 1 reading, {when}.} other{Last upload: {count} readings, {when}.}}",
+  "@covLastSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "covLastRefused": "The coverage map refused the last upload (error {code}).",
+  "@covLastRefused": {
+    "placeholders": {
+      "code": {
+        "type": "int"
+      }
+    }
+  },
+  "covLastUnreachable": "Couldn't reach the coverage map. Trying again later.",
+  "covLastWifi": "Waiting for Wi-Fi to upload.",
+  "covErase": "Erase my uploads",
+  "covEraseSub": "Deletes everything this phone shared from the coverage map.",
+  "covEraseConfirm": "Erase everything this phone shared from the NOTORYX coverage map? Anonymous uploads carry no key, so they can't be found and stay.",
+  "covErased": "{count, plural, =1{Erased 1 reading.} other{Erased {count} readings.}}",
+  "@covErased": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "covEraseFailed": "Couldn't erase. Check your connection and try again.",
+  "covStopSharing": "Stop sharing",
+  "covStopSharingSub": "Nothing more is sent. Readings stay on this phone.",
+  "covOpenMap": "Open the coverage map"
 }

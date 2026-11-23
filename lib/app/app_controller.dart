@@ -10,6 +10,8 @@ import '../radio/radio.dart';
 import '../store/mesh_store.dart';
 import 'channel_bridge.dart';
 import 'checklists.dart';
+import 'coverage_mapper.dart';
+import 'coverage_sources.dart';
 import 'auto_responder.dart';
 import 'automations.dart';
 import '../mesh/node_look.dart';
@@ -122,6 +124,10 @@ class AppController extends ChangeNotifier {
       retries: retries,
     );
     c.addListener(notifyListeners);
+    if (c is MeshCoreConnection) {
+      c.onHeard = (snr, rssi, raw) =>
+          coverage.heard(snr: snr, rssi: rssi, raw: raw);
+    }
     _connections[target.address] = c;
     notifyListeners();
     await bridge.load();
@@ -190,6 +196,14 @@ class AppController extends ChangeNotifier {
   late final sentinel = SentinelService(
     read: store.preference,
     write: store.setPreference,
+  );
+
+  /// Coverage mapping for MeshCore radios, and opt-in sharing with the
+  /// NOTORYX coverage map (both off until the user turns them on).
+  late final coverage = CoverageMapper(
+    read: store.preference,
+    write: store.setPreference,
+    sources: PhoneCoverageSources(store),
   );
 
   Future<bool> _sendScheduled(Conversation c, String text) async {
@@ -304,6 +318,7 @@ class AppController extends ChangeNotifier {
     scheduler.stop();
     responder.stop();
     await timeline.stop();
+    await coverage.setMapping(false);
     await beacon.value?.stop();
     await alerts?.dispose();
     await feeds.stopAll();
@@ -325,6 +340,7 @@ class AppController extends ChangeNotifier {
       disconnect(c);
     }
     sentinel.dispose();
+    coverage.dispose();
     follow.dispose();
     telemetryAlerts.dispose();
     hopNaming.dispose();
