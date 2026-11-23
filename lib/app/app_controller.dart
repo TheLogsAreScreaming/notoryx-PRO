@@ -24,6 +24,7 @@ import 'mqtt_feed.dart';
 import 'radio_connection.dart';
 import 'radio_target.dart';
 import 'retry_policy.dart';
+import 'follow.dart';
 
 /// App-wide state: the store and the connected radios: up to [maxRadios]
 /// of them, from either mesh.
@@ -60,6 +61,17 @@ class AppController extends ChangeNotifier {
 
   /// Read-only MQTT feeds.
   late final MqttFeeds feeds = MqttFeeds(store);
+
+  /// Following one node live for a short time.
+  late final FollowTracker follow = FollowTracker(
+    store: store,
+    ask: (n) => switch (connectionForRadio(n.radioId)) {
+      final MeshCoreConnection c
+          when c.status.phase == SupervisorPhase.connected =>
+        c.askPosition(n),
+      _ => null,
+    },
+  );
 
   /// Opt-in links between MeshCore and Meshtastic conversations.
   late final ChannelBridge bridge = ChannelBridge(store, send: _bridgeSend);
@@ -308,6 +320,7 @@ class AppController extends ChangeNotifier {
       disconnect(c);
     }
     sentinel.dispose();
+    follow.dispose();
     hopNaming.dispose();
     super.dispose();
   }

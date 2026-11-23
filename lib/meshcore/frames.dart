@@ -538,6 +538,18 @@ final class LoginResultPush extends MeshCoreFrame {
   bool get isPush => true;
 }
 
+/// A contact's telemetry (push answering SEND_TELEMETRY_REQ): Cayenne LPP
+/// readings, read with `lib/mesh/lpp.dart`.
+final class TelemetryResponsePush extends MeshCoreFrame {
+  const TelemetryResponsePush({required this.keyPrefix, required this.lpp});
+
+  final Uint8List keyPrefix;
+  final Uint8List lpp;
+
+  @override
+  bool get isPush => true;
+}
+
 /// A repeater or room server's status (push answering SEND_STATUS_REQ).
 final class RepeaterStatusPush extends MeshCoreFrame {
   const RepeaterStatusPush({
@@ -738,6 +750,14 @@ MeshCoreFrame _decode(int code, ByteReader r, Uint8List data) {
         success: false,
         keyPrefix: r.bytes(MeshCoreLimits.keyPrefix),
       );
+    case Push.telemetryResponse:
+      {
+        r.skip(1);
+        return TelemetryResponsePush(
+          keyPrefix: r.bytes(MeshCoreLimits.keyPrefix),
+          lpp: r.rest(),
+        );
+      }
     case Push.statusResponse:
       {
         r.skip(1);

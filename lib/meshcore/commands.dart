@@ -291,6 +291,17 @@ abstract final class MeshCoreCommands {
   static Uint8List sendStatusRequest(List<int> publicKey) =>
       Uint8List.fromList([Cmd.sendStatusRequest, ..._key(publicKey)]);
 
+  /// `SEND_TELEMETRY_REQ` to a contact: three reserved bytes, then its key.
+  /// It answers with a telemetry push carrying Cayenne LPP readings.
+  static Uint8List sendTelemetryRequest(List<int> publicKey) =>
+      Uint8List.fromList([
+        Cmd.sendTelemetryRequest,
+        0,
+        0,
+        0,
+        ..._key(publicKey),
+      ]);
+
   /// `RUN_CLI_COMMAND` on the companion radio itself (protocol 14+).
   static Uint8List runCli(String command) {
     final text = utf8.encode(command);

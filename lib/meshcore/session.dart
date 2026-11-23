@@ -545,6 +545,16 @@ class MeshCoreSession {
     extra,
   );
 
+  /// Asks a contact for its telemetry (battery, sensors, position).
+  Future<TelemetryResponsePush> requestTelemetry(
+    List<int> publicKey, {
+    Duration extra = const Duration(seconds: 10),
+  }) => _askServer<TelemetryResponsePush>(
+    publicKey,
+    MeshCoreCommands.sendTelemetryRequest(publicKey),
+    extra,
+  );
+
   /// Runs [command] on a repeater or room server you're logged in to and
   /// returns its reply.
   Future<String> serverCommand(
@@ -590,6 +600,7 @@ class MeshCoreSession {
   static List<int> _prefixOf(MeshCoreFrame f) => switch (f) {
     LoginResultPush(:final keyPrefix) => keyPrefix,
     RepeaterStatusPush(:final keyPrefix) => keyPrefix,
+    TelemetryResponsePush(:final keyPrefix) => keyPrefix,
     _ => const [],
   };
 

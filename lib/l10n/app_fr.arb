@@ -1342,5 +1342,21 @@
   "neighboursChart": "Voir le SNR dans le temps",
   "neighboursTrendTitle": "SNR de {name}",
   "neighboursTrendHint": "La qualité de réception par ce répéteur à chaque lecture de ses voisins, gardée un mois sur ce téléphone.",
-  "neighboursReadings": "{count, plural, =1{1 mesure} other{{count} mesures}}"
+  "neighboursReadings": "{count, plural, =1{1 mesure} other{{count} mesures}}",
+  "followButton": "Suivre 15 min",
+  "followTitle": "Suivi de {name}",
+  "followAskNow": "Demander la position maintenant",
+  "followWaiting": "En attente d'une position…",
+  "followTimeLeft": "{minutes, plural, =1{Environ 1 minute restante} other{Environ {minutes} minutes restantes}}",
+  "followLastFix": "dernière position {ago}",
+  "followSecondsAgo": "il y a {n} s",
+  "followMinutesAgo": "il y a {n} min",
+  "followAnswers": "{answered}/{asked} demandes répondues",
+  "followPoints": "{count, plural, =1{1 point} other{{count} points}}",
+  "followStop": "Arrêter",
+  "followStopped": "Suivi arrêté. Relancez pour demander sa position 15 minutes de plus.",
+  "followYou": "Vous",
+  "followFromYou": "À {distance}, cap {degrees}° depuis votre radio",
+  "followNoOwnPosition": "La position de votre radio est inconnue : distance et cap indisponibles.",
+  "followHint": "S'arrête seul après 15 minutes. Les nœuds MeshCore sont interrogés toutes les 3 minutes (ils doivent autoriser la position dans la télémétrie) ; les autres bougent quand ils la diffusent."
 }

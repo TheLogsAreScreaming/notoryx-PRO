@@ -17,6 +17,7 @@ import '../mesh/range_rings.dart';
 import '../mesh/stale.dart';
 import 'common.dart';
 import 'compass_screen.dart';
+import 'follow_screen.dart';
 import 'node_avatar.dart';
 import 'node_visibility.dart';
 import 'places_screen.dart';
@@ -958,6 +959,16 @@ class NodeSheet extends StatelessWidget {
                           builder: (_) => CompassScreen(app: app, node: n),
                         ),
                       );
+                    },
+                  ),
+                if (n.position != null)
+                  OutlinedButton.icon(
+                    key: const Key('node-follow'),
+                    icon: const Icon(Icons.radar),
+                    label: Text(l.followButton),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      followNode(context, app: app, node: n, tiles: tiles);
                     },
                   ),
                 OutlinedButton.icon(

@@ -1342,5 +1342,21 @@
   "neighboursChart": "Ver SNR ao longo do tempo",
   "neighboursTrendTitle": "SNR de {name}",
   "neighboursTrendHint": "Quão bem este repetidor o ouviu em cada leitura dos vizinhos, guardado um mês neste telemóvel.",
-  "neighboursReadings": "{count, plural, =1{1 leitura} other{{count} leituras}}"
+  "neighboursReadings": "{count, plural, =1{1 leitura} other{{count} leituras}}",
+  "followButton": "Seguir 15 min",
+  "followTitle": "A seguir {name}",
+  "followAskNow": "Pedir posição agora",
+  "followWaiting": "À espera de uma posição…",
+  "followTimeLeft": "{minutes, plural, =1{Falta cerca de 1 minuto} other{Faltam cerca de {minutes} minutos}}",
+  "followLastFix": "última posição {ago}",
+  "followSecondsAgo": "há {n} s",
+  "followMinutesAgo": "há {n} min",
+  "followAnswers": "{answered}/{asked} pedidos respondidos",
+  "followPoints": "{count, plural, =1{1 ponto} other{{count} pontos}}",
+  "followStop": "Parar",
+  "followStopped": "Sem seguimento. Volte a iniciar para pedir a posição mais 15 minutos.",
+  "followYou": "Você",
+  "followFromYou": "A {distance}, rumo {degrees}° a partir do seu rádio",
+  "followNoOwnPosition": "A posição do seu rádio é desconhecida, por isso não há distância nem rumo.",
+  "followHint": "Para sozinho após 15 minutos. Aos nós MeshCore é pedida a posição a cada 3 minutos (têm de permitir a localização na telemetria); os outros movem-se quando a transmitem."
 }

@@ -28,6 +28,7 @@ abstract final class Cmd {
   static const getChannel = 31;
   static const sendTracePath = 36;
   static const setOtherParams = 38;
+  static const sendTelemetryRequest = 39;
   static const sendControlData = 55;
   static const getStats = 56;
   static const setPathHashMode = 61;
@@ -71,6 +72,7 @@ abstract final class Push {
   static const statusResponse = 0x87;
   static const rxLog = 0x88;
   static const traceData = 0x89;
+  static const telemetryResponse = 0x8b;
   static const newAdvert = 0x8a;
   static const controlData = 0x8e;
   static const contactDeleted = 0x8f;

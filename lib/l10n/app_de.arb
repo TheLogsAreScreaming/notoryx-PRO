@@ -1342,5 +1342,21 @@
   "neighboursChart": "SNR-Verlauf zeigen",
   "neighboursTrendTitle": "SNR von {name}",
   "neighboursTrendHint": "Wie gut dieser Repeater ihn bei jeder Nachbarabfrage gehört hat, einen Monat auf diesem Telefon gespeichert.",
-  "neighboursReadings": "{count, plural, =1{1 Wert} other{{count} Werte}}"
+  "neighboursReadings": "{count, plural, =1{1 Wert} other{{count} Werte}}",
+  "followButton": "15 Min. folgen",
+  "followTitle": "{name} folgen",
+  "followAskNow": "Position jetzt abfragen",
+  "followWaiting": "Warte auf eine Position…",
+  "followTimeLeft": "{minutes, plural, =1{Noch etwa 1 Minute} other{Noch etwa {minutes} Minuten}}",
+  "followLastFix": "letzte Position {ago}",
+  "followSecondsAgo": "vor {n} s",
+  "followMinutesAgo": "vor {n} Min.",
+  "followAnswers": "{answered}/{asked} Anfragen beantwortet",
+  "followPoints": "{count, plural, =1{1 Punkt} other{{count} Punkte}}",
+  "followStop": "Stopp",
+  "followStopped": "Folgen beendet. Starte erneut, um weitere 15 Minuten die Position abzufragen.",
+  "followYou": "Du",
+  "followFromYou": "{distance} entfernt, Peilung {degrees}° von deinem Funkgerät",
+  "followNoOwnPosition": "Die Position deines Funkgeräts ist unbekannt, daher keine Entfernung und Richtung.",
+  "followHint": "Endet nach 15 Minuten von selbst. MeshCore-Knoten werden alle 3 Minuten nach der Position gefragt (sie müssen den Standort in der Telemetrie freigeben); andere Knoten bewegen sich, wenn sie ihn senden."
 }
