@@ -442,7 +442,10 @@ void main() {
     expect(find.text('Logged in as admin'), findsOneWidget);
     await tester.tap(find.text('Get status'));
     await settle();
-    expect(find.text('3.60 V'), findsOneWidget);
+    // Once in the status rows, once as the latest point of the history.
+    expect(find.text('3.60 V'), findsNWidgets(2));
+    expect(find.byKey(const Key('status-history')), findsOneWidget);
+    expect(find.text('1 saved check'), findsOneWidget);
     expect(find.text('1 d 1 h'), findsOneWidget);
     expect(find.text('-118 dBm'), findsOneWidget);
 
