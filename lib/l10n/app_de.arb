@@ -1309,5 +1309,19 @@
   "sarneg_randomWord": "Zufallswort",
   "sarneg_wellKnownWord": "Dieses Wort steht in öffentlichen Anleitungen, also kann es jeder ausprobieren. Ein Zufallswort ist sicherer.",
   "sarneg_clipboardClears": "Die Zwischenablage wird nach 1 Minute geleert.",
-  "sarneg_autoClear": "Wird nach 1 Minute ohne Eingabe geleert."
+  "sarneg_autoClear": "Wird nach 1 Minute ohne Eingabe geleert.",
+  "channelConflictBanner": "{count, plural, =1{1 Kanal im Funkgerät weicht von der App ab} other{{count} Kanäle im Funkgerät weichen von der App ab}}",
+  "channelConflictReview": "Prüfen",
+  "channelConflictTitle": "Kanalunterschiede",
+  "channelConflictHint": "Das Funkgerät hat in diesen Plätzen einen anderen Namen oder Schlüssel als die App gespeichert hat. Vielleicht wurden sie mit einer anderen App geändert, oder die Kopie der App ist veraltet. Wähle für jeden Platz, welche Version bleibt.",
+  "channelConflictDone": "Alle Plätze stimmen jetzt überein.",
+  "channelConflictSlot": "Platz {index}",
+  "channelConflictOnRadio": "Im Funkgerät",
+  "channelConflictInApp": "In der App gespeichert",
+  "channelConflictEmpty": "Leer",
+  "channelConflictKey": "Schlüssel {fingerprint}",
+  "channelConflictNameDiffers": "Name weicht ab",
+  "channelConflictKeyDiffers": "Schlüssel weicht ab",
+  "channelConflictKeepRadio": "Funkgerät behalten",
+  "channelConflictUseApp": "App-Version schreiben"
 }

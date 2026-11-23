@@ -7,6 +7,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import '../app/radio_connection.dart';
 import '../mesh/mesh.dart';
 import '../radio/radio_link.dart';
+import 'channel_conflict_banner.dart';
 import 'common.dart';
 import 'team_pack_screen.dart';
 import 'verify_screen.dart' show openScanner;
@@ -169,6 +170,7 @@ class _ChannelsScreenState extends State<ChannelsScreen> {
           }
           return ListView(
             children: [
+              ChannelConflictBanner(connection: c, onChanged: _reload),
               for (final s in snap.data!)
                 ListTile(
                   leading: Icon(

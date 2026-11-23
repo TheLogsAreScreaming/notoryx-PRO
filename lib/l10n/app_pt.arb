@@ -1309,5 +1309,19 @@
   "sarneg_randomWord": "Palavra aleatória",
   "sarneg_wellKnownWord": "Esta palavra aparece em guias públicos, por isso qualquer pessoa pode testá-la. Uma palavra aleatória é mais segura.",
   "sarneg_clipboardClears": "A área de transferência é limpa em 1 minuto.",
-  "sarneg_autoClear": "Apaga-se após 1 minuto sem digitar."
+  "sarneg_autoClear": "Apaga-se após 1 minuto sem digitar.",
+  "channelConflictBanner": "{count, plural, =1{1 canal do rádio difere do app} other{{count} canais do rádio diferem do app}}",
+  "channelConflictReview": "Rever",
+  "channelConflictTitle": "Diferenças de canais",
+  "channelConflictHint": "O rádio tem um nome ou chave diferente nestes espaços do que o app guardou. Alguém pode tê-los alterado com outro app, ou a cópia do app está desatualizada. Escolha que versão manter em cada espaço.",
+  "channelConflictDone": "Todos os espaços coincidem agora.",
+  "channelConflictSlot": "Espaço {index}",
+  "channelConflictOnRadio": "No rádio",
+  "channelConflictInApp": "Guardado no app",
+  "channelConflictEmpty": "Vazio",
+  "channelConflictKey": "chave {fingerprint}",
+  "channelConflictNameDiffers": "Nome diferente",
+  "channelConflictKeyDiffers": "Chave diferente",
+  "channelConflictKeepRadio": "Manter a do rádio",
+  "channelConflictUseApp": "Gravar a do app"
 }

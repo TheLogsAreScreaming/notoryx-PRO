@@ -1309,5 +1309,19 @@
   "sarneg_randomWord": "Parola casuale",
   "sarneg_wellKnownWord": "Questa parola compare in guide pubbliche, quindi chiunque può provarla. Una parola casuale è più sicura.",
   "sarneg_clipboardClears": "Gli appunti vengono svuotati tra 1 minuto.",
-  "sarneg_autoClear": "Si cancella dopo 1 minuto senza digitare."
+  "sarneg_autoClear": "Si cancella dopo 1 minuto senza digitare.",
+  "channelConflictBanner": "{count, plural, =1{1 canale della radio è diverso dall'app} other{{count} canali della radio sono diversi dall'app}}",
+  "channelConflictReview": "Controlla",
+  "channelConflictTitle": "Differenze tra canali",
+  "channelConflictHint": "La radio ha un nome o una chiave diversi da quelli salvati dall'app in questi slot. Forse sono stati cambiati con un'altra app, oppure la copia dell'app è vecchia. Scegli quale versione tenere per ogni slot.",
+  "channelConflictDone": "Ora tutti gli slot coincidono.",
+  "channelConflictSlot": "Slot {index}",
+  "channelConflictOnRadio": "Sulla radio",
+  "channelConflictInApp": "Salvato nell'app",
+  "channelConflictEmpty": "Vuoto",
+  "channelConflictKey": "chiave {fingerprint}",
+  "channelConflictNameDiffers": "Nome diverso",
+  "channelConflictKeyDiffers": "Chiave diversa",
+  "channelConflictKeepRadio": "Tieni quella della radio",
+  "channelConflictUseApp": "Scrivi quella dell'app"
 }
