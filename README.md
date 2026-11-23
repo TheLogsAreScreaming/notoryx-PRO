@@ -121,7 +121,7 @@ The latest build is **[0.32.0 test 32](https://github.com/TheLogsAreScreaming/no
 - Seven looks: **BLACKOUT** (the default: frost on matte black, no accent colour), Blaze, Neon Anarchy, Tactical, Bare Beauty, Okabe-Ito (colour-blind safe) and Night Ops (red on black for night vision). MeshCore red, Meshtastic blue, emergency green and warning red stay readable in every look, and each node can have its own colour or photo.
 - Backgrounds: solid colour, gradient, mesh gradient or your own photo, with frosted glass panels.
 - App lock, optional encryption of saved messages, password-protected backups, restore and team setup sharing.
-- English, Spanish, French, German, Portuguese and Italian. Everything except English is machine-written and needs a native speaker's review.
+- 18 languages: English, Spanish, French, German, Portuguese, Italian, Dutch, Swedish, Polish, Slovak, Slovenian, Hungarian, Bulgarian, Russian, Ukrainian, Japanese, Korean and Chinese (Simplified). Everything except English is machine-written and needs a native speaker's review.
 
 ## Install
 

@@ -16,7 +16,7 @@ Last checked against `main` on 13 November 2026 (version 0.11.0, test 11).
 | Privacy policy | https://meshmayhem.org/privacy/notoryx-pro/ |
 | Support contact | bastionappsupport@gmail.com |
 | Source code | https://github.com/TheLogsAreScreaming/notoryx-PRO (GPL-3.0) |
-| Languages | English, Spanish, French, German (all but English machine-written) |
+| Languages | 18: English, Spanish, French, German, Portuguese, Italian, Dutch, Swedish, Polish, Slovak, Slovenian, Hungarian, Bulgarian, Russian, Ukrainian, Japanese, Korean, Chinese (all but English machine-written) |
 
 ## Store text
 
