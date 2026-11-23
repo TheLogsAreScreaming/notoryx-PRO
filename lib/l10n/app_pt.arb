@@ -1309,5 +1309,13 @@
   "sarneg_randomWord": "Palavra aleatória",
   "sarneg_wellKnownWord": "Esta palavra aparece em guias públicos, por isso qualquer pessoa pode testá-la. Uma palavra aleatória é mais segura.",
   "sarneg_clipboardClears": "A área de transferência é limpa em 1 minuto.",
-  "sarneg_autoClear": "Apaga-se após 1 minuto sem digitar."
+  "sarneg_autoClear": "Apaga-se após 1 minuto sem digitar.",
+  "statusHistoryTitle": "Histórico de estado",
+  "statusHistoryCount": "{count, plural, =0{Ainda sem verificações guardadas} =1{1 verificação guardada} other{{count} verificações guardadas}}",
+  "statusHistoryRssi": "RSSI",
+  "statusHistorySnr": "SNR",
+  "statusHistoryErrors": "Erros",
+  "statusHistoryMonth": "30 dias",
+  "statusHistoryEmpty": "Cada verificação de estado fica aqui um mês, para ver como este nó muda.",
+  "statusHistoryNoneInRange": "Sem verificações neste período."
 }

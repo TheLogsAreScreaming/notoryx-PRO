@@ -1309,5 +1309,13 @@
   "sarneg_randomWord": "Zufallswort",
   "sarneg_wellKnownWord": "Dieses Wort steht in öffentlichen Anleitungen, also kann es jeder ausprobieren. Ein Zufallswort ist sicherer.",
   "sarneg_clipboardClears": "Die Zwischenablage wird nach 1 Minute geleert.",
-  "sarneg_autoClear": "Wird nach 1 Minute ohne Eingabe geleert."
+  "sarneg_autoClear": "Wird nach 1 Minute ohne Eingabe geleert.",
+  "statusHistoryTitle": "Statusverlauf",
+  "statusHistoryCount": "{count, plural, =0{Noch keine gespeicherten Abfragen} =1{1 gespeicherte Abfrage} other{{count} gespeicherte Abfragen}}",
+  "statusHistoryRssi": "RSSI",
+  "statusHistorySnr": "SNR",
+  "statusHistoryErrors": "Fehler",
+  "statusHistoryMonth": "30 Tage",
+  "statusHistoryEmpty": "Jede Statusabfrage bleibt hier einen Monat, damit du siehst, wie sich dieser Knoten verändert.",
+  "statusHistoryNoneInRange": "Keine Abfragen in diesem Zeitraum."
 }

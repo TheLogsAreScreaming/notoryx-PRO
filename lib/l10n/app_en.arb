@@ -3215,5 +3215,20 @@
   "sarneg_randomWord": "Random word",
   "sarneg_wellKnownWord": "This word is printed in public guides, so anyone can try it. A random word is safer.",
   "sarneg_clipboardClears": "The clipboard is cleared in 1 minute.",
-  "sarneg_autoClear": "Clears after 1 minute without typing."
+  "sarneg_autoClear": "Clears after 1 minute without typing.",
+  "statusHistoryTitle": "Status history",
+  "statusHistoryCount": "{count, plural, =0{No saved checks yet} =1{1 saved check} other{{count} saved checks}}",
+  "@statusHistoryCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "statusHistoryRssi": "RSSI",
+  "statusHistorySnr": "SNR",
+  "statusHistoryErrors": "Errors",
+  "statusHistoryMonth": "30 days",
+  "statusHistoryEmpty": "Each status check is kept here for a month, so you can see how this node changes over time.",
+  "statusHistoryNoneInRange": "No checks in this time range."
 }

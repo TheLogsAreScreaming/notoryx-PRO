@@ -1309,5 +1309,13 @@
   "sarneg_randomWord": "Mot aléatoire",
   "sarneg_wellKnownWord": "Ce mot figure dans des guides publics : n’importe qui peut l’essayer. Un mot aléatoire est plus sûr.",
   "sarneg_clipboardClears": "Le presse-papiers est vidé dans 1 minute.",
-  "sarneg_autoClear": "S’efface après 1 minute sans saisie."
+  "sarneg_autoClear": "S’efface après 1 minute sans saisie.",
+  "statusHistoryTitle": "Historique d'état",
+  "statusHistoryCount": "{count, plural, =0{Aucune vérification enregistrée} =1{1 vérification enregistrée} other{{count} vérifications enregistrées}}",
+  "statusHistoryRssi": "RSSI",
+  "statusHistorySnr": "SNR",
+  "statusHistoryErrors": "Erreurs",
+  "statusHistoryMonth": "30 jours",
+  "statusHistoryEmpty": "Chaque vérification d'état est gardée ici un mois, pour voir l'évolution de ce nœud.",
+  "statusHistoryNoneInRange": "Aucune vérification sur cette période."
 }

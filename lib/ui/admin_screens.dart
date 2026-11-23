@@ -9,6 +9,7 @@ import '../meshcore/frames.dart';
 import 'common.dart';
 import 'identity_key_screen.dart';
 import 'preset_sheet.dart';
+import 'status_history_card.dart';
 import 'list_insets.dart';
 
 /// A MeshCore companion's own settings.
@@ -471,6 +472,7 @@ class _ServerScreenState extends State<ServerScreen> {
   final _password = TextEditingController();
   LoginResultPush? _login;
   RepeaterStatusPush? _status;
+  int _checks = 0;
   String? _error;
   bool _busy = false;
 
@@ -541,7 +543,12 @@ class _ServerScreenState extends State<ServerScreen> {
                     ? null
                     : () => _do(() async {
                         final r = await c.serverStatus(n);
-                        if (mounted) setState(() => _status = r);
+                        if (mounted) {
+                          setState(() {
+                            _status = r;
+                            _checks++;
+                          });
+                        }
                       }),
                 child: Text(l.serverStatus),
               ),
@@ -611,6 +618,7 @@ class _ServerScreenState extends State<ServerScreen> {
             _row(l.statusAirtime, l.statusAirtimeValue(s.airTimeSeconds ~/ 60)),
             _row(l.statusQueue, '${s.queueLength}'),
           ],
+          StatusHistoryCard(store: c.store, node: n, version: _checks),
         ],
       ),
     );
