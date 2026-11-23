@@ -1309,5 +1309,21 @@
   "sarneg_randomWord": "Mot aléatoire",
   "sarneg_wellKnownWord": "Ce mot figure dans des guides publics : n’importe qui peut l’essayer. Un mot aléatoire est plus sûr.",
   "sarneg_clipboardClears": "Le presse-papiers est vidé dans 1 minute.",
-  "sarneg_autoClear": "S’efface après 1 minute sans saisie."
+  "sarneg_autoClear": "S’efface après 1 minute sans saisie.",
+  "followButton": "Suivre 15 min",
+  "followTitle": "Suivi de {name}",
+  "followAskNow": "Demander la position maintenant",
+  "followWaiting": "En attente d'une position…",
+  "followTimeLeft": "{minutes, plural, =1{Environ 1 minute restante} other{Environ {minutes} minutes restantes}}",
+  "followLastFix": "dernière position {ago}",
+  "followSecondsAgo": "il y a {n} s",
+  "followMinutesAgo": "il y a {n} min",
+  "followAnswers": "{answered}/{asked} demandes répondues",
+  "followPoints": "{count, plural, =1{1 point} other{{count} points}}",
+  "followStop": "Arrêter",
+  "followStopped": "Suivi arrêté. Relancez pour demander sa position 15 minutes de plus.",
+  "followYou": "Vous",
+  "followFromYou": "À {distance}, cap {degrees}° depuis votre radio",
+  "followNoOwnPosition": "La position de votre radio est inconnue : distance et cap indisponibles.",
+  "followHint": "S'arrête seul après 15 minutes. Les nœuds MeshCore sont interrogés toutes les 3 minutes (ils doivent autoriser la position dans la télémétrie) ; les autres bougent quand ils la diffusent."
 }

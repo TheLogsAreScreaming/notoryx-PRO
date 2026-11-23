@@ -1309,5 +1309,21 @@
   "sarneg_randomWord": "Parola casuale",
   "sarneg_wellKnownWord": "Questa parola compare in guide pubbliche, quindi chiunque può provarla. Una parola casuale è più sicura.",
   "sarneg_clipboardClears": "Gli appunti vengono svuotati tra 1 minuto.",
-  "sarneg_autoClear": "Si cancella dopo 1 minuto senza digitare."
+  "sarneg_autoClear": "Si cancella dopo 1 minuto senza digitare.",
+  "followButton": "Segui 15 min",
+  "followTitle": "Seguendo {name}",
+  "followAskNow": "Chiedi la posizione ora",
+  "followWaiting": "In attesa di una posizione…",
+  "followTimeLeft": "{minutes, plural, =1{Circa 1 minuto rimasto} other{Circa {minutes} minuti rimasti}}",
+  "followLastFix": "ultima posizione {ago}",
+  "followSecondsAgo": "{n} s fa",
+  "followMinutesAgo": "{n} min fa",
+  "followAnswers": "{answered}/{asked} richieste con risposta",
+  "followPoints": "{count, plural, =1{1 punto} other{{count} punti}}",
+  "followStop": "Ferma",
+  "followStopped": "Non lo segui. Riavvia per chiedere la posizione per altri 15 minuti.",
+  "followYou": "Tu",
+  "followFromYou": "A {distance}, direzione {degrees}° dalla tua radio",
+  "followNoOwnPosition": "La posizione della tua radio non è nota, quindi niente distanza e direzione.",
+  "followHint": "Si ferma da solo dopo 15 minuti. Ai nodi MeshCore la posizione viene chiesta ogni 3 minuti (devono consentirla nella telemetria); gli altri si muovono quando la trasmettono."
 }

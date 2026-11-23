@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
+import '../mesh/lpp.dart';
 import '../mesh/mesh.dart';
 import '../meshcore/meshcore.dart';
 import '../meshcore/raw_packet.dart';
@@ -855,6 +856,14 @@ class MeshCoreConnection extends RadioConnection {
   Future<LoginResultPush> login(Node server, String password) async {
     await ensureOnRadio(server);
     return session.login(fromHex(server.key.native), password);
+  }
+
+  /// Asks [node] for its telemetry and returns the position in it; null
+  /// when it answered without one (location not shared).
+  Future<GeoPoint?> askPosition(Node node) async {
+    await ensureOnRadio(node);
+    final reply = await session.requestTelemetry(fromHex(node.key.native));
+    return lppPosition(reply.lpp);
   }
 
   /// A repeater or room server's status.
