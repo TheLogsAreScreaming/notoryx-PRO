@@ -1,6 +1,6 @@
 import 'dart:async';
+import 'dart:io';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:h3_flutter/h3_flutter.dart';
 
@@ -55,11 +55,23 @@ class PhoneCoverageSources implements CoverageSources {
       (c.lat, c.lon),
   ];
 
+  /// Phones only: Wi-Fi is the interface named wlan* (Android) or en*
+  /// (iOS) with a usable address; mobile data uses other names. Desktops
+  /// are on Wi-Fi or a wired network.
   @override
   Future<bool> onWifi() async {
-    final kinds = await Connectivity().checkConnectivity();
-    return kinds.contains(ConnectivityResult.wifi) ||
-        kinds.contains(ConnectivityResult.ethernet);
+    if (!Platform.isAndroid && !Platform.isIOS) return true;
+    final wifiName = Platform.isAndroid ? 'wlan' : 'en';
+    try {
+      final interfaces = await NetworkInterface.list();
+      return interfaces.any(
+        (i) =>
+            i.name.startsWith(wifiName) &&
+            i.addresses.any((a) => !a.isLoopback && !a.isLinkLocal),
+      );
+    } on SocketException {
+      return false;
+    }
   }
 
   @override

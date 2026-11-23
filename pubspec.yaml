@@ -41,7 +41,6 @@ dependencies:
   cryptography: ^2.9.0
   geolocator: ^14.0.1
   h3_flutter: ^0.7.1
-  connectivity_plus: ^7.0.0
 
 dev_dependencies:
   flutter_test:
