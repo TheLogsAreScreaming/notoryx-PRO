@@ -15,6 +15,7 @@ import 'meshtastic_settings.dart';
 import 'nearby_probe.dart';
 import 'radio_target.dart';
 import 'retry_policy.dart';
+import 'status_history.dart';
 
 /// One connected radio: its link, protocol session and supervisor, with
 /// everything it hears saved to the [MeshStore].
@@ -939,12 +940,36 @@ class MeshCoreConnection extends RadioConnection {
   /// A repeater or room server's status.
   Future<RepeaterStatusPush> serverStatus(Node server) async {
     await ensureOnRadio(server);
-    return session.serverStatus(fromHex(server.key.native));
+    final status = await session.serverStatus(fromHex(server.key.native));
+    try {
+      await StatusHistory(store).add(
+        server.radioId,
+        server.key,
+        StatusCheck.fromPush(status, DateTime.now()),
+      );
+    } on Object catch (e) {
+      // Keeping history must never cost the user the reply itself.
+      log.add('MeshCore ${link.label}', 'status history not saved: $e');
+    }
+    return status;
   }
 
   /// Runs a command on a repeater or room server you're logged in to.
   Future<String> serverCommand(Node server, String command) =>
       session.serverCommand(fromHex(server.key.native), command);
+
+  /// Reads a repeater's neighbour list (needs an admin login) and keeps
+  /// each neighbour's SNR in its history. Null when the reply isn't one.
+  Future<List<NeighbourReading>?> serverNeighbours(Node server) async {
+    final reply = await serverCommand(server, 'neighbors');
+    final list = parseNeighbours(reply);
+    if (list != null) {
+      await NeighbourHistory(
+        store,
+      ).add(server.radioId, server.key, list, DateTime.now());
+    }
+    return list;
+  }
 
   final Map<int, Completer<SendConfirmedPush>> _waiting = {};
 

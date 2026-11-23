@@ -3250,5 +3250,73 @@
   "channelConflictNameDiffers": "Name differs",
   "channelConflictKeyDiffers": "Key differs",
   "channelConflictKeepRadio": "Keep radio's",
-  "channelConflictUseApp": "Write app's to radio"
+  "channelConflictUseApp": "Write app's to radio",
+  "statusHistoryTitle": "Status history",
+  "statusHistoryCount": "{count, plural, =0{No saved checks yet} =1{1 saved check} other{{count} saved checks}}",
+  "@statusHistoryCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "statusHistoryRssi": "RSSI",
+  "statusHistorySnr": "SNR",
+  "statusHistoryErrors": "Errors",
+  "statusHistoryMonth": "30 days",
+  "statusHistoryEmpty": "Each status check is kept here for a month, so you can see how this node changes over time.",
+  "statusHistoryNoneInRange": "No checks in this time range.",
+  "neighboursButton": "Neighbours",
+  "neighboursNoList": "The repeater didn't answer with a neighbour list.",
+  "neighboursTitle": "{count, plural, =0{No neighbours} =1{1 neighbour} other{{count} neighbours}}",
+  "@neighboursTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "neighboursNone": "It hasn't heard any other repeater directly yet.",
+  "neighboursSecondsAgo": "heard {n} s ago",
+  "@neighboursSecondsAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "neighboursMinutesAgo": "heard {n} min ago",
+  "@neighboursMinutesAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "neighboursHoursAgo": "heard {n} h ago",
+  "@neighboursHoursAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "neighboursChart": "Show SNR over time",
+  "neighboursTrendTitle": "SNR of {name}",
+  "@neighboursTrendTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "neighboursTrendHint": "How well this repeater heard it each time you read its neighbours, kept for a month on this phone.",
+  "neighboursReadings": "{count, plural, =1{1 reading} other{{count} readings}}",
+  "@neighboursReadings": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }
