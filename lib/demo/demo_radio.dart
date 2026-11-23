@@ -75,6 +75,24 @@ const _chatter = [
   'Dee: anyone near the lookout?',
 ];
 
+/// What the demo shows as already received when it opens, oldest first, so
+/// the inbox isn't empty: (channel, minutes ago, "Sender: text").
+const _channelHistory = [
+  (0, 95, 'Ann: morning all, heading up the north trail'),
+  (0, 80, 'Bo: hut water is running, filter it anyway'),
+  (1, 64, 'Cy: snow starts around the second switchback'),
+  (0, 51, 'Dee: Ridge Relay is back up, signal is great'),
+  (1, 37, 'Ann: passed the bridge, all good'),
+  (0, 22, 'Cy: anyone near Fire Lookout? need a weather check'),
+  (1, 9, 'Bo: clouds coming in from the west'),
+];
+
+/// Direct messages already received from Camp North: (minutes ago, text).
+const _directHistory = [
+  (44, 'Made it to camp, stove is going'),
+  (12, 'Can you bring extra batteries tomorrow?'),
+];
+
 const _replies = [
   'Copy that',
   'Got it, thanks',
@@ -114,6 +132,14 @@ class DemoMeshCoreLink extends BaseRadioLink {
 
   @override
   Future<void> open() async {
+    // Queued before the app connects: it collects waiting messages as part of
+    // connecting, so these show as history, not as new arrivals.
+    for (final (channel, ago, text) in _channelHistory) {
+      _queue.add(_channelMessage(channel, text, at: _now - ago * 60));
+    }
+    for (final (ago, text) in _directHistory) {
+      _queue.add(_directMessage(_peers[1], text, at: _now - ago * 60));
+    }
     setState(LinkState.connected);
     _timers.add(Timer.periodic(chatter, (_) => _say()));
   }
@@ -321,7 +347,7 @@ class DemoMeshCoreLink extends BaseRadioLink {
         .toBytes();
   }
 
-  static Uint8List _channelMessage(int channel, String text) =>
+  static Uint8List _channelMessage(int channel, String text, {int? at}) =>
       (ByteWriter()
             ..u8(Resp.channelMsgV3)
             ..u8((7 * 4) & 0xff)
@@ -330,7 +356,20 @@ class DemoMeshCoreLink extends BaseRadioLink {
             ..u8(channel)
             ..u8(1)
             ..u8(0)
-            ..u32(_now)
+            ..u32(at ?? _now)
+            ..bytes(utf8.encode(text)))
+          .toBytes();
+
+  static Uint8List _directMessage(_Peer from, String text, {int? at}) =>
+      (ByteWriter()
+            ..u8(Resp.contactMsgV3)
+            ..u8((6 * 4) & 0xff)
+            ..u8(0)
+            ..u8(0)
+            ..bytes(from.key.sublist(0, 6))
+            ..u8(1)
+            ..u8(0)
+            ..u32(at ?? _now)
             ..bytes(utf8.encode(text)))
           .toBytes();
 }
