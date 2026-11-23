@@ -1325,5 +1325,22 @@
   "followYou": "Du",
   "followFromYou": "{distance} entfernt, Peilung {degrees}° von deinem Funkgerät",
   "followNoOwnPosition": "Die Position deines Funkgeräts ist unbekannt, daher keine Entfernung und Richtung.",
-  "followHint": "Endet nach 15 Minuten von selbst. MeshCore-Knoten werden alle 3 Minuten nach der Position gefragt (sie müssen den Standort in der Telemetrie freigeben); andere Knoten bewegen sich, wenn sie ihn senden."
+  "followHint": "Endet nach 15 Minuten von selbst. MeshCore-Knoten werden alle 3 Minuten nach der Position gefragt (sie müssen den Standort in der Telemetrie freigeben); andere Knoten bewegen sich, wenn sie ihn senden.",
+  "telemetryHour": "1 h",
+  "telemetrySixHours": "6 h",
+  "telemetryReadNow": "Jetzt lesen",
+  "telemetryReadFailed": "Keine Antwort vom Knoten. Versuch es noch einmal.",
+  "telemetryNoAlert": "Kein Alarm",
+  "telemetryAlertAbove": "Alarm über {value}",
+  "telemetryAlertBelow": "Alarm unter {value}",
+  "telemetrySetAlert": "Alarm…",
+  "telemetryAlertTitle": "Alarm für {name}",
+  "telemetryAlertHint": "Du bekommst eine Benachrichtigung, wenn ein neuer Wert eine Grenze überschreitet. Leere Felder werden nicht genutzt.",
+  "telemetryAbove": "Über",
+  "telemetryBelow": "Unter",
+  "telemetryBelowTooHigh": "Muss unter der oberen Grenze liegen",
+  "telemetryRemoveAlert": "Entfernen",
+  "telemetryAlertNotificationTitle": "Sensoralarm",
+  "telemetryAlertBodyAbove": "{name}: {what} ist {value}, über {limit}",
+  "telemetryAlertBodyBelow": "{name}: {what} ist {value}, unter {limit}"
 }

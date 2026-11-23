@@ -35,6 +35,7 @@ import 'theme_screen.dart';
 import 'themes.dart';
 import 'timeline_screen.dart';
 import 'sarneg/sarneg_ui.dart';
+import '../app/telemetry_alerts.dart';
 
 /// The app: localisation, theme and the three tabs.
 class NotoryxProApp extends StatelessWidget {
@@ -315,6 +316,21 @@ class _HomeShellState extends State<HomeShell> {
       g.describeOffRoute = (node, route, metres) =>
           l.offRouteAlert(node, route, metres);
     }
+    app.telemetryAlerts
+      ..title = l.telemetryAlertNotificationTitle
+      ..describe = (node, value, now, limit, above) {
+        final what = switch (value) {
+          TelemetryValue.battery => l.telemetryBattery,
+          TelemetryValue.voltage => l.telemetryVoltage,
+          TelemetryValue.temperature => l.telemetryTemperature,
+          TelemetryValue.humidity => l.telemetryHumidity,
+          TelemetryValue.pressure => l.telemetryPressure,
+        };
+        String n(double x) => x.toStringAsFixed(x.abs() < 10 ? 2 : 1);
+        return above
+            ? l.telemetryAlertBodyAbove(node, what, n(now), n(limit))
+            : l.telemetryAlertBodyBelow(node, what, n(now), n(limit));
+      };
     return Scaffold(
       appBar: AppBar(
         title: Text(l.appTitle),

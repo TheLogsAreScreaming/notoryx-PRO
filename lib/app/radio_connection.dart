@@ -346,6 +346,21 @@ class MeshCoreConnection extends RadioConnection {
         );
       case ContactFrame(fromNewAdvert: true):
         await store.upsertNode(mapper.node(frame));
+      case TelemetryResponsePush(:final keyPrefix, :final lpp):
+        final node = await store.meshCoreNodeByPrefix(
+          radio.id,
+          toHex(keyPrefix),
+        );
+        if (node == null) break;
+        if (lppTelemetry(
+              lpp,
+              radioId: radio.id,
+              node: node,
+              time: DateTime.now(),
+            )
+            case final p?) {
+          await store.addTelemetry(p);
+        }
       case RxLogPush(:final snr, :final rssi, :final raw):
         final stranger = meshtasticBroadcastSender(raw);
         if (stranger != null) {
@@ -856,6 +871,12 @@ class MeshCoreConnection extends RadioConnection {
   Future<LoginResultPush> login(Node server, String password) async {
     await ensureOnRadio(server);
     return session.login(fromHex(server.key.native), password);
+  }
+
+  /// Asks [node] for its telemetry; the reply is kept in the history.
+  Future<void> readTelemetry(Node node) async {
+    await ensureOnRadio(node);
+    await session.requestTelemetry(fromHex(node.key.native));
   }
 
   /// Asks [node] for its telemetry and returns the position in it; null

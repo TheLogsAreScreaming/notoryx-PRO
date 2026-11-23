@@ -1024,6 +1024,12 @@ class NodeSheet extends StatelessWidget {
                             radioId: n.radioId,
                             node: n.key,
                             name: n.displayName,
+                            alerts: app.telemetryAlerts,
+                            readNow: switch (_connection()) {
+                              final MeshCoreConnection c =>
+                                () => c.readTelemetry(n),
+                              _ => null,
+                            },
                           ),
                         ),
                       );
