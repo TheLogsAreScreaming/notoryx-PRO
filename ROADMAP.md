@@ -53,11 +53,11 @@ Everything here is merged and in a published test build, but none of it has been
 
 ## Phase 6: now
 
-29. **About screen** with licences and the source link (#55).
-30. **Demo mode** with a pretend radio, for store reviewers, screenshots and people without a radio yet.
-31. **Windows notifications** and **USB radios on Windows**.
-32. **More languages** (machine-written, each needing a native speaker's review).
-33. **Multi-radio polish** from testing.
+29. **About screen** with licences and the source link (done).
+30. **Demo mode** with a pretend radio, for store reviewers, screenshots and people without a radio yet (done; opens with a made-up history since #122).
+31. **Windows notifications** and **USB radios on Windows** (done; never run on a Windows PC).
+32. **More languages** (done: 18 in all, machine-written, each needing a native speaker's review).
+33. **Multi-radio polish** from testing (waiting on real-radio tests with more than one radio).
 
 ## Waiting on the owner
 
