@@ -3215,5 +3215,40 @@
   "sarneg_randomWord": "Random word",
   "sarneg_wellKnownWord": "This word is printed in public guides, so anyone can try it. A random word is safer.",
   "sarneg_clipboardClears": "The clipboard is cleared in 1 minute.",
-  "sarneg_autoClear": "Clears after 1 minute without typing."
+  "sarneg_autoClear": "Clears after 1 minute without typing.",
+  "channelConflictBanner": "{count, plural, =1{1 channel on the radio differs from the app} other{{count} channels on the radio differ from the app}}",
+  "@channelConflictBanner": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "channelConflictReview": "Review",
+  "channelConflictTitle": "Channel differences",
+  "channelConflictHint": "The radio holds a different name or key in these slots than the app saved. Someone may have changed them with another app, or the app's copy is old. Choose which version to keep for each slot.",
+  "channelConflictDone": "All slots match now.",
+  "channelConflictSlot": "Slot {index}",
+  "@channelConflictSlot": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "channelConflictOnRadio": "On the radio",
+  "channelConflictInApp": "Saved in the app",
+  "channelConflictEmpty": "Empty",
+  "channelConflictKey": "key {fingerprint}",
+  "@channelConflictKey": {
+    "placeholders": {
+      "fingerprint": {
+        "type": "String"
+      }
+    }
+  },
+  "channelConflictNameDiffers": "Name differs",
+  "channelConflictKeyDiffers": "Key differs",
+  "channelConflictKeepRadio": "Keep radio's",
+  "channelConflictUseApp": "Write app's to radio"
 }
