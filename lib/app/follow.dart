@@ -43,6 +43,10 @@ class FollowTracker extends ChangeNotifier {
   Node? _node;
   DateTime? _started;
   final List<FollowFix> _trail = [];
+
+  /// The position the node last broadcast, so only a new broadcast adds a
+  /// point (a fresher reply is never pushed back by an old broadcast).
+  GeoPoint? _broadcast;
   int _asked = 0;
   int _answered = 0;
   Timer? _askTimer;
@@ -71,6 +75,7 @@ class FollowTracker extends ChangeNotifier {
     stop(notify: false);
     _node = n;
     _started = now;
+    _broadcast = n.position;
     if (n.position case final p?) _add(p, asked: false);
     _nodes = store.watchNodes(n.radioId).listen(_onNodes);
     _endTimer = Timer(length, stop);
@@ -89,6 +94,7 @@ class FollowTracker extends ChangeNotifier {
     _node = null;
     _started = null;
     _trail.clear();
+    _broadcast = null;
     _asked = 0;
     _answered = 0;
     if (notify) notifyListeners();
@@ -119,8 +125,8 @@ class FollowTracker extends ChangeNotifier {
     for (final m in nodes) {
       if (m.key != n.key) continue;
       final p = m.position;
-      if (p == null) return;
-      if (_trail.isNotEmpty && _trail.last.position == p) return;
+      if (p == null || p == _broadcast) return;
+      _broadcast = p;
       _add(p, asked: false);
       notifyListeners();
       return;

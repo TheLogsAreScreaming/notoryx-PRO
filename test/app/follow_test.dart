@@ -65,6 +65,7 @@ void main() {
 
     answer = const GeoPoint(45.51001, -122.6);
     await tracker.askNow();
+    await pumpEventQueue();
     expect(tracker.trail.length, 2);
 
     await store.upsertNode(
