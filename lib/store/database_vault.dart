@@ -3,6 +3,8 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sqlite3/sqlite3.dart';
 
@@ -73,6 +75,28 @@ class DatabaseVault {
   String? get lastFailure =>
       _failed.existsSync() ? _failed.readAsStringSync() : null;
 
+  /// Whether this platform encrypts the database without being asked:
+  /// phones and Macs, whose keystores dependably keep the key. Elsewhere it
+  /// stays the person's choice.
+  static bool encryptsByDefault([TargetPlatform? platform]) =>
+      !kIsWeb &&
+      switch (platform ?? defaultTargetPlatform) {
+        TargetPlatform.android ||
+        TargetPlatform.iOS ||
+        TargetPlatform.macOS => true,
+        _ => false,
+      };
+
+  /// Run before [prepare]. Where [encryptsByDefault] holds, asks for
+  /// encryption once: a plain database is then converted by [prepare], and
+  /// a new one starts encrypted. After a failed attempt it doesn't ask
+  /// again by itself; the person can still ask from Settings.
+  Future<void> applyDefault({bool? byDefault}) async {
+    if (!(byDefault ?? encryptsByDefault())) return;
+    if (encrypted || requested || _failed.existsSync()) return;
+    await request();
+  }
+
   /// Asks for encryption on the next launch, after checking this device
   /// can really keep a key. False if it can't.
   Future<bool> request() async {
@@ -100,16 +124,41 @@ class DatabaseVault {
       if (key == null) throw const DatabaseKeyMissing();
       return key;
     }
-    if (!_request.existsSync() || !file.existsSync()) return null;
+    if (!_request.existsSync()) return null;
+    if (!file.existsSync()) return _fresh();
     return _convert();
   }
 
-  Future<String?> _convert() async {
+  /// A new database: nothing to convert, it is simply created with a key.
+  Future<String?> _fresh() async {
+    final key = _newKey();
+    try {
+      await keys.write(key);
+      if (await keys.read() != key) throw StateError('Key was not saved');
+      await _request.delete();
+      return key;
+    } on Object catch (e) {
+      try {
+        await keys.delete();
+      } on Object {
+        // A plain database doesn't need it either way.
+      }
+      await _request.delete();
+      await _failed.writeAsString('$e', flush: true);
+      return null;
+    }
+  }
+
+  static String _newKey() {
     final r = Random.secure();
-    final key = [
+    return [
       for (var i = 0; i < 32; i++)
         r.nextInt(256).toRadixString(16).padLeft(2, '0'),
     ].join();
+  }
+
+  Future<String?> _convert() async {
+    final key = _newKey();
     final (source, temp) = (file.path, _temp.path);
     try {
       await keys.write(key);
