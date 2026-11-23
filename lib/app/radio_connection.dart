@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
+import '../mesh/channel_conflicts.dart';
 import '../mesh/mesh.dart';
 import '../meshcore/meshcore.dart';
 import '../meshcore/raw_packet.dart';
@@ -114,6 +115,17 @@ abstract class RadioConnection extends ChangeNotifier {
 
   /// Leaves the channel in slot [index].
   Future<void> removeChannel(int index);
+
+  /// Slots where the radio's channel no longer matches what the app last
+  /// saw there, waiting for the user to choose. Empty when the protocol
+  /// doesn't check.
+  List<ChannelConflict> get channelConflicts => const [];
+
+  /// Keeps what the radio has in slot [index]; the app's old copy goes.
+  Future<void> keepRadioChannel(int index) async {}
+
+  /// Writes the app's last copy of slot [index] back to the radio.
+  Future<void> restoreAppChannel(int index) async {}
 
   /// Takes one reading of the radio's noise and activity, if the protocol
   /// can be asked; null otherwise.
@@ -305,6 +317,7 @@ class MeshCoreConnection extends RadioConnection {
     );
     final slots = channelSlotCount = h.device.maxChannels ?? 8;
     final channels = await session.getChannels(slots);
+    await _checkChannels(radio.id, channels, slots);
     await store.replaceChannels(
       radio.id,
       channels.map(mapper.channel).nonNulls,
@@ -667,6 +680,7 @@ class MeshCoreConnection extends RadioConnection {
       }
     }
     if (free < 0) throw const ChannelsFull();
+    await _dropConflict(free);
     await session.setChannel(free, invite.name, invite.secret);
     await _refreshChannels();
     return free;
@@ -674,7 +688,71 @@ class MeshCoreConnection extends RadioConnection {
 
   @override
   Future<void> removeChannel(int index) async {
+    await _dropConflict(index);
     await session.setChannel(index, '', Uint8List(16));
+    await _refreshChannels();
+  }
+
+  List<ChannelConflict> _conflicts = const [];
+
+  @override
+  List<ChannelConflict> get channelConflicts => _conflicts;
+
+  static String _copyKey(RadioId id) => 'channel_copy_v1:$id';
+  static String _pendingKey(RadioId id) => 'channel_conflicts_v1:$id';
+
+  static SlotCopy _slot(ChannelInfoFrame f) =>
+      SlotCopy(index: f.index, name: f.name, secret: f.secret);
+
+  /// Compares what the radio holds with the app's last copy (saved with
+  /// the rest of the app's data) and keeps any differences for the user.
+  Future<void> _checkChannels(
+    RadioId id,
+    List<ChannelInfoFrame> frames,
+    int slots,
+  ) async {
+    final saved = decodeSlots(await store.preference(_copyKey(id)));
+    final pending = decodeSlots(await store.preference(_pendingKey(id)));
+    _conflicts = findChannelConflicts(
+      saved: saved,
+      radio: frames.map(_slot).toList(),
+      slots: slots,
+      pending: pending,
+    );
+    await store.setPreference(
+      _pendingKey(id),
+      encodeSlots(_conflicts.map((c) => c.app)),
+    );
+    await _saveCopy(id, frames);
+    notifyListeners();
+  }
+
+  Future<void> _saveCopy(RadioId id, List<ChannelInfoFrame> frames) =>
+      store.setPreference(_copyKey(id), encodeSlots(frames.map(_slot)));
+
+  Future<void> _dropConflict(int index) async {
+    final id = radio?.id;
+    if (id == null || !_conflicts.any((c) => c.index == index)) return;
+    _conflicts = [
+      for (final c in _conflicts)
+        if (c.index != index) c,
+    ];
+    await store.setPreference(
+      _pendingKey(id),
+      encodeSlots(_conflicts.map((c) => c.app)),
+    );
+    notifyListeners();
+  }
+
+  @override
+  Future<void> keepRadioChannel(int index) => _dropConflict(index);
+
+  @override
+  Future<void> restoreAppChannel(int index) async {
+    final conflict = _conflicts.where((c) => c.index == index).firstOrNull;
+    if (conflict == null) return;
+    await session.setChannel(index, conflict.app.name, conflict.app.secret);
+    await _dropConflict(index);
     await _refreshChannels();
   }
 
@@ -683,6 +761,7 @@ class MeshCoreConnection extends RadioConnection {
     final mapper = _mapper;
     if (radio == null || mapper == null) return;
     final channels = await session.getChannels(channelSlotCount);
+    await _saveCopy(radio.id, channels);
     await store.replaceChannels(
       radio.id,
       channels.map(mapper.channel).nonNulls,

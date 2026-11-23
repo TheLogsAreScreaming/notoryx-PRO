@@ -30,6 +30,19 @@ const _chatter = [
   'Summit Hut: anyone copy?',
 ];
 
+/// What the demo shows as already received once the config download ends,
+/// oldest first, so the inbox isn't empty: (node, channel or null for a
+/// direct message, minutes ago, text).
+const _history = [
+  (0, 0, 88, 'Clear skies up top this morning'),
+  (1, 1, 70, 'Lake Camp is set up, 4 tents'),
+  (2, 0, 55, 'Gate at mile 8 is open again'),
+  (1, null, 41, 'Saved you a spot by the fire'),
+  (3, 0, 30, 'Repeater battery at 80%, solar is working'),
+  (0, 1, 16, 'Fog rolling in, take it slow on the ridge'),
+  (2, null, 6, 'Heading your way, 20 minutes out'),
+];
+
 const _replies = ['Copy', 'Roger that', 'See you at camp', 'Loud and clear'];
 
 /// A pretend Meshtastic node that lives in the app, answering the config
@@ -102,6 +115,26 @@ class DemoMeshtasticLink extends BaseRadioLink {
       if (packet != null) ..._answer(packet),
     ];
     scheduleMicrotask(() => replies.forEach(deliver));
+    if (wantConfig != null && !_historySent) {
+      _historySent = true;
+      _later(const Duration(milliseconds: 300), _sendHistory);
+    }
+  }
+
+  bool _historySent = false;
+
+  void _sendHistory() {
+    for (final (node, channel, ago, text) in _history) {
+      deliver(
+        _text(
+          _nodes[node].num,
+          channel == null ? _me.num : broadcastNode,
+          text,
+          channel: channel ?? 0,
+          at: _now() - ago * 60,
+        ),
+      );
+    }
   }
 
   List<Uint8List> _answer(MeshPacket p) {
@@ -239,6 +272,7 @@ class DemoMeshtasticLink extends BaseRadioLink {
     List<int> payload, {
     int channel = 0,
     int requestId = 0,
+    int? at,
   }) {
     final data =
         (ProtoWriter()
@@ -254,7 +288,7 @@ class DemoMeshtasticLink extends BaseRadioLink {
             ..uint(3, channel)
             ..bytes(4, data)
             ..fixed32(6, _packetId++)
-            ..fixed32(7, _now())
+            ..fixed32(7, at ?? _now())
             ..fixed32(8, _float(6.75))
             ..uint(9, 2)
             ..uint(12, -92)
@@ -263,13 +297,15 @@ class DemoMeshtasticLink extends BaseRadioLink {
     );
   }
 
-  Uint8List _text(int from, int to, String text, {int channel = 0}) => _packet(
-    from,
-    to,
-    PortNum.textMessage,
-    utf8.encode(text),
-    channel: channel,
-  );
+  Uint8List _text(int from, int to, String text, {int channel = 0, int? at}) =>
+      _packet(
+        from,
+        to,
+        PortNum.textMessage,
+        utf8.encode(text),
+        channel: channel,
+        at: at,
+      );
 
   Uint8List _routingAck(int from, int requestId) => _packet(
     from,
