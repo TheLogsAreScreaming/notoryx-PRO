@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:notoryx_pro/mesh/model.dart';
 import 'package:notoryx_pro/store/database_vault.dart';
@@ -143,5 +144,56 @@ void main() {
     final temp = File('${file.path}.encrypting')..writeAsStringSync('junk');
     await vault.prepare();
     expect(temp.existsSync(), isFalse);
+  });
+
+  test('phones and Macs encrypt by default; others leave it to the person', () {
+    expect(DatabaseVault.encryptsByDefault(TargetPlatform.android), isTrue);
+    expect(DatabaseVault.encryptsByDefault(TargetPlatform.iOS), isTrue);
+    expect(DatabaseVault.encryptsByDefault(TargetPlatform.macOS), isTrue);
+    expect(DatabaseVault.encryptsByDefault(TargetPlatform.linux), isFalse);
+    expect(DatabaseVault.encryptsByDefault(TargetPlatform.windows), isFalse);
+  });
+
+  test('by default an existing plain database is converted once', () async {
+    await seed();
+    await vault.applyDefault(byDefault: true);
+    final key = await vault.prepare();
+    expect(key, isNotNull);
+    expect(vault.encrypted, isTrue);
+    expect(await texts(key), ['water at the hut', 'second']);
+    await vault.applyDefault(byDefault: true);
+    expect(vault.requested, isFalse, reason: 'already encrypted');
+    expect(await vault.prepare(), key);
+  });
+
+  test('by default a new install starts encrypted', () async {
+    await vault.applyDefault(byDefault: true);
+    final key = await vault.prepare();
+    expect(key, isNotNull);
+    final s = MeshStore.open(file, key: key);
+    await s.addMessage(msg('first words', 1));
+    await s.close();
+    expect(vault.encrypted, isTrue);
+    expect(await texts(key), ['first words']);
+  });
+
+  test('off by default, or after a failure, nothing is asked', () async {
+    await seed();
+    await vault.applyDefault(byDefault: false);
+    expect(vault.requested, isFalse);
+
+    keys.loses = true;
+    await vault.applyDefault(byDefault: true);
+    expect(vault.requested, isFalse, reason: 'this device keeps no key');
+    keys.loses = false;
+
+    await vault.request();
+    keys.loses = true;
+    expect(await vault.prepare(), isNull);
+    expect(vault.lastFailure, isNotNull);
+    keys.loses = false;
+    await vault.applyDefault(byDefault: true);
+    expect(vault.requested, isFalse, reason: 'no retry loop after a failure');
+    expect(await texts(null), ['water at the hut', 'second']);
   });
 }
