@@ -25,7 +25,7 @@ void main() {
     final channels = await store.channels(c.radio!.id);
     expect(channels.map((ch) => ch.name), containsAll(['Public', '#trail']));
 
-    final camp = nodes.firstWhere((n) => n.name == 'Camp North');
+    final camp = nodes.firstWhere((n) => n.name == 'Trailhead');
     final dm = DirectConversation(c.radio!.id, camp.key);
     final id = await c.sendText(dm, 'hello from the demo');
     await Future<void>.delayed(const Duration(seconds: 9));
@@ -60,6 +60,46 @@ void main() {
       isA<Delivered>(),
     );
     expect(msgs.where((m) => !m.message.outgoing), hasLength(1));
+    await app.shutdown();
+    await store.close();
+  }, timeout: const Timeout(Duration(seconds: 30)));
+
+  test('both demo radios open with some history already received', () async {
+    final store = MeshStore.memory();
+    final app = AppController(
+      store: store,
+      links: DemoLinks(chatter: const Duration(hours: 1), random: Random(3)),
+    );
+    final now = DateTime.now();
+    for (final target in [demoTarget, demoMeshtasticTarget]) {
+      final c = await app.connect(target);
+      await Future<void>.delayed(const Duration(seconds: 1));
+      final channels = await store.channels(c.radio!.id);
+      var channelMessages = 0;
+      for (final ch in channels) {
+        final msgs = await store.messages(
+          ChannelConversation(c.radio!.id, ch.index),
+        );
+        channelMessages += msgs.length;
+        for (final m in msgs) {
+          expect(m.message.outgoing, isFalse);
+          expect(
+            m.message.sentAt.isBefore(now),
+            isTrue,
+            reason: m.message.text,
+          );
+        }
+      }
+      expect(channelMessages, greaterThanOrEqualTo(5), reason: '$target');
+      final nodes = await store.nodes(c.radio!.id);
+      var direct = 0;
+      for (final n in nodes) {
+        direct += (await store.messages(
+          DirectConversation(c.radio!.id, n.key),
+        )).length;
+      }
+      expect(direct, greaterThanOrEqualTo(2), reason: '$target');
+    }
     await app.shutdown();
     await store.close();
   }, timeout: const Timeout(Duration(seconds: 30)));

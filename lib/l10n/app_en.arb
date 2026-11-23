@@ -3216,6 +3216,109 @@
   "sarneg_wellKnownWord": "This word is printed in public guides, so anyone can try it. A random word is safer.",
   "sarneg_clipboardClears": "The clipboard is cleared in 1 minute.",
   "sarneg_autoClear": "Clears after 1 minute without typing.",
+  "channelConflictBanner": "{count, plural, =1{1 channel on the radio differs from the app} other{{count} channels on the radio differ from the app}}",
+  "@channelConflictBanner": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "channelConflictReview": "Review",
+  "channelConflictTitle": "Channel differences",
+  "channelConflictHint": "The radio holds a different name or key in these slots than the app saved. Someone may have changed them with another app, or the app's copy is old. Choose which version to keep for each slot.",
+  "channelConflictDone": "All slots match now.",
+  "channelConflictSlot": "Slot {index}",
+  "@channelConflictSlot": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "channelConflictOnRadio": "On the radio",
+  "channelConflictInApp": "Saved in the app",
+  "channelConflictEmpty": "Empty",
+  "channelConflictKey": "key {fingerprint}",
+  "@channelConflictKey": {
+    "placeholders": {
+      "fingerprint": {
+        "type": "String"
+      }
+    }
+  },
+  "channelConflictNameDiffers": "Name differs",
+  "channelConflictKeyDiffers": "Key differs",
+  "channelConflictKeepRadio": "Keep radio's",
+  "channelConflictUseApp": "Write app's to radio",
+  "statusHistoryTitle": "Status history",
+  "statusHistoryCount": "{count, plural, =0{No saved checks yet} =1{1 saved check} other{{count} saved checks}}",
+  "@statusHistoryCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "statusHistoryRssi": "RSSI",
+  "statusHistorySnr": "SNR",
+  "statusHistoryErrors": "Errors",
+  "statusHistoryMonth": "30 days",
+  "statusHistoryEmpty": "Each status check is kept here for a month, so you can see how this node changes over time.",
+  "statusHistoryNoneInRange": "No checks in this time range.",
+  "neighboursButton": "Neighbours",
+  "neighboursNoList": "The repeater didn't answer with a neighbour list.",
+  "neighboursTitle": "{count, plural, =0{No neighbours} =1{1 neighbour} other{{count} neighbours}}",
+  "@neighboursTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "neighboursNone": "It hasn't heard any other repeater directly yet.",
+  "neighboursSecondsAgo": "heard {n} s ago",
+  "@neighboursSecondsAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "neighboursMinutesAgo": "heard {n} min ago",
+  "@neighboursMinutesAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "neighboursHoursAgo": "heard {n} h ago",
+  "@neighboursHoursAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "neighboursChart": "Show SNR over time",
+  "neighboursTrendTitle": "SNR of {name}",
+  "@neighboursTrendTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "neighboursTrendHint": "How well this repeater heard it each time you read its neighbours, kept for a month on this phone.",
+  "neighboursReadings": "{count, plural, =1{1 reading} other{{count} readings}}",
+  "@neighboursReadings": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "followButton": "Follow 15 min",
   "followTitle": "Following {name}",
   "@followTitle": {

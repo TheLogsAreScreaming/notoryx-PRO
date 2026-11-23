@@ -21,6 +21,7 @@ Future<void> main() async {
   final vault = DatabaseVault(file, SecureKeyVault());
   final String? key;
   try {
+    await vault.applyDefault();
     key = await vault.prepare();
   } on DatabaseKeyMissing {
     runApp(KeyMissingApp(vault: vault));

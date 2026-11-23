@@ -9,6 +9,9 @@ import '../meshcore/frames.dart';
 import 'common.dart';
 import 'identity_key_screen.dart';
 import 'preset_sheet.dart';
+import 'neighbours_card.dart';
+import 'status_history_card.dart';
+import '../app/status_history.dart';
 import 'list_insets.dart';
 
 /// A MeshCore companion's own settings.
@@ -471,6 +474,8 @@ class _ServerScreenState extends State<ServerScreen> {
   final _password = TextEditingController();
   LoginResultPush? _login;
   RepeaterStatusPush? _status;
+  int _checks = 0;
+  List<NeighbourReading>? _neighbours;
   String? _error;
   bool _busy = false;
 
@@ -541,9 +546,30 @@ class _ServerScreenState extends State<ServerScreen> {
                     ? null
                     : () => _do(() async {
                         final r = await c.serverStatus(n);
-                        if (mounted) setState(() => _status = r);
+                        if (mounted) {
+                          setState(() {
+                            _status = r;
+                            _checks++;
+                          });
+                        }
                       }),
                 child: Text(l.serverStatus),
+              ),
+              OutlinedButton.icon(
+                key: const Key('server-neighbours'),
+                icon: const Icon(Icons.hub_outlined),
+                label: Text(l.neighboursButton),
+                onPressed: !_busy && login?.success == true && login!.isAdmin
+                    ? () => _do(() async {
+                        final list = await c.serverNeighbours(n);
+                        if (!mounted) return;
+                        if (list == null) {
+                          setState(() => _error = l.neighboursNoList);
+                        } else {
+                          setState(() => _neighbours = list);
+                        }
+                      })
+                    : null,
               ),
               OutlinedButton.icon(
                 icon: const Icon(Icons.terminal),
@@ -611,6 +637,9 @@ class _ServerScreenState extends State<ServerScreen> {
             _row(l.statusAirtime, l.statusAirtimeValue(s.airTimeSeconds ~/ 60)),
             _row(l.statusQueue, '${s.queueLength}'),
           ],
+          StatusHistoryCard(store: c.store, node: n, version: _checks),
+          if (_neighbours case final list?)
+            NeighboursCard(store: c.store, server: n, neighbours: list),
         ],
       ),
     );
