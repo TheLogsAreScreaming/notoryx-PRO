@@ -1358,5 +1358,22 @@
   "followYou": "Vous",
   "followFromYou": "À {distance}, cap {degrees}° depuis votre radio",
   "followNoOwnPosition": "La position de votre radio est inconnue : distance et cap indisponibles.",
-  "followHint": "S'arrête seul après 15 minutes. Les nœuds MeshCore sont interrogés toutes les 3 minutes (ils doivent autoriser la position dans la télémétrie) ; les autres bougent quand ils la diffusent."
+  "followHint": "S'arrête seul après 15 minutes. Les nœuds MeshCore sont interrogés toutes les 3 minutes (ils doivent autoriser la position dans la télémétrie) ; les autres bougent quand ils la diffusent.",
+  "telemetryHour": "1 h",
+  "telemetrySixHours": "6 h",
+  "telemetryReadNow": "Lire maintenant",
+  "telemetryReadFailed": "Pas de réponse du nœud. Réessayez.",
+  "telemetryNoAlert": "Pas d'alerte",
+  "telemetryAlertAbove": "Alerte au-dessus de {value}",
+  "telemetryAlertBelow": "Alerte en dessous de {value}",
+  "telemetrySetAlert": "Alerte…",
+  "telemetryAlertTitle": "Alerte sur {name}",
+  "telemetryAlertHint": "Vous recevez une notification quand une nouvelle mesure franchit une limite. Laissez un champ vide pour ne pas l'utiliser.",
+  "telemetryAbove": "Au-dessus de",
+  "telemetryBelow": "En dessous de",
+  "telemetryBelowTooHigh": "Doit être inférieur à la limite haute",
+  "telemetryRemoveAlert": "Supprimer",
+  "telemetryAlertNotificationTitle": "Alerte capteur",
+  "telemetryAlertBodyAbove": "{name} : {what} vaut {value}, au-dessus de {limit}",
+  "telemetryAlertBodyBelow": "{name} : {what} vaut {value}, en dessous de {limit}"
 }

@@ -25,6 +25,7 @@ import 'radio_connection.dart';
 import 'radio_target.dart';
 import 'retry_policy.dart';
 import 'follow.dart';
+import 'telemetry_alerts.dart';
 
 /// App-wide state: the store and the connected radios: up to [maxRadios]
 /// of them, from either mesh.
@@ -42,13 +43,17 @@ class AppController extends ChangeNotifier {
            : MessageAlerts(store: store, notifier: notifier),
        geofences = notifier == null
            ? null
-           : GeofenceAlerts(store: store, notifier: notifier);
+           : GeofenceAlerts(store: store, notifier: notifier),
+       telemetryAlerts = TelemetryAlerts(store: store, notifier: notifier);
 
   /// Message notifications; null when there is no notifier (tests).
   final MessageAlerts? alerts;
 
   /// Geofence crossings; null when there is no notifier (tests).
   final GeofenceAlerts? geofences;
+
+  /// Telemetry values past the limits the person set.
+  final TelemetryAlerts telemetryAlerts;
 
   final MeshStore store;
   final LinkFactory links;
@@ -321,6 +326,7 @@ class AppController extends ChangeNotifier {
     }
     sentinel.dispose();
     follow.dispose();
+    telemetryAlerts.dispose();
     hopNaming.dispose();
     super.dispose();
   }

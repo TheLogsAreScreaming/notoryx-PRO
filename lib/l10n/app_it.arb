@@ -1358,5 +1358,22 @@
   "followYou": "Tu",
   "followFromYou": "A {distance}, direzione {degrees}° dalla tua radio",
   "followNoOwnPosition": "La posizione della tua radio non è nota, quindi niente distanza e direzione.",
-  "followHint": "Si ferma da solo dopo 15 minuti. Ai nodi MeshCore la posizione viene chiesta ogni 3 minuti (devono consentirla nella telemetria); gli altri si muovono quando la trasmettono."
+  "followHint": "Si ferma da solo dopo 15 minuti. Ai nodi MeshCore la posizione viene chiesta ogni 3 minuti (devono consentirla nella telemetria); gli altri si muovono quando la trasmettono.",
+  "telemetryHour": "1 h",
+  "telemetrySixHours": "6 h",
+  "telemetryReadNow": "Leggi ora",
+  "telemetryReadFailed": "Nessuna risposta dal nodo. Riprova.",
+  "telemetryNoAlert": "Nessun avviso",
+  "telemetryAlertAbove": "Avviso sopra {value}",
+  "telemetryAlertBelow": "Avviso sotto {value}",
+  "telemetrySetAlert": "Avviso…",
+  "telemetryAlertTitle": "Avviso su {name}",
+  "telemetryAlertHint": "Ricevi una notifica quando una nuova lettura supera un limite. Lascia vuoto un campo per non usarlo.",
+  "telemetryAbove": "Sopra",
+  "telemetryBelow": "Sotto",
+  "telemetryBelowTooHigh": "Deve essere inferiore al limite superiore",
+  "telemetryRemoveAlert": "Rimuovi",
+  "telemetryAlertNotificationTitle": "Avviso sensore",
+  "telemetryAlertBodyAbove": "{name}: {what} è {value}, sopra {limit}",
+  "telemetryAlertBodyBelow": "{name}: {what} è {value}, sotto {limit}"
 }

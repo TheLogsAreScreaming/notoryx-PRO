@@ -62,6 +62,7 @@ class MeshStore {
 
   Future<void> close() async {
     await _incoming.close();
+    await _newTelemetry.close();
     await db.close();
   }
 
@@ -1150,6 +1151,11 @@ class MeshStore {
 
   // Telemetry
 
+  final _newTelemetry = StreamController<TelemetryPoint>.broadcast();
+
+  /// Each reading as [addTelemetry] saves it (for alerts).
+  Stream<TelemetryPoint> get newTelemetry => _newTelemetry.stream;
+
   /// Saves a reading and drops readings older than [telemetryKeep].
   Future<void> addTelemetry(TelemetryPoint p) async {
     if (p.isEmpty) return;
@@ -1176,6 +1182,7 @@ class MeshStore {
         db.telemetryReadings,
       )..where((t) => t.time.isSmallerThanValue(cutoff))).go();
     });
+    _newTelemetry.add(p);
   }
 
   SimpleSelectStatement<$TelemetryReadingsTable, TelemetryRow> _telemetryQuery(

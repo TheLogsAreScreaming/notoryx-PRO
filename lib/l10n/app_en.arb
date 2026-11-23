@@ -3396,5 +3396,75 @@
     }
   },
   "followNoOwnPosition": "Your radio's position isn't known, so distance and bearing can't be shown.",
-  "followHint": "Stops by itself after 15 minutes. MeshCore nodes are asked for their position every 3 minutes (they must allow location in telemetry); other nodes move when they broadcast it."
+  "followHint": "Stops by itself after 15 minutes. MeshCore nodes are asked for their position every 3 minutes (they must allow location in telemetry); other nodes move when they broadcast it.",
+  "telemetryHour": "1 h",
+  "telemetrySixHours": "6 h",
+  "telemetryReadNow": "Read now",
+  "telemetryReadFailed": "No answer from the node. Try again.",
+  "telemetryNoAlert": "No alert",
+  "telemetryAlertAbove": "Alert above {value}",
+  "@telemetryAlertAbove": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetryAlertBelow": "Alert below {value}",
+  "@telemetryAlertBelow": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetrySetAlert": "Alert…",
+  "telemetryAlertTitle": "Alert on {name}",
+  "@telemetryAlertTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetryAlertHint": "You get a notification when a new reading crosses a limit. Leave a field empty to not use it.",
+  "telemetryAbove": "Above",
+  "telemetryBelow": "Below",
+  "telemetryBelowTooHigh": "Must be lower than the upper limit",
+  "telemetryRemoveAlert": "Remove",
+  "telemetryAlertNotificationTitle": "Sensor alert",
+  "telemetryAlertBodyAbove": "{name}: {what} is {value}, above {limit}",
+  "@telemetryAlertBodyAbove": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "what": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetryAlertBodyBelow": "{name}: {what} is {value}, below {limit}",
+  "@telemetryAlertBodyBelow": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "what": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
+    }
+  }
 }
