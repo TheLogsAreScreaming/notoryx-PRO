@@ -1317,5 +1317,16 @@
   "statusHistoryErrors": "Errores",
   "statusHistoryMonth": "30 días",
   "statusHistoryEmpty": "Cada consulta de estado se guarda aquí un mes, para ver cómo cambia este nodo.",
-  "statusHistoryNoneInRange": "No hay consultas en este periodo."
+  "statusHistoryNoneInRange": "No hay consultas en este periodo.",
+  "neighboursButton": "Vecinos",
+  "neighboursNoList": "El repetidor no respondió con una lista de vecinos.",
+  "neighboursTitle": "{count, plural, =0{Sin vecinos} =1{1 vecino} other{{count} vecinos}}",
+  "neighboursNone": "Aún no ha oído directamente a ningún otro repetidor.",
+  "neighboursSecondsAgo": "oído hace {n} s",
+  "neighboursMinutesAgo": "oído hace {n} min",
+  "neighboursHoursAgo": "oído hace {n} h",
+  "neighboursChart": "Ver SNR en el tiempo",
+  "neighboursTrendTitle": "SNR de {name}",
+  "neighboursTrendHint": "Lo bien que este repetidor lo oyó cada vez que leíste sus vecinos, guardado un mes en este teléfono.",
+  "neighboursReadings": "{count, plural, =1{1 lectura} other{{count} lecturas}}"
 }

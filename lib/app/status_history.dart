@@ -126,3 +126,120 @@ class StatusHistory {
   Future<void> clear(RadioId radio, NodeKey node) =>
       store.setPreference(_key(radio, node), '[]');
 }
+
+/// A node a repeater has heard directly: key prefix (lower-case hex), how
+/// long ago, and the SNR of that packet in dB.
+typedef NeighbourReading = ({String prefix, int secondsAgo, double snr});
+
+final _neighbourLine = RegExp(r'^([0-9A-Fa-f]{2,64}):(\d+):(-?\d+)$');
+
+/// Reads a repeater's reply to the `neighbors` command: one
+/// `PREFIX:SECONDS:SNR` line each, SNR in quarter-dB. `-none-` means it
+/// hasn't heard anyone. Null when [reply] isn't that reply.
+List<NeighbourReading>? parseNeighbours(String reply) {
+  final text = reply.replaceFirst(RegExp(r'^\s*>\s*'), '').trim();
+  if (text == '-none-') return const [];
+  final out = <NeighbourReading>[];
+  for (final line in text.split('\n')) {
+    final m = _neighbourLine.firstMatch(line.trim());
+    if (m == null) return null;
+    out.add((
+      prefix: m[1]!.toLowerCase(),
+      secondsAgo: int.parse(m[2]!),
+      snr: int.parse(m[3]!) / 4,
+    ));
+  }
+  return out.isEmpty ? null : out;
+}
+
+/// One neighbour's SNR at one moment.
+typedef SnrPoint = ({DateTime time, double snr});
+
+/// Each neighbour's SNR every time a repeater's neighbour list was read,
+/// kept for a month in the app's database.
+class NeighbourHistory {
+  const NeighbourHistory(this.store);
+
+  final MeshStore store;
+
+  static const maxPerNeighbour = 200;
+  static const maxNeighbours = 64;
+
+  static String _key(RadioId radio, NodeKey server) =>
+      'neighbour_snr_v1:$radio:$server';
+
+  /// Every neighbour's readings, oldest first, by key prefix.
+  Future<Map<String, List<SnrPoint>>> load(
+    RadioId radio,
+    NodeKey server,
+  ) async {
+    final raw = await store.preference(_key(radio, server));
+    if (raw == null || raw.isEmpty) return const {};
+    try {
+      final data = jsonDecode(raw);
+      if (data is! Map) return const {};
+      return {
+        for (final MapEntry(:key, :value) in data.entries)
+          if (key is String && value is List)
+            key: [
+              for (final p in value)
+                if (p is List && p.length == 2 && p[0] is int && p[1] is num)
+                  (
+                    time: DateTime.fromMillisecondsSinceEpoch(p[0] as int),
+                    snr: (p[1] as num).toDouble(),
+                  ),
+            ],
+      };
+    } on FormatException {
+      return const {};
+    }
+  }
+
+  /// Keeps one neighbour list read at [now]. Each reading is placed when
+  /// the repeater last heard that neighbour; the same reading reported
+  /// again by a later read is kept once.
+  Future<void> add(
+    RadioId radio,
+    NodeKey server,
+    List<NeighbourReading> list,
+    DateTime now,
+  ) async {
+    final all = {
+      for (final e in (await load(radio, server)).entries) e.key: [...e.value],
+    };
+    final cutoff = now.subtract(StatusHistory.keep);
+    for (final n in list) {
+      final at = now.subtract(Duration(seconds: n.secondsAgo));
+      final points = all.putIfAbsent(n.prefix, () => []);
+      final repeat = points.any(
+        (p) => p.time.difference(at).inSeconds.abs() < 90 && p.snr == n.snr,
+      );
+      if (!repeat) points.add((time: at, snr: n.snr));
+    }
+    for (final points in all.values) {
+      points
+        ..removeWhere((p) => p.time.isBefore(cutoff))
+        ..sort((a, b) => a.time.compareTo(b.time));
+      if (points.length > maxPerNeighbour) {
+        points.removeRange(0, points.length - maxPerNeighbour);
+      }
+    }
+    all.removeWhere((_, p) => p.isEmpty);
+    if (all.length > maxNeighbours) {
+      final newest = all.keys.toList()
+        ..sort((a, b) => all[b]!.last.time.compareTo(all[a]!.last.time));
+      for (final k in newest.skip(maxNeighbours)) {
+        all.remove(k);
+      }
+    }
+    await store.setPreference(
+      _key(radio, server),
+      jsonEncode({
+        for (final e in all.entries)
+          e.key: [
+            for (final p in e.value) [p.time.millisecondsSinceEpoch, p.snr],
+          ],
+      }),
+    );
+  }
+}

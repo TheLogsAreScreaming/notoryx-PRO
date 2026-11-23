@@ -55,4 +55,40 @@ void main() {
     await h.clear(radio, repeater);
     expect(await h.load(radio, repeater), isEmpty);
   });
+
+  test(
+    'reads a neighbour list and keeps each neighbour once per reading',
+    () async {
+      expect(parseNeighbours('-none-'), isEmpty);
+      expect(parseNeighbours('Unknown command'), isNull);
+      final list = parseNeighbours('A1B2C3D4:30:24\nE5F6A7B8:600:-10')!;
+      expect(list.first.prefix, 'a1b2c3d4');
+      expect(list.first.snr, 6);
+      expect(list.last.snr, -2.5);
+
+      final h = NeighbourHistory(store);
+      final t = DateTime(2026, 11, 23, 12);
+      await h.add(radio, repeater, list, t);
+      // Read again a minute later: the same last-heard packets, kept once.
+      await h.add(
+        radio,
+        repeater,
+        parseNeighbours('A1B2C3D4:90:24\nE5F6A7B8:660:-10')!,
+        t.add(const Duration(minutes: 1)),
+      );
+      await h.add(
+        radio,
+        repeater,
+        parseNeighbours('A1B2C3D4:5:12')!,
+        t.add(const Duration(hours: 1)),
+      );
+      final all = await h.load(radio, repeater);
+      expect(all['a1b2c3d4']!.map((p) => p.snr), [6, 3]);
+      expect(
+        all['a1b2c3d4']!.first.time,
+        t.subtract(const Duration(seconds: 30)),
+      );
+      expect(all['e5f6a7b8']!.single.snr, -2.5);
+    },
+  );
 }

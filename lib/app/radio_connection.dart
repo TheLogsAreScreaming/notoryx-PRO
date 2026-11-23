@@ -879,6 +879,19 @@ class MeshCoreConnection extends RadioConnection {
   Future<String> serverCommand(Node server, String command) =>
       session.serverCommand(fromHex(server.key.native), command);
 
+  /// Reads a repeater's neighbour list (needs an admin login) and keeps
+  /// each neighbour's SNR in its history. Null when the reply isn't one.
+  Future<List<NeighbourReading>?> serverNeighbours(Node server) async {
+    final reply = await serverCommand(server, 'neighbors');
+    final list = parseNeighbours(reply);
+    if (list != null) {
+      await NeighbourHistory(
+        store,
+      ).add(server.radioId, server.key, list, DateTime.now());
+    }
+    return list;
+  }
+
   final Map<int, Completer<SendConfirmedPush>> _waiting = {};
 
   Future<SentFrame> _attempt(

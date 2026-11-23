@@ -1317,5 +1317,16 @@
   "statusHistoryErrors": "Erreurs",
   "statusHistoryMonth": "30 jours",
   "statusHistoryEmpty": "Chaque vérification d'état est gardée ici un mois, pour voir l'évolution de ce nœud.",
-  "statusHistoryNoneInRange": "Aucune vérification sur cette période."
+  "statusHistoryNoneInRange": "Aucune vérification sur cette période.",
+  "neighboursButton": "Voisins",
+  "neighboursNoList": "Le répéteur n'a pas renvoyé de liste de voisins.",
+  "neighboursTitle": "{count, plural, =0{Aucun voisin} =1{1 voisin} other{{count} voisins}}",
+  "neighboursNone": "Il n'a encore entendu directement aucun autre répéteur.",
+  "neighboursSecondsAgo": "entendu il y a {n} s",
+  "neighboursMinutesAgo": "entendu il y a {n} min",
+  "neighboursHoursAgo": "entendu il y a {n} h",
+  "neighboursChart": "Voir le SNR dans le temps",
+  "neighboursTrendTitle": "SNR de {name}",
+  "neighboursTrendHint": "La qualité de réception par ce répéteur à chaque lecture de ses voisins, gardée un mois sur ce téléphone.",
+  "neighboursReadings": "{count, plural, =1{1 mesure} other{{count} mesures}}"
 }

@@ -1317,5 +1317,16 @@
   "statusHistoryErrors": "Fehler",
   "statusHistoryMonth": "30 Tage",
   "statusHistoryEmpty": "Jede Statusabfrage bleibt hier einen Monat, damit du siehst, wie sich dieser Knoten verändert.",
-  "statusHistoryNoneInRange": "Keine Abfragen in diesem Zeitraum."
+  "statusHistoryNoneInRange": "Keine Abfragen in diesem Zeitraum.",
+  "neighboursButton": "Nachbarn",
+  "neighboursNoList": "Der Repeater hat keine Nachbarliste geschickt.",
+  "neighboursTitle": "{count, plural, =0{Keine Nachbarn} =1{1 Nachbar} other{{count} Nachbarn}}",
+  "neighboursNone": "Er hat noch keinen anderen Repeater direkt gehört.",
+  "neighboursSecondsAgo": "vor {n} s gehört",
+  "neighboursMinutesAgo": "vor {n} Min. gehört",
+  "neighboursHoursAgo": "vor {n} Std. gehört",
+  "neighboursChart": "SNR-Verlauf zeigen",
+  "neighboursTrendTitle": "SNR von {name}",
+  "neighboursTrendHint": "Wie gut dieser Repeater ihn bei jeder Nachbarabfrage gehört hat, einen Monat auf diesem Telefon gespeichert.",
+  "neighboursReadings": "{count, plural, =1{1 Wert} other{{count} Werte}}"
 }

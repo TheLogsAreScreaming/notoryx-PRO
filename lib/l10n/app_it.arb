@@ -1317,5 +1317,16 @@
   "statusHistoryErrors": "Errori",
   "statusHistoryMonth": "30 giorni",
   "statusHistoryEmpty": "Ogni controllo di stato resta qui per un mese, così vedi come cambia questo nodo.",
-  "statusHistoryNoneInRange": "Nessun controllo in questo intervallo."
+  "statusHistoryNoneInRange": "Nessun controllo in questo intervallo.",
+  "neighboursButton": "Vicini",
+  "neighboursNoList": "Il ripetitore non ha risposto con un elenco di vicini.",
+  "neighboursTitle": "{count, plural, =0{Nessun vicino} =1{1 vicino} other{{count} vicini}}",
+  "neighboursNone": "Non ha ancora sentito direttamente nessun altro ripetitore.",
+  "neighboursSecondsAgo": "sentito {n} s fa",
+  "neighboursMinutesAgo": "sentito {n} min fa",
+  "neighboursHoursAgo": "sentito {n} h fa",
+  "neighboursChart": "Mostra SNR nel tempo",
+  "neighboursTrendTitle": "SNR di {name}",
+  "neighboursTrendHint": "Quanto bene questo ripetitore lo ha sentito a ogni lettura dei vicini, salvato per un mese su questo telefono.",
+  "neighboursReadings": "{count, plural, =1{1 lettura} other{{count} letture}}"
 }

@@ -72,6 +72,9 @@ class Companion {
   final inbox = <Uint8List>[];
   final commands = <int>[];
 
+  /// The reply to `neighbors`, when set; otherwise it echoes like others.
+  String? neighbours;
+
   Uint8List selfInfo() {
     final f = RadioFrames.selfInfo(name: name);
     f[2] = power;
@@ -119,7 +122,14 @@ class Companion {
       ],
       Cmd.sendText => () {
         if (cmd[1] == 1) {
-          inbox.add(cliReply('> ${utf8.decode(cmd.sublist(13))}\nOK'));
+          final text = utf8.decode(cmd.sublist(13));
+          inbox.add(
+            cliReply(
+              text == 'neighbors' && neighbours != null
+                  ? neighbours!
+                  : '> $text\nOK',
+            ),
+          );
           return [RadioFrames.sent(ack: 3), RadioFrames.waiting()];
         }
         return [RadioFrames.sent(ack: 4)];
@@ -403,7 +413,10 @@ void main() {
 
   testWidgets('server screen: log in, status, console', (tester) async {
     final store = MeshStore.memory();
-    final radio = Companion();
+    final radio = Companion()
+      ..neighbours =
+          '${toHex(repeaterKey.sublist(0, 4)).toUpperCase()}:30:24\n'
+          'B2B2B2B2:4000:-8';
     final app = AppController(
       store: store,
       links: FakeLinks(ScriptedMeshCoreLink(responder: radio.call)),
@@ -449,6 +462,31 @@ void main() {
     expect(find.text('1 d 1 h'), findsOneWidget);
     expect(find.text('-118 dBm'), findsOneWidget);
 
+    await tester.tap(find.byKey(const Key('server-neighbours')));
+    await settle();
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('neighbour-b2b2b2b2')),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pump();
+    expect(find.text('2 neighbours'), findsOneWidget);
+    expect(find.text('Peak'), findsWidgets);
+    expect(find.text('B2B2B2B2'), findsOneWidget);
+    expect(find.text('6.0 dB'), findsOneWidget);
+    expect(find.text('heard 1 h ago'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('neighbour-b2b2b2b2')));
+    await settle();
+    expect(find.text('SNR of B2B2B2B2'), findsOneWidget);
+    expect(find.text('1 reading'), findsOneWidget);
+    await tester.tapAt(const Offset(10, 10));
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(
+      consoleButton,
+      -200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(consoleButton);
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField), 'ver');
