@@ -13,6 +13,7 @@ import '../l10n/app_localizations.dart';
 import 'about_screen.dart';
 import 'beacon_sheet.dart';
 import 'checklists_screen.dart';
+import 'coverage_screen.dart';
 import 'common.dart';
 import 'conversation_screen.dart';
 import 'export_sheet.dart';
@@ -112,6 +113,7 @@ class NotoryxProApp extends StatelessWidget {
 enum _MenuAction {
   markRead,
   timeline,
+  coverage,
   journal,
   checklists,
   sarneg,
@@ -232,6 +234,7 @@ class _HomeShellState extends State<HomeShell> {
     widget.app.responder.start();
     widget.app.automations.start();
     unawaited(widget.app.sentinel.start());
+    unawaited(widget.app.coverage.start());
     widget.app.geofences?.start();
     _bgPref = widget.app.store.watchPreference(AlertPrefs.background).listen((
       v,
@@ -387,6 +390,15 @@ class _HomeShellState extends State<HomeShell> {
                   builder: (_) => TimelineScreen(app: app),
                 ),
               ),
+              _MenuAction.coverage => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => CoverageScreen(
+                    coverage: app.coverage,
+                    app: app,
+                    tiles: widget.tiles,
+                  ),
+                ),
+              ),
               _MenuAction.journal => Navigator.of(context).push(
                 MaterialPageRoute<void>(
                   builder: (_) => JournalScreen(app: app),
@@ -460,6 +472,11 @@ class _HomeShellState extends State<HomeShell> {
               PopupMenuItem(
                 value: _MenuAction.timeline,
                 child: Text(context.l10n.tlTitle),
+              ),
+              PopupMenuItem(
+                key: const Key('menu-coverage'),
+                value: _MenuAction.coverage,
+                child: Text(context.l10n.covTitle),
               ),
               PopupMenuItem(
                 key: const Key('menu-journal'),

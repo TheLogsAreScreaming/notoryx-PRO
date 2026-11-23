@@ -40,6 +40,7 @@ dependencies:
     path: third_party/flutter_libserialport
   cryptography: ^2.9.0
   geolocator: ^14.0.1
+  h3_flutter: ^0.7.1
 
 dev_dependencies:
   flutter_test:

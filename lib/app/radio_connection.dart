@@ -292,6 +292,9 @@ class MeshCoreConnection extends RadioConnection {
   final List<StreamSubscription<Object?>> _subs = [];
   MeshCoreMapper? _mapper;
 
+  /// Told about every MeshCore packet the radio hears, for coverage mapping.
+  void Function(double snr, int rssi, Uint8List raw)? onHeard;
+
   @override
   int get maxTextBytes => MeshCoreLimits.maxTextBytes;
 
@@ -392,6 +395,7 @@ class MeshCoreConnection extends RadioConnection {
           );
           return;
         }
+        onHeard?.call(snr, rssi, raw);
         final info = MeshCorePacketInfo.parse(raw);
         if (info != null) {
           traffic.add(
