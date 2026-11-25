@@ -206,6 +206,7 @@
   "trustKeyChanged": "密钥已更改：请重新验证",
   "trustVerifiedSender": "已验证的发送者",
   "nameClash": "另一个节点也使用这个名字",
+  "nameLookalike": "名称与您信任的节点“{name}”相似。请先核实再采取行动。",
   "channelNotProven": "频道消息无法证明发送者身份。",
   "scanTitle": "扫描联系人代码",
   "settings": "设置",

@@ -206,6 +206,7 @@
   "trustKeyChanged": "Nyckeln har ändrats: verifiera igen",
   "trustVerifiedSender": "Verifierad avsändare",
   "nameClash": "En annan nod använder det här namnet",
+  "nameLookalike": "Namnet liknar {name}, en nod du litar på. Kontrollera innan du gör något.",
   "channelNotProven": "Kanalinlägg kan inte bevisa vem som skickade dem.",
   "scanTitle": "Skanna en kontaktkod",
   "settings": "Inställningar",

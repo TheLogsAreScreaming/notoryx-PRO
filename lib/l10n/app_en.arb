@@ -505,6 +505,8 @@
   "trustKeyChanged": "Key changed: verify again",
   "trustVerifiedSender": "Verified sender",
   "nameClash": "Another node uses this name",
+  "nameLookalike": "Name looks like {name}, a node you trust. Check before acting on it.",
+  "@nameLookalike": {"description": "Warning on a message whose sender's name looks like (but isn't) the name of a node the user trusts.", "placeholders": {"name": {"type": "String"}}},
   "channelNotProven": "Channel posts can't prove who sent them.",
   "scanTitle": "Scan a contact code",
   "settings": "Settings",

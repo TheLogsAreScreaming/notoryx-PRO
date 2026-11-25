@@ -206,6 +206,7 @@
   "trustKeyChanged": "Ključ spremenjen: preveri znova",
   "trustVerifiedSender": "Preverjen pošiljatelj",
   "nameClash": "To ime uporablja drugo vozlišče",
+  "nameLookalike": "Ime je podobno {name}, vozlišču, ki mu zaupaš. Preveri, preden ukrepaš.",
   "channelNotProven": "Pri objavah v kanalu ni mogoče dokazati, kdo jih je poslal.",
   "scanTitle": "Skeniraj kontaktno kodo",
   "settings": "Nastavitve",

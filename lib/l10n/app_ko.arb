@@ -206,6 +206,7 @@
   "trustKeyChanged": "키가 바뀜: 다시 확인하세요",
   "trustVerifiedSender": "확인된 보낸 사람",
   "nameClash": "다른 노드가 이 이름을 쓰고 있어요",
+  "nameLookalike": "이름이 신뢰하는 노드 {name}와 비슷해요. 행동하기 전에 확인하세요.",
   "channelNotProven": "채널 게시물은 누가 보냈는지 증명할 수 없어요.",
   "scanTitle": "연락처 코드 스캔",
   "settings": "설정",

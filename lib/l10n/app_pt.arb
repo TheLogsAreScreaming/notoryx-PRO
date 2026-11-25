@@ -206,6 +206,7 @@
   "trustKeyChanged": "Chave mudou: verifique de novo",
   "trustVerifiedSender": "Remetente verificado",
   "nameClash": "Outro nó usa este nome",
+  "nameLookalike": "O nome parece {name}, um nó em que você confia. Confira antes de agir.",
   "channelNotProven": "Mensagens de canal não comprovam quem as enviou.",
   "scanTitle": "Ler um código de contato",
   "settings": "Configurações",

@@ -206,6 +206,7 @@
   "trustKeyChanged": "鍵が変更されました: 再確認してください",
   "trustVerifiedSender": "確認済みの送信者",
   "nameClash": "別のノードがこの名前を使っています",
+  "nameLookalike": "名前が信頼済みノード「{name}」に似ています。対応する前に確認してください。",
   "channelNotProven": "チャンネルの投稿では送信者を証明できません。",
   "scanTitle": "連絡先コードをスキャン",
   "settings": "設定",
