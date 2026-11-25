@@ -1045,6 +1045,8 @@
   "sntAppeal": "Fai ricorso",
   "sntAppealOther": "Fai ricorso per un caso tramite numero",
   "sntYourReports": "Le tue segnalazioni recenti",
+  "sntStateReview": "In revisione dai moderatori",
+  "sntStateClosed": "Chiusa dai moderatori",
   "sntReport": "Segnala ai moderatori",
   "sntReportTitle": "Segnala {name}",
   "sntReasonSpam": "Spam o pubblicità",

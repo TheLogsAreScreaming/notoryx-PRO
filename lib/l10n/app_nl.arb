@@ -1045,6 +1045,8 @@
   "sntAppeal": "Bezwaar maken",
   "sntAppealOther": "Bezwaar maken tegen een zaak via nummer",
   "sntYourReports": "Je recente meldingen",
+  "sntStateReview": "Wordt beoordeeld door moderators",
+  "sntStateClosed": "Afgesloten door moderators",
   "sntReport": "Melden aan moderators",
   "sntReportTitle": "{name} melden",
   "sntReasonSpam": "Spam of reclame",

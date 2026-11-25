@@ -1045,6 +1045,8 @@
   "sntAppeal": "Einspruch",
   "sntAppealOther": "Einspruch zu einer Fallnummer",
   "sntYourReports": "Deine letzten Meldungen",
+  "sntStateReview": "Wird von Moderatoren geprüft",
+  "sntStateClosed": "Von Moderatoren abgeschlossen",
   "sntReport": "An Moderation melden",
   "sntReportTitle": "{name} melden",
   "sntReasonSpam": "Spam oder Werbung",
