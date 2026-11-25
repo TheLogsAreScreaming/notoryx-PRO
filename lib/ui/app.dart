@@ -435,7 +435,7 @@ class _HomeShellState extends State<HomeShell> {
                 ),
               ),
               _MenuAction.about => Navigator.of(context).push(
-                MaterialPageRoute<void>(builder: (_) => const AboutScreen()),
+                MaterialPageRoute<void>(builder: (_) => AboutScreen(app: app)),
               ),
               _MenuAction.repeaterNames => Navigator.of(context).push(
                 MaterialPageRoute<void>(
