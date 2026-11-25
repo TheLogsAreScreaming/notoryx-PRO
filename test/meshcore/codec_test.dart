@@ -134,6 +134,12 @@ void main() {
       expect(f.codingRate, 5);
     });
 
+    test('SELF_INFO reads a transmit power below 0 dBm', () {
+      final f = decodeFrame(RadioFrames.selfInfo(txPower: -5)) as SelfInfoFrame;
+      expect(f.txPower, -5);
+      expect(f.maxTxPower, 30);
+    });
+
     test('DEVICE_INFO', () {
       final f = decodeFrame(RadioFrames.deviceInfo()) as DeviceInfoFrame;
       expect(f.firmwareCode, 14);

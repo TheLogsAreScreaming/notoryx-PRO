@@ -1449,5 +1449,6 @@
   "covEraseFailed": "No se pudo borrar. Revisa tu conexión e inténtalo de nuevo.",
   "covStopSharing": "Dejar de compartir",
   "covStopSharingSub": "No se envía nada más. Las lecturas se quedan en este teléfono.",
-  "covOpenMap": "Abrir el mapa de cobertura"
+  "covOpenMap": "Abrir el mapa de cobertura",
+  "contactsFullWarning": "La lista de contactos de esta radio está llena, así que no puede añadir nodos nuevos. Elimina algunos contactos para hacer espacio."
 }

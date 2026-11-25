@@ -8,4 +8,5 @@ export 'commands.dart';
 export 'firmware.dart';
 export 'frames.dart';
 export 'session.dart';
+export 'smaz.dart' show smazUnwrap;
 export 'stream_framing.dart';

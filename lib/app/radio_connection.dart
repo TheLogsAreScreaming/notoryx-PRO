@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
@@ -175,6 +176,9 @@ abstract class RadioConnection extends ChangeNotifier {
   /// Largest message text in UTF-8 bytes.
   int get maxTextBytes;
 
+  /// Largest text that fits one message in [conversation], in UTF-8 bytes.
+  int maxTextBytesFor(Conversation conversation) => maxTextBytes;
+
   /// Connects and keeps the radio connected.
   Future<void> start() => supervisor.start();
 
@@ -292,11 +296,24 @@ class MeshCoreConnection extends RadioConnection {
   final List<StreamSubscription<Object?>> _subs = [];
   MeshCoreMapper? _mapper;
 
+  /// The radio said its contact list is full, so it can't add new nodes
+  /// until one is removed. Cleared when the radio drops a contact.
+  bool contactsFull = false;
+
   /// Told about every MeshCore packet the radio hears, for coverage mapping.
   void Function(double snr, int rssi, Uint8List raw)? onHeard;
 
   @override
   int get maxTextBytes => MeshCoreLimits.maxTextBytes;
+
+  /// The firmware puts "`name`: " in front of a channel post and cuts
+  /// whatever no longer fits, so channel text gets that much less room.
+  @override
+  int maxTextBytesFor(Conversation conversation) {
+    if (conversation is! ChannelConversation) return maxTextBytes;
+    final name = utf8.encode(selfInfo?.name ?? '').length;
+    return (maxTextBytes - name - 2).clamp(0, maxTextBytes);
+  }
 
   @override
   Future<void> setUp() async {
@@ -430,7 +447,15 @@ class MeshCoreConnection extends RadioConnection {
         );
       case ContactsFullPush():
         log.add('MeshCore ${link.label}', "radio's contact list is full");
+        if (!contactsFull) {
+          contactsFull = true;
+          notifyListeners();
+        }
       case ContactDeletedPush(:final publicKey):
+        if (contactsFull) {
+          contactsFull = false;
+          notifyListeners();
+        }
         await store.setOnRadio(
           radio.id,
           NodeKey.meshcore(toHex(publicKey)),

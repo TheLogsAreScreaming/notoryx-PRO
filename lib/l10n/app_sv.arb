@@ -1449,5 +1449,6 @@
   "covEraseFailed": "Kunde inte radera. Kolla anslutningen och försök igen.",
   "covStopSharing": "Sluta dela",
   "covStopSharingSub": "Inget mer skickas. Mätvärden stannar på den här telefonen.",
-  "covOpenMap": "Öppna täckningskartan"
+  "covOpenMap": "Öppna täckningskartan",
+  "contactsFullWarning": "Radions kontaktlista är full, så den kan inte lägga till nya noder. Ta bort några kontakter för att frigöra plats."
 }

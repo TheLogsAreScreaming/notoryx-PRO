@@ -1449,5 +1449,6 @@
   "covEraseFailed": "Nem sikerült törölni. Ellenőrizd a kapcsolatot, és próbáld újra.",
   "covStopSharing": "Megosztás leállítása",
   "covStopSharingSub": "Több semmi nem megy el. A mérések ezen a telefonon maradnak.",
-  "covOpenMap": "Lefedettségi térkép megnyitása"
+  "covOpenMap": "Lefedettségi térkép megnyitása",
+  "contactsFullWarning": "A rádió névjegylistája megtelt, ezért nem tud új node-okat felvenni. Törölj néhány névjegyet, hogy legyen hely."
 }

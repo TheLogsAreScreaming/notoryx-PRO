@@ -249,9 +249,10 @@ class _ConversationScreenState extends State<ConversationScreen> {
                     scheduler: app.scheduler,
                     conversation: conversation,
                     maxBytes:
-                        conversation.radioId.protocol == RadioProtocol.meshcore
-                        ? MeshCoreLimits.maxTextBytes
-                        : meshtasticMaxPayload,
+                        _ready()?.maxTextBytesFor(conversation) ??
+                        (conversation.radioId.protocol == RadioProtocol.meshcore
+                            ? MeshCoreLimits.maxTextBytes
+                            : meshtasticMaxPayload),
                   ),
                 ),
                 child: Text(context.l10n.scheduleTitle),
@@ -570,7 +571,7 @@ class _ComposerState extends State<Composer> {
     if (!mounted) return;
     final text = await showMecpComposer(
       context,
-      maxBytes: c.maxTextBytes,
+      maxBytes: c.maxTextBytesFor(widget.conversation),
       position: position,
     );
     if (text != null && mounted) _controller.text = text;
@@ -586,7 +587,7 @@ class _ComposerState extends State<Composer> {
     if (!mounted) return;
     final text = await showReportComposer(
       context,
-      maxBytes: c.maxTextBytes,
+      maxBytes: c.maxTextBytesFor(widget.conversation),
       position: position == null
           ? null
           : '${position.latitude.toStringAsFixed(5)},'
@@ -621,7 +622,7 @@ class _ComposerState extends State<Composer> {
         ),
       );
     }
-    final max = c.maxTextBytes;
+    final max = c.maxTextBytesFor(widget.conversation);
     return SafeArea(
       top: false,
       child: Padding(

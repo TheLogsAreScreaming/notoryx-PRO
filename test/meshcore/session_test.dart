@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:notoryx_pro/meshcore/meshcore.dart';
 import 'package:notoryx_pro/radio/radio_link.dart';
@@ -113,6 +115,61 @@ void main() {
     }
 
     tearDown(() => session.dispose());
+
+    test('a slow contact list keeps the sync alive frame by frame', () {
+      fakeAsync((async) {
+        unawaited(
+          start(
+            timeout: const Duration(seconds: 5),
+            responder: (cmd) => cmd.first == Cmd.getContacts
+                ? [RadioFrames.contactsStart(40)]
+                : [RadioFrames.ok()],
+          ),
+        );
+        async.flushMicrotasks();
+        ContactSync? sync;
+        Object? error;
+        session.getContacts().then(
+          (s) => sync = s,
+          onError: (Object e) {
+            error = e;
+          },
+        );
+        async.flushMicrotasks();
+        // 40 contacts, 4 s apart: 160 s in all, far past one fixed limit.
+        for (var i = 1; i <= 40; i++) {
+          async.elapse(const Duration(seconds: 4));
+          link.push(RadioFrames.contact(seed: i, name: 'N$i'));
+          async.flushMicrotasks();
+        }
+        async.elapse(const Duration(seconds: 4));
+        link.push(RadioFrames.endOfContacts(40));
+        async.flushMicrotasks();
+        expect(error, isNull);
+        expect(sync?.contacts, hasLength(40));
+      });
+    });
+
+    test('a contact sync that goes quiet still times out', () {
+      fakeAsync((async) {
+        unawaited(
+          start(
+            timeout: const Duration(seconds: 5),
+            responder: (cmd) => cmd.first == Cmd.getContacts
+                ? [RadioFrames.contactsStart(3)]
+                : [RadioFrames.ok()],
+          ),
+        );
+        async.flushMicrotasks();
+        Object? error;
+        session.getContacts().catchError((Object e) {
+          error = e;
+          return const ContactSync(contacts: [], total: 0, lastModified: 0);
+        });
+        async.elapse(const Duration(seconds: 11));
+        expect(error, isA<MeshCoreTimeout>());
+      });
+    });
 
     test(
       'firmware older than protocol 3 is refused before any write',

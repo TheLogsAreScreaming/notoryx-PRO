@@ -880,8 +880,9 @@ ContactFrame _contact(ByteReader r, {required bool fromNewAdvert}) {
 SelfInfoFrame _selfInfo(ByteReader r) {
   return SelfInfoFrame(
     advertType: r.u8(),
-    txPower: r.u8(),
-    maxTxPower: r.u8(),
+    // Signed: the firmware allows down to -9 dBm.
+    txPower: r.i8(),
+    maxTxPower: r.i8(),
     publicKey: r.bytes(MeshCoreLimits.publicKey),
     latitude: r.i32() / 1e6,
     longitude: r.i32() / 1e6,

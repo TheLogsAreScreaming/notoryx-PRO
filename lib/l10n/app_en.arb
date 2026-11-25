@@ -3599,5 +3599,6 @@
   "covEraseFailed": "Couldn't erase. Check your connection and try again.",
   "covStopSharing": "Stop sharing",
   "covStopSharingSub": "Nothing more is sent. Readings stay on this phone.",
-  "covOpenMap": "Open the coverage map"
+  "covOpenMap": "Open the coverage map",
+  "contactsFullWarning": "This radio's contact list is full, so it can't add new nodes. Remove some contacts to make room."
 }
