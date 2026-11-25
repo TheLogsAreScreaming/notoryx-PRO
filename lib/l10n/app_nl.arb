@@ -1212,6 +1212,7 @@
   "trafficPath": "Pad",
   "trafficListening": "Luisteren naar pakketten…",
   "trafficHeardFrom": "Gehoord van {name}",
+  "trafficLastHop": "Laatste hop {name}",
   "trafficFlood": "Flood {hops}",
   "trafficDirectRoute": "Direct",
   "trafficNotOnMapCount": "{count} niet op kaart",

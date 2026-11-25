@@ -1212,6 +1212,7 @@
   "trafficPath": "Pfad",
   "trafficListening": "Warte auf Pakete…",
   "trafficHeardFrom": "Gehört von {name}",
+  "trafficLastHop": "Letzter Hop {name}",
   "trafficFlood": "Flutung {hops}",
   "trafficDirectRoute": "Direkt",
   "trafficNotOnMapCount": "{count} nicht auf der Karte",

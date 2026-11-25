@@ -62,7 +62,7 @@ void main() {
     );
     expect(find.text('Solar 1 → Redden → Hidden Hill → Base'), findsOneWidget);
     expect(find.text('Request'), findsOneWidget);
-    expect(find.text('Heard from Hidden Hill · 12.25 dB'), findsOneWidget);
+    expect(find.text('Last hop Hidden Hill · 12.25 dB'), findsOneWidget);
     expect(
       find.text('Flood 2 · -38 dBm · SNR 12.25 · 1 not on map · 3s'),
       findsOneWidget,

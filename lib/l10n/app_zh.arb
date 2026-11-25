@@ -1212,6 +1212,7 @@
   "trafficPath": "路径",
   "trafficListening": "正在收听数据包…",
   "trafficHeardFrom": "收到来自 {name}",
+  "trafficLastHop": "最后一跳 {name}",
   "trafficFlood": "泛洪 {hops}",
   "trafficDirectRoute": "直连",
   "trafficNotOnMapCount": "{count} 个不在地图上",

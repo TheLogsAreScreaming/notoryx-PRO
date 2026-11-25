@@ -1212,6 +1212,7 @@
   "trafficPath": "Väg",
   "trafficListening": "Lyssnar efter paket…",
   "trafficHeardFrom": "Hört från {name}",
+  "trafficLastHop": "Sista hopp {name}",
   "trafficFlood": "Flood {hops}",
   "trafficDirectRoute": "Direkt",
   "trafficNotOnMapCount": "{count} inte på kartan",

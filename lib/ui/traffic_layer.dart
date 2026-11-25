@@ -396,7 +396,10 @@ class TrafficCard extends StatelessWidget {
                     child: Text(
                       [
                         if (r.heardFrom case final h?)
-                          l.trafficHeardFrom(h.label),
+                          // A repeater's SNR is only the last leg.
+                          h.role == StopRole.hop
+                              ? l.trafficLastHop(h.label)
+                              : l.trafficHeardFrom(h.label),
                         if (r.packet.snr case final snr?) '${_num(snr)} dB',
                       ].join(' · '),
                       maxLines: 1,

@@ -1212,6 +1212,7 @@
   "trafficPath": "Шлях",
   "trafficListening": "Очікування пакетів…",
   "trafficHeardFrom": "Почуто від {name}",
+  "trafficLastHop": "Останній перехід {name}",
   "trafficFlood": "Розсилка {hops}",
   "trafficDirectRoute": "Напряму",
   "trafficNotOnMapCount": "Не на карті: {count}",

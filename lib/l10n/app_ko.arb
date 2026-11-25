@@ -1212,6 +1212,7 @@
   "trafficPath": "경로",
   "trafficListening": "패킷을 기다리는 중…",
   "trafficHeardFrom": "{name}에게서 수신",
+  "trafficLastHop": "마지막 홉 {name}",
   "trafficFlood": "퍼뜨림 {hops}",
   "trafficDirectRoute": "직접",
   "trafficNotOnMapCount": "지도에 없음 {count}개",
