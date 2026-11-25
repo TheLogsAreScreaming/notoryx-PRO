@@ -7,7 +7,6 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:geolocator/geolocator.dart';
@@ -17,6 +16,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../l10n/app_localizations.dart';
 import 'no_screenshots.dart';
+import 'secret_clipboard.dart';
 import 'sarneg.dart';
 
 AppLocalizations _t(BuildContext context) => AppLocalizations.of(context);
@@ -170,7 +170,7 @@ class SarnegKeys extends ChangeNotifier {
   Future<void> burn() async {
     _clipboardTimer?.cancel();
     try {
-      await Clipboard.setData(const ClipboardData(text: ''));
+      await clearClipboard();
     } on Exception catch (e) {
       debugPrint('SARNEG: clipboard not cleared (${e.runtimeType})');
     }
@@ -199,32 +199,21 @@ void _snack(BuildContext context, String text) {
 Timer? _clipboardTimer;
 
 /// Copies [value] and shows [message]. After [kSarnegClipboardFor] the
-/// clipboard is cleared, but only if it still holds [value].
+/// clipboard is cleared, unless it now holds something else the person
+/// copied (see [clearClipboardIfStill]).
 Future<void> _copySecret(
   BuildContext context,
   String value,
   String message,
 ) async {
   final t = _t(context);
-  await Clipboard.setData(ClipboardData(text: value));
+  await copySecretText(value);
   _clipboardTimer?.cancel();
   _clipboardTimer = Timer(
     kSarnegClipboardFor,
-    () => unawaited(_clearClipboardIf(value)),
+    () => unawaited(clearClipboardIfStill(value)),
   );
   if (context.mounted) _snack(context, '$message ${t.sarneg_clipboardClears}');
-}
-
-Future<void> _clearClipboardIf(String value) async {
-  try {
-    final now = await Clipboard.getData(Clipboard.kTextPlain);
-    if (now?.text == value) {
-      await Clipboard.setData(const ClipboardData(text: ''));
-    }
-  } on Exception catch (e) {
-    // Never log the text itself.
-    debugPrint('SARNEG: clipboard not cleared (${e.runtimeType})');
-  }
 }
 
 Widget _keysBuilder(Widget Function(BuildContext, SarnegKeys) builder) {
