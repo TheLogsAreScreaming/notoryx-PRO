@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../app/app_controller.dart';
 import 'common.dart';
+import 'support_report_sheet.dart';
 
 /// Where the app's source code is published, as the GPL asks.
 final sourceUrl = Uri.parse(
@@ -69,10 +71,13 @@ Map data (c) OpenStreetMap contributors, available under the Open Database Licen
 
 /// Version, source code, privacy policy and open-source licences.
 class AboutScreen extends StatelessWidget {
-  const AboutScreen({super.key, this.version});
+  const AboutScreen({super.key, this.version, this.app});
 
   /// Replaceable in tests; read from the installed app otherwise.
   final Future<String>? version;
+
+  /// The running app, for the support report. Null hides that row.
+  final AppController? app;
 
   static Future<String> _installed() async {
     final i = await PackageInfo.fromPlatform();
@@ -110,6 +115,14 @@ class AboutScreen extends StatelessWidget {
               title: Text(l.aboutPrivacy),
               onTap: () => launchUrl(privacyUrl),
             ),
+            if (app case final app?)
+              ListTile(
+                key: const Key('about-support'),
+                leading: const Icon(Icons.bug_report_outlined),
+                title: Text(l.supportTitle),
+                subtitle: Text(l.supportRow),
+                onTap: () => showSupportReport(context, app, snap.data ?? '?'),
+              ),
             ListTile(
               key: const Key('about-licences'),
               leading: const Icon(Icons.gavel_outlined),
