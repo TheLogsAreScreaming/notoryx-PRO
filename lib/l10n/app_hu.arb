@@ -1212,6 +1212,7 @@
   "trafficPath": "Útvonal",
   "trafficListening": "Csomagok figyelése…",
   "trafficHeardFrom": "Hallva innen: {name}",
+  "trafficLastHop": "Utolsó ugrás {name}",
   "trafficFlood": "Elárasztás {hops}",
   "trafficDirectRoute": "Közvetlen",
   "trafficNotOnMapCount": "{count} nincs a térképen",

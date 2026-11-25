@@ -1212,6 +1212,7 @@
   "trafficPath": "Cesta",
   "trafficListening": "Čakám na pakety…",
   "trafficHeardFrom": "Počuté od {name}",
+  "trafficLastHop": "Posledný skok {name}",
   "trafficFlood": "Rozoslanie {hops}",
   "trafficDirectRoute": "Priamo",
   "trafficNotOnMapCount": "{count} mimo mapy",

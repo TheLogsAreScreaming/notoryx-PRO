@@ -1212,6 +1212,7 @@
   "trafficPath": "経路",
   "trafficListening": "パケットを待っています…",
   "trafficHeardFrom": "{name} から受信",
+  "trafficLastHop": "最終ホップ {name}",
   "trafficFlood": "フラッド {hops}",
   "trafficDirectRoute": "直接",
   "trafficNotOnMapCount": "{count} 件が地図外",

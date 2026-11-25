@@ -1212,6 +1212,7 @@
   "trafficPath": "Път",
   "trafficListening": "Слушане за пакети…",
   "trafficHeardFrom": "Чуто от {name}",
+  "trafficLastHop": "Последен скок {name}",
   "trafficFlood": "Разпращане {hops}",
   "trafficDirectRoute": "Директно",
   "trafficNotOnMapCount": "{count} не са на картата",

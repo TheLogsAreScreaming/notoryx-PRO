@@ -1212,6 +1212,7 @@
   "trafficPath": "Pot",
   "trafficListening": "Poslušam pakete…",
   "trafficHeardFrom": "Slišano od {name}",
+  "trafficLastHop": "Zadnji skok {name}",
   "trafficFlood": "Razpošiljanje {hops}",
   "trafficDirectRoute": "Neposredno",
   "trafficNotOnMapCount": "{count} ni na zemljevidu",

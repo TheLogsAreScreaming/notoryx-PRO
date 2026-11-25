@@ -3017,6 +3017,8 @@
       }
     }
   },
+  "trafficLastHop": "Last hop {name}",
+  "@trafficLastHop": {"placeholders": {"name": {"type": "String"}}},
   "trafficFlood": "Flood {hops}",
   "@trafficFlood": {
     "placeholders": {
