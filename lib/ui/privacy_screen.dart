@@ -6,6 +6,34 @@ import '../store/database_vault.dart';
 import 'common.dart';
 import 'list_insets.dart';
 
+/// What the privacy page shows, worked out from the app's state.
+@immutable
+class PrivacyFacts {
+  const PrivacyFacts({
+    this.coverageSharing = false,
+    this.feeds = 0,
+    this.bridges = 0,
+    this.moderation = false,
+    this.webhooks = false,
+    this.encrypted,
+    this.appLock = false,
+  });
+
+  final bool coverageSharing;
+
+  /// MQTT feeds set up.
+  final int feeds;
+
+  /// Bridged conversation pairs.
+  final int bridges;
+  final bool moderation;
+  final bool webhooks;
+
+  /// Null where saved messages can't be encrypted.
+  final bool? encrypted;
+  final bool appLock;
+}
+
 /// One page that says what can leave this phone, and whether it's on.
 ///
 /// Read-only: each row names where to change it. Everything is worked out
@@ -20,106 +48,120 @@ class PrivacyScreen extends StatelessWidget {
   final DatabaseVault? vault;
 
   @override
+  Widget build(BuildContext context) => ListenableBuilder(
+    listenable: Listenable.merge([
+      app.coverage,
+      app.feeds,
+      app.bridge,
+      app.sentinel,
+      app.automations,
+    ]),
+    builder: (context, _) => StreamBuilder<String?>(
+      stream: app.store.watchPreference(LockSettings.prefName),
+      builder: (context, lockSnap) => PrivacyView(
+        PrivacyFacts(
+          coverageSharing: app.coverage.sharing,
+          feeds: app.feeds.feeds.length,
+          bridges: app.bridge.links.length,
+          moderation: app.sentinel.enabled,
+          webhooks: app.automations.settings.webhooks,
+          encrypted: vault?.encrypted,
+          appLock: LockSettings.decode(lockSnap.data).on,
+        ),
+      ),
+    ),
+  );
+}
+
+/// The privacy page for given [facts].
+class PrivacyView extends StatelessWidget {
+  const PrivacyView(this.facts, {super.key});
+
+  final PrivacyFacts facts;
+
+  @override
   Widget build(BuildContext context) {
     final l = context.l10n;
     return Scaffold(
       appBar: AppBar(title: Text(l.privacyTitle)),
-      body: ListenableBuilder(
-        listenable: Listenable.merge([
-          app.coverage,
-          app.feeds,
-          app.bridge,
-          app.sentinel,
-          app.automations,
-        ]),
-        builder: (context, _) => StreamBuilder<String?>(
-          stream: app.store.watchPreference(LockSettings.prefName),
-          builder: (context, lockSnap) {
-            final lockOn = LockSettings.decode(lockSnap.data).on;
-            final feeds = app.feeds.feeds.length;
-            final bridges = app.bridge.links.length;
-            final encrypted = vault?.encrypted;
-            return ListView(
-              padding: withBottomInset(context, EdgeInsets.zero),
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                  child: Text(l.privacyIntro),
-                ),
-                _Header(l.privacyLeavesHeader),
-                _Row(
-                  key: const Key('privacy-coverage'),
-                  icon: Icons.hexagon_outlined,
-                  title: l.privacyCoverage,
-                  on: app.coverage.sharing,
-                  detail: app.coverage.sharing
-                      ? l.privacyCoverageOn
-                      : l.privacyCoverageOff,
-                ),
-                _Row(
-                  key: const Key('privacy-feeds'),
-                  icon: Icons.rss_feed,
-                  title: l.privacyFeeds,
-                  on: feeds > 0,
-                  state: feeds > 0 ? '$feeds' : null,
-                  detail: l.privacyFeedsDetail,
-                ),
-                _Row(
-                  key: const Key('privacy-bridge'),
-                  icon: Icons.compare_arrows,
-                  title: l.privacyBridge,
-                  on: bridges > 0,
-                  state: bridges > 0 ? '$bridges' : null,
-                  detail: l.privacyBridgeDetail,
-                ),
-                _Row(
-                  key: const Key('privacy-moderation'),
-                  icon: Icons.shield_outlined,
-                  title: l.privacyModeration,
-                  on: app.sentinel.enabled,
-                  detail: l.privacyModerationDetail,
-                ),
-                _Row(
-                  key: const Key('privacy-webhooks'),
-                  icon: Icons.webhook,
-                  title: l.privacyWebhooks,
-                  on: app.automations.settings.webhooks,
-                  detail: l.privacyWebhooksDetail,
-                ),
-                _Row(
-                  key: const Key('privacy-tiles'),
-                  icon: Icons.map_outlined,
-                  title: l.privacyTiles,
-                  state: l.privacyAlways,
-                  detail: l.privacyTilesDetail,
-                ),
-                _Header(l.privacyPhoneHeader),
-                _Row(
-                  key: const Key('privacy-encryption'),
-                  icon: Icons.lock_outline,
-                  title: l.encryptTitle,
-                  on: encrypted ?? false,
-                  state: encrypted == null ? l.privacyNotHere : null,
-                  detail: l.privacyEncryptionDetail,
-                ),
-                _Row(
-                  key: const Key('privacy-lock'),
-                  icon: Icons.fingerprint,
-                  title: l.lockTitle,
-                  on: lockOn,
-                  detail: l.privacyLockDetail,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    l.privacyFooter,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
+      body: ListView(
+        padding: withBottomInset(context, EdgeInsets.zero),
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Text(l.privacyIntro),
+          ),
+          _Header(l.privacyLeavesHeader),
+          _Row(
+            key: const Key('privacy-coverage'),
+            icon: Icons.hexagon_outlined,
+            title: l.privacyCoverage,
+            on: facts.coverageSharing,
+            detail: facts.coverageSharing
+                ? l.privacyCoverageOn
+                : l.privacyCoverageOff,
+          ),
+          _Row(
+            key: const Key('privacy-feeds'),
+            icon: Icons.rss_feed,
+            title: l.privacyFeeds,
+            on: facts.feeds > 0,
+            state: facts.feeds > 0 ? '${facts.feeds}' : null,
+            detail: l.privacyFeedsDetail,
+          ),
+          _Row(
+            key: const Key('privacy-bridge'),
+            icon: Icons.compare_arrows,
+            title: l.privacyBridge,
+            on: facts.bridges > 0,
+            state: facts.bridges > 0 ? '${facts.bridges}' : null,
+            detail: l.privacyBridgeDetail,
+          ),
+          _Row(
+            key: const Key('privacy-moderation'),
+            icon: Icons.shield_outlined,
+            title: l.privacyModeration,
+            on: facts.moderation,
+            detail: l.privacyModerationDetail,
+          ),
+          _Row(
+            key: const Key('privacy-webhooks'),
+            icon: Icons.webhook,
+            title: l.privacyWebhooks,
+            on: facts.webhooks,
+            detail: l.privacyWebhooksDetail,
+          ),
+          _Row(
+            key: const Key('privacy-tiles'),
+            icon: Icons.map_outlined,
+            title: l.privacyTiles,
+            state: l.privacyAlways,
+            detail: l.privacyTilesDetail,
+          ),
+          _Header(l.privacyPhoneHeader),
+          _Row(
+            key: const Key('privacy-encryption'),
+            icon: Icons.lock_outline,
+            title: l.encryptTitle,
+            on: facts.encrypted ?? false,
+            state: facts.encrypted == null ? l.privacyNotHere : null,
+            detail: l.privacyEncryptionDetail,
+          ),
+          _Row(
+            key: const Key('privacy-lock'),
+            icon: Icons.fingerprint,
+            title: l.lockTitle,
+            on: facts.appLock,
+            detail: l.privacyLockDetail,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              l.privacyFooter,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+        ],
       ),
     );
   }

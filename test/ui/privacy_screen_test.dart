@@ -1,83 +1,98 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:notoryx_pro/app/app_controller.dart';
-import 'package:notoryx_pro/app/app_lock.dart';
 import 'package:notoryx_pro/l10n/app_localizations.dart';
-import 'package:notoryx_pro/store/mesh_store.dart';
 import 'package:notoryx_pro/ui/privacy_screen.dart';
 
-/// Lets the store's streams deliver, then draws. Not pumpAndSettle: the
-/// services this page listens to keep timers running, so it never settles.
-Future<void> settle(WidgetTester t) async {
-  for (var i = 0; i < 3; i++) {
-    await t.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 20)),
-    );
-    await t.pump(const Duration(milliseconds: 50));
-  }
+Future<void> show(
+  WidgetTester t,
+  PrivacyFacts facts, {
+  Locale? locale,
+  double width = 420,
+}) async {
+  t.view.physicalSize = Size(width, 3000);
+  t.view.devicePixelRatio = 1;
+  addTearDown(t.view.reset);
+  await t.pumpWidget(
+    MaterialApp(
+      locale: locale,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: PrivacyView(facts),
+    ),
+  );
+  await t.pumpAndSettle();
+}
+
+/// The On / Off / count text at the end of a row.
+String stateOf(WidgetTester t, String key) {
+  final row = find.descendant(
+    of: find.byKey(Key(key)),
+    matching: find.byType(ListTile),
+  );
+  expect(row, findsOneWidget, reason: key);
+  return (t.widget<ListTile>(row).trailing! as Text).data!;
 }
 
 void main() {
-  testWidgets(
-    'a fresh install shares nothing, and says so in words',
-    timeout: const Timeout(Duration(minutes: 2)),
-    (t) async {
-      t.view.physicalSize = const Size(420, 2400);
-      t.view.devicePixelRatio = 1;
-      addTearDown(t.view.reset);
-      final store = MeshStore.memory();
-      final app = AppController(store: store);
-      await t.pumpWidget(
-        MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: PrivacyScreen(app: app),
-        ),
-      );
-      await settle(t);
+  testWidgets('a fresh install shares nothing, and says so in words', (
+    t,
+  ) async {
+    await show(t, const PrivacyFacts());
+    expect(find.text('Privacy'), findsOneWidget);
+    for (final k in [
+      'privacy-coverage',
+      'privacy-feeds',
+      'privacy-bridge',
+      'privacy-moderation',
+      'privacy-webhooks',
+      'privacy-lock',
+    ]) {
+      expect(stateOf(t, k), 'Off', reason: k);
+    }
+    expect(stateOf(t, 'privacy-tiles'), 'Always');
+    // No vault: encryption isn't available on this device.
+    expect(stateOf(t, 'privacy-encryption'), 'Not on this device');
+    expect(
+      find.text('Off: coverage readings stay on this phone.'),
+      findsOneWidget,
+    );
+  });
 
-      String stateOf(String key) {
-        final row = find.descendant(
-          of: find.byKey(Key(key)),
-          matching: find.byType(ListTile),
-        );
-        expect(row, findsOneWidget, reason: key);
-        final tile = t.widget<ListTile>(row);
-        return (tile.trailing! as Text).data!;
-      }
+  testWidgets('what is on shows as On or as a count', (t) async {
+    await show(
+      t,
+      const PrivacyFacts(
+        coverageSharing: true,
+        feeds: 2,
+        bridges: 1,
+        moderation: true,
+        webhooks: true,
+        encrypted: true,
+        appLock: true,
+      ),
+    );
+    expect(stateOf(t, 'privacy-coverage'), 'On');
+    expect(stateOf(t, 'privacy-feeds'), '2');
+    expect(stateOf(t, 'privacy-bridge'), '1');
+    expect(stateOf(t, 'privacy-moderation'), 'On');
+    expect(stateOf(t, 'privacy-webhooks'), 'On');
+    expect(stateOf(t, 'privacy-encryption'), 'On');
+    expect(stateOf(t, 'privacy-lock'), 'On');
+    expect(
+      find.textContaining('upload to the NOTORYX coverage map'),
+      findsOneWidget,
+    );
+  });
 
-      expect(find.text('Privacy'), findsOneWidget);
-      for (final k in [
-        'privacy-coverage',
-        'privacy-moderation',
-        'privacy-webhooks',
-        'privacy-lock',
-      ]) {
-        expect(stateOf(k), 'Off', reason: k);
-      }
-      expect(stateOf('privacy-feeds'), 'Off');
-      expect(stateOf('privacy-bridge'), 'Off');
-      expect(stateOf('privacy-tiles'), 'Always');
-      // No vault in tests: encryption isn't available here.
-      expect(stateOf('privacy-encryption'), 'Not on this device');
-
-      // Turning App lock on shows straight away.
-      await t.runAsync(
-        () => store.setPreference(
-          LockSettings.prefName,
-          const LockSettings(on: true).encode(),
-        ),
-      );
-      await settle(t);
-      expect(stateOf('privacy-lock'), 'On');
-
-      // Unmount first, so no drift stream is open while the store closes.
-      await t.pumpWidget(const SizedBox());
-      await t.pump(const Duration(seconds: 1));
-      await t.runAsync(() async {
-        await app.shutdown();
-        await store.close();
-      });
-    },
-  );
+  testWidgets('long German text fits a narrow phone', (t) async {
+    await show(
+      t,
+      const PrivacyFacts(encrypted: false),
+      locale: const Locale('de'),
+      width: 320,
+    );
+    expect(t.takeException(), isNull);
+    expect(find.text('Datenschutz'), findsOneWidget);
+    expect(stateOf(t, 'privacy-encryption'), 'Aus');
+  });
 }
