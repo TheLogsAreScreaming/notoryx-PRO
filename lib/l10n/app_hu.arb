@@ -206,6 +206,7 @@
   "trustKeyChanged": "A kulcs megváltozott: ellenőrizd újra",
   "trustVerifiedSender": "Ellenőrzött feladó",
   "nameClash": "Egy másik node is ezt a nevet használja",
+  "nameLookalike": "A név hasonlít erre: {name}, egy megbízható node. Ellenőrizd, mielőtt cselekszel.",
   "channelNotProven": "A csatornaüzenetek nem igazolják, ki küldte őket.",
   "scanTitle": "Névjegykód beolvasása",
   "settings": "Beállítások",

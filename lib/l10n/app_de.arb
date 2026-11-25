@@ -206,6 +206,7 @@
   "trustKeyChanged": "Schlüssel geändert: erneut verifizieren",
   "trustVerifiedSender": "Verifizierter Absender",
   "nameClash": "Ein anderer Knoten verwendet diesen Namen",
+  "nameLookalike": "Der Name ähnelt {name}, einem Knoten, dem du vertraust. Prüfe das, bevor du handelst.",
   "channelNotProven": "Kanalbeiträge können nicht beweisen, wer sie gesendet hat.",
   "scanTitle": "Kontaktcode scannen",
   "settings": "Einstellungen",

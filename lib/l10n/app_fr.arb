@@ -206,6 +206,7 @@
   "trustKeyChanged": "Clé modifiée : vérifiez à nouveau",
   "trustVerifiedSender": "Expéditeur vérifié",
   "nameClash": "Un autre nœud utilise ce nom",
+  "nameLookalike": "Ce nom ressemble à {name}, un nœud de confiance. Vérifiez avant d'agir.",
   "channelNotProven": "Les messages de canal ne peuvent pas prouver qui les a envoyés.",
   "scanTitle": "Scanner un code de contact",
   "settings": "Réglages",

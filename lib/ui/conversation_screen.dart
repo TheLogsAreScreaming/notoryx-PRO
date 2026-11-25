@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import '../app/app_controller.dart';
 import '../app/radio_connection.dart';
 import '../app/sentinel.dart';
+import '../app/trusted_nodes.dart';
 import '../mesh/diagnostics.dart';
 import '../mesh/identity.dart';
+import '../mesh/lookalike.dart';
 import '../mesh/mecp.dart';
 import '../mesh/model.dart';
 import '../radio/radio.dart';
@@ -54,6 +56,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
     conversation,
   );
   late final Stream<List<Node>> _nodes = app.store.watchAllNodes();
+  late final Stream<TrustState> _trust = TrustedNodes.watch(app.store);
   late final Stream<Map<NodeKey, Verification>> _verifications = app.store
       .watchVerifications();
 
@@ -293,17 +296,31 @@ class _ConversationScreenState extends State<ConversationScreen> {
                               nameClashes(nodes.values)[conversation.radioId] ??
                               const <String>{};
                           final verified = vSnap.data ?? const {};
-                          return ListenableBuilder(
-                            listenable: app.sentinel,
-                            builder: (context, _) => _list(
-                              [
-                                for (final s in messages)
-                                  if (!app.sentinel.hides(s.message)) s,
-                              ],
-                              nodes,
-                              clashes,
-                              verified,
-                            ),
+                          final favorites = favoriteKeys(
+                            nodeSnap.data ?? const <Node>[],
+                          );
+                          return StreamBuilder<TrustState>(
+                            stream: _trust,
+                            builder: (context, tSnap) {
+                              final trust = tSnap.data ?? const TrustState();
+                              bool trusted(Node n) =>
+                                  trust.trusts(n, favorites: favorites) ||
+                                  trustOf(n, verified[n.key]) ==
+                                      TrustStatus.verified;
+                              return ListenableBuilder(
+                                listenable: app.sentinel,
+                                builder: (context, _) => _list(
+                                  [
+                                    for (final s in messages)
+                                      if (!app.sentinel.hides(s.message)) s,
+                                  ],
+                                  nodes,
+                                  clashes,
+                                  verified,
+                                  trusted,
+                                ),
+                              );
+                            },
                           );
                         },
                       ),
@@ -331,6 +348,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
     Map<NodeKey, Node> nodes,
     Set<String> clashes,
     Map<NodeKey, Verification> verified,
+    bool Function(Node) trusted,
   ) => ListView.builder(
     reverse: true,
     padding: const EdgeInsets.symmetric(vertical: 8),
@@ -348,6 +366,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
           !m.outgoing &&
           label != null &&
           clashes.contains(label.trim().toLowerCase());
+      final imitated = m.outgoing || sender == null || clash
+          ? null
+          : Lookalike.imitated(sender, nodes.values, trusted);
       return ListenableBuilder(
         listenable: app,
         builder: (context, _) {
@@ -358,6 +379,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
             flagged: app.sentinel.banForMessage(m),
             verifiedSender: verifiedSender,
             nameClash: clash,
+            lookalikeOf: imitated?.displayName,
             onResend: c == null ? null : () => c.resend(stored.id),
             onTap: () => _details(m),
             onLongPress: () => _messageActions(stored),
@@ -380,6 +402,7 @@ class MessageBubble extends StatelessWidget {
     this.flagged,
     this.verifiedSender = false,
     this.nameClash = false,
+    this.lookalikeOf,
   });
 
   final Message message;
@@ -395,6 +418,9 @@ class MessageBubble extends StatelessWidget {
 
   /// Another node on this mesh uses the same name.
   final bool nameClash;
+
+  /// The name of a trusted node this sender's name looks like, if any.
+  final String? lookalikeOf;
 
   /// Opens details; defaults to the path card without hints.
   final VoidCallback? onTap;
@@ -446,7 +472,7 @@ class MessageBubble extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 2),
                     child: SentinelFlag(ban),
                   ),
-                if (verifiedSender || nameClash)
+                if (verifiedSender || nameClash || lookalikeOf != null)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 2),
                     child: Row(
@@ -460,9 +486,13 @@ class MessageBubble extends StatelessWidget {
                         const SizedBox(width: 4),
                         Flexible(
                           child: Text(
-                            verifiedSender
-                                ? context.l10n.trustVerifiedSender
-                                : '${context.l10n.nameClash}. ${m.conversation is ChannelConversation ? context.l10n.channelNotProven : ''}',
+                            switch ((verifiedSender, lookalikeOf)) {
+                              (true, _) => context.l10n.trustVerifiedSender,
+                              (false, final String other) =>
+                                context.l10n.nameLookalike(other),
+                              _ =>
+                                '${context.l10n.nameClash}. ${m.conversation is ChannelConversation ? context.l10n.channelNotProven : ''}',
+                            },
                             style: text.labelSmall?.copyWith(
                               color: verifiedSender
                                   ? scheme.primary

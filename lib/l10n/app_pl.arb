@@ -206,6 +206,7 @@
   "trustKeyChanged": "Klucz się zmienił: zweryfikuj ponownie",
   "trustVerifiedSender": "Zweryfikowany nadawca",
   "nameClash": "Inny węzeł używa tej nazwy",
+  "nameLookalike": "Nazwa przypomina {name}, zaufany węzeł. Sprawdź, zanim zareagujesz.",
   "channelNotProven": "Wpisy na kanale nie potwierdzają, kto je wysłał.",
   "scanTitle": "Zeskanuj kod kontaktu",
   "settings": "Ustawienia",

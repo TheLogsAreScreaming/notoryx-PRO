@@ -206,6 +206,7 @@
   "trustKeyChanged": "Chiave cambiata: verifica di nuovo",
   "trustVerifiedSender": "Mittente verificato",
   "nameClash": "Un altro nodo usa questo nome",
+  "nameLookalike": "Il nome somiglia a {name}, un nodo di cui ti fidi. Controlla prima di agire.",
   "channelNotProven": "I messaggi di canale non possono provare chi li ha inviati.",
   "scanTitle": "Scansiona un codice contatto",
   "settings": "Impostazioni",

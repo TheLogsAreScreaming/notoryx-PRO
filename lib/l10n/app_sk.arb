@@ -206,6 +206,7 @@
   "trustKeyChanged": "Kľúč sa zmenil: over znova",
   "trustVerifiedSender": "Overený odosielateľ",
   "nameClash": "Toto meno používa aj iný uzol",
+  "nameLookalike": "Meno sa podobá na {name}, uzol, ktorému dôveruješ. Over si to, kým budeš konať.",
   "channelNotProven": "Pri príspevkoch v kanáli sa nedá dokázať, kto ich poslal.",
   "scanTitle": "Naskenovať kontaktný kód",
   "settings": "Nastavenia",

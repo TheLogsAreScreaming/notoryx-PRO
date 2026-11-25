@@ -206,6 +206,7 @@
   "trustKeyChanged": "Sleutel gewijzigd: opnieuw verifiëren",
   "trustVerifiedSender": "Geverifieerde afzender",
   "nameClash": "Een andere node gebruikt deze naam",
+  "nameLookalike": "Naam lijkt op {name}, een node die je vertrouwt. Controleer dit voordat je iets doet.",
   "channelNotProven": "Kanaalberichten kunnen niet bewijzen wie ze stuurde.",
   "scanTitle": "Contactcode scannen",
   "settings": "Instellingen",
