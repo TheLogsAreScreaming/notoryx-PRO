@@ -194,6 +194,67 @@ void main() {
     },
   );
 
+  test(
+    'sent reports show their review state, asked on the right network',
+    () async {
+      var state = 'under_review';
+      respond = (req) {
+        if (req.method == 'POST' && req.url.path.endsWith('/reports')) {
+          return json(201, {'caseRef': 'SNT-1001'});
+        }
+        if (req.url.path == '/v1/meshcore/reports/ref-1') {
+          return json(200, {'ref': 'ref-1', 'state': state});
+        }
+        if (req.url.path.contains('/reports/')) {
+          return json(404, {'error': 'Report not found'});
+        }
+        return json(200, decisions(const []));
+      };
+      final s = make();
+      await s.start();
+      await s.setEnabled(true);
+      await s.report(
+        network: RadioProtocol.meshcore,
+        nodeId: _coreKey,
+        reason: SentinelReason.spam,
+      );
+      expect(s.sentReports.single.state, SentinelReportState.underReview);
+      expect(s.sentReports.single.network, RadioProtocol.meshcore);
+
+      state = 'closed';
+      await s.checkReportStatus(force: true);
+      expect(s.sentReports.single.state, SentinelReportState.closed);
+      expect(
+        requests.last.url.toString(),
+        'https://relay.test/v1/meshcore/reports/ref-1',
+      );
+
+      // Closed reports are not asked about again; the state survives a restart.
+      requests.clear();
+      await s.checkReportStatus(force: true);
+      expect(requests, isEmpty);
+      s.dispose();
+      final again = make();
+      await again.start();
+      expect(again.sentReports.single.state, SentinelReportState.closed);
+      again.dispose();
+    },
+  );
+
+  test('reports saved by older versions load and are not looked up', () async {
+    prefs[SentinelService.prefSent] = jsonEncode([
+      {'caseRef': 'SNT-1000', 'nodeName': 'Old', 'at': '2026-11-13T10:00:00Z'},
+    ]);
+    final s = make();
+    await s.start();
+    await s.setEnabled(true);
+    expect(s.sentReports.single.caseRef, 'SNT-1000');
+    expect(s.sentReports.single.state, isNull);
+    await s.checkReportStatus(force: true);
+    expect(requests.where((r) => r.url.path.contains('/reports/')), isEmpty);
+    s.dispose();
+  });
+
   test('400 is dropped; 429 and 5xx are queued', () async {
     var status = 400;
     respond = (req) => req.url.path.endsWith('/reports')

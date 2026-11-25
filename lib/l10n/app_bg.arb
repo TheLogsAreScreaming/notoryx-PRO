@@ -1053,6 +1053,8 @@
   "sntAppeal": "Обжалвай",
   "sntAppealOther": "Обжалвай случай по номер",
   "sntYourReports": "Твоите последни доклади",
+  "sntStateReview": "Преглежда се от модераторите",
+  "sntStateClosed": "Затворен от модераторите",
   "sntReport": "Докладвай на модераторите",
   "sntReportTitle": "Докладвай {name}",
   "sntReasonSpam": "Спам или реклама",

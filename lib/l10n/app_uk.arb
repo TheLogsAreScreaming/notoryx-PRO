@@ -1053,6 +1053,8 @@
   "sntAppeal": "Оскаржити",
   "sntAppealOther": "Оскаржити справу за номером",
   "sntYourReports": "Ваші останні скарги",
+  "sntStateReview": "На розгляді в модераторів",
+  "sntStateClosed": "Закрито модераторами",
   "sntReport": "Поскаржитися модераторам",
   "sntReportTitle": "Скарга на {name}",
   "sntReasonSpam": "Спам або реклама",

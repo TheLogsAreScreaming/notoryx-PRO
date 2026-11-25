@@ -1053,6 +1053,8 @@
   "sntAppeal": "Odvolať sa",
   "sntAppealOther": "Odvolať sa v prípade podľa čísla",
   "sntYourReports": "Tvoje nedávne hlásenia",
+  "sntStateReview": "Moderátori to posudzujú",
+  "sntStateClosed": "Uzavreté moderátormi",
   "sntReport": "Nahlásiť moderátorom",
   "sntReportTitle": "Nahlásiť {name}",
   "sntReasonSpam": "Spam alebo reklama",

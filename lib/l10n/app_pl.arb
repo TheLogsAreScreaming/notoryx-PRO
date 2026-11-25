@@ -1053,6 +1053,8 @@
   "sntAppeal": "Odwołaj się",
   "sntAppealOther": "Odwołaj się w sprawie o numerze",
   "sntYourReports": "Twoje ostatnie zgłoszenia",
+  "sntStateReview": "W trakcie sprawdzania przez moderatorów",
+  "sntStateClosed": "Zamknięte przez moderatorów",
   "sntReport": "Zgłoś moderatorom",
   "sntReportTitle": "Zgłoś {name}",
   "sntReasonSpam": "Spam lub reklama",

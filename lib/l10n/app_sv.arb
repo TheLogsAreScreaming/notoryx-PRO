@@ -1053,6 +1053,8 @@
   "sntAppeal": "Överklaga",
   "sntAppealOther": "Överklaga ett ärende via nummer",
   "sntYourReports": "Dina senaste anmälningar",
+  "sntStateReview": "Granskas av moderatorer",
+  "sntStateClosed": "Avslutad av moderatorer",
   "sntReport": "Anmäl till moderatorer",
   "sntReportTitle": "Anmäl {name}",
   "sntReasonSpam": "Spam eller reklam",
