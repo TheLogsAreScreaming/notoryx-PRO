@@ -991,7 +991,7 @@
   "autoTplDriving": "Sur la route, je ne peux pas répondre. Je répondrai à mon arrêt.",
   "lockTitle": "Verrouillage de l'appli",
   "lockOn": "Exiger empreinte, visage ou code",
-  "lockHelp": "Couvre l'appli jusqu'à ce que vous la déverrouilliez. Les radios, balises et messages programmés continuent. Les notifications peuvent encore afficher le texte des messages sur l'écran de verrouillage. Les messages enregistrés ne sont chiffrés que si vous l'activez ci-dessous.",
+  "lockHelp": "Couvre l'appli jusqu'à ce que vous la déverrouilliez. Les radios, balises et messages programmés continuent. Les notifications peuvent encore afficher le texte des messages sur l'écran de verrouillage.",
   "lockReason": "Déverrouiller NOTORYX PRO",
   "lockLocked": "NOTORYX PRO est verrouillée",
   "lockUnlock": "Déverrouiller",

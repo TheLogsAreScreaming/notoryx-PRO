@@ -585,7 +585,7 @@ class _HomeShellState extends State<HomeShell> {
   Widget _tabBody(int tab) => switch (tab) {
     0 => InboxScreen(app: widget.app),
     1 => NodesScreen(app: widget.app),
-    _ => RadiosScreen(app: widget.app),
+    _ => RadiosScreen(app: widget.app, tiles: widget.tiles),
   };
 }
 

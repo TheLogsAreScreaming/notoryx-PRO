@@ -991,7 +991,7 @@
   "autoTplDriving": "Úton vagyok, nem tudok válaszolni. Válaszolok, ha megálltam.",
   "lockTitle": "Alkalmazászár",
   "lockOn": "Ujjlenyomat, arc vagy kód kérése",
-  "lockHelp": "Eltakarja az appot, amíg fel nem oldod. A rádiók, jeladók és időzített üzenetek tovább futnak. Az értesítések a zárolási képernyőn továbbra is mutathatnak üzenetszöveget. A mentett üzenetek csak akkor titkosítottak, ha ezt lent bekapcsolod.",
+  "lockHelp": "Eltakarja az appot, amíg fel nem oldod. A rádiók, jeladók és időzített üzenetek tovább futnak. Az értesítések a zárolási képernyőn továbbra is mutathatnak üzenetszöveget.",
   "lockReason": "NOTORYX PRO feloldása",
   "lockLocked": "A NOTORYX PRO zárolva van",
   "lockUnlock": "Feloldás",

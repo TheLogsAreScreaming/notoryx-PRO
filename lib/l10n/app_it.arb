@@ -991,7 +991,7 @@
   "autoTplDriving": "Sono in viaggio e non posso rispondere. Risponderò quando mi fermo.",
   "lockTitle": "Blocco app",
   "lockOn": "Richiedi impronta, volto o codice",
-  "lockHelp": "Copre l'app finché non la sblocchi. Radio, segnali di soccorso e messaggi programmati continuano a funzionare. Le notifiche possono ancora mostrare il testo dei messaggi sulla schermata di blocco. I messaggi salvati sono cifrati solo se lo attivi qui sotto.",
+  "lockHelp": "Copre l'app finché non la sblocchi. Radio, segnali di soccorso e messaggi programmati continuano a funzionare. Le notifiche possono ancora mostrare il testo dei messaggi sulla schermata di blocco.",
   "lockReason": "Sblocca NOTORYX PRO",
   "lockLocked": "NOTORYX PRO è bloccata",
   "lockUnlock": "Sblocca",

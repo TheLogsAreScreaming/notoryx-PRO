@@ -991,7 +991,7 @@
   "autoTplDriving": "Som na ceste a nemôžem odpovedať. Odpoviem, keď zastavím.",
   "lockTitle": "Zámok aplikácie",
   "lockOn": "Vyžadovať odtlačok prsta, tvár alebo kód",
-  "lockHelp": "Zakryje aplikáciu, kým ju neodomkneš. Rádiá, majáky a naplánované správy fungujú ďalej. Upozornenia môžu stále zobraziť text správy na zamknutej obrazovke. Uložené správy sú šifrované, len ak to zapneš nižšie.",
+  "lockHelp": "Zakryje aplikáciu, kým ju neodomkneš. Rádiá, majáky a naplánované správy fungujú ďalej. Upozornenia môžu stále zobraziť text správy na zamknutej obrazovke.",
   "lockReason": "Odomknúť NOTORYX PRO",
   "lockLocked": "NOTORYX PRO je zamknutý",
   "lockUnlock": "Odomknúť",

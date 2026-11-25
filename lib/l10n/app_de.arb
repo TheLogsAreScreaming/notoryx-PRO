@@ -991,7 +991,7 @@
   "autoTplDriving": "Unterwegs und kann nicht antworten. Ich melde mich, wenn ich anhalte.",
   "lockTitle": "App-Sperre",
   "lockOn": "Fingerabdruck, Gesicht oder Code verlangen",
-  "lockHelp": "Verdeckt die App, bis du sie entsperrst. Funkgeräte, Notsignale und geplante Nachrichten laufen weiter. Benachrichtigungen können weiterhin Nachrichtentext auf dem Sperrbildschirm zeigen. Gespeicherte Nachrichten sind nur verschlüsselt, wenn du das unten einschaltest.",
+  "lockHelp": "Verdeckt die App, bis du sie entsperrst. Funkgeräte, Notsignale und geplante Nachrichten laufen weiter. Benachrichtigungen können weiterhin Nachrichtentext auf dem Sperrbildschirm zeigen.",
   "lockReason": "NOTORYX PRO entsperren",
   "lockLocked": "NOTORYX PRO ist gesperrt",
   "lockUnlock": "Entsperren",

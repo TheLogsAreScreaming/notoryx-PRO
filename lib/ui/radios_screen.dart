@@ -13,6 +13,7 @@ import 'auto_reply_screen.dart';
 import 'automations_screen.dart';
 import 'common.dart';
 import 'demo_screen.dart';
+import 'map_tiles.dart';
 import 'connection_log_sheet.dart';
 import 'diagnostics_screen.dart';
 import 'nearby_sheet.dart';
@@ -24,9 +25,12 @@ import 'list_insets.dart';
 
 /// Connected radios, and ways to connect more: Bluetooth, Wi-Fi and USB.
 class RadiosScreen extends StatelessWidget {
-  const RadiosScreen({super.key, required this.app});
+  const RadiosScreen({super.key, required this.app, this.tiles});
 
   final AppController app;
+
+  /// Map tiles, handed on to the demo so its map isn't blank.
+  final MapTiles? tiles;
 
   @override
   Widget build(BuildContext context) {
@@ -98,9 +102,9 @@ class RadiosScreen extends StatelessWidget {
             key: const Key('demo-open'),
             icon: const Icon(Icons.play_circle_outline),
             label: Text(l.demoOpen),
-            onPressed: () => Navigator.of(
-              context,
-            ).push(MaterialPageRoute<void>(builder: (_) => const DemoScreen())),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => DemoScreen(tiles: tiles)),
+            ),
           ),
           TextButton.icon(
             key: const Key('auto-reply-open'),
