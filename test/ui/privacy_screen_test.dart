@@ -7,6 +7,17 @@ import 'package:notoryx_pro/l10n/app_localizations.dart';
 import 'package:notoryx_pro/store/mesh_store.dart';
 import 'package:notoryx_pro/ui/privacy_screen.dart';
 
+/// Lets the store's streams deliver, then draws. Not pumpAndSettle: the
+/// services this page listens to keep timers running, so it never settles.
+Future<void> settle(WidgetTester t) async {
+  for (var i = 0; i < 3; i++) {
+    await t.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 20)),
+    );
+    await t.pump();
+  }
+}
+
 void main() {
   testWidgets('a fresh install shares nothing, and says so in words', (
     t,
@@ -23,8 +34,7 @@ void main() {
         home: PrivacyScreen(app: app),
       ),
     );
-    await t.runAsync(() => Future<void>.delayed(Duration.zero));
-    await t.pumpAndSettle();
+    await settle(t);
 
     String stateOf(String key) {
       final row = find.descendant(
@@ -58,8 +68,7 @@ void main() {
         const LockSettings(on: true).encode(),
       ),
     );
-    await t.runAsync(() => Future<void>.delayed(Duration.zero));
-    await t.pumpAndSettle();
+    await settle(t);
     expect(stateOf('privacy-lock'), 'On');
 
     await t.runAsync(() async {
