@@ -991,7 +991,7 @@
   "autoTplDriving": "Onderweg en kan niet antwoorden. Ik antwoord als ik stop.",
   "lockTitle": "App-vergrendeling",
   "lockOn": "Vingerafdruk, gezicht of toegangscode vereisen",
-  "lockHelp": "Bedekt de app tot je hem ontgrendelt. Radio's, bakens en geplande berichten blijven werken. Meldingen kunnen nog steeds berichttekst op je vergrendelscherm tonen. Opgeslagen berichten worden alleen versleuteld als je dat hieronder aanzet.",
+  "lockHelp": "Bedekt de app tot je hem ontgrendelt. Radio's, bakens en geplande berichten blijven werken. Meldingen kunnen nog steeds berichttekst op je vergrendelscherm tonen.",
   "lockReason": "NOTORYX PRO ontgrendelen",
   "lockLocked": "NOTORYX PRO is vergrendeld",
   "lockUnlock": "Ontgrendelen",

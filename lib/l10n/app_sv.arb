@@ -991,7 +991,7 @@
   "autoTplDriving": "På vägen och kan inte svara. Jag svarar när jag stannar.",
   "lockTitle": "Applås",
   "lockOn": "Kräv fingeravtryck, ansikte eller lösenkod",
-  "lockHelp": "Täcker appen tills du låser upp den. Radior, nödsändare och schemalagda meddelanden fortsätter att köra. Aviseringar kan fortfarande visa meddelandetext på låsskärmen. Sparade meddelanden krypteras bara om du slår på det nedan.",
+  "lockHelp": "Täcker appen tills du låser upp den. Radior, nödsändare och schemalagda meddelanden fortsätter att köra. Aviseringar kan fortfarande visa meddelandetext på låsskärmen.",
   "lockReason": "Lås upp NOTORYX PRO",
   "lockLocked": "NOTORYX PRO är låst",
   "lockUnlock": "Lås upp",

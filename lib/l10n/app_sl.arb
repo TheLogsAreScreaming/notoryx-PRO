@@ -991,7 +991,7 @@
   "autoTplDriving": "Sem na poti in ne morem odgovoriti. Odgovorim, ko se ustavim.",
   "lockTitle": "Zaklep aplikacije",
   "lockOn": "Zahtevaj prstni odtis, obraz ali kodo",
-  "lockHelp": "Prekrije aplikacijo, dokler je ne odkleneš. Radii, svetilniki in načrtovana sporočila delujejo naprej. Obvestila lahko še vedno pokažejo besedilo sporočila na zaklenjenem zaslonu. Shranjena sporočila so šifrirana samo, če to vklopiš spodaj.",
+  "lockHelp": "Prekrije aplikacijo, dokler je ne odkleneš. Radii, svetilniki in načrtovana sporočila delujejo naprej. Obvestila lahko še vedno pokažejo besedilo sporočila na zaklenjenem zaslonu.",
   "lockReason": "Odkleni NOTORYX PRO",
   "lockLocked": "NOTORYX PRO je zaklenjen",
   "lockUnlock": "Odkleni",

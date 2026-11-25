@@ -7,14 +7,19 @@ import '../demo/demo_radio.dart';
 import '../store/mesh_store.dart';
 import 'app.dart';
 import 'common.dart';
+import 'map_tiles.dart';
 
 /// The whole app, running on a pretend radio with its own throwaway
 /// database, so nothing touches real messages and nothing is transmitted.
 class DemoScreen extends StatefulWidget {
-  const DemoScreen({super.key, this.links});
+  const DemoScreen({super.key, this.links, this.tiles});
 
   /// Replaceable in tests.
   final DemoLinks? links;
+
+  /// The app's map tiles, so the demo map shows real streets. Null draws
+  /// the nodes on a plain background (tests).
+  final MapTiles? tiles;
 
   @override
   State<DemoScreen> createState() => _DemoScreenState();
@@ -78,7 +83,7 @@ class _DemoScreenState extends State<DemoScreen> {
           child: MediaQuery.removePadding(
             context: context,
             removeTop: true,
-            child: HomeShell(app: _app),
+            child: HomeShell(app: _app, tiles: widget.tiles),
           ),
         ),
       ],

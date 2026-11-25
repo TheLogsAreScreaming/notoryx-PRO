@@ -991,7 +991,7 @@
   "autoTplDriving": "Jestem w drodze i nie mogę odpisać. Odpowiem, gdy się zatrzymam.",
   "lockTitle": "Blokada aplikacji",
   "lockOn": "Wymagaj odcisku palca, twarzy lub kodu",
-  "lockHelp": "Zasłania aplikację, dopóki jej nie odblokujesz. Radia, sygnały alarmowe i zaplanowane wiadomości dalej działają. Powiadomienia mogą nadal pokazywać treść wiadomości na ekranie blokady. Zapisane wiadomości są szyfrowane tylko, jeśli włączysz to poniżej.",
+  "lockHelp": "Zasłania aplikację, dopóki jej nie odblokujesz. Radia, sygnały alarmowe i zaplanowane wiadomości dalej działają. Powiadomienia mogą nadal pokazywać treść wiadomości na ekranie blokady.",
   "lockReason": "Odblokuj NOTORYX PRO",
   "lockLocked": "NOTORYX PRO jest zablokowany",
   "lockUnlock": "Odblokuj",

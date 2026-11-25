@@ -991,7 +991,7 @@
   "autoTplDriving": "正在路上，无法回复。停下后我会回复。",
   "lockTitle": "应用锁",
   "lockOn": "需要指纹、面容或密码",
-  "lockHelp": "解锁前会遮住应用。电台、信标和定时消息会继续运行。通知仍可能在锁屏上显示消息文本。只有在下方开启后，已保存的消息才会加密。",
+  "lockHelp": "解锁前会遮住应用。电台、信标和定时消息会继续运行。通知仍可能在锁屏上显示消息文本。",
   "lockReason": "解锁 NOTORYX PRO",
   "lockLocked": "NOTORYX PRO 已锁定",
   "lockUnlock": "解锁",
