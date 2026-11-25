@@ -27,6 +27,7 @@ import 'node_journal_screen.dart';
 import 'node_visibility.dart';
 import 'nodes_screen.dart';
 import 'notification_settings.dart';
+import 'privacy_screen.dart';
 import 'radios_screen.dart';
 import 'restore_sheet.dart';
 import 'search_screen.dart';
@@ -125,6 +126,7 @@ enum _MenuAction {
   ignoredNodes,
   lock,
   moderation,
+  privacy,
   about,
 }
 
@@ -434,6 +436,11 @@ class _HomeShellState extends State<HomeShell> {
                   ),
                 ),
               ),
+              _MenuAction.privacy => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => PrivacyScreen(app: app, vault: widget.vault),
+                ),
+              ),
               _MenuAction.about => Navigator.of(context).push(
                 MaterialPageRoute<void>(builder: (_) => AboutScreen(app: app)),
               ),
@@ -521,6 +528,11 @@ class _HomeShellState extends State<HomeShell> {
                 key: const Key('menu-moderation'),
                 value: _MenuAction.moderation,
                 child: Text(context.l10n.sntTitle),
+              ),
+              PopupMenuItem(
+                key: const Key('menu-privacy'),
+                value: _MenuAction.privacy,
+                child: Text(context.l10n.privacyTitle),
               ),
               PopupMenuItem(
                 value: _MenuAction.about,
