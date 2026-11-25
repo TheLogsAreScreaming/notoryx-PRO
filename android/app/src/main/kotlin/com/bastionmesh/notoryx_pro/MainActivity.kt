@@ -8,5 +8,6 @@ class MainActivity : FlutterFragmentActivity() {
         super.configureFlutterEngine(flutterEngine)
         HeadingChannel.register(this, flutterEngine.dartExecutor.binaryMessenger)
         ScreenCaptureChannel.register(this, flutterEngine.dartExecutor.binaryMessenger)
+        SecretClipboardChannel.register(this, flutterEngine.dartExecutor.binaryMessenger)
     }
 }
