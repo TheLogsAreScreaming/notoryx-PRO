@@ -1449,5 +1449,6 @@
   "covEraseFailed": "Kon niet wissen. Controleer je verbinding en probeer het opnieuw.",
   "covStopSharing": "Stoppen met delen",
   "covStopSharingSub": "Er wordt niets meer verstuurd. Metingen blijven op deze telefoon.",
-  "covOpenMap": "Dekkingskaart openen"
+  "covOpenMap": "Dekkingskaart openen",
+  "contactsFullWarning": "De contactenlijst van deze radio is vol, dus er kunnen geen nieuwe nodes bij. Verwijder enkele contacten om ruimte te maken."
 }

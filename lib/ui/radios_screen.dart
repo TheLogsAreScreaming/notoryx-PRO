@@ -206,6 +206,16 @@ class _ConnectionCard extends StatelessWidget {
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
               ),
+            if (c is MeshCoreConnection &&
+                c.contactsFull &&
+                phase == SupervisorPhase.connected)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  l.contactsFullWarning,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+              ),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,

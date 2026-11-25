@@ -95,7 +95,8 @@ class MeshCoreMapper {
             NodeKey.meshcore(toHex(frame.keyPrefix));
         return Message(
           conversation: DirectConversation(radioId, from),
-          text: frame.text,
+          // Some apps send compressed text; show it as plain text.
+          text: smazUnwrap(frame.text) ?? frame.text,
           outgoing: false,
           sentAt: _seconds(frame.timestamp) ?? now,
           receivedAt: now,
@@ -109,7 +110,7 @@ class MeshCoreMapper {
       case ChannelMessageFrame():
         return Message(
           conversation: ChannelConversation(radioId, frame.channel),
-          text: frame.body,
+          text: smazUnwrap(frame.body) ?? frame.body,
           outgoing: false,
           sentAt: _seconds(frame.timestamp) ?? now,
           receivedAt: now,

@@ -270,8 +270,9 @@ class MeshCoreSession {
             return false;
         }
       },
-      // Large contact lists take a while over Bluetooth.
-      timeout: timeout * 6,
+      // The timer restarts on every contact, so this is the gap allowed
+      // between frames, not the time for the whole list.
+      timeout: timeout * 2,
     );
     return ContactSync(
       contacts: contacts,
@@ -739,16 +740,24 @@ class MeshCoreSession {
     if (_current != null || _queue.isEmpty) return;
     final next = _queue.removeFirst();
     _current = next;
-    next.timer = Timer(next.timeout, () {
-      if (_current != next) return;
-      _log?.add(_source, 'no reply to command ${next.code}');
-      _finish(next, error: MeshCoreTimeout(next.code));
-    });
+    _arm(next);
     final bytes = link.deliversFrames
         ? next.command
         : wrapStreamFrame(next.command);
     link.send(bytes).catchError((Object error) {
       _finish(next, error: error);
+    });
+  }
+
+  /// Starts (or restarts) [p]'s timer. Restarted on every frame a command
+  /// collects, so a long reply such as a big contact list never times out
+  /// while frames are still arriving.
+  void _arm(_Pending p) {
+    p.timer?.cancel();
+    p.timer = Timer(p.timeout, () {
+      if (_current != p) return;
+      _log?.add(_source, 'no reply to command ${p.code}');
+      _finish(p, error: MeshCoreTimeout(p.code));
     });
   }
 
@@ -767,7 +776,11 @@ class MeshCoreSession {
     final current = _current;
     if (!frame.isPush && current != null) {
       if (current.collect(frame, current.done)) {
-        if (current.done.isCompleted) _finish(current);
+        if (current.done.isCompleted) {
+          _finish(current);
+        } else {
+          _arm(current);
+        }
         return;
       }
     }

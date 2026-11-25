@@ -1449,5 +1449,6 @@
   "covEraseFailed": "Löschen fehlgeschlagen. Prüfe deine Verbindung und versuche es erneut.",
   "covStopSharing": "Teilen beenden",
   "covStopSharingSub": "Es wird nichts mehr gesendet. Messwerte bleiben auf diesem Telefon.",
-  "covOpenMap": "Abdeckungskarte öffnen"
+  "covOpenMap": "Abdeckungskarte öffnen",
+  "contactsFullWarning": "Die Kontaktliste dieses Funkgeräts ist voll, daher kann es keine neuen Knoten hinzufügen. Entferne einige Kontakte, um Platz zu schaffen."
 }

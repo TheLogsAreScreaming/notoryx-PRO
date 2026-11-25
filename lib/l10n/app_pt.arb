@@ -1449,5 +1449,6 @@
   "covEraseFailed": "Não foi possível apagar. Verifica a ligação e tenta novamente.",
   "covStopSharing": "Deixar de partilhar",
   "covStopSharingSub": "Não é enviado mais nada. As leituras ficam neste telefone.",
-  "covOpenMap": "Abrir o mapa de cobertura"
+  "covOpenMap": "Abrir o mapa de cobertura",
+  "contactsFullWarning": "A lista de contatos deste rádio está cheia, então ele não pode adicionar novos nós. Remova alguns contatos para liberar espaço."
 }

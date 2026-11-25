@@ -259,7 +259,7 @@ class AppController extends ChangeNotifier {
       note: note,
       drill: drill,
       shortPosition: shortPosition,
-      maxBytes: connection.maxTextBytes,
+      maxBytes: connection.maxTextBytesFor(conversation),
       incoming: store.incoming,
       send: (text) async {
         if (!connections.contains(connection)) {

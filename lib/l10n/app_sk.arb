@@ -1449,5 +1449,6 @@
   "covEraseFailed": "Vymazanie sa nepodarilo. Skontroluj pripojenie a skús znova.",
   "covStopSharing": "Zastaviť zdieľanie",
   "covStopSharingSub": "Nič ďalšie sa neposiela. Merania zostanú v tomto telefóne.",
-  "covOpenMap": "Otvoriť mapu pokrytia"
+  "covOpenMap": "Otvoriť mapu pokrytia",
+  "contactsFullWarning": "Zoznam kontaktov tohto rádia je plný, takže nemôže pridávať nové uzly. Odstráňte niekoľko kontaktov, aby ste uvoľnili miesto."
 }

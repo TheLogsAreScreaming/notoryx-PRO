@@ -1449,5 +1449,6 @@
   "covEraseFailed": "Brisanje ni uspelo. Preveri povezavo in poskusi znova.",
   "covStopSharing": "Ustavi deljenje",
   "covStopSharingSub": "Nič več se ne pošlje. Meritve ostanejo na tem telefonu.",
-  "covOpenMap": "Odpri zemljevid pokritosti"
+  "covOpenMap": "Odpri zemljevid pokritosti",
+  "contactsFullWarning": "Seznam stikov tega radia je poln, zato ne more dodajati novih vozlišč. Odstranite nekaj stikov, da sprostite prostor."
 }

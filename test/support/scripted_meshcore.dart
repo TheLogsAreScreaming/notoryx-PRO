@@ -105,11 +105,11 @@ abstract final class RadioFrames {
   static Uint8List key(int seed) =>
       Uint8List.fromList(List.generate(32, (i) => (seed + i) & 0xff));
 
-  static Uint8List selfInfo({String name = 'Ridge Base'}) {
+  static Uint8List selfInfo({String name = 'Ridge Base', int txPower = 22}) {
     final w = ByteWriter()
       ..u8(5)
       ..u8(1) // ADV_TYPE_CHAT
-      ..u8(22)
+      ..u8(txPower & 0xff)
       ..u8(30)
       ..bytes(key(0x10))
       ..i32(45123456)

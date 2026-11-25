@@ -1449,5 +1449,6 @@
   "covEraseFailed": "无法删除。请检查网络连接后重试。",
   "covStopSharing": "停止分享",
   "covStopSharingSub": "不再发送任何内容。读数保留在此手机上。",
-  "covOpenMap": "打开覆盖地图"
+  "covOpenMap": "打开覆盖地图",
+  "contactsFullWarning": "此电台的联系人列表已满，无法添加新节点。请删除一些联系人以腾出空间。"
 }
