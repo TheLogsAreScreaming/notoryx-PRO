@@ -8,6 +8,12 @@ class MainActivity : FlutterFragmentActivity() {
         super.configureFlutterEngine(flutterEngine)
         HeadingChannel.register(this, flutterEngine.dartExecutor.binaryMessenger)
         ScreenCaptureChannel.register(this, flutterEngine.dartExecutor.binaryMessenger)
-        SecretClipboardChannel.register(this, flutterEngine.dartExecutor.binaryMessenger)
+        SecretClipboard.register(this, flutterEngine.dartExecutor.binaryMessenger)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Backstop for the scheduled clipboard clear (see SecretClipboard).
+        SecretClipboard.clearIfDue(this)
     }
 }
