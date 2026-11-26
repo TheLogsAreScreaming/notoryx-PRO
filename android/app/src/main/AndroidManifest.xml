@@ -45,6 +45,9 @@
             </intent-filter>
         </activity>
         <!-- Shown while radios stay connected in the background. -->
+        <receiver
+            android:name=".ClipboardClearReceiver"
+            android:exported="false" />
         <service
             android:name="com.dexterous.flutterlocalnotifications.ForegroundService"
             android:exported="false"
