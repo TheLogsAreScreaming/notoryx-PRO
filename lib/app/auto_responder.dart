@@ -24,7 +24,7 @@ class AutoRule {
   final int id;
   final String keyword;
 
-  /// May use `{name}`, `{time}`, `{hops}` and `{snr}`.
+  /// May use `{name}`, `{time}`, `{hops}`, `{snr}` and `{hops_emoji}`.
   final String reply;
 
   /// Also answers on channels. Never allowed for [away].
@@ -160,13 +160,21 @@ class AutoResponder {
     return fallback;
   }
 
+  static String _hopEmoji(int? hops) {
+    if (hops == null || hops <= 0) return '🎯';
+    if (hops > 10) return '🦘';
+    const digits = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣', '🔟'];
+    return digits[hops - 1];
+  }
+
   String _fill(AutoRule r, Message m) {
     final t = TimeOfDayText.of(_now());
     return r.reply
         .replaceAll('{name}', m.senderName ?? m.from?.short ?? '')
         .replaceAll('{time}', t)
         .replaceAll('{hops}', m.path.hops?.toString() ?? '?')
-        .replaceAll('{snr}', m.path.snr?.toString() ?? '?');
+        .replaceAll('{snr}', m.path.snr?.toString() ?? '?')
+        .replaceAll('{hops_emoji}', _hopEmoji(m.path.hops));
   }
 
   /// Answers [m] if a rule and the limits allow it.
