@@ -163,7 +163,19 @@ class AutoResponder {
   static String _hopEmoji(int? hops) {
     if (hops == null || hops <= 0) return '🎯';
     if (hops > 10) return '🦘';
-    const digits = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣', '🔟'];
+    // Keycaps need U+FE0F before U+20E3 or many phones draw a plain digit.
+    const digits = [
+      '1\uFE0F\u20E3',
+      '2\uFE0F\u20E3',
+      '3\uFE0F\u20E3',
+      '4\uFE0F\u20E3',
+      '5\uFE0F\u20E3',
+      '6\uFE0F\u20E3',
+      '7\uFE0F\u20E3',
+      '8\uFE0F\u20E3',
+      '9\uFE0F\u20E3',
+      '🔟',
+    ];
     return digits[hops - 1];
   }
 
