@@ -22,6 +22,7 @@ void main() {
     Conversation? c,
     bool outgoing = false,
     DateTime? sent,
+    int? hops = 2,
   }) => Message(
     conversation: c ?? dm,
     text: text,
@@ -31,7 +32,7 @@ void main() {
     delivery: const Received(),
     from: node,
     senderName: 'Ann',
-    path: const PathFacts(hops: 2, snr: 6.5),
+    path: PathFacts(hops: hops, snr: 6.5),
   );
 
   const ping = AutoRule(id: 1, keyword: 'ping', reply: 'pong {name} {hops}');
@@ -54,6 +55,25 @@ void main() {
   test('answers a whole-word match, marked, with details filled in', () async {
     await bot.handle(msg(' PING '));
     expect(out.single, (dm, '[auto] pong Ann 2'));
+  });
+
+  test('{hops_emoji} shows direct, a keycap digit, or many hops', () async {
+    bot.settings = const AutoSettings(
+      on: true,
+      rules: [AutoRule(id: 9, keyword: 'ping', reply: '{hops_emoji}')],
+    );
+    for (final (hops, emoji) in [
+      (null, '🎯'),
+      (0, '🎯'),
+      (2, '2\uFE0F\u20E3'),
+      (10, '🔟'),
+      (11, '🦘'),
+    ]) {
+      out.clear();
+      now = now.add(const Duration(days: 1)); // past the per-sender gap
+      await bot.handle(msg('ping', hops: hops));
+      expect(out.single.$2, '[auto] $emoji', reason: '$hops hops');
+    }
   });
 
   test('off by default, and not for partial matches', () async {
