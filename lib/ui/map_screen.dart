@@ -80,6 +80,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   /// Traffic mode: heard packets drawn hop by hop.
   bool _traffic = false;
   bool _hopLabels = true;
+
+  /// All-routes mode: relay paths for every visible node drawn at once.
+  bool _allRoutes = false;
   Set<TrafficKind> _kinds = TrafficKind.values.toSet();
   TrafficRoute? _latest;
   late final TrafficPlayer _player = TrafficPlayer(vsync: this);
@@ -270,6 +273,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           ];
           final opening = openingCamera(points);
           final route = _route == null ? null : _routeLine(_route!, all);
+          final allRouteLines = _allRoutes
+              ? _buildAllRoutes(placed, all)
+              : const <Polyline>[];
           _all = all;
           final dark = Theme.of(context).brightness == Brightness.dark;
           return Stack(
@@ -316,6 +322,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                               .countryCode,
                         ),
                       ),
+                    if (allRouteLines.isNotEmpty)
+                      PolylineLayer(polylines: allRouteLines),
                     if (route != null && route.length > 1)
                       PolylineLayer(
                         polylines: [
@@ -480,6 +488,13 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         label: l.mapFilter,
         selected: _kinds.length < TrafficKind.values.length,
         onPressed: _pickKinds,
+      ),
+      MapToolItem(
+        key: const Key('map-all-routes'),
+        icon: Icons.account_tree_outlined,
+        label: l.mapAllRoutes,
+        selected: _allRoutes,
+        onPressed: () => setState(() => _allRoutes = !_allRoutes),
       ),
       MapToolItem(
         key: const Key('map-traffic'),
@@ -739,6 +754,28 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       .firstOrNull;
 
   /// Our radio → known repeaters → the node; hops without a known position
+  /// Relay paths for every node that has a known route with at least one
+  /// positioned hop, drawn as thin translucent lines.
+  List<Polyline> _buildAllRoutes(List<Node> placed, List<Node> all) {
+    final scheme = Theme.of(context).colorScheme;
+    final color = scheme.primary.withValues(alpha: 0.35);
+    final polylines = <Polyline>[];
+    for (final n in placed) {
+      final pts = _routeLine(n, all);
+      if (pts != null && pts.length > 1) {
+        polylines.add(
+          Polyline(
+            points: pts,
+            strokeWidth: 2,
+            color: color,
+            pattern: const StrokePattern.dotted(),
+          ),
+        );
+      }
+    }
+    return polylines;
+  }
+
   /// are skipped. Null when there is nothing to draw.
   List<LatLng>? _routeLine(Node target, List<Node> all) {
     final start = widget.app.connections
