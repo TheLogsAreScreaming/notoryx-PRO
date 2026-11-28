@@ -3661,5 +3661,12 @@
   "covStopSharing": "Stop sharing",
   "covStopSharingSub": "Nothing more is sent. Readings stay on this phone.",
   "covOpenMap": "Open the coverage map",
-  "contactsFullWarning": "This radio's contact list is full, so it can't add new nodes. Remove some contacts to make room."
+  "contactsFullWarning": "This radio's contact list is full, so it can't add new nodes. Remove some contacts to make room.",
+  "cannedTitle": "Quick messages",
+  "cannedEmpty": "No quick messages yet. Add some to speed up common replies.",
+  "cannedAdd": "Add quick message",
+  "cannedDelete": "Delete",
+  "cannedHint": "Message text",
+  "cannedSave": "Save",
+  "cannedInsert": "Quick messages"
 }

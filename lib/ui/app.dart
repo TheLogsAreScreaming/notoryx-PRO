@@ -12,6 +12,7 @@ import '../app/trusted_nodes.dart';
 import '../l10n/app_localizations.dart';
 import 'about_screen.dart';
 import 'beacon_sheet.dart';
+import 'canned_messages_screen.dart';
 import 'checklists_screen.dart';
 import 'coverage_screen.dart';
 import 'common.dart';
@@ -133,6 +134,7 @@ enum _MenuAction {
   lock,
   moderation,
   privacy,
+  cannedMessages,
   about,
 }
 
@@ -488,6 +490,11 @@ class _HomeShellState extends State<HomeShell> {
                   builder: (_) => PrivacyScreen(app: app, vault: widget.vault),
                 ),
               ),
+              _MenuAction.cannedMessages => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => CannedMessagesScreen(store: app.store),
+                ),
+              ),
               _MenuAction.about => Navigator.of(context).push(
                 MaterialPageRoute<void>(builder: (_) => AboutScreen(app: app)),
               ),
@@ -590,6 +597,11 @@ class _HomeShellState extends State<HomeShell> {
                 key: const Key('menu-privacy'),
                 value: _MenuAction.privacy,
                 child: Text(context.l10n.privacyTitle),
+              ),
+              PopupMenuItem(
+                key: const Key('menu-canned-messages'),
+                value: _MenuAction.cannedMessages,
+                child: Text(context.l10n.cannedTitle),
               ),
               PopupMenuItem(
                 value: _MenuAction.about,

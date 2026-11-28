@@ -1500,5 +1500,12 @@
   "covStopSharing": "Megosztás leállítása",
   "covStopSharingSub": "Több semmi nem megy el. A mérések ezen a telefonon maradnak.",
   "covOpenMap": "Lefedettségi térkép megnyitása",
-  "contactsFullWarning": "A rádió névjegylistája megtelt, ezért nem tud új node-okat felvenni. Törölj néhány névjegyet, hogy legyen hely."
+  "contactsFullWarning": "A rádió névjegylistája megtelt, ezért nem tud új node-okat felvenni. Törölj néhány névjegyet, hogy legyen hely.",
+  "cannedTitle": "Quick messages",
+  "cannedEmpty": "No quick messages yet. Add some to speed up common replies.",
+  "cannedAdd": "Add quick message",
+  "cannedDelete": "Delete",
+  "cannedHint": "Message text",
+  "cannedSave": "Save",
+  "cannedInsert": "Quick messages"
 }

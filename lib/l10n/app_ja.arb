@@ -1500,5 +1500,12 @@
   "covStopSharing": "共有を停止",
   "covStopSharingSub": "これ以上何も送信されません。測定値はこのスマートフォンに残ります。",
   "covOpenMap": "カバレッジマップを開く",
-  "contactsFullWarning": "この無線機の連絡先リストがいっぱいのため、新しいノードを追加できません。連絡先をいくつか削除して空きを作ってください。"
+  "contactsFullWarning": "この無線機の連絡先リストがいっぱいのため、新しいノードを追加できません。連絡先をいくつか削除して空きを作ってください。",
+  "cannedTitle": "Quick messages",
+  "cannedEmpty": "No quick messages yet. Add some to speed up common replies.",
+  "cannedAdd": "Add quick message",
+  "cannedDelete": "Delete",
+  "cannedHint": "Message text",
+  "cannedSave": "Save",
+  "cannedInsert": "Quick messages"
 }

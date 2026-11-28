@@ -1500,5 +1500,12 @@
   "covStopSharing": "Smetti di condividere",
   "covStopSharingSub": "Non viene inviato altro. Le letture restano su questo telefono.",
   "covOpenMap": "Apri la mappa di copertura",
-  "contactsFullWarning": "L'elenco contatti di questa radio è pieno, quindi non può aggiungere nuovi nodi. Rimuovi alcuni contatti per fare spazio."
+  "contactsFullWarning": "L'elenco contatti di questa radio è pieno, quindi non può aggiungere nuovi nodi. Rimuovi alcuni contatti per fare spazio.",
+  "cannedTitle": "Quick messages",
+  "cannedEmpty": "No quick messages yet. Add some to speed up common replies.",
+  "cannedAdd": "Add quick message",
+  "cannedDelete": "Delete",
+  "cannedHint": "Message text",
+  "cannedSave": "Save",
+  "cannedInsert": "Quick messages"
 }

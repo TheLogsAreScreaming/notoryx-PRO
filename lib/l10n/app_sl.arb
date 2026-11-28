@@ -1500,5 +1500,12 @@
   "covStopSharing": "Ustavi deljenje",
   "covStopSharingSub": "Nič več se ne pošlje. Meritve ostanejo na tem telefonu.",
   "covOpenMap": "Odpri zemljevid pokritosti",
-  "contactsFullWarning": "Seznam stikov tega radia je poln, zato ne more dodajati novih vozlišč. Odstranite nekaj stikov, da sprostite prostor."
+  "contactsFullWarning": "Seznam stikov tega radia je poln, zato ne more dodajati novih vozlišč. Odstranite nekaj stikov, da sprostite prostor.",
+  "cannedTitle": "Quick messages",
+  "cannedEmpty": "No quick messages yet. Add some to speed up common replies.",
+  "cannedAdd": "Add quick message",
+  "cannedDelete": "Delete",
+  "cannedHint": "Message text",
+  "cannedSave": "Save",
+  "cannedInsert": "Quick messages"
 }

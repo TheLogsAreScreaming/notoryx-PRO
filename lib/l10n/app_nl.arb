@@ -1500,5 +1500,12 @@
   "covStopSharing": "Stoppen met delen",
   "covStopSharingSub": "Er wordt niets meer verstuurd. Metingen blijven op deze telefoon.",
   "covOpenMap": "Dekkingskaart openen",
-  "contactsFullWarning": "De contactenlijst van deze radio is vol, dus er kunnen geen nieuwe nodes bij. Verwijder enkele contacten om ruimte te maken."
+  "contactsFullWarning": "De contactenlijst van deze radio is vol, dus er kunnen geen nieuwe nodes bij. Verwijder enkele contacten om ruimte te maken.",
+  "cannedTitle": "Quick messages",
+  "cannedEmpty": "No quick messages yet. Add some to speed up common replies.",
+  "cannedAdd": "Add quick message",
+  "cannedDelete": "Delete",
+  "cannedHint": "Message text",
+  "cannedSave": "Save",
+  "cannedInsert": "Quick messages"
 }

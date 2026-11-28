@@ -1500,5 +1500,12 @@
   "covStopSharing": "Teilen beenden",
   "covStopSharingSub": "Es wird nichts mehr gesendet. Messwerte bleiben auf diesem Telefon.",
   "covOpenMap": "Abdeckungskarte öffnen",
-  "contactsFullWarning": "Die Kontaktliste dieses Funkgeräts ist voll, daher kann es keine neuen Knoten hinzufügen. Entferne einige Kontakte, um Platz zu schaffen."
+  "contactsFullWarning": "Die Kontaktliste dieses Funkgeräts ist voll, daher kann es keine neuen Knoten hinzufügen. Entferne einige Kontakte, um Platz zu schaffen.",
+  "cannedTitle": "Quick messages",
+  "cannedEmpty": "No quick messages yet. Add some to speed up common replies.",
+  "cannedAdd": "Add quick message",
+  "cannedDelete": "Delete",
+  "cannedHint": "Message text",
+  "cannedSave": "Save",
+  "cannedInsert": "Quick messages"
 }

@@ -1500,5 +1500,12 @@
   "covStopSharing": "Спри споделянето",
   "covStopSharingSub": "Нищо повече не се изпраща. Показанията остават на този телефон.",
   "covOpenMap": "Отвори картата на покритието",
-  "contactsFullWarning": "Списъкът с контакти на това радио е пълен и не може да добавя нови възли. Премахнете някои контакти, за да освободите място."
+  "contactsFullWarning": "Списъкът с контакти на това радио е пълен и не може да добавя нови възли. Премахнете някои контакти, за да освободите място.",
+  "cannedTitle": "Quick messages",
+  "cannedEmpty": "No quick messages yet. Add some to speed up common replies.",
+  "cannedAdd": "Add quick message",
+  "cannedDelete": "Delete",
+  "cannedHint": "Message text",
+  "cannedSave": "Save",
+  "cannedInsert": "Quick messages"
 }

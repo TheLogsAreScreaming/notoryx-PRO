@@ -15,6 +15,7 @@ import '../mesh/model.dart';
 import '../radio/radio.dart';
 import '../store/mesh_store.dart';
 import 'beacon_sheet.dart';
+import 'canned_messages_screen.dart';
 import 'sentinel_screen.dart';
 import '../meshcore/codes.dart' show MeshCoreLimits;
 import '../meshtastic/messages.dart' show meshtasticMaxPayload;
@@ -334,6 +335,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
               return Composer(
                 connection: _ready(),
                 conversation: conversation,
+                store: app.store,
                 draft: widget.draft,
               );
             },
@@ -564,12 +566,14 @@ class Composer extends StatefulWidget {
     super.key,
     required this.connection,
     required this.conversation,
+    required this.store,
     this.draft,
   });
 
   /// Null when the radio for this conversation isn't connected.
   final RadioConnection? connection;
   final Conversation conversation;
+  final MeshStore store;
 
   /// Text to start with.
   final String? draft;
@@ -676,6 +680,19 @@ class _ComposerState extends State<Composer> {
                   onPressed: () => _report(c),
                 ),
                 SarnegComposeButton(controller: _controller),
+                IconButton(
+                  tooltip: l.cannedInsert,
+                  icon: const Icon(Icons.quickreply_outlined),
+                  onPressed: () async {
+                    final text = await showCannedMessagesSheet(
+                      context,
+                      store: widget.store,
+                    );
+                    if (text != null && mounted) {
+                      _controller.text = text;
+                    }
+                  },
+                ),
                 Expanded(
                   child: TextField(
                     controller: _controller,

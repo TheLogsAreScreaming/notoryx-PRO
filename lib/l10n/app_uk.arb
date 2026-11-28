@@ -1500,5 +1500,12 @@
   "covStopSharing": "Припинити ділитися",
   "covStopSharingSub": "Більше нічого не надсилається. Показання залишаються на цьому телефоні.",
   "covOpenMap": "Відкрити карту покриття",
-  "contactsFullWarning": "Список контактів цієї рації заповнений, тому вона не може додавати нові вузли. Видаліть кілька контактів, щоб звільнити місце."
+  "contactsFullWarning": "Список контактів цієї рації заповнений, тому вона не може додавати нові вузли. Видаліть кілька контактів, щоб звільнити місце.",
+  "cannedTitle": "Quick messages",
+  "cannedEmpty": "No quick messages yet. Add some to speed up common replies.",
+  "cannedAdd": "Add quick message",
+  "cannedDelete": "Delete",
+  "cannedHint": "Message text",
+  "cannedSave": "Save",
+  "cannedInsert": "Quick messages"
 }
