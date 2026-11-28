@@ -14,7 +14,8 @@ class CannedMessage {
 
   static CannedMessage? fromJson(Object? j) {
     if (j is! Map<String, Object?>) return null;
-    final (id, t) = (j['id'], j['t']);
+    final id = j['id'];
+    final t = j['t'];
     if (id is! int || t is! String) return null;
     final trimmed = t.trim();
     if (trimmed.isEmpty) return null;
@@ -31,8 +32,9 @@ class CannedMessages {
 
   final List<CannedMessage> messages;
 
-  String encode() =>
-      jsonEncode({'messages': [for (final m in messages) m.toJson()]});
+  String encode() => jsonEncode({
+    'messages': [for (final m in messages) m.toJson()],
+  });
 
   static CannedMessages decode(String? saved) {
     if (saved == null) return const CannedMessages();
