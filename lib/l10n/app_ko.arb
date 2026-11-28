@@ -1121,6 +1121,8 @@
   "trustedOnly": "신뢰하는 노드만",
   "trustedShowAll": "모든 노드 보기",
   "trustedEmpty": "아직 신뢰하는 노드가 없어요. 노드의 별을 눌러 신뢰하세요. 무전기 즐겨찾기와 확인된 노드도 포함돼요.",
+  "whoRepeatsTitle": "Who relays me",
+  "whoRepeatsEmpty": "No relay hops found yet. Routes appear here once your radios know the path to other nodes.",
   "topologyTitle": "네트워크 도표",
   "topologyEmpty": "아직 그릴 것이 없어요. 무전기가 노드까지 몇 홉인지 알게 되면 여기에 나타나요.",
   "topologyHint": "내가 가운데에 있고, 고리 하나가 홉 하나예요. 선은 알려진 MeshCore 경로와 직접 수신한 노드예요. 굵은 선일수록 더 많은 경로가 지나가요. Meshtastic은 누가 중계했는지 알려주지 않아서 멀리 있는 Meshtastic 노드에는 선이 없어요.",

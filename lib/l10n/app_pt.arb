@@ -1121,6 +1121,8 @@
   "trustedOnly": "Só de confiança",
   "trustedShowAll": "Mostrar todos os nós",
   "trustedEmpty": "Ainda sem nós de confiança. Toque na estrela de um nó para confiar nele. Os favoritos do rádio e os nós verificados também contam.",
+  "whoRepeatsTitle": "Who relays me",
+  "whoRepeatsEmpty": "No relay hops found yet. Routes appear here once your radios know the path to other nodes.",
   "topologyTitle": "Diagrama da rede",
   "topologyEmpty": "Ainda nada para desenhar. Os nós aparecem aqui quando os seus rádios sabem a quantos saltos estão.",
   "topologyHint": "Você está no centro e cada anel é mais um salto. As linhas são rotas MeshCore conhecidas e nós ouvidos diretamente; as mais grossas levam mais rotas. O Meshtastic não diz quem retransmitiu, por isso os nós Meshtastic mais distantes não têm linhas.",

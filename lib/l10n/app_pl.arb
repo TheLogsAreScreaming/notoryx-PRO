@@ -1121,6 +1121,8 @@
   "trustedOnly": "Tylko zaufane",
   "trustedShowAll": "Pokaż wszystkie węzły",
   "trustedEmpty": "Brak zaufanych węzłów. Stuknij gwiazdkę przy węźle, aby mu zaufać. Ulubione z radia i zweryfikowane węzły też się liczą.",
+  "whoRepeatsTitle": "Who relays me",
+  "whoRepeatsEmpty": "No relay hops found yet. Routes appear here once your radios know the path to other nodes.",
   "topologyTitle": "Schemat sieci",
   "topologyEmpty": "Na razie nie ma czego narysować. Węzły pojawią się tutaj, gdy twoje radia będą wiedzieć, ile przeskoków są od nich.",
   "topologyHint": "Jesteś w środku, a każdy pierścień to jeden przeskok więcej. Linie to znane trasy MeshCore i węzły słyszane bezpośrednio; grubsze linie niosą więcej tras. Meshtastic nie podaje, kto przekazał, więc dalsze węzły Meshtastic nie mają linii.",

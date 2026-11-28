@@ -2762,6 +2762,8 @@
   "trustedOnly": "Trusted only",
   "trustedShowAll": "Show all nodes",
   "trustedEmpty": "No trusted nodes yet. Tap the star on a node to trust it. Radio favorites and verified nodes count too.",
+  "whoRepeatsTitle": "Who relays me",
+  "whoRepeatsEmpty": "No relay hops found yet. Routes appear here once your radios know the path to other nodes.",
   "topologyTitle": "Network diagram",
   "topologyEmpty": "Nothing to draw yet. Nodes appear here once your radios know how many hops away they are.",
   "topologyHint": "You're in the middle and each ring is one more hop. Lines are known MeshCore routes and nodes heard directly; thicker lines carry more routes. Meshtastic doesn't say who relayed, so farther Meshtastic nodes have no lines.",

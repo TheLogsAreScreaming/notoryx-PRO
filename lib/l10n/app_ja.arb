@@ -1121,6 +1121,8 @@
   "trustedOnly": "信頼済みのみ",
   "trustedShowAll": "すべてのノードを表示",
   "trustedEmpty": "まだ信頼済みのノードがありません。ノードの星をタップすると信頼済みになります。無線機のお気に入りや確認済みノードも含まれます。",
+  "whoRepeatsTitle": "Who relays me",
+  "whoRepeatsEmpty": "No relay hops found yet. Routes appear here once your radios know the path to other nodes.",
   "topologyTitle": "ネットワーク図",
   "topologyEmpty": "まだ描画するものがありません。無線機が何ホップ先か把握するとノードが表示されます。",
   "topologyHint": "あなたが中心で、輪が 1 つ外に行くごとに 1 ホップ増えます。線は既知の MeshCore ルートと直接受信したノードを表し、太い線ほど多くのルートが通っています。Meshtastic は誰が中継したかを伝えないため、遠くの Meshtastic ノードには線がありません。",

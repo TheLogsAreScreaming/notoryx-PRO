@@ -1121,6 +1121,8 @@
   "trustedOnly": "Csak megbízhatók",
   "trustedShowAll": "Minden node mutatása",
   "trustedEmpty": "Még nincs megbízható node. Koppints egy node csillagára, hogy megbízhatónak jelöld. A rádió kedvencei és az ellenőrzött node-ok is számítanak.",
+  "whoRepeatsTitle": "Who relays me",
+  "whoRepeatsEmpty": "No relay hops found yet. Routes appear here once your radios know the path to other nodes.",
   "topologyTitle": "Hálózati ábra",
   "topologyEmpty": "Még nincs mit megrajzolni. A node-ok akkor jelennek meg itt, amikor a rádióid tudják, hány ugrásnyira vannak.",
   "topologyHint": "Te vagy középen, és minden gyűrű eggyel több ugrás. A vonalak ismert MeshCore útvonalak és közvetlenül hallott node-ok; a vastagabb vonalakon több útvonal fut. A Meshtastic nem árulja el, ki továbbított, ezért a távolabbi Meshtastic node-oknak nincs vonaluk.",

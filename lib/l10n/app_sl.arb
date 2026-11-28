@@ -1121,6 +1121,8 @@
   "trustedOnly": "Samo zaupanja vredna",
   "trustedShowAll": "Pokaži vsa vozlišča",
   "trustedEmpty": "Še ni zaupanja vrednih vozlišč. Tapni zvezdico na vozlišču, da mu zaupaš. Štejejo tudi priljubljena vozlišča radia in preverjena vozlišča.",
+  "whoRepeatsTitle": "Who relays me",
+  "whoRepeatsEmpty": "No relay hops found yet. Routes appear here once your radios know the path to other nodes.",
   "topologyTitle": "Diagram omrežja",
   "topologyEmpty": "Še ni ničesar za narisati. Vozlišča se pojavijo tukaj, ko tvoji radii vedo, koliko skokov so oddaljena.",
   "topologyHint": "Ti si na sredini in vsak obroč je en skok več. Črte so znane poti MeshCore in neposredno slišana vozlišča; debelejše črte nosijo več poti. Meshtastic ne pove, kdo je posredoval, zato bolj oddaljena Meshtastic vozlišča nimajo črt.",

@@ -1121,6 +1121,8 @@
   "trustedOnly": "Len dôveryhodné",
   "trustedShowAll": "Zobraziť všetky uzly",
   "trustedEmpty": "Zatiaľ žiadne dôveryhodné uzly. Ťukni na hviezdičku pri uzle, aby si mu dôveroval. Počítajú sa aj obľúbené uzly z rádia a overené uzly.",
+  "whoRepeatsTitle": "Who relays me",
+  "whoRepeatsEmpty": "No relay hops found yet. Routes appear here once your radios know the path to other nodes.",
   "topologyTitle": "Diagram siete",
   "topologyEmpty": "Zatiaľ nie je čo zakresliť. Uzly sa tu zobrazia, keď tvoje rádiá budú vedieť, koľko skokov sú od teba.",
   "topologyHint": "Ty si v strede a každý kruh je o jeden skok ďalej. Čiary sú známe trasy MeshCore a uzly počuté priamo; hrubšie čiary nesú viac trás. Meshtastic nehovorí, kto preposielal, takže vzdialenejšie uzly Meshtastic nemajú čiary.",

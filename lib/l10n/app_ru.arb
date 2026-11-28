@@ -1121,6 +1121,8 @@
   "trustedOnly": "Только доверенные",
   "trustedShowAll": "Показать все узлы",
   "trustedEmpty": "Доверенных узлов пока нет. Нажми звёздочку у узла, чтобы доверять ему. Избранные в рации и проверенные узлы тоже считаются.",
+  "whoRepeatsTitle": "Who relays me",
+  "whoRepeatsEmpty": "No relay hops found yet. Routes appear here once your radios know the path to other nodes.",
   "topologyTitle": "Схема сети",
   "topologyEmpty": "Пока нечего рисовать. Узлы появятся здесь, когда твои рации узнают, сколько до них переходов.",
   "topologyHint": "Ты в центре, каждое кольцо — ещё один переход. Линии — известные маршруты MeshCore и узлы, услышанные напрямую; чем толще линия, тем больше по ней маршрутов. Meshtastic не сообщает, кто ретранслировал, поэтому у дальних узлов Meshtastic линий нет.",

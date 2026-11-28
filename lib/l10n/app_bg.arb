@@ -1121,6 +1121,8 @@
   "trustedOnly": "Само доверени",
   "trustedShowAll": "Покажи всички възли",
   "trustedEmpty": "Още няма доверени възли. Докосни звездата на възел, за да му се довериш. Любимите в радиото и потвърдените възли също се броят.",
+  "whoRepeatsTitle": "Who relays me",
+  "whoRepeatsEmpty": "No relay hops found yet. Routes appear here once your radios know the path to other nodes.",
   "topologyTitle": "Схема на мрежата",
   "topologyEmpty": "Още няма какво да се начертае. Възлите се появяват тук, щом радиата ти знаят на колко скока са.",
   "topologyHint": "Ти си в центъра и всеки пръстен е още един скок. Линиите са известни MeshCore маршрути и директно чути възли; по-дебелите линии носят повече маршрути. Meshtastic не казва кой е препредал, затова по-далечните Meshtastic възли нямат линии.",
