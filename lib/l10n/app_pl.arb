@@ -478,6 +478,7 @@
   "messageDeleteConfirm": "Usunąć tę wiadomość z tego urządzenia? Zostanie na urządzeniach innych osób.",
   "conversationDelete": "Usuń rozmowę",
   "conversationDeleteConfirm": "Usunąć wszystkie wiadomości w {name} z tego urządzenia? Tego nie można cofnąć.",
+  "conversationDeleteFavourite": "{name} is a favourite. Delete the conversation anyway?",
   "exportTitle": "Eksportuj wiadomości",
   "exportAll": "Eksportuj wszystkie wiadomości",
   "exportHelp": "Plik zawiera treść wiadomości. Każdy, komu go udostępnisz, może ją przeczytać.",

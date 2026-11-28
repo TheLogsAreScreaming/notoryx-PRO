@@ -478,6 +478,7 @@
   "messageDeleteConfirm": "Vymazať túto správu z tohto zariadenia? Na zariadeniach ostatných zostane.",
   "conversationDelete": "Vymazať konverzáciu",
   "conversationDeleteConfirm": "Vymazať všetky správy v {name} z tohto zariadenia? Nedá sa to vrátiť späť.",
+  "conversationDeleteFavourite": "{name} is a favourite. Delete the conversation anyway?",
   "exportTitle": "Exportovať správy",
   "exportAll": "Exportovať všetky správy",
   "exportHelp": "Súbor obsahuje text správ. Ktokoľvek, s kým ho zdieľaš, ho môže čítať.",

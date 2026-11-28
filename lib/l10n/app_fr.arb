@@ -478,6 +478,7 @@
   "messageDeleteConfirm": "Supprimer ce message de cet appareil ? Il reste sur les appareils des autres.",
   "conversationDelete": "Supprimer la conversation",
   "conversationDeleteConfirm": "Supprimer tous les messages de {name} de cet appareil ? C'est irréversible.",
+  "conversationDeleteFavourite": "{name} is a favourite. Delete the conversation anyway?",
   "exportTitle": "Exporter les messages",
   "exportAll": "Exporter tous les messages",
   "exportHelp": "Le fichier contient le texte des messages. Toute personne avec qui vous le partagez peut le lire.",

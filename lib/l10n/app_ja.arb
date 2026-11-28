@@ -478,6 +478,7 @@
   "messageDeleteConfirm": "このメッセージをこの端末から削除しますか？ 他の人の端末には残ります。",
   "conversationDelete": "会話を削除",
   "conversationDeleteConfirm": "{name} のすべてのメッセージをこの端末から削除しますか？ 元に戻せません。",
+  "conversationDeleteFavourite": "{name} is a favourite. Delete the conversation anyway?",
   "exportTitle": "メッセージを書き出す",
   "exportAll": "すべてのメッセージを書き出す",
   "exportHelp": "ファイルにはメッセージ本文が含まれます。共有した相手は誰でも読めます。",

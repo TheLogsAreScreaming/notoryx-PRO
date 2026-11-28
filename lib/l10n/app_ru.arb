@@ -478,6 +478,7 @@
   "messageDeleteConfirm": "Удалить это сообщение с этого устройства? У других людей оно останется.",
   "conversationDelete": "Удалить переписку",
   "conversationDeleteConfirm": "Удалить все сообщения в {name} с этого устройства? Это нельзя отменить.",
+  "conversationDeleteFavourite": "{name} is a favourite. Delete the conversation anyway?",
   "exportTitle": "Экспорт сообщений",
   "exportAll": "Экспортировать все сообщения",
   "exportHelp": "Файл содержит текст сообщений. Любой, кому ты его отправишь, сможет его прочитать.",

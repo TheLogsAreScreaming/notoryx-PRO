@@ -478,6 +478,7 @@
   "messageDeleteConfirm": "Видалити це повідомлення з цього пристрою? На пристроях інших людей воно залишиться.",
   "conversationDelete": "Видалити розмову",
   "conversationDeleteConfirm": "Видалити всі повідомлення в {name} з цього пристрою? Це не можна скасувати.",
+  "conversationDeleteFavourite": "{name} is a favourite. Delete the conversation anyway?",
   "exportTitle": "Експорт повідомлень",
   "exportAll": "Експортувати всі повідомлення",
   "exportHelp": "Файл містить текст повідомлень. Кожен, з ким ви ним поділитеся, зможе його прочитати.",

@@ -478,6 +478,7 @@
   "messageDeleteConfirm": "Dit bericht van dit apparaat verwijderen? Het blijft op de apparaten van anderen staan.",
   "conversationDelete": "Gesprek verwijderen",
   "conversationDeleteConfirm": "Alle berichten in {name} van dit apparaat verwijderen? Dit kan niet ongedaan worden gemaakt.",
+  "conversationDeleteFavourite": "{name} is a favourite. Delete the conversation anyway?",
   "exportTitle": "Berichten exporteren",
   "exportAll": "Alle berichten exporteren",
   "exportHelp": "Het bestand bevat de berichttekst. Iedereen met wie je het deelt, kan het lezen.",

@@ -478,6 +478,7 @@
   "messageDeleteConfirm": "Diese Nachricht auf diesem Gerät löschen? Auf den Geräten der anderen bleibt sie erhalten.",
   "conversationDelete": "Unterhaltung löschen",
   "conversationDeleteConfirm": "Alle Nachrichten in {name} auf diesem Gerät löschen? Das kann nicht rückgängig gemacht werden.",
+  "conversationDeleteFavourite": "{name} is a favourite. Delete the conversation anyway?",
   "exportTitle": "Nachrichten exportieren",
   "exportAll": "Alle Nachrichten exportieren",
   "exportHelp": "Die Datei enthält den Nachrichtentext. Jeder, mit dem du sie teilst, kann ihn lesen.",

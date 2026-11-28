@@ -478,6 +478,7 @@
   "messageDeleteConfirm": "Törlöd ezt az üzenetet erről az eszközről? Mások eszközein megmarad.",
   "conversationDelete": "Beszélgetés törlése",
   "conversationDeleteConfirm": "Törlöd a(z) {name} összes üzenetét erről az eszközről? Ez nem vonható vissza.",
+  "conversationDeleteFavourite": "{name} is a favourite. Delete the conversation anyway?",
   "exportTitle": "Üzenetek exportálása",
   "exportAll": "Összes üzenet exportálása",
   "exportHelp": "A fájl tartalmazza az üzenetek szövegét. Bárki elolvashatja, akivel megosztod.",
