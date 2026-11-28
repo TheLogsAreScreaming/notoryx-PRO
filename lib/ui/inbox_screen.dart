@@ -115,12 +115,8 @@ class _InboxListState extends State<_InboxList> {
   /// Builds the unified sorted entry list from current widget data.
   List<_Entry> _entries() {
     final now = DateTime.now();
-    final latest = {
-      for (final s in widget.summaries) s.conversation: s.last,
-    };
-    final names = {
-      for (final n in widget.nodes) '${n.radioId}|${n.key}': n,
-    };
+    final latest = {for (final s in widget.summaries) s.conversation: s.last};
+    final names = {for (final n in widget.nodes) '${n.radioId}|${n.key}': n};
     final perMesh = <RadioProtocol, int>{};
     for (final r in widget.radios) {
       perMesh[r.protocol] = (perMesh[r.protocol] ?? 0) + 1;
@@ -250,8 +246,8 @@ class _ConversationTile extends StatelessWidget {
     final preview = m == null
         ? l.inboxNoMessages
         : m.outgoing
-            ? l.youPrefix(m.text)
-            : (m.senderName != null ? '${m.senderName}: ${m.text}' : m.text);
+        ? l.youPrefix(m.text)
+        : (m.senderName != null ? '${m.senderName}: ${m.text}' : m.text);
     // Large text needs the row's full width, so the time joins the preview.
     final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.3;
     final bold = unread > 0
