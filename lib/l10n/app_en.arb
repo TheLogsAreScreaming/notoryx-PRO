@@ -1089,6 +1089,8 @@
   "muteAlways": "Mute until I unmute",
   "mutedLabel": "Muted",
   "markRead": "Mark as read",
+  "clearRead": "Clear read conversations",
+  "clearReadConfirm": "Remove messages from all conversations you have already read? This can't be undone.",
   "markAllRead": "Mark all as read",
   "scanContact": "Scan contact code",
   "scanContactNotACard": "Not a contact code.",

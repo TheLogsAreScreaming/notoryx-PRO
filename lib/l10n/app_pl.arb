@@ -422,6 +422,8 @@
   "muteAlways": "Wycisz, dopóki nie wyłączę",
   "mutedLabel": "Wyciszone",
   "markRead": "Oznacz jako przeczytane",
+  "clearRead": "Clear read conversations",
+  "clearReadConfirm": "Remove messages from all conversations you have already read? This can't be undone.",
   "markAllRead": "Oznacz wszystko jako przeczytane",
   "scanContact": "Scan contact code",
   "scanContactNotACard": "Not a contact code.",

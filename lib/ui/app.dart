@@ -118,6 +118,7 @@ class NotoryxProApp extends StatelessWidget {
 
 enum _MenuAction {
   markRead,
+  deleteRead,
   scanContact,
   timeline,
   coverage,
@@ -292,6 +293,28 @@ class _HomeShellState extends State<HomeShell> {
     );
   }
 
+  Future<void> _deleteReadConversations() async {
+    final l = context.l10n;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        content: Text(l.clearReadConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l.no),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l.yes),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    await widget.app.store.deleteReadConversations();
+  }
+
   Future<void> _scanContact() async {
     final l = context.l10n;
     final text = await openScanner(context);
@@ -430,6 +453,7 @@ class _HomeShellState extends State<HomeShell> {
             key: const Key('inbox-menu'),
             onSelected: (action) => switch (action) {
               _MenuAction.markRead => app.store.markAllRead(),
+              _MenuAction.deleteRead => unawaited(_deleteReadConversations()),
               _MenuAction.scanContact => unawaited(_scanContact()),
               _MenuAction.timeline => Navigator.of(context).push(
                 MaterialPageRoute<void>(
@@ -520,6 +544,11 @@ class _HomeShellState extends State<HomeShell> {
                 PopupMenuItem(
                   value: _MenuAction.markRead,
                   child: Text(context.l10n.markAllRead),
+                ),
+                PopupMenuItem(
+                  key: const Key('menu-delete-read'),
+                  value: _MenuAction.deleteRead,
+                  child: Text(context.l10n.clearRead),
                 ),
                 PopupMenuItem(
                   key: const Key('menu-scan-contact'),

@@ -422,6 +422,8 @@
   "muteAlways": "Utišaj, dokler ne vklopim",
   "mutedLabel": "Utišano",
   "markRead": "Označi kot prebrano",
+  "clearRead": "Clear read conversations",
+  "clearReadConfirm": "Remove messages from all conversations you have already read? This can't be undone.",
   "markAllRead": "Označi vse kot prebrano",
   "scanContact": "Scan contact code",
   "scanContactNotACard": "Not a contact code.",

@@ -422,6 +422,8 @@
   "muteAlways": "Némítás, amíg fel nem oldom",
   "mutedLabel": "Némítva",
   "markRead": "Megjelölés olvasottként",
+  "clearRead": "Clear read conversations",
+  "clearReadConfirm": "Remove messages from all conversations you have already read? This can't be undone.",
   "markAllRead": "Összes olvasottnak jelölése",
   "scanContact": "Scan contact code",
   "scanContactNotACard": "Not a contact code.",

@@ -422,6 +422,8 @@
   "muteAlways": "静音，直到我取消",
   "mutedLabel": "已静音",
   "markRead": "标为已读",
+  "clearRead": "Clear read conversations",
+  "clearReadConfirm": "Remove messages from all conversations you have already read? This can't be undone.",
   "markAllRead": "全部标为已读",
   "scanContact": "Scan contact code",
   "scanContactNotACard": "Not a contact code.",

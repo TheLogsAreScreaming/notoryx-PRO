@@ -422,6 +422,8 @@
   "muteAlways": "Заглуши, докато не включа",
   "mutedLabel": "Заглушено",
   "markRead": "Маркирай като прочетено",
+  "clearRead": "Clear read conversations",
+  "clearReadConfirm": "Remove messages from all conversations you have already read? This can't be undone.",
   "markAllRead": "Маркирай всичко като прочетено",
   "scanContact": "Scan contact code",
   "scanContactNotACard": "Not a contact code.",

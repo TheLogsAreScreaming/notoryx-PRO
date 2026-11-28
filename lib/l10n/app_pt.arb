@@ -422,6 +422,8 @@
   "muteAlways": "Silenciar até eu reativar",
   "mutedLabel": "Silenciado",
   "markRead": "Marcar como lida",
+  "clearRead": "Clear read conversations",
+  "clearReadConfirm": "Remove messages from all conversations you have already read? This can't be undone.",
   "markAllRead": "Marcar todas como lidas",
   "scanContact": "Scan contact code",
   "scanContactNotACard": "Not a contact code.",

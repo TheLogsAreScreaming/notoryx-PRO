@@ -422,6 +422,8 @@
   "muteAlways": "Tysta tills jag slår på igen",
   "mutedLabel": "Tystad",
   "markRead": "Markera som läst",
+  "clearRead": "Clear read conversations",
+  "clearReadConfirm": "Remove messages from all conversations you have already read? This can't be undone.",
   "markAllRead": "Markera alla som lästa",
   "scanContact": "Scan contact code",
   "scanContactNotACard": "Not a contact code.",
