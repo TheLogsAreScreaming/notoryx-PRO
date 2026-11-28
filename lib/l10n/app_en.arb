@@ -3642,5 +3642,20 @@
   "covStopSharing": "Stop sharing",
   "covStopSharingSub": "Nothing more is sent. Readings stay on this phone.",
   "covOpenMap": "Open the coverage map",
-  "contactsFullWarning": "This radio's contact list is full, so it can't add new nodes. Remove some contacts to make room."
+  "contactsFullWarning": "This radio's contact list is full, so it can't add new nodes. Remove some contacts to make room.",
+  "cliButton": "Command line",
+  "cliTitle": "Radio command line",
+  "cliHint": "Type a command and press Run.\nCheck 'help' for a list of commands.",
+  "cliInputHint": "Command",
+  "cliRun": "Run",
+  "cliCopyAll": "Copy output",
+  "cliCopied": "Output copied",
+  "cliDestructiveTitle": "Destructive command",
+  "cliDestructiveBody": "'{command}' may erase data or change the radio's identity. Run it anyway?",
+  "@cliDestructiveBody": {
+    "placeholders": {
+      "command": {"type": "String"}
+    }
+  },
+  "cliRunAnyway": "Run anyway"
 }

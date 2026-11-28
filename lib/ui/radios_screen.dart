@@ -7,6 +7,7 @@ import '../meshcore/firmware.dart';
 import '../meshtastic/firmware.dart';
 import '../radio/radio.dart';
 import 'admin_screens.dart';
+import 'companion_cli_screen.dart';
 import 'bridge_screen.dart';
 import 'feeds_screen.dart';
 import 'auto_reply_screen.dart';
@@ -233,6 +234,19 @@ class _ConnectionCard extends StatelessWidget {
                     onPressed: () => Navigator.of(context).push(
                       MaterialPageRoute<void>(
                         builder: (_) => MeshCoreSettingsScreen(connection: c),
+                      ),
+                    ),
+                  ),
+                if (c is MeshCoreConnection &&
+                    c.hasCompanionCli &&
+                    phase == SupervisorPhase.connected)
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.terminal),
+                    label: Text(l.cliButton),
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) =>
+                            CompanionCliScreen(connection: c),
                       ),
                     ),
                   ),
