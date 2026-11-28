@@ -1057,6 +1057,7 @@
   "demoBanner": "데모: 가상의 무전기예요. 아무것도 보내지 않고, 여기서 한 것은 저장되지 않아요.",
   "demoExit": "데모 나가기",
   "nodeHeardBy": "내 무전기 {count}대가 수신함",
+  "nodeBattery": "{percent}% battery",
   "sntTitle": "커뮤니티 관리",
   "sntToolSubtitle": "NOTORYX 관리자에게 스팸을 신고하고 표시된 노드 보기",
   "sntIntro": "신고는 NOTORYX 관리자에게 가고, 관리자가 하나하나 직접 검토해요. 승인된 차단은 참고용 목록으로 돌아와요: 표시된 노드에 라벨이 붙을 뿐, 메시에서 차단되는 것은 없어요.",

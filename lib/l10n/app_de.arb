@@ -1057,6 +1057,7 @@
   "demoBanner": "Demo: ein simuliertes Funkgerät. Nichts wird gesendet und nichts hier wird gespeichert.",
   "demoExit": "Demo beenden",
   "nodeHeardBy": "Von {count} deiner Funkgeräte gehört",
+  "nodeBattery": "{percent}% battery",
   "sntTitle": "Community-Moderation",
   "sntToolSubtitle": "Spam an die NOTORYX-Moderation melden und markierte Knoten sehen",
   "sntIntro": "Meldungen gehen an die NOTORYX-Moderation, die jede einzeln prüft. Bestätigte Sperren kommen als Hinweisliste zurück: Markierte Knoten erhalten ein Label, im Mesh wird nichts blockiert.",

@@ -1057,6 +1057,7 @@
   "demoBanner": "Ukážka: simulované rádio. Nič sa neposiela a nič sa tu neukladá.",
   "demoExit": "Ukončiť ukážku",
   "nodeHeardBy": "Počuje ho tvojich rádií: {count}",
+  "nodeBattery": "{percent}% battery",
   "sntTitle": "Komunitná moderácia",
   "sntToolSubtitle": "Nahlás spam moderátorom NOTORYX a pozri označené uzly",
   "sntIntro": "Hlásenia idú moderátorom NOTORYX, ktorí každé posúdia ručne. Schválené zákazy sa vracajú ako odporúčací zoznam: označené uzly dostanú štítok a v sieti sa nič neblokuje.",

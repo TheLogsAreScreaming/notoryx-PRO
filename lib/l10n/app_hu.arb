@@ -1057,6 +1057,7 @@
   "demoBanner": "Demó: egy kitalált rádió. Semmi nem megy ki, és itt semmi nem mentődik.",
   "demoExit": "Kilépés a demóból",
   "nodeHeardBy": "{count} rádiód hallja",
+  "nodeBattery": "{percent}% battery",
   "sntTitle": "Közösségi moderálás",
   "sntToolSubtitle": "Spam jelentése a NOTORYX moderátoroknak és a megjelölt node-ok megtekintése",
   "sntIntro": "A jelentések a NOTORYX moderátorokhoz kerülnek, akik egyenként, kézzel nézik át őket. A jóváhagyott tiltások tájékoztató listaként jönnek vissza: a megjelölt node-ok címkét kapnak, de a hálózaton semmi nincs blokkolva.",

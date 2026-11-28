@@ -1057,6 +1057,7 @@
   "demoBanner": "Demo: una radio simulata. Non viene inviato nulla e nulla qui viene salvato.",
   "demoExit": "Esci dalla demo",
   "nodeHeardBy": "Sentito da {count} delle tue radio",
+  "nodeBattery": "{percent}% battery",
   "sntTitle": "Moderazione della comunità",
   "sntToolSubtitle": "Segnala lo spam ai moderatori NOTORYX e vedi i nodi segnalati",
   "sntIntro": "Le segnalazioni vanno ai moderatori NOTORYX, che le esaminano una per una. I ban approvati tornano come elenco indicativo: i nodi segnalati ricevono un'etichetta e nulla viene bloccato sulla rete.",

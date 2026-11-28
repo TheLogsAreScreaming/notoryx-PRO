@@ -1057,6 +1057,7 @@
   "demoBanner": "Predstavitev: namišljen radio. Nič se ne pošlje in nič se ne shrani.",
   "demoExit": "Zapusti predstavitev",
   "nodeHeardBy": "Slišano z {count} tvojih radiev",
+  "nodeBattery": "{percent}% battery",
   "sntTitle": "Moderiranje skupnosti",
   "sntToolSubtitle": "Prijavi neželeno vsebino moderatorjem NOTORYX in poglej označena vozlišča",
   "sntIntro": "Prijave gredo moderatorjem NOTORYX, ki vsako pregledajo ročno. Odobrene prepovedi se vrnejo kot svetovalni seznam: označena vozlišča dobijo oznako, v omrežju pa ni nič blokirano.",

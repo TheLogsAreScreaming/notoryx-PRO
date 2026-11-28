@@ -1057,6 +1057,7 @@
   "demoBanner": "Demonstração: um rádio simulado. Nada é enviado e nada aqui é salvo.",
   "demoExit": "Sair da demonstração",
   "nodeHeardBy": "Ouvido por {count} dos seus rádios",
+  "nodeBattery": "{percent}% battery",
   "sntTitle": "Moderação da comunidade",
   "sntToolSubtitle": "Denuncie spam aos moderadores do NOTORYX e veja os nós sinalizados",
   "sntIntro": "As denúncias vão para os moderadores do NOTORYX, que analisam cada uma à mão. Os banimentos aprovados voltam como uma lista de aviso: os nós sinalizados recebem uma etiqueta, e nada na malha é bloqueado.",
