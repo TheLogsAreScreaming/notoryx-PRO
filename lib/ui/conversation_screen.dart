@@ -19,6 +19,7 @@ import 'canned_messages_screen.dart';
 import 'sentinel_screen.dart';
 import '../meshcore/codes.dart' show MeshCoreLimits;
 import '../meshtastic/messages.dart' show meshtasticMaxPayload;
+import '../mesh/signal.dart' show signalBars;
 import 'common.dart';
 import 'themes.dart';
 import 'forward_sheet.dart';
@@ -214,6 +215,11 @@ class _ConversationScreenState extends State<ConversationScreen> {
             Flexible(child: Text(title, overflow: TextOverflow.ellipsis)),
             const SizedBox(width: 8),
             ProtocolBadge(conversation.radioId.protocol),
+            if (conversation is DirectConversation)
+              _SignalIndicator(
+                app: app,
+                conversation: conversation as DirectConversation,
+              ),
           ],
         ),
         actions: [
@@ -748,4 +754,29 @@ class _ComposerState extends State<Composer> {
       ),
     );
   }
+}
+
+/// Live signal-strength indicator for a DM conversation's title bar.
+class _SignalIndicator extends StatelessWidget {
+  const _SignalIndicator({required this.app, required this.conversation});
+
+  final AppController app;
+  final DirectConversation conversation;
+
+  @override
+  Widget build(BuildContext context) => StreamBuilder<List<Node>>(
+    stream: app.store.watchNodes(conversation.radioId),
+    builder: (context, snap) {
+      final node = snap.data
+          ?.where((n) => n.key == conversation.node)
+          .firstOrNull;
+      if (node == null) return const SizedBox.shrink();
+      final bars = signalBars(node.path);
+      if (bars == null) return const SizedBox.shrink();
+      return Padding(
+        padding: const EdgeInsets.only(left: 6),
+        child: SignalBars(bars, size: 14),
+      );
+    },
+  );
 }
