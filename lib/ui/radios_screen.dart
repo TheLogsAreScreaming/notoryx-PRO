@@ -20,6 +20,7 @@ import 'nearby_sheet.dart';
 import 'verify_screen.dart';
 import 'channels_screen.dart';
 import 'firmware_update_sheet.dart';
+import 'companion_cli_screen.dart';
 import 'meshtastic_admin_screen.dart';
 import 'telemetry_screen.dart';
 import 'list_insets.dart';
@@ -245,6 +246,18 @@ class _ConnectionCard extends StatelessWidget {
                     icon: const Icon(Icons.system_update_outlined),
                     label: Text(l.fwUpdateButton),
                     onPressed: () => showFirmwareUpdateSheet(context, c),
+                  ),
+                if (c is MeshCoreConnection &&
+                    c.hasCompanionCli &&
+                    phase == SupervisorPhase.connected)
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.terminal),
+                    label: Text(l.cliButton),
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => CompanionCliScreen(connection: c),
+                      ),
+                    ),
                   ),
                 if (c is MeshtasticConnection &&
                     phase == SupervisorPhase.connected)
