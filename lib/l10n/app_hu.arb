@@ -1268,6 +1268,7 @@
   "ageDays": "{count} nap",
   "staleAfterTitle": "Node-ok elavultnak jelölése ennyi után",
   "staleOff": "Ki",
+  "mapHopBadges": "Hop badges",
   "mapRangeRings": "Hatótávgyűrűk",
   "mapRingsNoPosition": "A pozíciód még nem ismert, ezért a hatótávgyűrűk nem rajzolhatók meg.",
   "ignoreNode": "Figyelmen kívül hagyás",

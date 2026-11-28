@@ -191,6 +191,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   );
   Node? _route;
 
+  /// Hop-count badge mode: a numbered badge on each node pin.
+  bool _hopBadges = false;
+
   /// Preference name for the range-rings switch (`1` on).
   static const rangeRingsPref = 'map.rangeRings';
 
@@ -350,6 +353,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                               app: widget.app,
                               node: n,
                               stale: isStale(n.lastHeard, now, staleAfter),
+                              showHopBadge: _hopBadges,
                               onTap: () => _openNode(n, all),
                             ),
                           ),
@@ -491,6 +495,14 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         showLabel: false,
         selected: rings,
         onPressed: () => unawaited(_setRings(!rings)),
+      ),
+      MapToolItem(
+        key: const Key('map-hop-badges'),
+        icon: Icons.tag,
+        label: l.mapHopBadges,
+        showLabel: false,
+        selected: _hopBadges,
+        onPressed: () => setState(() => _hopBadges = !_hopBadges),
       ),
       MapToolItem(
         key: const Key('map-search'),
@@ -772,6 +784,7 @@ class _NodeMarker extends StatelessWidget {
     required this.node,
     required this.onTap,
     this.stale = false,
+    this.showHopBadge = false,
   });
 
   final AppController app;
@@ -780,6 +793,9 @@ class _NodeMarker extends StatelessWidget {
 
   /// Not heard for a while: drawn faded.
   final bool stale;
+
+  /// Overlay a hop-count badge on the pin.
+  final bool showHopBadge;
 
   /// How opaque a stale node's pin is.
   static const staleOpacity = .45;
@@ -809,6 +825,20 @@ class _NodeMarker extends StatelessWidget {
       ),
     );
     final age = heard == null ? null : now.difference(heard);
+    final hops = node.path.hops;
+    final badgeVisible = showHopBadge && hops != null && hops > 0;
+    final pinWidget = recent
+        ? Container(
+            key: const Key('pin-recent'),
+            padding: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              shape: repeater ? BoxShape.rectangle : BoxShape.circle,
+              borderRadius: repeater ? BorderRadius.circular(13) : null,
+              border: Border.all(color: recentRing, width: 2.5),
+            ),
+            child: pin,
+          )
+        : pin;
     return Semantics(
       button: true,
       label: [
@@ -821,18 +851,38 @@ class _NodeMarker extends StatelessWidget {
         child: Opacity(
           key: stale ? const Key('pin-stale') : null,
           opacity: stale ? staleOpacity : 1,
-          child: recent
-              ? Container(
-                  key: const Key('pin-recent'),
-                  padding: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    shape: repeater ? BoxShape.rectangle : BoxShape.circle,
-                    borderRadius: repeater ? BorderRadius.circular(13) : null,
-                    border: Border.all(color: recentRing, width: 2.5),
-                  ),
-                  child: pin,
+          child: badgeVisible
+              ? Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    pinWidget,
+                    Positioned(
+                      right: -4,
+                      bottom: -4,
+                      child: Container(
+                        key: const Key('hop-badge'),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 4,
+                          vertical: 1,
+                        ),
+                        decoration: BoxDecoration(
+                          color: color,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          '$hops',
+                          style: Theme.of(context).textTheme.labelSmall
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                height: 1,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                      ),
+                    ),
+                  ],
                 )
-              : pin,
+              : pinWidget,
         ),
       ),
     );

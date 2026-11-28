@@ -1268,6 +1268,7 @@
   "ageDays": "{count} дн.",
   "staleAfterTitle": "Позначати вузли застарілими через",
   "staleOff": "Вимк.",
+  "mapHopBadges": "Hop badges",
   "mapRangeRings": "Кільця дальності",
   "mapRingsNoPosition": "Ваша позиція ще невідома, тож кільця дальності не можна показати.",
   "ignoreNode": "Ігнорувати",

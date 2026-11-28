@@ -3133,6 +3133,7 @@
   },
   "staleAfterTitle": "Mark nodes stale after",
   "staleOff": "Off",
+  "mapHopBadges": "Hop badges",
   "mapRangeRings": "Range rings",
   "mapRingsNoPosition": "Your position isn't known yet, so range rings can't be drawn.",
   "ignoreNode": "Ignore",

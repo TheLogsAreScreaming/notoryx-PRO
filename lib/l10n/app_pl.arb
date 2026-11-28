@@ -1268,6 +1268,7 @@
   "ageDays": "{count} d",
   "staleAfterTitle": "Oznaczaj węzły jako nieaktualne po",
   "staleOff": "Wył.",
+  "mapHopBadges": "Hop badges",
   "mapRangeRings": "Pierścienie zasięgu",
   "mapRingsNoPosition": "Twoja pozycja nie jest jeszcze znana, więc nie można narysować pierścieni zasięgu.",
   "ignoreNode": "Ignoruj",
