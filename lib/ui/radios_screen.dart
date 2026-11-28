@@ -245,8 +245,7 @@ class _ConnectionCard extends StatelessWidget {
                     label: Text(l.cliButton),
                     onPressed: () => Navigator.of(context).push(
                       MaterialPageRoute<void>(
-                        builder: (_) =>
-                            CompanionCliScreen(connection: c),
+                        builder: (_) => CompanionCliScreen(connection: c),
                       ),
                     ),
                   ),

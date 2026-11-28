@@ -120,9 +120,7 @@ class _CompanionCliScreenState extends State<CompanionCliScreen> {
     final l = context.l10n;
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
-    final mono = theme.textTheme.bodyMedium?.copyWith(
-      fontFamily: 'monospace',
-    );
+    final mono = theme.textTheme.bodyMedium?.copyWith(fontFamily: 'monospace');
     return Scaffold(
       appBar: AppBar(
         title: Text(l.cliTitle),
