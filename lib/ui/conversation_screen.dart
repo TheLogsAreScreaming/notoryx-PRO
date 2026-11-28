@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import '../app/app_controller.dart';
-import '../app/canned_messages.dart';
 import '../app/radio_connection.dart';
 import '../app/sentinel.dart';
 import '../app/trusted_nodes.dart';
