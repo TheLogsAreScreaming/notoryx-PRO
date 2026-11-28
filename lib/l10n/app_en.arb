@@ -188,6 +188,7 @@
   "yes": "Yes",
   "no": "No",
   "sendAgain": "Send again",
+  "cancelSend": "Cancel send",
   "tabMap": "Map",
   "mapNoPositions": "No positions yet. Nodes appear here when they share their location.",
   "mapFitAll": "Show everything",

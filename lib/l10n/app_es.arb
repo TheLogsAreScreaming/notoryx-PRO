@@ -87,6 +87,7 @@
   "yes": "Sí",
   "no": "No",
   "sendAgain": "Enviar de nuevo",
+  "cancelSend": "Cancel send",
   "tabMap": "Mapa",
   "mapNoPositions": "Aún no hay posiciones. Los nodos aparecen aquí cuando comparten su ubicación.",
   "mapFitAll": "Mostrar todo",

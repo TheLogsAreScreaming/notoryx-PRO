@@ -87,6 +87,7 @@
   "yes": "예",
   "no": "아니요",
   "sendAgain": "다시 보내기",
+  "cancelSend": "Cancel send",
   "tabMap": "지도",
   "mapNoPositions": "아직 위치가 없어요. 노드가 위치를 공유하면 여기에 나타나요.",
   "mapFitAll": "모두 보기",

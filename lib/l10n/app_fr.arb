@@ -87,6 +87,7 @@
   "yes": "Oui",
   "no": "Non",
   "sendAgain": "Renvoyer",
+  "cancelSend": "Cancel send",
   "tabMap": "Carte",
   "mapNoPositions": "Aucune position pour l'instant. Les nœuds apparaissent ici quand ils partagent leur position.",
   "mapFitAll": "Tout afficher",

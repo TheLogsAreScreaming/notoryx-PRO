@@ -87,6 +87,7 @@
   "yes": "はい",
   "no": "いいえ",
   "sendAgain": "再送信",
+  "cancelSend": "Cancel send",
   "tabMap": "地図",
   "mapNoPositions": "まだ位置情報がありません。ノードが位置を共有するとここに表示されます。",
   "mapFitAll": "すべて表示",

@@ -87,6 +87,7 @@
   "yes": "Ja",
   "no": "Nej",
   "sendAgain": "Skicka igen",
+  "cancelSend": "Cancel send",
   "tabMap": "Karta",
   "mapNoPositions": "Inga positioner än. Noder syns här när de delar sin plats.",
   "mapFitAll": "Visa allt",

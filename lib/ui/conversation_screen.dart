@@ -381,6 +381,12 @@ class _ConversationScreenState extends State<ConversationScreen> {
             nameClash: clash,
             lookalikeOf: imitated?.displayName,
             onResend: c == null ? null : () => c.resend(stored.id),
+            onCancel:
+                (m.outgoing && (m.delivery is Pending || m.delivery is Sent))
+                ? () => unawaited(
+                    app.store.setDelivery(stored.id, const Failed('Cancelled')),
+                  )
+                : null,
             onTap: () => _details(m),
             onLongPress: () => _messageActions(stored),
           );
@@ -396,6 +402,7 @@ class MessageBubble extends StatelessWidget {
     super.key,
     required this.message,
     this.onResend,
+    this.onCancel,
     this.onTap,
     this.onLongPress,
     this.senderLabel,
@@ -430,6 +437,9 @@ class MessageBubble extends StatelessWidget {
 
   /// Sends a failed message again; null when its radio isn't connected.
   final VoidCallback? onResend;
+
+  /// Abandons a pending or in-flight message; null when not applicable.
+  final VoidCallback? onCancel;
 
   @override
   Widget build(BuildContext context) {
@@ -537,12 +547,20 @@ class MessageBubble extends StatelessWidget {
                     ],
                   ],
                 ),
+                if (m.outgoing &&
+                    (m.delivery is Pending || m.delivery is Sent) &&
+                    onCancel != null)
+                  TextButton.icon(
+                    onPressed: onCancel,
+                    icon: const Icon(Icons.cancel_outlined, size: 16),
+                    label: Text(context.l10n.cancelSend),
+                  ),
                 if (m.delivery case Failed(:final reason)) ...[
                   Text(
                     context.l10n.deliveryFailed(reason),
                     style: text.labelSmall?.copyWith(color: scheme.error),
                   ),
-                  if (onResend != null)
+                  if (onResend != null && reason != 'Cancelled')
                     TextButton.icon(
                       onPressed: onResend,
                       icon: const Icon(Icons.refresh, size: 16),

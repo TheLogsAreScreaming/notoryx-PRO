@@ -87,6 +87,7 @@
   "yes": "是",
   "no": "否",
   "sendAgain": "重新发送",
+  "cancelSend": "Cancel send",
   "tabMap": "地图",
   "mapNoPositions": "还没有位置。节点分享位置后会显示在这里。",
   "mapFitAll": "显示全部",

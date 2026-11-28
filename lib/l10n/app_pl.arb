@@ -87,6 +87,7 @@
   "yes": "Tak",
   "no": "Nie",
   "sendAgain": "Wyślij ponownie",
+  "cancelSend": "Cancel send",
   "tabMap": "Mapa",
   "mapNoPositions": "Brak pozycji. Węzły pojawią się tutaj, gdy udostępnią swoją lokalizację.",
   "mapFitAll": "Pokaż wszystko",
