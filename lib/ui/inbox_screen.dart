@@ -178,7 +178,10 @@ class _InboxListState extends State<_InboxList> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final key = _keys[entries[firstUnread].conversation.key];
       if (key?.currentContext case final ctx?) {
-        Scrollable.ensureVisible(ctx, duration: const Duration(milliseconds: 300));
+        Scrollable.ensureVisible(
+          ctx,
+          duration: const Duration(milliseconds: 300),
+        );
       }
     });
   }
