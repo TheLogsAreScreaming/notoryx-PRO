@@ -155,11 +155,7 @@ class _ReachabilityBadge extends StatelessWidget {
         final l = context.l10n;
         final cs = Theme.of(context).colorScheme;
         final (icon, color, label) = switch (r) {
-          Reachability.twoWay => (
-            Icons.swap_horiz,
-            cs.primary,
-            l.reachTwoWay,
-          ),
+          Reachability.twoWay => (Icons.swap_horiz, cs.primary, l.reachTwoWay),
           Reachability.theyHeardYou => (
             Icons.arrow_forward,
             cs.secondary,
