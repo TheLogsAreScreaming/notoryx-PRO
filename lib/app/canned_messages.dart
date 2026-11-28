@@ -32,9 +32,7 @@ class CannedMessages {
   final List<CannedMessage> messages;
 
   String encode() {
-    return jsonEncode({
-      'messages': [for (final m in messages) m.toJson()],
-    });
+    return jsonEncode({'messages': [for (final m in messages) m.toJson()]});
   }
 
   static CannedMessages decode(String? saved) {
