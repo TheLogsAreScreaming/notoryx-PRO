@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide Radio;
 
 import '../app/app_controller.dart';
+import '../app/reachability.dart';
 import '../mesh/model.dart';
 import '../radio/radio_link.dart';
 import '../store/mesh_store.dart';
@@ -134,6 +135,53 @@ class _InboxList extends StatelessWidget {
       names['${c.radioId}|${c.node}']?.displayName ?? c.node.short;
 }
 
+/// A tiny icon indicating whether a direct-message contact can be reached.
+class _ReachabilityBadge extends StatelessWidget {
+  const _ReachabilityBadge({
+    required this.store,
+    required this.conversation,
+  });
+
+  final MeshStore store;
+  final DirectConversation conversation;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<Reachability>(
+      stream: store.watchReachability(conversation),
+      builder: (context, snap) {
+        final r = snap.data;
+        if (r == null) return const SizedBox.shrink();
+        final l = context.l10n;
+        final cs = Theme.of(context).colorScheme;
+        final (icon, color, label) = switch (r) {
+          Reachability.twoWay => (
+            Icons.swap_horiz,
+            cs.primary,
+            l.reachTwoWay,
+          ),
+          Reachability.theyHeardYou => (
+            Icons.arrow_forward,
+            cs.secondary,
+            l.reachTheyHeardYou,
+          ),
+          Reachability.noAnswerYet => (
+            Icons.help_outline,
+            cs.onSurfaceVariant,
+            l.reachNoAnswerYet,
+          ),
+        };
+        return Semantics(
+          label: label,
+          child: ExcludeSemantics(
+            child: Icon(icon, size: 14, color: color),
+          ),
+        );
+      },
+    );
+  }
+}
+
 class _Header extends StatelessWidget {
   const _Header(this.text);
   final String text;
@@ -219,6 +267,11 @@ class _ConversationTile extends StatelessWidget {
                       : null,
                 ),
               ),
+            ),
+          if (conversation case final DirectConversation dc)
+            _ReachabilityBadge(
+              store: app.store,
+              conversation: dc,
             ),
         ],
       ),

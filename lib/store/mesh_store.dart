@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 
+import '../app/reachability.dart';
 import '../mesh/diagnostics.dart';
 import '../mesh/identity.dart';
 import '../mesh/model.dart';
@@ -475,6 +476,40 @@ class MeshStore {
   /// One-off version of [watchConversations].
   Future<List<ConversationSummary>> conversations() =>
       _conversationsQuery().get();
+
+  /// Live reachability status for a direct conversation.
+  ///
+  /// Returns [Reachability.twoWay] when we have received at least one
+  /// message from this contact or one of our messages was delivered.
+  /// Returns [Reachability.theyHeardYou] when we have sent at least one
+  /// message that the radio transmitted (sent / flood / relayed / delivered).
+  /// Otherwise returns [Reachability.noAnswerYet].
+  Stream<Reachability> watchReachability(DirectConversation conv) {
+    final key = conv.key;
+    final query = db.customSelect(
+      'SELECT '
+      'MAX(CASE WHEN delivery = ? '
+      "    OR (outgoing = 1 AND delivery = ?) THEN 1 ELSE 0 END) AS tw, "
+      'MAX(CASE WHEN outgoing = 1 AND delivery IN '
+      "    (?,?,?,?) THEN 1 ELSE 0 END) AS hy "
+      'FROM messages WHERE conversation = ? AND is_reaction = 0',
+      variables: [
+        Variable.withString(DeliveryCode.received.name),
+        Variable.withString(DeliveryCode.delivered.name),
+        Variable.withString(DeliveryCode.sent.name),
+        Variable.withString(DeliveryCode.sentFlood.name),
+        Variable.withString(DeliveryCode.relayed.name),
+        Variable.withString(DeliveryCode.delivered.name),
+        Variable.withString(key),
+      ],
+      readsFrom: {db.messages},
+    );
+    return query.watchSingle().map((row) {
+      if ((row.read<int?>('tw') ?? 0) == 1) return Reachability.twoWay;
+      if ((row.read<int?>('hy') ?? 0) == 1) return Reachability.theyHeardYou;
+      return Reachability.noAnswerYet;
+    });
+  }
 
   /// The dedupe key for a received message.
   ///
