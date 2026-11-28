@@ -440,11 +440,13 @@ class MessageBubble extends StatelessWidget {
     final m = message;
     final (icon, label) = deliveryLook(context, m.delivery);
     final path = pathSummary(context, m.path);
+    final relay = m.outgoing ? _relayBadge(m.path) : null;
     final meta = [
       if (!m.outgoing && (senderLabel ?? m.senderName) != null)
         senderLabel ?? m.senderName!,
       ago(context, m.receivedAt),
       if (path.isNotEmpty) path,
+      ?relay,
     ].join(' · ');
     return Align(
       alignment: m.outgoing ? Alignment.centerRight : Alignment.centerLeft,
@@ -557,6 +559,13 @@ class MessageBubble extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// "↻ N" compact badge for an outgoing message that travelled via relays.
+  static String? _relayBadge(PathFacts path) {
+    final hops = path.hops;
+    if (hops == null || hops == 0) return null;
+    return '↻ $hops';
   }
 }
 
