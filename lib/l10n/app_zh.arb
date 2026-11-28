@@ -1121,6 +1121,8 @@
   "trustedOnly": "仅显示信任的",
   "trustedShowAll": "显示所有节点",
   "trustedEmpty": "还没有信任的节点。点击节点上的星标即可信任。电台收藏和已验证的节点也算在内。",
+  "whoRepeatsTitle": "Who relays me",
+  "whoRepeatsEmpty": "No relay hops found yet. Routes appear here once your radios know the path to other nodes.",
   "topologyTitle": "网络图",
   "topologyEmpty": "还没有可绘制的内容。当你的电台知道节点相距几跳后，节点就会显示在这里。",
   "topologyHint": "你在中心，每一圈多一跳。连线是已知的 MeshCore 路由和直接收到的节点；线越粗，经过的路由越多。Meshtastic 不报告由谁转发，所以较远的 Meshtastic 节点没有连线。",

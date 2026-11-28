@@ -1121,6 +1121,8 @@
   "trustedOnly": "Bara betrodda",
   "trustedShowAll": "Visa alla noder",
   "trustedEmpty": "Inga betrodda noder än. Tryck på stjärnan på en nod för att lita på den. Radiofavoriter och verifierade noder räknas också.",
+  "whoRepeatsTitle": "Who relays me",
+  "whoRepeatsEmpty": "No relay hops found yet. Routes appear here once your radios know the path to other nodes.",
   "topologyTitle": "Nätverksdiagram",
   "topologyEmpty": "Inget att rita än. Noder visas här när dina radior vet hur många hopp bort de är.",
   "topologyHint": "Du är i mitten och varje ring är ett hopp till. Linjer är kända MeshCore-rutter och noder som hörts direkt; tjockare linjer bär fler rutter. Meshtastic säger inte vem som vidarebefordrade, så Meshtastic-noder längre bort har inga linjer.",

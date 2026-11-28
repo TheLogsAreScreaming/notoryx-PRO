@@ -1121,6 +1121,8 @@
   "trustedOnly": "Alleen vertrouwd",
   "trustedShowAll": "Alle nodes tonen",
   "trustedEmpty": "Nog geen vertrouwde nodes. Tik op de ster bij een node om hem te vertrouwen. Radiofavorieten en geverifieerde nodes tellen ook mee.",
+  "whoRepeatsTitle": "Who relays me",
+  "whoRepeatsEmpty": "No relay hops found yet. Routes appear here once your radios know the path to other nodes.",
   "topologyTitle": "Netwerkdiagram",
   "topologyEmpty": "Nog niets te tekenen. Nodes verschijnen hier zodra je radio's weten hoeveel hops ze weg zijn.",
   "topologyHint": "Jij staat in het midden en elke ring is één hop verder. Lijnen zijn bekende MeshCore-routes en direct gehoorde nodes; dikkere lijnen dragen meer routes. Meshtastic zegt niet wie doorstuurde, dus verdere Meshtastic-nodes hebben geen lijnen.",

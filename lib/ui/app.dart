@@ -36,6 +36,7 @@ import 'backdrop.dart';
 import 'theme_screen.dart';
 import 'themes.dart';
 import 'timeline_screen.dart';
+import 'who_repeats_screen.dart';
 import 'sarneg/sarneg_ui.dart';
 import '../app/telemetry_alerts.dart';
 
@@ -115,6 +116,7 @@ enum _MenuAction {
   markRead,
   timeline,
   coverage,
+  whoRepeats,
   journal,
   checklists,
   sarneg,
@@ -392,6 +394,11 @@ class _HomeShellState extends State<HomeShell> {
                   builder: (_) => TimelineScreen(app: app),
                 ),
               ),
+              _MenuAction.whoRepeats => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => WhoRepeatsScreen(app: app),
+                ),
+              ),
               _MenuAction.coverage => Navigator.of(context).push(
                 MaterialPageRoute<void>(
                   builder: (_) => CoverageScreen(
@@ -479,6 +486,11 @@ class _HomeShellState extends State<HomeShell> {
               PopupMenuItem(
                 value: _MenuAction.timeline,
                 child: Text(context.l10n.tlTitle),
+              ),
+              PopupMenuItem(
+                key: const Key('menu-who-repeats'),
+                value: _MenuAction.whoRepeats,
+                child: Text(context.l10n.whoRepeatsTitle),
               ),
               PopupMenuItem(
                 key: const Key('menu-coverage'),

@@ -1121,6 +1121,8 @@
   "trustedOnly": "De confiance uniquement",
   "trustedShowAll": "Afficher tous les nœuds",
   "trustedEmpty": "Aucun nœud de confiance. Touchez l'étoile d'un nœud pour lui faire confiance. Les favoris de la radio et les nœuds vérifiés comptent aussi.",
+  "whoRepeatsTitle": "Who relays me",
+  "whoRepeatsEmpty": "No relay hops found yet. Routes appear here once your radios know the path to other nodes.",
   "topologyTitle": "Schéma du réseau",
   "topologyEmpty": "Rien à dessiner pour l'instant. Les nœuds apparaissent ici dès que vos radios savent à combien de sauts ils se trouvent.",
   "topologyHint": "Vous êtes au centre et chaque anneau est un saut de plus. Les lignes sont les routes MeshCore connues et les nœuds entendus directement ; les plus épaisses portent plus de routes. Meshtastic n'indique pas qui a relayé, donc les nœuds Meshtastic éloignés n'ont pas de ligne.",

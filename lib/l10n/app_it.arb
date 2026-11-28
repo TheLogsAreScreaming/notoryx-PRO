@@ -1121,6 +1121,8 @@
   "trustedOnly": "Solo fidati",
   "trustedShowAll": "Mostra tutti i nodi",
   "trustedEmpty": "Ancora nessun nodo fidato. Tocca la stella di un nodo per fidarti. Contano anche i preferiti della radio e i nodi verificati.",
+  "whoRepeatsTitle": "Who relays me",
+  "whoRepeatsEmpty": "No relay hops found yet. Routes appear here once your radios know the path to other nodes.",
   "topologyTitle": "Diagramma di rete",
   "topologyEmpty": "Ancora niente da disegnare. I nodi compaiono qui quando le tue radio sanno a quanti salti si trovano.",
   "topologyHint": "Tu sei al centro e ogni anello è un salto in più. Le linee sono percorsi MeshCore noti e nodi sentiti direttamente; quelle più spesse portano più percorsi. Meshtastic non dice chi ha inoltrato, quindi i nodi Meshtastic più lontani non hanno linee.",

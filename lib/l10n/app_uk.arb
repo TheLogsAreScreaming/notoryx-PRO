@@ -1121,6 +1121,8 @@
   "trustedOnly": "Лише довірені",
   "trustedShowAll": "Показати всі вузли",
   "trustedEmpty": "Довірених вузлів ще немає. Торкніться зірочки на вузлі, щоб довіряти йому. Улюблені на радіо й перевірені вузли теж враховуються.",
+  "whoRepeatsTitle": "Who relays me",
+  "whoRepeatsEmpty": "No relay hops found yet. Routes appear here once your radios know the path to other nodes.",
   "topologyTitle": "Схема мережі",
   "topologyEmpty": "Поки нічого показувати. Вузли з'являться тут, щойно ваші радіо дізнаються, за скільки переходів вони перебувають.",
   "topologyHint": "Ви посередині, а кожне кільце — це ще один перехід. Лінії — це відомі маршрути MeshCore і вузли, почуті напряму; товщі лінії мають більше маршрутів. Meshtastic не повідомляє, хто ретранслював, тож дальші вузли Meshtastic не мають ліній.",

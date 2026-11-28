@@ -1121,6 +1121,8 @@
   "trustedOnly": "Nur vertrauenswürdige",
   "trustedShowAll": "Alle Knoten zeigen",
   "trustedEmpty": "Noch keine vertrauenswürdigen Knoten. Tippe auf den Stern eines Knotens, um ihm zu vertrauen. Favoriten des Funkgeräts und verifizierte Knoten zählen auch.",
+  "whoRepeatsTitle": "Who relays me",
+  "whoRepeatsEmpty": "No relay hops found yet. Routes appear here once your radios know the path to other nodes.",
   "topologyTitle": "Netzdiagramm",
   "topologyEmpty": "Noch nichts zu zeichnen. Knoten erscheinen hier, sobald deine Funkgeräte wissen, wie viele Sprünge entfernt sie sind.",
   "topologyHint": "Du bist in der Mitte, jeder Ring ist ein Sprung mehr. Linien sind bekannte MeshCore-Routen und direkt gehörte Knoten; dickere Linien tragen mehr Routen. Meshtastic meldet nicht, wer weitergeleitet hat, daher haben entferntere Meshtastic-Knoten keine Linien.",
