@@ -488,6 +488,7 @@
   "messageDeleteConfirm": "Izbrišem to sporočilo s te naprave? Na napravah drugih ostane.",
   "conversationDelete": "Izbriši pogovor",
   "conversationDeleteConfirm": "Izbrišem vsa sporočila v {name} s te naprave? Tega ni mogoče razveljaviti.",
+  "conversationDeleteFavourite": "{name} is a favourite. Delete the conversation anyway?",
   "exportTitle": "Izvozi sporočila",
   "exportAll": "Izvozi vsa sporočila",
   "exportHelp": "Datoteka vsebuje besedilo sporočil. Kdorkoli, s komer jo deliš, jo lahko prebere.",

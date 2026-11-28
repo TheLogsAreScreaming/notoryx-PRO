@@ -488,6 +488,7 @@
   "messageDeleteConfirm": "Да изтрия ли това съобщение от това устройство? То остава на устройствата на другите.",
   "conversationDelete": "Изтрий разговора",
   "conversationDeleteConfirm": "Да изтрия ли всички съобщения в {name} от това устройство? Това не може да се отмени.",
+  "conversationDeleteFavourite": "{name} is a favourite. Delete the conversation anyway?",
   "exportTitle": "Експорт на съобщения",
   "exportAll": "Експортирай всички съобщения",
   "exportHelp": "Файлът съдържа текста на съобщенията. Всеки, с когото го споделиш, може да го прочете.",

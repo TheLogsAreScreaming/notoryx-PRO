@@ -488,6 +488,7 @@
   "messageDeleteConfirm": "Radera meddelandet från den här enheten? Det finns kvar på andras enheter.",
   "conversationDelete": "Radera konversation",
   "conversationDeleteConfirm": "Radera alla meddelanden i {name} från den här enheten? Det går inte att ångra.",
+  "conversationDeleteFavourite": "{name} is a favourite. Delete the conversation anyway?",
   "exportTitle": "Exportera meddelanden",
   "exportAll": "Exportera alla meddelanden",
   "exportHelp": "Filen innehåller meddelandetexten. Alla du delar den med kan läsa den.",

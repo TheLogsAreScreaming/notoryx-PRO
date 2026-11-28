@@ -1262,6 +1262,14 @@
       }
     }
   },
+  "conversationDeleteFavourite": "{name} is a favourite. Delete the conversation anyway?",
+  "@conversationDeleteFavourite": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "exportTitle": "Export messages",
   "exportAll": "Export all messages",
   "exportHelp": "The file contains the message text. Anyone you share it with can read it.",

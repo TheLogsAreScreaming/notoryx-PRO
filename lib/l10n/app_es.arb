@@ -488,6 +488,7 @@
   "messageDeleteConfirm": "¿Eliminar este mensaje de este dispositivo? Seguirá en los dispositivos de los demás.",
   "conversationDelete": "Eliminar conversación",
   "conversationDeleteConfirm": "¿Eliminar todos los mensajes de {name} de este dispositivo? No se puede deshacer.",
+  "conversationDeleteFavourite": "{name} is a favourite. Delete the conversation anyway?",
   "exportTitle": "Exportar mensajes",
   "exportAll": "Exportar todos los mensajes",
   "exportHelp": "El archivo contiene el texto de los mensajes. Cualquiera con quien lo compartas podrá leerlo.",

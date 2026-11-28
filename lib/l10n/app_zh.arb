@@ -488,6 +488,7 @@
   "messageDeleteConfirm": "从此设备删除这条消息？它仍会保留在其他人的设备上。",
   "conversationDelete": "删除对话",
   "conversationDeleteConfirm": "从此设备删除 {name} 中的所有消息？此操作无法撤销。",
+  "conversationDeleteFavourite": "{name} is a favourite. Delete the conversation anyway?",
   "exportTitle": "导出消息",
   "exportAll": "导出所有消息",
   "exportHelp": "文件包含消息文本。你分享给的任何人都能读取。",

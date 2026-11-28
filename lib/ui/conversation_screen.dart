@@ -190,7 +190,19 @@ class _ConversationScreenState extends State<ConversationScreen> {
   }
 
   Future<void> _deleteConversation() async {
-    final question = context.l10n.conversationDeleteConfirm(widget.title);
+    final l = context.l10n;
+    final c = conversation;
+    if (c is DirectConversation) {
+      final node = await app.store.node(c.radioId, c.node);
+      if (node != null && node.isFavorite) {
+        if (!await _confirmDelete(
+          l.conversationDeleteFavourite(widget.title),
+        )) {
+          return;
+        }
+      }
+    }
+    final question = l.conversationDeleteConfirm(widget.title);
     if (!await _confirmDelete(question)) return;
     await app.store.deleteConversation(conversation);
     if (mounted) Navigator.of(context).pop();

@@ -488,6 +488,7 @@
   "messageDeleteConfirm": "Eliminare questo messaggio da questo dispositivo? Resta sui dispositivi degli altri.",
   "conversationDelete": "Elimina conversazione",
   "conversationDeleteConfirm": "Eliminare tutti i messaggi di {name} da questo dispositivo? Non si può annullare.",
+  "conversationDeleteFavourite": "{name} is a favourite. Delete the conversation anyway?",
   "exportTitle": "Esporta messaggi",
   "exportAll": "Esporta tutti i messaggi",
   "exportHelp": "Il file contiene il testo dei messaggi. Chi lo riceve può leggerlo.",
