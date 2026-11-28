@@ -9,7 +9,8 @@ import 'node_avatar.dart';
 import 'conversation_screen.dart';
 import 'mute_menu.dart';
 
-/// Every channel and direct conversation, on both meshes, in one list.
+/// Every channel and direct conversation, on both meshes, in one list,
+/// sorted by the time of the most recent message.
 class InboxScreen extends StatelessWidget {
   const InboxScreen({super.key, required this.app});
 
@@ -51,7 +52,31 @@ class InboxScreen extends StatelessWidget {
   }
 }
 
-class _InboxList extends StatelessWidget {
+/// A single entry in the unified conversation list.
+class _Entry {
+  _Entry({
+    required this.conversation,
+    required this.title,
+    required this.icon,
+    required this.last,
+    required this.unread,
+    required this.muted,
+    this.via,
+  });
+
+  final Conversation conversation;
+  final String title;
+  final IconData icon;
+  final StoredMessage? last;
+  final int unread;
+  final bool muted;
+  final String? via;
+
+  /// Database row ID of the last message; null = no messages yet, sorted last.
+  int get _sortKey => last?.id ?? -1;
+}
+
+class _InboxList extends StatefulWidget {
   const _InboxList({
     required this.app,
     required this.channels,
@@ -62,9 +87,7 @@ class _InboxList extends StatelessWidget {
     this.radios = const [],
   });
 
-  /// Saved radios, to tell conversations apart when one mesh has several.
   final List<Radio> radios;
-
   final AppController app;
   final List<Channel> channels;
   final List<ConversationSummary> summaries;
@@ -73,80 +96,129 @@ class _InboxList extends StatelessWidget {
   final Map<String, DateTime> mutes;
 
   @override
-  Widget build(BuildContext context) {
-    final l = context.l10n;
-    final latest = {for (final s in summaries) s.conversation: s.last};
-    final names = {for (final n in nodes) '${n.radioId}|${n.key}': n};
-    final direct = summaries
-        .where((s) => s.conversation is DirectConversation)
-        .toList();
-    if (channels.isEmpty && direct.isEmpty) {
-      return EmptyState(l.inboxEmpty);
-    }
-    final now = DateTime.now();
-    final perMesh = <RadioProtocol, int>{};
-    for (final r in radios) {
-      perMesh[r.protocol] = (perMesh[r.protocol] ?? 0) + 1;
-    }
-    final radioNames = {for (final r in radios) r.id: r.name};
-    String? via(RadioId id) =>
-        (perMesh[id.protocol] ?? 0) > 1 ? radioNames[id] : null;
-    final channelRows = [...channels]
-      ..sort((a, b) {
-        final ia = latest[ChannelConversation(a.radioId, a.index)]?.id ?? -1;
-        final ib = latest[ChannelConversation(b.radioId, b.index)]?.id ?? -1;
-        return ib.compareTo(ia);
-      });
-    return ListView(
-      children: [
-        if (channelRows.isNotEmpty) _Header(l.inboxChannelsHeader),
-        for (final c in channelRows)
-          _ConversationTile(
-            app: app,
-            conversation: ChannelConversation(c.radioId, c.index),
-            title: c.name,
-            icon: c.isPrimary ? Icons.public : Icons.tag,
-            last: latest[ChannelConversation(c.radioId, c.index)],
-            via: via(c.radioId),
-            unread: unread[ChannelConversation(c.radioId, c.index).key] ?? 0,
-            muted: mutedAt(
-              mutes[ChannelConversation(c.radioId, c.index).key],
-              now,
-            ),
-          ),
-        if (direct.isNotEmpty) _Header(l.inboxDirectHeader),
-        for (final s in direct)
-          _ConversationTile(
-            app: app,
-            conversation: s.conversation,
-            title: _directTitle(s.conversation as DirectConversation, names),
-            icon: Icons.person_outline,
-            last: s.last,
-            via: via(s.conversation.radioId),
-            unread: unread[s.conversation.key] ?? 0,
-            muted: mutedAt(mutes[s.conversation.key], now),
-          ),
-      ],
-    );
-  }
-
-  static String _directTitle(DirectConversation c, Map<String, Node> names) =>
-      names['${c.radioId}|${c.node}']?.displayName ?? c.node.short;
+  State<_InboxList> createState() => _InboxListState();
 }
 
-class _Header extends StatelessWidget {
-  const _Header(this.text);
-  final String text;
+class _InboxListState extends State<_InboxList> {
+  final _scroll = ScrollController();
+  /// True once we have scrolled to the first unread on initial load.
+  bool _initialScrollDone = false;
+  /// Keys for each row, so we can scroll to one.
+  final _keys = <String, GlobalKey>{};
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-    child: Text(text, style: Theme.of(context).textTheme.titleSmall),
-  );
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  /// Builds the unified sorted entry list from current widget data.
+  List<_Entry> _entries() {
+    final now = DateTime.now();
+    final latest = {
+      for (final s in widget.summaries) s.conversation: s.last,
+    };
+    final names = {
+      for (final n in widget.nodes) '${n.radioId}|${n.key}': n,
+    };
+    final perMesh = <RadioProtocol, int>{};
+    for (final r in widget.radios) {
+      perMesh[r.protocol] = (perMesh[r.protocol] ?? 0) + 1;
+    }
+    final radioNames = {for (final r in widget.radios) r.id: r.name};
+    String? via(RadioId id) =>
+        (perMesh[id.protocol] ?? 0) > 1 ? radioNames[id] : null;
+
+    final entries = <_Entry>[];
+
+    for (final c in widget.channels) {
+      final conv = ChannelConversation(c.radioId, c.index);
+      entries.add(
+        _Entry(
+          conversation: conv,
+          title: c.name,
+          icon: c.isPrimary ? Icons.public : Icons.tag,
+          last: latest[conv],
+          unread: widget.unread[conv.key] ?? 0,
+          muted: mutedAt(widget.mutes[conv.key], now),
+          via: via(c.radioId),
+        ),
+      );
+    }
+
+    for (final s in widget.summaries) {
+      if (s.conversation is! DirectConversation) continue;
+      final c = s.conversation as DirectConversation;
+      final title =
+          names['${c.radioId}|${c.node}']?.displayName ?? c.node.short;
+      entries.add(
+        _Entry(
+          conversation: c,
+          title: title,
+          icon: Icons.person_outline,
+          last: s.last,
+          unread: widget.unread[c.key] ?? 0,
+          muted: mutedAt(widget.mutes[c.key], now),
+          via: via(c.radioId),
+        ),
+      );
+    }
+
+    // Most-recent-first; conversations with no messages go last.
+    entries.sort((a, b) => b._sortKey.compareTo(a._sortKey));
+    return entries;
+  }
+
+  void _scrollToFirstUnread(List<_Entry> entries) {
+    if (_initialScrollDone) return;
+    _initialScrollDone = true;
+    final firstUnread = entries.indexWhere((e) => e.unread > 0);
+    if (firstUnread <= 0) return;
+    // Scroll after the first frame so layout is complete.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final key = _keys[entries[firstUnread].conversation.key];
+      if (key?.currentContext case final ctx?) {
+        Scrollable.ensureVisible(ctx, duration: const Duration(milliseconds: 300));
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final entries = _entries();
+    if (entries.isEmpty) {
+      return EmptyState(l.inboxEmpty);
+    }
+    _scrollToFirstUnread(entries);
+    // Ensure a GlobalKey exists for every entry.
+    for (final e in entries) {
+      _keys.putIfAbsent(e.conversation.key, GlobalKey.new);
+    }
+    return ListView.builder(
+      controller: _scroll,
+      itemCount: entries.length,
+      itemBuilder: (context, i) {
+        final e = entries[i];
+        return _ConversationTile(
+          key: _keys[e.conversation.key],
+          app: widget.app,
+          conversation: e.conversation,
+          title: e.title,
+          icon: e.icon,
+          last: e.last,
+          via: e.via,
+          unread: e.unread,
+          muted: e.muted,
+        );
+      },
+    );
+  }
 }
 
 class _ConversationTile extends StatelessWidget {
   const _ConversationTile({
+    super.key,
     required this.app,
     required this.conversation,
     required this.title,
