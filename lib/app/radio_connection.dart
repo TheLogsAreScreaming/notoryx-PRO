@@ -344,6 +344,30 @@ class MeshCoreConnection extends RadioConnection {
       channels.map(mapper.channel).nonNulls,
     );
     await session.fetchMessages();
+    if (MeshCoreFirmware.supports(
+      h.device.firmwareCode,
+      MeshCoreFeature.companionCli,
+    )) {
+      unawaited(_fetchSensorTelemetry(contacts.contacts));
+    }
+  }
+
+  /// Requests fresh telemetry from contacts in the background.
+  ///
+  /// Runs after [setUp] on firmware v1.18+ (protocol 14). Errors for
+  /// unreachable contacts are silently ignored — results arrive via the
+  /// [Push.telemetryResponse] push handler and are stored immediately.
+  Future<void> _fetchSensorTelemetry(
+    List<ContactFrame> contacts,
+  ) async {
+    for (final c in contacts) {
+      if (radio == null) return;
+      try {
+        await session.requestTelemetry(c.publicKey);
+      } on Exception {
+        // Contact unreachable or doesn't share telemetry; skip it.
+      }
+    }
   }
 
   Future<void> _onMessage(MeshCoreFrame frame) async {
