@@ -1279,6 +1279,7 @@
   "ageDays": "{count} d",
   "staleAfterTitle": "Marcar nós inativos após",
   "staleOff": "Desligado",
+  "mapAllRoutes": "All relay paths",
   "mapRangeRings": "Anéis de distância",
   "mapRingsNoPosition": "A sua posição ainda não é conhecida, por isso os anéis de distância não podem ser desenhados.",
   "ignoreNode": "Ignorar",

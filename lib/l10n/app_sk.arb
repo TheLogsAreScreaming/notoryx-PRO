@@ -1279,6 +1279,7 @@
   "ageDays": "{count} d",
   "staleAfterTitle": "Označiť uzly ako neaktuálne po",
   "staleOff": "Vypnuté",
+  "mapAllRoutes": "All relay paths",
   "mapRangeRings": "Kruhy dosahu",
   "mapRingsNoPosition": "Tvoja poloha zatiaľ nie je známa, takže kruhy dosahu sa nedajú nakresliť.",
   "ignoreNode": "Ignorovať",

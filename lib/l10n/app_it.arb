@@ -1279,6 +1279,7 @@
   "ageDays": "{count} g",
   "staleAfterTitle": "Segna i nodi inattivi dopo",
   "staleOff": "Disattivato",
+  "mapAllRoutes": "All relay paths",
   "mapRangeRings": "Anelli di distanza",
   "mapRingsNoPosition": "La tua posizione non è ancora nota, quindi non è possibile disegnare gli anelli di distanza.",
   "ignoreNode": "Ignora",

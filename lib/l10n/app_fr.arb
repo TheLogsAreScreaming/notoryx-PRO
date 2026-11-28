@@ -1279,6 +1279,7 @@
   "ageDays": "{count} j",
   "staleAfterTitle": "Marquer les nœuds inactifs après",
   "staleOff": "Désactivé",
+  "mapAllRoutes": "All relay paths",
   "mapRangeRings": "Cercles de distance",
   "mapRingsNoPosition": "Votre position est encore inconnue, les cercles de distance ne peuvent pas être tracés.",
   "ignoreNode": "Ignorer",

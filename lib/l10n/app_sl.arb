@@ -1279,6 +1279,7 @@
   "ageDays": "{count} d",
   "staleAfterTitle": "Označi vozlišča kot zastarela po",
   "staleOff": "Izklopljeno",
+  "mapAllRoutes": "All relay paths",
   "mapRangeRings": "Obroči dosega",
   "mapRingsNoPosition": "Tvoj položaj še ni znan, zato obročev dosega ni mogoče narisati.",
   "ignoreNode": "Prezri",

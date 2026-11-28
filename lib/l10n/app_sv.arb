@@ -1279,6 +1279,7 @@
   "ageDays": "{count} d",
   "staleAfterTitle": "Markera noder som inaktuella efter",
   "staleOff": "Av",
+  "mapAllRoutes": "All relay paths",
   "mapRangeRings": "Räckviddsringar",
   "mapRingsNoPosition": "Din position är inte känd än, så räckviddsringar kan inte ritas.",
   "ignoreNode": "Ignorera",
