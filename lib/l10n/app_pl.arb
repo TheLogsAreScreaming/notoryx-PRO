@@ -46,6 +46,8 @@
   "statusReconnecting": "Ponowne łączenie (próba {attempt})",
   "statusFailed": "Zatrzymano: {reason}",
   "radioFirmware": "Oprogramowanie {version}",
+  "radioPreset": "Preset: {name}",
+  "radioFrequency": "{freq} MHz",
   "composerHint": "Wiadomość",
   "composerSend": "Wyślij",
   "composerBytes": "{used}/{max}",

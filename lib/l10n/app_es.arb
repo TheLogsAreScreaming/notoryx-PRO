@@ -46,6 +46,8 @@
   "statusReconnecting": "Reconectando (intento {attempt})",
   "statusFailed": "Detenida: {reason}",
   "radioFirmware": "Firmware {version}",
+  "radioPreset": "Preset: {name}",
+  "radioFrequency": "{freq} MHz",
   "composerHint": "Mensaje",
   "composerSend": "Enviar",
   "composerBytes": "{used}/{max}",

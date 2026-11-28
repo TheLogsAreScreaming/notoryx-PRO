@@ -46,6 +46,8 @@
   "statusReconnecting": "Переподключение (попытка {attempt})",
   "statusFailed": "Остановлено: {reason}",
   "radioFirmware": "Прошивка {version}",
+  "radioPreset": "Preset: {name}",
+  "radioFrequency": "{freq} MHz",
   "composerHint": "Сообщение",
   "composerSend": "Отправить",
   "composerBytes": "{used}/{max}",

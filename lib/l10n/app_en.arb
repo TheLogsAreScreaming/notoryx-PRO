@@ -74,6 +74,22 @@
       }
     }
   },
+  "radioPreset": "Preset: {name}",
+  "@radioPreset": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "radioFrequency": "{freq} MHz",
+  "@radioFrequency": {
+    "placeholders": {
+      "freq": {
+        "type": "String"
+      }
+    }
+  },
   "composerHint": "Message",
   "composerSend": "Send",
   "composerBytes": "{used}/{max}",

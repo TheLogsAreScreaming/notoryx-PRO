@@ -46,6 +46,8 @@
   "statusReconnecting": "Ricollegamento (tentativo {attempt})",
   "statusFailed": "Fermata: {reason}",
   "radioFirmware": "Firmware {version}",
+  "radioPreset": "Preset: {name}",
+  "radioFrequency": "{freq} MHz",
   "composerHint": "Messaggio",
   "composerSend": "Invia",
   "composerBytes": "{used}/{max}",

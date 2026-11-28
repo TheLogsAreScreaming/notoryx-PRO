@@ -46,6 +46,8 @@
   "statusReconnecting": "Ponovno povezujem (poskus {attempt})",
   "statusFailed": "Ustavljeno: {reason}",
   "radioFirmware": "Strojna programska oprema {version}",
+  "radioPreset": "Preset: {name}",
+  "radioFrequency": "{freq} MHz",
   "composerHint": "Sporočilo",
   "composerSend": "Pošlji",
   "composerBytes": "{used}/{max}",

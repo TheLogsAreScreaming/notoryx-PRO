@@ -46,6 +46,8 @@
   "statusReconnecting": "Återansluter (försök {attempt})",
   "statusFailed": "Stoppad: {reason}",
   "radioFirmware": "Firmware {version}",
+  "radioPreset": "Preset: {name}",
+  "radioFrequency": "{freq} MHz",
   "composerHint": "Meddelande",
   "composerSend": "Skicka",
   "composerBytes": "{used}/{max}",

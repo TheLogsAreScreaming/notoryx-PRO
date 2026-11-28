@@ -46,6 +46,8 @@
   "statusReconnecting": "再接続中（{attempt} 回目）",
   "statusFailed": "停止: {reason}",
   "radioFirmware": "ファームウェア {version}",
+  "radioPreset": "Preset: {name}",
+  "radioFrequency": "{freq} MHz",
   "composerHint": "メッセージ",
   "composerSend": "送信",
   "composerBytes": "{used}/{max}",

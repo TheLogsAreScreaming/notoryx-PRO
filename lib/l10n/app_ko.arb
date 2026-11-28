@@ -46,6 +46,8 @@
   "statusReconnecting": "다시 연결 중 ({attempt}번째 시도)",
   "statusFailed": "중지됨: {reason}",
   "radioFirmware": "펌웨어 {version}",
+  "radioPreset": "Preset: {name}",
+  "radioFrequency": "{freq} MHz",
   "composerHint": "메시지",
   "composerSend": "보내기",
   "composerBytes": "{used}/{max}",

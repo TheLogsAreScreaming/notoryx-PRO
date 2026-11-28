@@ -46,6 +46,8 @@
   "statusReconnecting": "Znovu sa pripája (pokus {attempt})",
   "statusFailed": "Zastavené: {reason}",
   "radioFirmware": "Firmvér {version}",
+  "radioPreset": "Preset: {name}",
+  "radioFrequency": "{freq} MHz",
   "composerHint": "Správa",
   "composerSend": "Odoslať",
   "composerBytes": "{used}/{max}",

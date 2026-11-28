@@ -46,6 +46,8 @@
   "statusReconnecting": "Újracsatlakozás ({attempt}. próbálkozás)",
   "statusFailed": "Leállt: {reason}",
   "radioFirmware": "Firmware {version}",
+  "radioPreset": "Preset: {name}",
+  "radioFrequency": "{freq} MHz",
   "composerHint": "Üzenet",
   "composerSend": "Küldés",
   "composerBytes": "{used}/{max}",

@@ -46,6 +46,8 @@
   "statusReconnecting": "Повторне підключення (спроба {attempt})",
   "statusFailed": "Зупинено: {reason}",
   "radioFirmware": "Прошивка {version}",
+  "radioPreset": "Preset: {name}",
+  "radioFrequency": "{freq} MHz",
   "composerHint": "Повідомлення",
   "composerSend": "Надіслати",
   "composerBytes": "{used}/{max}",
