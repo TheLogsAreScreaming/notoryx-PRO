@@ -101,8 +101,10 @@ class _InboxList extends StatefulWidget {
 
 class _InboxListState extends State<_InboxList> {
   final _scroll = ScrollController();
+
   /// True once we have scrolled to the first unread on initial load.
   bool _initialScrollDone = false;
+
   /// Keys for each row, so we can scroll to one.
   final _keys = <String, GlobalKey>{};
 
@@ -246,10 +248,8 @@ class _ConversationTile extends StatelessWidget {
     final preview = m == null
         ? l.inboxNoMessages
         : m.outgoing
-            ? l.youPrefix(m.text)
-            : m.senderName != null
-                ? '${m.senderName}: ${m.text}'
-                : m.text;
+        ? l.youPrefix(m.text)
+        : (m.senderName != null ? '${m.senderName}: ${m.text}' : m.text);
     // Large text needs the row's full width, so the time joins the preview.
     final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.3;
     final bold = unread > 0
