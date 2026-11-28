@@ -33,7 +33,7 @@ class CannedMessages {
   final List<CannedMessage> messages;
 
   String encode() =>
-      jsonEncode({'messages': [for (final m in messages) m.toJson()]});
+      jsonEncode({'messages': messages.map((m) => m.toJson()).toList()});
 
   static CannedMessages decode(String? saved) {
     if (saved == null) return const CannedMessages();
@@ -43,7 +43,10 @@ class CannedMessages {
       final msgs = j['messages'];
       return CannedMessages(
         messages: msgs is List<Object?>
-            ? [for (final m in msgs) ?CannedMessage.fromJson(m)]
+            ? msgs
+                  .map(CannedMessage.fromJson)
+                  .whereType<CannedMessage>()
+                  .toList()
             : const [],
       );
     } on FormatException {
@@ -56,10 +59,17 @@ class CannedMessages {
     if (trimmed.isEmpty) return this;
     final nextId = messages.fold(0, (m, e) => e.id > m ? e.id : m) + 1;
     return CannedMessages(
-      messages: [...messages, CannedMessage(id: nextId, text: trimmed)],
+      messages: [
+        ...messages,
+        CannedMessage(id: nextId, text: trimmed),
+      ],
     );
   }
 
-  CannedMessages remove(int id) =>
-      CannedMessages(messages: [for (final m in messages) if (m.id != id) m]);
+  CannedMessages remove(int id) => CannedMessages(
+    messages: [
+      for (final m in messages)
+        if (m.id != id) m,
+    ],
+  );
 }
