@@ -1488,5 +1488,12 @@
   "covStopSharing": "Arrêter le partage",
   "covStopSharingSub": "Plus rien n'est envoyé. Les relevés restent sur ce téléphone.",
   "covOpenMap": "Ouvrir la carte de couverture",
-  "contactsFullWarning": "La liste de contacts de cette radio est pleine : elle ne peut plus ajouter de nouveaux nœuds. Supprimez des contacts pour faire de la place."
+  "contactsFullWarning": "La liste de contacts de cette radio est pleine : elle ne peut plus ajouter de nouveaux nœuds. Supprimez des contacts pour faire de la place.",
+  "cannedTitle": "Quick messages",
+  "cannedEmpty": "No quick messages yet. Add some to speed up common replies.",
+  "cannedAdd": "Add quick message",
+  "cannedDelete": "Delete",
+  "cannedHint": "Message text",
+  "cannedSave": "Save",
+  "cannedInsert": "Quick messages"
 }

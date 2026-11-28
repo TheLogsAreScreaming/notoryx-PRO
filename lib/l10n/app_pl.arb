@@ -1488,5 +1488,12 @@
   "covStopSharing": "Przestań udostępniać",
   "covStopSharingSub": "Nic więcej nie zostanie wysłane. Odczyty zostają na tym telefonie.",
   "covOpenMap": "Otwórz mapę zasięgu",
-  "contactsFullWarning": "Lista kontaktów tego radia jest pełna, więc nie może dodawać nowych węzłów. Usuń kilka kontaktów, aby zrobić miejsce."
+  "contactsFullWarning": "Lista kontaktów tego radia jest pełna, więc nie może dodawać nowych węzłów. Usuń kilka kontaktów, aby zrobić miejsce.",
+  "cannedTitle": "Quick messages",
+  "cannedEmpty": "No quick messages yet. Add some to speed up common replies.",
+  "cannedAdd": "Add quick message",
+  "cannedDelete": "Delete",
+  "cannedHint": "Message text",
+  "cannedSave": "Save",
+  "cannedInsert": "Quick messages"
 }

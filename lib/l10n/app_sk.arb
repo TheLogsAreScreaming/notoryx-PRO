@@ -1488,5 +1488,12 @@
   "covStopSharing": "Zastaviť zdieľanie",
   "covStopSharingSub": "Nič ďalšie sa neposiela. Merania zostanú v tomto telefóne.",
   "covOpenMap": "Otvoriť mapu pokrytia",
-  "contactsFullWarning": "Zoznam kontaktov tohto rádia je plný, takže nemôže pridávať nové uzly. Odstráňte niekoľko kontaktov, aby ste uvoľnili miesto."
+  "contactsFullWarning": "Zoznam kontaktov tohto rádia je plný, takže nemôže pridávať nové uzly. Odstráňte niekoľko kontaktov, aby ste uvoľnili miesto.",
+  "cannedTitle": "Quick messages",
+  "cannedEmpty": "No quick messages yet. Add some to speed up common replies.",
+  "cannedAdd": "Add quick message",
+  "cannedDelete": "Delete",
+  "cannedHint": "Message text",
+  "cannedSave": "Save",
+  "cannedInsert": "Quick messages"
 }

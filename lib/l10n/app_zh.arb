@@ -1488,5 +1488,12 @@
   "covStopSharing": "停止分享",
   "covStopSharingSub": "不再发送任何内容。读数保留在此手机上。",
   "covOpenMap": "打开覆盖地图",
-  "contactsFullWarning": "此电台的联系人列表已满，无法添加新节点。请删除一些联系人以腾出空间。"
+  "contactsFullWarning": "此电台的联系人列表已满，无法添加新节点。请删除一些联系人以腾出空间。",
+  "cannedTitle": "Quick messages",
+  "cannedEmpty": "No quick messages yet. Add some to speed up common replies.",
+  "cannedAdd": "Add quick message",
+  "cannedDelete": "Delete",
+  "cannedHint": "Message text",
+  "cannedSave": "Save",
+  "cannedInsert": "Quick messages"
 }
