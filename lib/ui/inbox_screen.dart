@@ -146,36 +146,34 @@ class _ReachabilityBadge extends StatelessWidget {
   final DirectConversation conversation;
 
   @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<Reachability>(
-      stream: store.watchReachability(conversation),
-      builder: (context, snap) {
-        final r = snap.data;
-        if (r == null) return const SizedBox.shrink();
-        final l = context.l10n;
-        final cs = Theme.of(context).colorScheme;
-        final (icon, color, label) = switch (r) {
-          Reachability.twoWay => (Icons.swap_horiz, cs.primary, l.reachTwoWay),
-          Reachability.theyHeardYou => (
-            Icons.arrow_forward,
-            cs.secondary,
-            l.reachTheyHeardYou,
-          ),
-          Reachability.noAnswerYet => (
-            Icons.help_outline,
-            cs.onSurfaceVariant,
-            l.reachNoAnswerYet,
-          ),
-        };
-        return Semantics(
-          label: label,
-          child: ExcludeSemantics(
-            child: Icon(icon, size: 14, color: color),
-          ),
-        );
-      },
-    );
-  }
+  Widget build(BuildContext context) => StreamBuilder<Reachability>(
+    stream: store.watchReachability(conversation),
+    builder: (context, snap) {
+      final r = snap.data;
+      if (r == null) return const SizedBox.shrink();
+      final l = context.l10n;
+      final cs = Theme.of(context).colorScheme;
+      final (icon, color, label) = switch (r) {
+        Reachability.twoWay => (Icons.swap_horiz, cs.primary, l.reachTwoWay),
+        Reachability.theyHeardYou => (
+          Icons.arrow_forward,
+          cs.secondary,
+          l.reachTheyHeardYou,
+        ),
+        Reachability.noAnswerYet => (
+          Icons.help_outline,
+          cs.onSurfaceVariant,
+          l.reachNoAnswerYet,
+        ),
+      };
+      return Semantics(
+        label: label,
+        child: ExcludeSemantics(
+          child: Icon(icon, size: 14, color: color),
+        ),
+      );
+    },
+  );
 }
 
 class _Header extends StatelessWidget {
