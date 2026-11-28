@@ -1089,6 +1089,9 @@
   "mutedLabel": "Muted",
   "markRead": "Mark as read",
   "markAllRead": "Mark all as read",
+  "scanContact": "Scan contact code",
+  "scanContactNotACard": "Not a contact code.",
+  "scanContactNotFound": "Contact not found in your mesh yet.",
   "unreadCount": "{count, plural, =1{1 unread message} other{{count} unread messages}}",
   "@unreadCount": {
     "placeholders": {
