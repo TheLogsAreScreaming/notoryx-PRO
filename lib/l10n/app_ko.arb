@@ -1268,6 +1268,7 @@
   "ageDays": "{count}일",
   "staleAfterTitle": "노드를 오래됨으로 표시할 시간",
   "staleOff": "끔",
+  "mapAllRoutes": "All relay paths",
   "mapRangeRings": "거리 고리",
   "mapRingsNoPosition": "아직 내 위치를 몰라서 거리 고리를 그릴 수 없어요.",
   "ignoreNode": "무시",

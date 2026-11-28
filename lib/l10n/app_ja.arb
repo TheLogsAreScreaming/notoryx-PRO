@@ -1268,6 +1268,7 @@
   "ageDays": "{count} 日",
   "staleAfterTitle": "ノードを古いとみなすまでの時間",
   "staleOff": "オフ",
+  "mapAllRoutes": "All relay paths",
   "mapRangeRings": "距離リング",
   "mapRingsNoPosition": "現在地が分からないため、距離リングを描けません。",
   "ignoreNode": "無視",

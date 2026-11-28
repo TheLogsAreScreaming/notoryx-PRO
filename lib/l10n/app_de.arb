@@ -1268,6 +1268,7 @@
   "ageDays": "{count} T.",
   "staleAfterTitle": "Knoten als inaktiv markieren nach",
   "staleOff": "Aus",
+  "mapAllRoutes": "All relay paths",
   "mapRangeRings": "Entfernungsringe",
   "mapRingsNoPosition": "Deine Position ist noch unbekannt, daher können keine Entfernungsringe gezeichnet werden.",
   "ignoreNode": "Ignorieren",

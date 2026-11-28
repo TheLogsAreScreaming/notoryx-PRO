@@ -1268,6 +1268,7 @@
   "ageDays": "{count} дн.",
   "staleAfterTitle": "Считать узлы устаревшими через",
   "staleOff": "Выкл.",
+  "mapAllRoutes": "All relay paths",
   "mapRangeRings": "Кольца дальности",
   "mapRingsNoPosition": "Твоя позиция пока неизвестна, поэтому кольца дальности не нарисовать.",
   "ignoreNode": "Игнорировать",
