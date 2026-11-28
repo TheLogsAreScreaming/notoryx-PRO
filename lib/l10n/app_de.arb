@@ -1488,5 +1488,8 @@
   "covStopSharing": "Teilen beenden",
   "covStopSharingSub": "Es wird nichts mehr gesendet. Messwerte bleiben auf diesem Telefon.",
   "covOpenMap": "Abdeckungskarte öffnen",
-  "contactsFullWarning": "Die Kontaktliste dieses Funkgeräts ist voll, daher kann es keine neuen Knoten hinzufügen. Entferne einige Kontakte, um Platz zu schaffen."
+  "contactsFullWarning": "Die Kontaktliste dieses Funkgeräts ist voll, daher kann es keine neuen Knoten hinzufügen. Entferne einige Kontakte, um Platz zu schaffen.",
+  "reachTwoWay": "Two-way contact",
+  "reachTheyHeardYou": "They've heard you",
+  "reachNoAnswerYet": "No answer yet"
 }

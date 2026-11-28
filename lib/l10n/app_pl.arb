@@ -1488,5 +1488,8 @@
   "covStopSharing": "Przestań udostępniać",
   "covStopSharingSub": "Nic więcej nie zostanie wysłane. Odczyty zostają na tym telefonie.",
   "covOpenMap": "Otwórz mapę zasięgu",
-  "contactsFullWarning": "Lista kontaktów tego radia jest pełna, więc nie może dodawać nowych węzłów. Usuń kilka kontaktów, aby zrobić miejsce."
+  "contactsFullWarning": "Lista kontaktów tego radia jest pełna, więc nie może dodawać nowych węzłów. Usuń kilka kontaktów, aby zrobić miejsce.",
+  "reachTwoWay": "Two-way contact",
+  "reachTheyHeardYou": "They've heard you",
+  "reachNoAnswerYet": "No answer yet"
 }

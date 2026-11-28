@@ -1488,5 +1488,8 @@
   "covStopSharing": "Sluta dela",
   "covStopSharingSub": "Inget mer skickas. Mätvärden stannar på den här telefonen.",
   "covOpenMap": "Öppna täckningskartan",
-  "contactsFullWarning": "Radions kontaktlista är full, så den kan inte lägga till nya noder. Ta bort några kontakter för att frigöra plats."
+  "contactsFullWarning": "Radions kontaktlista är full, så den kan inte lägga till nya noder. Ta bort några kontakter för att frigöra plats.",
+  "reachTwoWay": "Two-way contact",
+  "reachTheyHeardYou": "They've heard you",
+  "reachNoAnswerYet": "No answer yet"
 }

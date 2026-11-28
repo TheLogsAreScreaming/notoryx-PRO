@@ -1488,5 +1488,8 @@
   "covStopSharing": "Smetti di condividere",
   "covStopSharingSub": "Non viene inviato altro. Le letture restano su questo telefono.",
   "covOpenMap": "Apri la mappa di copertura",
-  "contactsFullWarning": "L'elenco contatti di questa radio è pieno, quindi non può aggiungere nuovi nodi. Rimuovi alcuni contatti per fare spazio."
+  "contactsFullWarning": "L'elenco contatti di questa radio è pieno, quindi non può aggiungere nuovi nodi. Rimuovi alcuni contatti per fare spazio.",
+  "reachTwoWay": "Two-way contact",
+  "reachTheyHeardYou": "They've heard you",
+  "reachNoAnswerYet": "No answer yet"
 }

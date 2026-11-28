@@ -1488,5 +1488,8 @@
   "covStopSharing": "Deixar de partilhar",
   "covStopSharingSub": "Não é enviado mais nada. As leituras ficam neste telefone.",
   "covOpenMap": "Abrir o mapa de cobertura",
-  "contactsFullWarning": "A lista de contatos deste rádio está cheia, então ele não pode adicionar novos nós. Remova alguns contatos para liberar espaço."
+  "contactsFullWarning": "A lista de contatos deste rádio está cheia, então ele não pode adicionar novos nós. Remova alguns contatos para liberar espaço.",
+  "reachTwoWay": "Two-way contact",
+  "reachTheyHeardYou": "They've heard you",
+  "reachNoAnswerYet": "No answer yet"
 }
