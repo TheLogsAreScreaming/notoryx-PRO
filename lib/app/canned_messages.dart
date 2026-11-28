@@ -54,9 +54,7 @@ class CannedMessages {
   CannedMessages add(String text) {
     final trimmed = text.trim();
     if (trimmed.isEmpty) return this;
-    final nextId = messages.isEmpty
-        ? 1
-        : messages.map((m) => m.id).reduce((a, b) => a > b ? a : b) + 1;
+    final nextId = messages.fold(0, (m, e) => e.id > m ? e.id : m) + 1;
     return CannedMessages(
       messages: [...messages, CannedMessage(id: nextId, text: trimmed)],
     );
