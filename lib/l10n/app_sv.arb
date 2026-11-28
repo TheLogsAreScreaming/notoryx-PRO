@@ -1066,6 +1066,7 @@
   "demoBanner": "Demo: en låtsasradio. Inget skickas och inget här sparas.",
   "demoExit": "Avsluta demo",
   "nodeHeardBy": "Hörd av {count} av dina radior",
+  "nodeBattery": "{percent}% battery",
   "sntTitle": "Gemenskapsmoderering",
   "sntToolSubtitle": "Anmäl spam till NOTORYX-moderatorer och se flaggade noder",
   "sntIntro": "Anmälningar går till NOTORYX-moderatorer, som granskar varje anmälan för hand. Godkända avstängningar kommer tillbaka som en rådgivande lista: flaggade noder får en etikett, och inget i meshen blockeras.",

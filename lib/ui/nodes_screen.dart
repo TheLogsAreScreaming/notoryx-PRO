@@ -161,6 +161,7 @@ class NodeTile extends StatelessWidget {
       if (pathSummary(context, n.path) case final p when p.isNotEmpty) p,
       if (!n.canMessage) l.nodeCannotMessage,
       if (appOnly) l.nodeAppOnly,
+      if (n.batteryPercent case final b? when b > 0) l.nodeBattery(b),
       if (radios > 1) l.nodeHeardBy(radios),
     ].join(' · ');
     return ListTile(

@@ -1066,6 +1066,7 @@
   "demoBanner": "Demo: een nepradio. Er wordt niets verstuurd en niets hier wordt opgeslagen.",
   "demoExit": "Demo afsluiten",
   "nodeHeardBy": "Gehoord door {count} van je radio's",
+  "nodeBattery": "{percent}% battery",
   "sntTitle": "Communitymoderatie",
   "sntToolSubtitle": "Meld spam aan NOTORYX-moderators en bekijk gemarkeerde nodes",
   "sntIntro": "Meldingen gaan naar NOTORYX-moderators, die ze elk met de hand beoordelen. Goedgekeurde bans komen terug als adviserende lijst: gemarkeerde nodes krijgen een label, en er wordt niets op de mesh geblokkeerd.",

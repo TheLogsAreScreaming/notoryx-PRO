@@ -1066,6 +1066,7 @@
   "demoBanner": "Demo: udawane radio. Nic nie jest wysyłane ani zapisywane.",
   "demoExit": "Zakończ demo",
   "nodeHeardBy": "Słyszany przez twoje radia: {count}",
+  "nodeBattery": "{percent}% battery",
   "sntTitle": "Moderacja społeczności",
   "sntToolSubtitle": "Zgłaszaj spam moderatorom NOTORYX i zobacz oznaczone węzły",
   "sntIntro": "Zgłoszenia trafiają do moderatorów NOTORYX, którzy sprawdzają każde ręcznie. Zatwierdzone blokady wracają jako lista ostrzeżeń: oznaczone węzły dostają etykietę, a w sieci mesh nic nie jest blokowane.",

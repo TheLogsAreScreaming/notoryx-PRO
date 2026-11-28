@@ -2658,6 +2658,14 @@
       }
     }
   },
+  "nodeBattery": "{percent}% battery",
+  "@nodeBattery": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
   "sntTitle": "Community moderation",
   "sntToolSubtitle": "Report spam to NOTORYX moderators and see flagged nodes",
   "sntIntro": "Reports go to NOTORYX moderators, who review each one by hand. Approved bans come back as an advisory list: flagged nodes get a label, and nothing on the mesh is blocked.",

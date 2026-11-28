@@ -1066,6 +1066,7 @@
   "demoBanner": "演示：模拟的电台。不会发送任何内容，这里的内容也不会保存。",
   "demoExit": "退出演示",
   "nodeHeardBy": "被你的 {count} 台电台收到",
+  "nodeBattery": "{percent}% battery",
   "sntTitle": "社区管理",
   "sntToolSubtitle": "向 NOTORYX 管理员举报垃圾信息，并查看被标记的节点",
   "sntIntro": "举报会发送给 NOTORYX 管理员，由人工逐一审核。批准的封禁会以建议列表的形式返回：被标记的节点会显示标签，网络上不会屏蔽任何内容。",
