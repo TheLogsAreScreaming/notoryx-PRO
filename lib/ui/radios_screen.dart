@@ -7,7 +7,6 @@ import '../meshcore/firmware.dart';
 import '../meshtastic/firmware.dart';
 import '../radio/radio.dart';
 import 'admin_screens.dart';
-import 'companion_cli_screen.dart';
 import 'bridge_screen.dart';
 import 'feeds_screen.dart';
 import 'auto_reply_screen.dart';
@@ -20,6 +19,8 @@ import 'diagnostics_screen.dart';
 import 'nearby_sheet.dart';
 import 'verify_screen.dart';
 import 'channels_screen.dart';
+import 'firmware_update_sheet.dart';
+import 'companion_cli_screen.dart';
 import 'meshtastic_admin_screen.dart';
 import 'telemetry_screen.dart';
 import 'list_insets.dart';
@@ -236,6 +237,15 @@ class _ConnectionCard extends StatelessWidget {
                         builder: (_) => MeshCoreSettingsScreen(connection: c),
                       ),
                     ),
+                  ),
+                if (c is MeshCoreConnection &&
+                    phase == SupervisorPhase.connected &&
+                    radio != null)
+                  OutlinedButton.icon(
+                    key: const Key('btn-fw-update'),
+                    icon: const Icon(Icons.system_update_outlined),
+                    label: Text(l.fwUpdateButton),
+                    onPressed: () => showFirmwareUpdateSheet(context, c),
                   ),
                 if (c is MeshCoreConnection &&
                     c.hasCompanionCli &&
