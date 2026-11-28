@@ -591,6 +591,7 @@ class MeshCoreSession {
         .where((f) => f is T && _samePrefix(_prefixOf(f), prefix))
         .cast<T>()
         .first;
+    answer.ignore();
     final sent = await _expect<SentFrame>(command);
     return answer.timeout(
       Duration(milliseconds: sent.timeoutMs) + extra,
