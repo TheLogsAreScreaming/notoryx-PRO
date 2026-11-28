@@ -4,6 +4,7 @@ import '../app/app_controller.dart';
 import '../mesh/model.dart';
 import '../radio/radio_link.dart';
 import '../store/mesh_store.dart';
+import '../app/reachability.dart';
 import 'common.dart';
 import 'node_avatar.dart';
 import 'conversation_screen.dart';
@@ -270,6 +271,8 @@ class _ConversationTile extends StatelessWidget {
         children: [
           Text(title, style: bold),
           ProtocolBadge(conversation.radioId.protocol),
+          if (conversation case final DirectConversation dc)
+            _ReachabilityBadge(store: app.store, conversation: dc),
           if (via case final name?)
             Text(
               l.inboxVia(name),
@@ -324,4 +327,42 @@ class _ConversationTile extends StatelessWidget {
       ),
     );
   }
+}
+
+/// A tiny icon indicating whether a direct-message contact can be reached.
+class _ReachabilityBadge extends StatelessWidget {
+  const _ReachabilityBadge({required this.store, required this.conversation});
+
+  final MeshStore store;
+  final DirectConversation conversation;
+
+  @override
+  Widget build(BuildContext context) => StreamBuilder<Reachability>(
+    stream: store.watchReachability(conversation),
+    builder: (context, snap) {
+      final r = snap.data;
+      if (r == null) return const SizedBox.shrink();
+      final l = context.l10n;
+      final cs = Theme.of(context).colorScheme;
+      final icon = switch (r) {
+        Reachability.twoWay => Icons.swap_horiz,
+        Reachability.theyHeardYou => Icons.arrow_forward,
+        Reachability.noAnswerYet => Icons.help_outline,
+      };
+      final color = switch (r) {
+        Reachability.twoWay => cs.primary,
+        Reachability.theyHeardYou => cs.secondary,
+        Reachability.noAnswerYet => cs.onSurfaceVariant,
+      };
+      final label = switch (r) {
+        Reachability.twoWay => l.reachTwoWay,
+        Reachability.theyHeardYou => l.reachTheyHeardYou,
+        Reachability.noAnswerYet => l.reachNoAnswerYet,
+      };
+      return Semantics(
+        label: label,
+        child: ExcludeSemantics(child: Icon(icon, size: 14, color: color)),
+      );
+    },
+  );
 }
