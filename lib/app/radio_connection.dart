@@ -357,9 +357,7 @@ class MeshCoreConnection extends RadioConnection {
   /// Runs after [setUp] on firmware v1.18+ (protocol 14). Errors for
   /// unreachable contacts are silently ignored — results arrive via the
   /// [Push.telemetryResponse] push handler and are stored immediately.
-  Future<void> _fetchSensorTelemetry(
-    List<ContactFrame> contacts,
-  ) async {
+  Future<void> _fetchSensorTelemetry(List<ContactFrame> contacts) async {
     for (final c in contacts) {
       if (radio == null) return;
       try {
