@@ -362,7 +362,7 @@ class MeshCoreConnection extends RadioConnection {
       if (radio == null) return;
       try {
         await session.requestTelemetry(c.publicKey);
-      } on Exception {
+      } catch (_) {
         // Contact unreachable or doesn't share telemetry; skip it.
       }
     }
