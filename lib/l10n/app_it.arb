@@ -416,6 +416,8 @@
   "mutedLabel": "Silenziato",
   "markRead": "Segna come letto",
   "markAllRead": "Segna tutto come letto",
+  "clearRead": "Clear read conversations",
+  "clearReadConfirm": "Remove messages from all conversations you have already read? This can't be undone.",
   "unreadCount": "{count, plural, =1{1 messaggio non letto} other{{count} messaggi non letti}}",
   "notifyTitle": "Notifiche",
   "notifyDirect": "Messaggi diretti",

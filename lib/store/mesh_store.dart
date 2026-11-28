@@ -468,6 +468,19 @@ class MeshStore {
     db.messages,
   )..where((m) => m.conversation.equals(conversation.key))).go();
 
+  /// Removes all messages in conversations that have no unread incoming messages.
+  Future<void> deleteReadConversations() => db.customUpdate(
+    'DELETE FROM messages WHERE conversation IN ('
+    '  SELECT conversation FROM messages GROUP BY conversation'
+    ') AND conversation NOT IN ('
+    '  SELECT m.conversation FROM messages m '
+    '  LEFT JOIN conversation_states s ON s.conversation = m.conversation '
+    '  WHERE m.outgoing = 0 AND m.is_reaction = 0 '
+    '  AND m.id > COALESCE(s.last_read_id, 0)'
+    ')',
+    updates: {db.messages},
+  );
+
   /// The newest message of every conversation, newest first.
   Stream<List<ConversationSummary>> watchConversations() =>
       _conversationsQuery().watch();

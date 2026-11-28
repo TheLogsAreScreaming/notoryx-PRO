@@ -416,6 +416,8 @@
   "mutedLabel": "En sourdine",
   "markRead": "Marquer comme lu",
   "markAllRead": "Tout marquer comme lu",
+  "clearRead": "Clear read conversations",
+  "clearReadConfirm": "Remove messages from all conversations you have already read? This can't be undone.",
   "unreadCount": "{count, plural, =1{1 message non lu} other{{count} messages non lus}}",
   "notifyTitle": "Notifications",
   "notifyDirect": "Messages directs",

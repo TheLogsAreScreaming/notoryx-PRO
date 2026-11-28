@@ -416,6 +416,8 @@
   "mutedLabel": "Stlmené",
   "markRead": "Označiť ako prečítané",
   "markAllRead": "Označiť všetko ako prečítané",
+  "clearRead": "Clear read conversations",
+  "clearReadConfirm": "Remove messages from all conversations you have already read? This can't be undone.",
   "unreadCount": "{count, plural, =1{1 neprečítaná správa} few{{count} neprečítané správy} many{{count} neprečítanej správy} other{{count} neprečítaných správ}}",
   "notifyTitle": "Upozornenia",
   "notifyDirect": "Priame správy",

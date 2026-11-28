@@ -416,6 +416,8 @@
   "mutedLabel": "Gedempt",
   "markRead": "Markeren als gelezen",
   "markAllRead": "Alles markeren als gelezen",
+  "clearRead": "Clear read conversations",
+  "clearReadConfirm": "Remove messages from all conversations you have already read? This can't be undone.",
   "unreadCount": "{count, plural, =1{1 ongelezen bericht} other{{count} ongelezen berichten}}",
   "notifyTitle": "Meldingen",
   "notifyDirect": "Privéberichten",

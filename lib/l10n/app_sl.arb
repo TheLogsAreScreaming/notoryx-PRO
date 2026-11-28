@@ -416,6 +416,8 @@
   "mutedLabel": "Utišano",
   "markRead": "Označi kot prebrano",
   "markAllRead": "Označi vse kot prebrano",
+  "clearRead": "Clear read conversations",
+  "clearReadConfirm": "Remove messages from all conversations you have already read? This can't be undone.",
   "unreadCount": "{count, plural, one{{count} neprebrano sporočilo} two{{count} neprebrani sporočili} few{{count} neprebrana sporočila} other{{count} neprebranih sporočil}}",
   "notifyTitle": "Obvestila",
   "notifyDirect": "Neposredna sporočila",

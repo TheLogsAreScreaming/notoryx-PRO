@@ -416,6 +416,8 @@
   "mutedLabel": "ミュート中",
   "markRead": "既読にする",
   "markAllRead": "すべて既読にする",
+  "clearRead": "Clear read conversations",
+  "clearReadConfirm": "Remove messages from all conversations you have already read? This can't be undone.",
   "unreadCount": "{count, plural, =1{未読メッセージ 1 件} other{未読メッセージ {count} 件}}",
   "notifyTitle": "通知",
   "notifyDirect": "ダイレクトメッセージ",
