@@ -1488,5 +1488,15 @@
   "covStopSharing": "Stoppen met delen",
   "covStopSharingSub": "Er wordt niets meer verstuurd. Metingen blijven op deze telefoon.",
   "covOpenMap": "Dekkingskaart openen",
-  "contactsFullWarning": "De contactenlijst van deze radio is vol, dus er kunnen geen nieuwe nodes bij. Verwijder enkele contacten om ruimte te maken."
+  "contactsFullWarning": "De contactenlijst van deze radio is vol, dus er kunnen geen nieuwe nodes bij. Verwijder enkele contacten om ruimte te maken.",
+  "cliButton": "Command line",
+  "cliTitle": "Radio command line",
+  "cliHint": "Type a command and press Run.\nCheck 'help' for a list of commands.",
+  "cliInputHint": "Command",
+  "cliRun": "Run",
+  "cliCopyAll": "Copy output",
+  "cliCopied": "Output copied",
+  "cliDestructiveTitle": "Destructive command",
+  "cliDestructiveBody": "'{command}' may erase data or change the radio's identity. Run it anyway?",
+  "cliRunAnyway": "Run anyway"
 }

@@ -1488,5 +1488,15 @@
   "covStopSharing": "Zastaviť zdieľanie",
   "covStopSharingSub": "Nič ďalšie sa neposiela. Merania zostanú v tomto telefóne.",
   "covOpenMap": "Otvoriť mapu pokrytia",
-  "contactsFullWarning": "Zoznam kontaktov tohto rádia je plný, takže nemôže pridávať nové uzly. Odstráňte niekoľko kontaktov, aby ste uvoľnili miesto."
+  "contactsFullWarning": "Zoznam kontaktov tohto rádia je plný, takže nemôže pridávať nové uzly. Odstráňte niekoľko kontaktov, aby ste uvoľnili miesto.",
+  "cliButton": "Command line",
+  "cliTitle": "Radio command line",
+  "cliHint": "Type a command and press Run.\nCheck 'help' for a list of commands.",
+  "cliInputHint": "Command",
+  "cliRun": "Run",
+  "cliCopyAll": "Copy output",
+  "cliCopied": "Output copied",
+  "cliDestructiveTitle": "Destructive command",
+  "cliDestructiveBody": "'{command}' may erase data or change the radio's identity. Run it anyway?",
+  "cliRunAnyway": "Run anyway"
 }

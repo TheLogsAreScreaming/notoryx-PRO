@@ -1488,5 +1488,15 @@
   "covStopSharing": "Спри споделянето",
   "covStopSharingSub": "Нищо повече не се изпраща. Показанията остават на този телефон.",
   "covOpenMap": "Отвори картата на покритието",
-  "contactsFullWarning": "Списъкът с контакти на това радио е пълен и не може да добавя нови възли. Премахнете някои контакти, за да освободите място."
+  "contactsFullWarning": "Списъкът с контакти на това радио е пълен и не може да добавя нови възли. Премахнете някои контакти, за да освободите място.",
+  "cliButton": "Command line",
+  "cliTitle": "Radio command line",
+  "cliHint": "Type a command and press Run.\nCheck 'help' for a list of commands.",
+  "cliInputHint": "Command",
+  "cliRun": "Run",
+  "cliCopyAll": "Copy output",
+  "cliCopied": "Output copied",
+  "cliDestructiveTitle": "Destructive command",
+  "cliDestructiveBody": "'{command}' may erase data or change the radio's identity. Run it anyway?",
+  "cliRunAnyway": "Run anyway"
 }

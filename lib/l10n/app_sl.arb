@@ -1488,5 +1488,15 @@
   "covStopSharing": "Ustavi deljenje",
   "covStopSharingSub": "Nič več se ne pošlje. Meritve ostanejo na tem telefonu.",
   "covOpenMap": "Odpri zemljevid pokritosti",
-  "contactsFullWarning": "Seznam stikov tega radia je poln, zato ne more dodajati novih vozlišč. Odstranite nekaj stikov, da sprostite prostor."
+  "contactsFullWarning": "Seznam stikov tega radia je poln, zato ne more dodajati novih vozlišč. Odstranite nekaj stikov, da sprostite prostor.",
+  "cliButton": "Command line",
+  "cliTitle": "Radio command line",
+  "cliHint": "Type a command and press Run.\nCheck 'help' for a list of commands.",
+  "cliInputHint": "Command",
+  "cliRun": "Run",
+  "cliCopyAll": "Copy output",
+  "cliCopied": "Output copied",
+  "cliDestructiveTitle": "Destructive command",
+  "cliDestructiveBody": "'{command}' may erase data or change the radio's identity. Run it anyway?",
+  "cliRunAnyway": "Run anyway"
 }

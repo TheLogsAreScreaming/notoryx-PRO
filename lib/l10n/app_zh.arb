@@ -1488,5 +1488,15 @@
   "covStopSharing": "停止分享",
   "covStopSharingSub": "不再发送任何内容。读数保留在此手机上。",
   "covOpenMap": "打开覆盖地图",
-  "contactsFullWarning": "此电台的联系人列表已满，无法添加新节点。请删除一些联系人以腾出空间。"
+  "contactsFullWarning": "此电台的联系人列表已满，无法添加新节点。请删除一些联系人以腾出空间。",
+  "cliButton": "Command line",
+  "cliTitle": "Radio command line",
+  "cliHint": "Type a command and press Run.\nCheck 'help' for a list of commands.",
+  "cliInputHint": "Command",
+  "cliRun": "Run",
+  "cliCopyAll": "Copy output",
+  "cliCopied": "Output copied",
+  "cliDestructiveTitle": "Destructive command",
+  "cliDestructiveBody": "'{command}' may erase data or change the radio's identity. Run it anyway?",
+  "cliRunAnyway": "Run anyway"
 }
