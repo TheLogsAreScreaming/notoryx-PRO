@@ -1282,6 +1282,7 @@
   "staleAfterTitle": "Označi vozlišča kot zastarela po",
   "staleOff": "Izklopljeno",
   "mapAllRoutes": "All relay paths",
+  "mapHopBadges": "Hop badges",
   "mapRangeRings": "Obroči dosega",
   "mapRingsNoPosition": "Tvoj položaj še ni znan, zato obročev dosega ni mogoče narisati.",
   "ignoreNode": "Prezri",

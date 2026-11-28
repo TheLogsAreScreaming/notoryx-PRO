@@ -1282,6 +1282,7 @@
   "staleAfterTitle": "Считать узлы устаревшими через",
   "staleOff": "Выкл.",
   "mapAllRoutes": "All relay paths",
+  "mapHopBadges": "Hop badges",
   "mapRangeRings": "Кольца дальности",
   "mapRingsNoPosition": "Твоя позиция пока неизвестна, поэтому кольца дальности не нарисовать.",
   "ignoreNode": "Игнорировать",

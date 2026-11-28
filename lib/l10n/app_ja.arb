@@ -1282,6 +1282,7 @@
   "staleAfterTitle": "ノードを古いとみなすまでの時間",
   "staleOff": "オフ",
   "mapAllRoutes": "All relay paths",
+  "mapHopBadges": "Hop badges",
   "mapRangeRings": "距離リング",
   "mapRingsNoPosition": "現在地が分からないため、距離リングを描けません。",
   "ignoreNode": "無視",

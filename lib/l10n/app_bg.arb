@@ -1282,6 +1282,7 @@
   "staleAfterTitle": "Маркирай възлите като остарели след",
   "staleOff": "Изкл.",
   "mapAllRoutes": "All relay paths",
+  "mapHopBadges": "Hop badges",
   "mapRangeRings": "Кръгове на обхвата",
   "mapRingsNoPosition": "Позицията ти още не е известна, затова кръговете на обхвата не могат да се начертаят.",
   "ignoreNode": "Пренебрегни",

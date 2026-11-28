@@ -1282,6 +1282,7 @@
   "staleAfterTitle": "Knoten als inaktiv markieren nach",
   "staleOff": "Aus",
   "mapAllRoutes": "All relay paths",
+  "mapHopBadges": "Hop badges",
   "mapRangeRings": "Entfernungsringe",
   "mapRingsNoPosition": "Deine Position ist noch unbekannt, daher können keine Entfernungsringe gezeichnet werden.",
   "ignoreNode": "Ignorieren",

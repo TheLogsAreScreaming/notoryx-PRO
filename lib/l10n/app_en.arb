@@ -3161,6 +3161,7 @@
   "staleAfterTitle": "Mark nodes stale after",
   "staleOff": "Off",
   "mapAllRoutes": "All relay paths",
+  "mapHopBadges": "Hop badges",
   "mapRangeRings": "Range rings",
   "mapRingsNoPosition": "Your position isn't known yet, so range rings can't be drawn.",
   "ignoreNode": "Ignore",

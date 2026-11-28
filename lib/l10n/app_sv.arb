@@ -1282,6 +1282,7 @@
   "staleAfterTitle": "Markera noder som inaktuella efter",
   "staleOff": "Av",
   "mapAllRoutes": "All relay paths",
+  "mapHopBadges": "Hop badges",
   "mapRangeRings": "Räckviddsringar",
   "mapRingsNoPosition": "Din position är inte känd än, så räckviddsringar kan inte ritas.",
   "ignoreNode": "Ignorera",

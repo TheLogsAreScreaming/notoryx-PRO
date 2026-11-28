@@ -1282,6 +1282,7 @@
   "staleAfterTitle": "Marcar nodos inactivos tras",
   "staleOff": "Desactivado",
   "mapAllRoutes": "All relay paths",
+  "mapHopBadges": "Hop badges",
   "mapRangeRings": "Anillos de distancia",
   "mapRingsNoPosition": "Aún no se conoce tu posición, así que no se pueden dibujar los anillos de distancia.",
   "ignoreNode": "Ignorar",

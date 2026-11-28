@@ -1282,6 +1282,7 @@
   "staleAfterTitle": "Nodes als verouderd markeren na",
   "staleOff": "Uit",
   "mapAllRoutes": "All relay paths",
+  "mapHopBadges": "Hop badges",
   "mapRangeRings": "Bereikringen",
   "mapRingsNoPosition": "Je positie is nog niet bekend, dus bereikringen kunnen niet getekend worden.",
   "ignoreNode": "Negeren",

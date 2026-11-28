@@ -1282,6 +1282,7 @@
   "staleAfterTitle": "节点标为过时的时间",
   "staleOff": "关闭",
   "mapAllRoutes": "All relay paths",
+  "mapHopBadges": "Hop badges",
   "mapRangeRings": "距离圈",
   "mapRingsNoPosition": "你的位置还未知，所以无法绘制距离圈。",
   "ignoreNode": "忽略",
