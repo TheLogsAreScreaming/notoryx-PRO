@@ -93,6 +93,7 @@
   "yes": "Da",
   "no": "Ne",
   "sendAgain": "Pošlji znova",
+  "cancelSend": "Cancel send",
   "tabMap": "Zemljevid",
   "mapNoPositions": "Še ni položajev. Vozlišča se pojavijo tukaj, ko delijo svojo lokacijo.",
   "mapFitAll": "Pokaži vse",

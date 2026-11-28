@@ -93,6 +93,7 @@
   "yes": "Sì",
   "no": "No",
   "sendAgain": "Invia di nuovo",
+  "cancelSend": "Cancel send",
   "tabMap": "Mappa",
   "mapNoPositions": "Ancora nessuna posizione. I nodi compaiono qui quando condividono la posizione.",
   "mapFitAll": "Mostra tutto",

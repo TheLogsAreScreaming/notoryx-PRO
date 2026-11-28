@@ -93,6 +93,7 @@
   "yes": "Igen",
   "no": "Nem",
   "sendAgain": "Újraküldés",
+  "cancelSend": "Cancel send",
   "tabMap": "Térkép",
   "mapNoPositions": "Még nincs pozíció. A node-ok akkor jelennek meg itt, ha megosztják a helyzetüket.",
   "mapFitAll": "Minden mutatása",

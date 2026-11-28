@@ -93,6 +93,7 @@
   "yes": "Ja",
   "no": "Nee",
   "sendAgain": "Opnieuw versturen",
+  "cancelSend": "Cancel send",
   "tabMap": "Kaart",
   "mapNoPositions": "Nog geen posities. Nodes verschijnen hier als ze hun locatie delen.",
   "mapFitAll": "Alles tonen",

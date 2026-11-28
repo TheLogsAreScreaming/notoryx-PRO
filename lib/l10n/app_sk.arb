@@ -93,6 +93,7 @@
   "yes": "Áno",
   "no": "Nie",
   "sendAgain": "Poslať znova",
+  "cancelSend": "Cancel send",
   "tabMap": "Mapa",
   "mapNoPositions": "Zatiaľ žiadne polohy. Uzly sa tu zobrazia, keď zdieľajú svoju polohu.",
   "mapFitAll": "Zobraziť všetko",

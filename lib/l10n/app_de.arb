@@ -93,6 +93,7 @@
   "yes": "Ja",
   "no": "Nein",
   "sendAgain": "Erneut senden",
+  "cancelSend": "Cancel send",
   "tabMap": "Karte",
   "mapNoPositions": "Noch keine Positionen. Knoten erscheinen hier, wenn sie ihren Standort teilen.",
   "mapFitAll": "Alles anzeigen",
