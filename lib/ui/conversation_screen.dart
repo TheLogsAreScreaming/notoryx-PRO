@@ -193,7 +193,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
     if (c is DirectConversation) {
       final node = await app.store.node(c.radioId, c.node);
       if (node != null && node.isFavorite) {
-        if (!await _confirmDelete(l.conversationDeleteFavourite(widget.title))) {
+        if (!await _confirmDelete(
+          l.conversationDeleteFavourite(widget.title),
+        )) {
           return;
         }
       }
