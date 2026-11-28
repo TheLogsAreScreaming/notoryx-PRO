@@ -32,9 +32,8 @@ class CannedMessages {
 
   final List<CannedMessage> messages;
 
-  String encode() => jsonEncode({
-    'messages': [for (final m in messages) m.toJson()],
-  });
+  String encode() =>
+      jsonEncode({'messages': [for (final m in messages) m.toJson()]});
 
   static CannedMessages decode(String? saved) {
     if (saved == null) return const CannedMessages();
