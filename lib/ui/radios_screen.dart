@@ -202,8 +202,7 @@ class _ConnectionCard extends StatelessWidget {
             Text(statusText(context, c)),
             if (radio != null && radio.firmware.isNotEmpty)
               Text(l.radioFirmware(radio.firmware)),
-            if (c is MeshCoreConnection)
-              _PresetLabel(connection: c, l: l),
+            if (c is MeshCoreConnection) _PresetLabel(connection: c, l: l),
             if (c is MeshtasticConnection &&
                 c.regionUnset &&
                 phase == SupervisorPhase.connected)
@@ -592,10 +591,16 @@ class _PresetLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = connection.settings;
     if (s == null) return const SizedBox.shrink();
-    final preset = [
-      ...MeshCorePresets.suggested,
-      ...MeshCorePresets.local,
-    ].where((p) => p.matches(s.frequencyMHz, s.bandwidthKHz, s.spreadingFactor, s.codingRate)).firstOrNull;
+    final preset = [...MeshCorePresets.suggested, ...MeshCorePresets.local]
+        .where(
+          (p) => p.matches(
+            s.frequencyMHz,
+            s.bandwidthKHz,
+            s.spreadingFactor,
+            s.codingRate,
+          ),
+        )
+        .firstOrNull;
     return Text(
       preset != null
           ? l.radioPreset(preset.name)
