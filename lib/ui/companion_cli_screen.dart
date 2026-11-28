@@ -96,21 +96,21 @@ class _CompanionCliScreenState extends State<CompanionCliScreen> {
   }
 
   void _scrollToEnd() => WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scroll.hasClients) {
-        _scroll.animateTo(
-          _scroll.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 150),
-          curve: Curves.easeOut,
-        );
-      }
-    });
+    if (_scroll.hasClients) {
+      _scroll.animateTo(
+        _scroll.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 150),
+        curve: Curves.easeOut,
+      );
+    }
+  });
 
   void _copyAll() {
     final text = _lines.map((l) => l.text).join('\n');
     Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.l10n.cliCopied)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(context.l10n.cliCopied)));
   }
 
   @override
@@ -167,8 +167,7 @@ class _CompanionCliScreenState extends State<CompanionCliScreen> {
                     },
                   ),
           ),
-          if (_busy)
-            const LinearProgressIndicator(minHeight: 2),
+          if (_busy) const LinearProgressIndicator(minHeight: 2),
           const Divider(height: 1),
           Padding(
             padding: EdgeInsets.fromLTRB(
