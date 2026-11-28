@@ -74,6 +74,19 @@
       }
     }
   },
+  "fwUpdateButton": "Update firmware",
+  "fwUpdateTitle": "Firmware update",
+  "fwUpdateCurrentVersion": "Version: {version}",
+  "@fwUpdateCurrentVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "fwUpdateNoVersion": "unknown",
+  "fwUpdateHint": "Use NOTORYX Forge to flash new firmware over Bluetooth.",
+  "fwUpdateOpenForge": "Open Forge",
   "composerHint": "Message",
   "composerSend": "Send",
   "composerBytes": "{used}/{max}",
@@ -188,6 +201,7 @@
   "yes": "Yes",
   "no": "No",
   "sendAgain": "Send again",
+  "cancelSend": "Cancel send",
   "tabMap": "Map",
   "mapNoPositions": "No positions yet. Nodes appear here when they share their location.",
   "mapFitAll": "Show everything",
@@ -1075,9 +1089,12 @@
   "muteAlways": "Mute until I unmute",
   "mutedLabel": "Muted",
   "markRead": "Mark as read",
-  "markAllRead": "Mark all as read",
   "clearRead": "Clear read conversations",
   "clearReadConfirm": "Remove messages from all conversations you have already read? This can't be undone.",
+  "markAllRead": "Mark all as read",
+  "scanContact": "Scan contact code",
+  "scanContactNotACard": "Not a contact code.",
+  "scanContactNotFound": "Contact not found in your mesh yet.",
   "unreadCount": "{count, plural, =1{1 unread message} other{{count} unread messages}}",
   "@unreadCount": {
     "placeholders": {
@@ -2644,6 +2661,14 @@
       }
     }
   },
+  "nodeBattery": "{percent}% battery",
+  "@nodeBattery": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
   "sntTitle": "Community moderation",
   "sntToolSubtitle": "Report spam to NOTORYX moderators and see flagged nodes",
   "sntIntro": "Reports go to NOTORYX moderators, who review each one by hand. Approved bans come back as an advisory list: flagged nodes get a label, and nothing on the mesh is blocked.",
@@ -2764,6 +2789,8 @@
   "trustedOnly": "Trusted only",
   "trustedShowAll": "Show all nodes",
   "trustedEmpty": "No trusted nodes yet. Tap the star on a node to trust it. Radio favorites and verified nodes count too.",
+  "whoRepeatsTitle": "Who relays me",
+  "whoRepeatsEmpty": "No relay hops found yet. Routes appear here once your radios know the path to other nodes.",
   "topologyTitle": "Network diagram",
   "topologyEmpty": "Nothing to draw yet. Nodes appear here once your radios know how many hops away they are.",
   "topologyHint": "You're in the middle and each ring is one more hop. Lines are known MeshCore routes and nodes heard directly; thicker lines carry more routes. Meshtastic doesn't say who relayed, so farther Meshtastic nodes have no lines.",
@@ -3135,6 +3162,7 @@
   },
   "staleAfterTitle": "Mark nodes stale after",
   "staleOff": "Off",
+  "mapAllRoutes": "All relay paths",
   "mapRangeRings": "Range rings",
   "mapRingsNoPosition": "Your position isn't known yet, so range rings can't be drawn.",
   "ignoreNode": "Ignore",
@@ -3644,5 +3672,12 @@
   "covStopSharing": "Stop sharing",
   "covStopSharingSub": "Nothing more is sent. Readings stay on this phone.",
   "covOpenMap": "Open the coverage map",
-  "contactsFullWarning": "This radio's contact list is full, so it can't add new nodes. Remove some contacts to make room."
+  "contactsFullWarning": "This radio's contact list is full, so it can't add new nodes. Remove some contacts to make room.",
+  "cannedTitle": "Quick messages",
+  "cannedEmpty": "No quick messages yet. Add some to speed up common replies.",
+  "cannedAdd": "Add quick message",
+  "cannedDelete": "Delete",
+  "cannedHint": "Message text",
+  "cannedSave": "Save",
+  "cannedInsert": "Quick messages"
 }

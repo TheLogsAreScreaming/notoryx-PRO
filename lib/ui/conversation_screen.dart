@@ -15,9 +15,11 @@ import '../mesh/model.dart';
 import '../radio/radio.dart';
 import '../store/mesh_store.dart';
 import 'beacon_sheet.dart';
+import 'canned_messages_screen.dart';
 import 'sentinel_screen.dart';
 import '../meshcore/codes.dart' show MeshCoreLimits;
 import '../meshtastic/messages.dart' show meshtasticMaxPayload;
+import '../mesh/signal.dart' show signalBars;
 import 'common.dart';
 import 'themes.dart';
 import 'forward_sheet.dart';
@@ -213,6 +215,11 @@ class _ConversationScreenState extends State<ConversationScreen> {
             Flexible(child: Text(title, overflow: TextOverflow.ellipsis)),
             const SizedBox(width: 8),
             ProtocolBadge(conversation.radioId.protocol),
+            if (conversation is DirectConversation)
+              _SignalIndicator(
+                app: app,
+                conversation: conversation as DirectConversation,
+              ),
           ],
         ),
         actions: [
@@ -334,6 +341,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
               return Composer(
                 connection: _ready(),
                 conversation: conversation,
+                store: app.store,
                 draft: widget.draft,
               );
             },
@@ -381,6 +389,12 @@ class _ConversationScreenState extends State<ConversationScreen> {
             nameClash: clash,
             lookalikeOf: imitated?.displayName,
             onResend: c == null ? null : () => c.resend(stored.id),
+            onCancel:
+                (m.outgoing && (m.delivery is Pending || m.delivery is Sent))
+                ? () => unawaited(
+                    app.store.setDelivery(stored.id, const Failed('Cancelled')),
+                  )
+                : null,
             onTap: () => _details(m),
             onLongPress: () => _messageActions(stored),
           );
@@ -396,6 +410,7 @@ class MessageBubble extends StatelessWidget {
     super.key,
     required this.message,
     this.onResend,
+    this.onCancel,
     this.onTap,
     this.onLongPress,
     this.senderLabel,
@@ -431,6 +446,9 @@ class MessageBubble extends StatelessWidget {
   /// Sends a failed message again; null when its radio isn't connected.
   final VoidCallback? onResend;
 
+  /// Abandons a pending or in-flight message; null when not applicable.
+  final VoidCallback? onCancel;
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
@@ -438,11 +456,13 @@ class MessageBubble extends StatelessWidget {
     final m = message;
     final (icon, label) = deliveryLook(context, m.delivery);
     final path = pathSummary(context, m.path);
+    final relay = m.outgoing ? _relayBadge(m.path) : null;
     final meta = [
       if (!m.outgoing && (senderLabel ?? m.senderName) != null)
         senderLabel ?? m.senderName!,
       ago(context, m.receivedAt),
       if (path.isNotEmpty) path,
+      ?relay,
     ].join(' · ');
     return Align(
       alignment: m.outgoing ? Alignment.centerRight : Alignment.centerLeft,
@@ -537,12 +557,20 @@ class MessageBubble extends StatelessWidget {
                     ],
                   ],
                 ),
+                if (m.outgoing &&
+                    (m.delivery is Pending || m.delivery is Sent) &&
+                    onCancel != null)
+                  TextButton.icon(
+                    onPressed: onCancel,
+                    icon: const Icon(Icons.cancel_outlined, size: 16),
+                    label: Text(context.l10n.cancelSend),
+                  ),
                 if (m.delivery case Failed(:final reason)) ...[
                   Text(
                     context.l10n.deliveryFailed(reason),
                     style: text.labelSmall?.copyWith(color: scheme.error),
                   ),
-                  if (onResend != null)
+                  if (onResend != null && reason != 'Cancelled')
                     TextButton.icon(
                       onPressed: onResend,
                       icon: const Icon(Icons.refresh, size: 16),
@@ -556,6 +584,13 @@ class MessageBubble extends StatelessWidget {
       ),
     );
   }
+
+  /// "↻ N" compact badge for an outgoing message that travelled via relays.
+  static String? _relayBadge(PathFacts path) {
+    final hops = path.hops;
+    if (hops == null || hops == 0) return null;
+    return '↻ $hops';
+  }
 }
 
 /// Text field with a byte counter, since radios limit bytes, not letters.
@@ -564,12 +599,14 @@ class Composer extends StatefulWidget {
     super.key,
     required this.connection,
     required this.conversation,
+    required this.store,
     this.draft,
   });
 
   /// Null when the radio for this conversation isn't connected.
   final RadioConnection? connection;
   final Conversation conversation;
+  final MeshStore store;
 
   /// Text to start with.
   final String? draft;
@@ -676,6 +713,19 @@ class _ComposerState extends State<Composer> {
                   onPressed: () => _report(c),
                 ),
                 SarnegComposeButton(controller: _controller),
+                IconButton(
+                  tooltip: l.cannedInsert,
+                  icon: const Icon(Icons.quickreply_outlined),
+                  onPressed: () async {
+                    final text = await showCannedMessagesSheet(
+                      context,
+                      store: widget.store,
+                    );
+                    if (text != null && mounted) {
+                      _controller.text = text;
+                    }
+                  },
+                ),
                 Expanded(
                   child: TextField(
                     controller: _controller,
@@ -704,4 +754,29 @@ class _ComposerState extends State<Composer> {
       ),
     );
   }
+}
+
+/// Live signal-strength indicator for a DM conversation's title bar.
+class _SignalIndicator extends StatelessWidget {
+  const _SignalIndicator({required this.app, required this.conversation});
+
+  final AppController app;
+  final DirectConversation conversation;
+
+  @override
+  Widget build(BuildContext context) => StreamBuilder<List<Node>>(
+    stream: app.store.watchNodes(conversation.radioId),
+    builder: (context, snap) {
+      final node = snap.data
+          ?.where((n) => n.key == conversation.node)
+          .firstOrNull;
+      if (node == null) return const SizedBox.shrink();
+      final bars = signalBars(node.path);
+      if (bars == null) return const SizedBox.shrink();
+      return Padding(
+        padding: const EdgeInsets.only(left: 6),
+        child: SignalBars(bars, size: 14),
+      );
+    },
+  );
 }

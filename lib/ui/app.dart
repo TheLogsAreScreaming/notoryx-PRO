@@ -12,6 +12,7 @@ import '../app/trusted_nodes.dart';
 import '../l10n/app_localizations.dart';
 import 'about_screen.dart';
 import 'beacon_sheet.dart';
+import 'canned_messages_screen.dart';
 import 'checklists_screen.dart';
 import 'coverage_screen.dart';
 import 'common.dart';
@@ -36,8 +37,12 @@ import 'backdrop.dart';
 import 'theme_screen.dart';
 import 'themes.dart';
 import 'timeline_screen.dart';
+import 'who_repeats_screen.dart';
 import 'sarneg/sarneg_ui.dart';
 import '../app/telemetry_alerts.dart';
+import '../mesh/identity.dart' show ContactCard;
+import '../mesh/model.dart' show DirectConversation;
+import 'verify_screen.dart' show openScanner;
 
 /// The app: localisation, theme and the three tabs.
 class NotoryxProApp extends StatelessWidget {
@@ -114,8 +119,10 @@ class NotoryxProApp extends StatelessWidget {
 enum _MenuAction {
   markRead,
   deleteRead,
+  scanContact,
   timeline,
   coverage,
+  whoRepeats,
   journal,
   checklists,
   sarneg,
@@ -128,6 +135,7 @@ enum _MenuAction {
   lock,
   moderation,
   privacy,
+  cannedMessages,
   about,
 }
 
@@ -307,6 +315,41 @@ class _HomeShellState extends State<HomeShell> {
     await widget.app.store.deleteReadConversations();
   }
 
+  Future<void> _scanContact() async {
+    final l = context.l10n;
+    final text = await openScanner(context);
+    if (text == null || !mounted) return;
+    final card = ContactCard.parse(text);
+    if (card == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l.scanContactNotACard)));
+      return;
+    }
+    final nodes = await widget.app.store.watchAllNodes().first;
+    final match = nodes.where((n) => n.key == card.key).firstOrNull;
+    if (!mounted) return;
+    if (match == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l.scanContactNotFound)));
+      return;
+    }
+    final title = await widget.app.store.conversationTitle(
+      DirectConversation(match.radioId, match.key),
+    );
+    if (!mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => ConversationScreen(
+          app: widget.app,
+          conversation: DirectConversation(match.radioId, match.key),
+          title: title,
+        ),
+      ),
+    );
+  }
+
   late final Stream<BackdropState> _backdrop = watchBackdrop(widget.app.store);
 
   @override
@@ -411,9 +454,15 @@ class _HomeShellState extends State<HomeShell> {
             onSelected: (action) => switch (action) {
               _MenuAction.markRead => app.store.markAllRead(),
               _MenuAction.deleteRead => unawaited(_deleteReadConversations()),
+              _MenuAction.scanContact => unawaited(_scanContact()),
               _MenuAction.timeline => Navigator.of(context).push(
                 MaterialPageRoute<void>(
                   builder: (_) => TimelineScreen(app: app),
+                ),
+              ),
+              _MenuAction.whoRepeats => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => WhoRepeatsScreen(app: app),
                 ),
               ),
               _MenuAction.coverage => Navigator.of(context).push(
@@ -465,6 +514,11 @@ class _HomeShellState extends State<HomeShell> {
                   builder: (_) => PrivacyScreen(app: app, vault: widget.vault),
                 ),
               ),
+              _MenuAction.cannedMessages => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => CannedMessagesScreen(store: app.store),
+                ),
+              ),
               _MenuAction.about => Navigator.of(context).push(
                 MaterialPageRoute<void>(builder: (_) => AboutScreen(app: app)),
               ),
@@ -492,8 +546,14 @@ class _HomeShellState extends State<HomeShell> {
                   child: Text(context.l10n.markAllRead),
                 ),
                 PopupMenuItem(
+                  key: const Key('menu-delete-read'),
                   value: _MenuAction.deleteRead,
                   child: Text(context.l10n.clearRead),
+                ),
+                PopupMenuItem(
+                  key: const Key('menu-scan-contact'),
+                  value: _MenuAction.scanContact,
+                  child: Text(context.l10n.scanContact),
                 ),
                 PopupMenuItem(
                   value: _MenuAction.export,
@@ -507,6 +567,11 @@ class _HomeShellState extends State<HomeShell> {
               PopupMenuItem(
                 value: _MenuAction.timeline,
                 child: Text(context.l10n.tlTitle),
+              ),
+              PopupMenuItem(
+                key: const Key('menu-who-repeats'),
+                value: _MenuAction.whoRepeats,
+                child: Text(context.l10n.whoRepeatsTitle),
               ),
               PopupMenuItem(
                 key: const Key('menu-coverage'),
@@ -561,6 +626,11 @@ class _HomeShellState extends State<HomeShell> {
                 key: const Key('menu-privacy'),
                 value: _MenuAction.privacy,
                 child: Text(context.l10n.privacyTitle),
+              ),
+              PopupMenuItem(
+                key: const Key('menu-canned-messages'),
+                value: _MenuAction.cannedMessages,
+                child: Text(context.l10n.cannedTitle),
               ),
               PopupMenuItem(
                 value: _MenuAction.about,

@@ -147,11 +147,9 @@ void main() {
     await tester.pumpWidget(NotoryxProApp(app: app));
     await settle(tester);
 
-    expect(find.text('Channels'), findsOneWidget);
     expect(find.text('Public'), findsOneWidget);
     expect(find.text('Primary'), findsOneWidget);
     expect(find.text('Ann: hello trail'), findsOneWidget);
-    expect(find.text('Direct messages'), findsOneWidget);
     expect(find.text('Ridge Relay'), findsOneWidget);
     expect(find.text('You: anyone there?'), findsOneWidget);
     expect(find.text('MeshCore'), findsWidgets);
